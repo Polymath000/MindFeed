@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/features/onboarding/presentation/views/widgets/onboarding_view_body.dart';
+import 'package:mind_feed/features/onboarding/presentation/widgets/onboarding_view_body.dart';
 
 class OnboardingView extends StatelessWidget {
   const OnboardingView({super.key});

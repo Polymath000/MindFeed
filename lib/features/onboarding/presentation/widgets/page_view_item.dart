@@ -14,7 +14,7 @@ class PageViewItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 0, right: 80),
+      padding: const EdgeInsets.only(left: 0, right: 20),
       child: Column(
         children: [
           SizedBox(
@@ -24,12 +24,12 @@ class PageViewItem extends StatelessWidget {
               style: AppTextStyles.headlineLarge!.copyWith(
                 color: AppColors.white,
                 fontSize: 36,
-                height: 1.45,
+                height: 1.3,
                 fontWeight: FontWeight.w400,
               ),
             ),
           ),
-          SizedBox(height: 36),
+          SizedBox(height: 25),
           SizedBox(
             width: 297,
             child: Text(

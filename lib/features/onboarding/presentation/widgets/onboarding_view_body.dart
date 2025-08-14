@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/features/onboarding/presentation/views/widgets/dots_widget.dart';
-import 'package:mind_feed/features/onboarding/presentation/views/widgets/next_button.dart';
-import 'package:mind_feed/features/onboarding/presentation/views/widgets/on_boarding_background.dart';
-import 'package:mind_feed/features/onboarding/presentation/views/widgets/on_boarding_page_view.dart';
-import 'package:mind_feed/features/onboarding/presentation/views/widgets/skip_button.dart';
+import 'package:mind_feed/features/onboarding/presentation/widgets/dots_widget.dart';
+import 'package:mind_feed/features/onboarding/presentation/widgets/next_button.dart';
+import 'package:mind_feed/features/onboarding/presentation/widgets/on_boarding_background.dart';
+import 'package:mind_feed/features/onboarding/presentation/widgets/on_boarding_page_view.dart';
+import 'package:mind_feed/features/onboarding/presentation/widgets/skip_button.dart';
 
 class OnboardingViewBody extends StatefulWidget {
   const OnboardingViewBody({super.key});
@@ -32,10 +32,8 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // The background widget needs to listen to page changes
         OnBoardingBackground(pageController: _pageController),
         SkipButton(),
-        // Pass the onPageChanged callback to the PageView
         OnBoardingPageView(
           pageController: _pageController,
           onPageChanged: (index) {
@@ -44,7 +42,6 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
             });
           },
         ),
-        // Pass the currentPage to the DotsWidget
         DotsWidget(currentPage: _currentPage),
         NextButton(pageController: _pageController),
       ],

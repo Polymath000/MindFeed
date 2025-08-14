@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/features/auth/presentation/views/login_view.dart';
+import 'package:mind_feed/features/auth/presentation/views/signup.dart';
 import 'package:mind_feed/features/onboarding/presentation/views/onboarding_view.dart';
 
 sealed class AppRoutes {
@@ -49,6 +51,11 @@ sealed class AppRoutes {
   // Routes without arguments
   static Future<Object?> onboardingView(final BuildContext context) =>
       _pushNamedAndRemoveAll(context, OnboardingView.routeName);
+
+  static Future<Object?> login(final BuildContext context) =>
+      _pushNamedAndRemoveAll(context, LoginView.routeName);
+  static Future<Object?> signup(final BuildContext context) =>
+      _pushNamed(context, SignUpView.routeName);
 }
 
 class CreateNewPasswordViewArgs {
@@ -59,6 +66,9 @@ class CreateNewPasswordViewArgs {
 
 Map<String, Widget Function(BuildContext, Object?)> _routes = {
   OnboardingView.routeName: (_, _) => const OnboardingView(),
+  LoginView.routeName: (_, _) => const LoginView(),
+  SignUpView.routeName: (_, _) => const SignUpView(),
+
   // MainView.routeName: (_, _) => const MainView(),
   // PatientInformation.routeName: (_, final args) =>
   //     PatientInformation(user: args! as UserEntity),

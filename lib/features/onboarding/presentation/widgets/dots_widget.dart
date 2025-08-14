@@ -14,7 +14,7 @@ class DotsWidget extends StatelessWidget {
     const double dotHeight = 8.0;
 
     return Positioned(
-      bottom: 150,
+      bottom: 100,
       left: 130,
       right: 130,
       child: Row(

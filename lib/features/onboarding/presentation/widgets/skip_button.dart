@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/config/routes/on_generate_routes.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/config/themes/app_text_style.dart';
 
@@ -15,7 +16,7 @@ class SkipButton extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {
-              // TODO: Navigate to login page
+              AppRoutes.login(context);
             },
             child: Text(
               'Skip',
