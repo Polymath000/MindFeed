@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/login_view_body.dart';
 
 class LoginView extends StatelessWidget {
@@ -7,9 +8,6 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
-      body: LoginViewBody(),
-    );
+    return Scaffold(backgroundColor: AppColors.white, body: LoginViewBody());
   }
 }

@@ -1,0 +1,28 @@
+<svg width="94" height="94" viewBox="0 0 94 94" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_dd_65_81)">
+<path d="M15 37C15 19.3269 29.3269 5 47 5C64.6731 5 79 19.3269 79 37C79 54.6731 64.6731 69 47 69C29.3269 69 15 54.6731 15 37Z" fill="white"/>
+<path d="M60.5 53H33.5V21H60.5V53Z" stroke="#E5E7EB"/>
+<g clip-path="url(#clip0_65_81)">
+<path d="M45.2 46.1016C45.7063 46.2797 46.25 45.9094 46.25 45.375V27.6844C46.25 27.4875 46.175 27.2906 46.0156 27.1687C45.0969 26.4375 42.9875 25.5 40.25 25.5C37.8828 25.5 35.6703 26.1234 34.3484 26.6297C33.8188 26.8359 33.5 27.3609 33.5 27.9281V45.2859C33.5 45.8438 34.1 46.2328 34.6297 46.0594C36.1063 45.5672 38.4453 45 40.25 45C41.8391 45 43.9531 45.6562 45.2 46.1016ZM48.8 46.1016C50.0469 45.6562 52.1609 45 53.75 45C55.5547 45 57.8938 45.5672 59.3703 46.0594C59.9 46.2375 60.5 45.8438 60.5 45.2859V27.9281C60.5 27.3609 60.1813 26.8359 59.6516 26.6344C58.3297 26.1234 56.1172 25.5 53.75 25.5C51.0125 25.5 48.9031 26.4375 47.9844 27.1687C47.8297 27.2906 47.75 27.4875 47.75 27.6844V45.375C47.75 45.9094 48.2984 46.2797 48.8 46.1016Z" fill="black"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_dd_65_81" x="0" y="0" width="94" height="94" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="10"/>
+<feGaussianBlur stdDeviation="7.5"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_65_81"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="3"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
+<feBlend mode="normal" in2="effect1_dropShadow_65_81" result="effect2_dropShadow_65_81"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow_65_81" result="shape"/>
+</filter>
+<clipPath id="clip0_65_81">
+<path d="M33.5 24H60.5V48H33.5V24Z" fill="white"/>
+</clipPath>
+</defs>
+</svg>

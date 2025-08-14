@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/config/themes/app_colors.dart';
+import 'package:mind_feed/features/auth/presentation/widgets/sign_up_view_body.dart';
 
 class SignUpView extends StatelessWidget {
   const SignUpView({super.key});
@@ -6,20 +8,6 @@ class SignUpView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Sign Up')),
-      body: SignUpViewBody(),
-    );
-  }
-}
-
-class SignUpViewBody extends StatelessWidget {
-  const SignUpViewBody({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton(child: const Text('Sign Up'), onPressed: () {}),
-    );
+    return Scaffold(backgroundColor: AppColors.white, body: SignUpViewBody());
   }
 }

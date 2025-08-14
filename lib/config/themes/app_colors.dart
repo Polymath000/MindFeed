@@ -107,4 +107,8 @@ sealed class AppColors {
   static const Color info = Color(0xFF1E88E5);
   static const Color facebook = Color(0xFF0864ff);
   static const Color lightRed = Color.fromARGB(255, 231, 106, 106);
+  static const Color gunmetal = Color(0xFF111827);
+  static const Color lightGray = Color(0xFFE5E7EB);
+  static const Color mediumGray = Color(0xFFD1D5DB);
+  static const Color textGray = Color(0xFF9CA3AF);
 }

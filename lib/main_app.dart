@@ -3,7 +3,7 @@ import 'package:mind_feed/config/routes/on_generate_routes.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/config/themes/app_text_style.dart';
 import 'package:mind_feed/config/themes/theme_config.dart';
-import 'package:mind_feed/features/onboarding/presentation/views/onboarding_view.dart';
+import 'package:mind_feed/features/auth/presentation/views/login_view.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: OnboardingView.routeName,
+      initialRoute: LoginView.routeName,
       onGenerateRoute: onGenerateRoute,
       theme: const ThemeConfig().light,
       darkTheme: const ThemeConfig().dark,
