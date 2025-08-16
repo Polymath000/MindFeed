@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/features/auth/domain/entites/user_entity.dart';
+import 'package:mind_feed/features/auth/presentation/views/categories_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/change_password_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/check_code_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/login_view.dart';
@@ -41,6 +43,10 @@ sealed class AppRoutes {
   //   CreateNewPasswordView.routeName,
   //   arguments: CreateNewPasswordViewArgs(email: email, code: code),
   // );
+  static Future<Object?> categoriesView(
+    final BuildContext context, {
+    required final UserEntity userEntity,
+  }) => _pushNamed(context, CategoriesView.routeName, arguments: userEntity);
 
   static Future<Object?> checkCodeView(
     final BuildContext context, {
@@ -78,6 +84,8 @@ Map<String, Widget Function(BuildContext, Object?)> _routes = {
       CheckCodeView(email: args! as String),
   ChangePasswordView.routeName: (_, final args) =>
       ChangePasswordView(email: args! as String),
+  CategoriesView.routeName: (_, final args) =>
+      CategoriesView(userEntity: args! as UserEntity),
   // CreateNewPasswordView.routeName: (_, final args) {
   //   final data = args! as CreateNewPasswordViewArgs;
   //   return CreateNewPasswordView(email: data.email, code: data.code);

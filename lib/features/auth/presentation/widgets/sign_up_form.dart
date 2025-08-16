@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/config/routes/on_generate_routes.dart';
 import 'package:mind_feed/config/themes/app_text_style.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
 import 'package:mind_feed/core/widgets/custom_text_field.dart';
+import 'package:mind_feed/features/auth/domain/entites/user_entity.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/email_text_field.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/password_requirements.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/password_text_field.dart';
@@ -18,8 +20,13 @@ class _SignUpFormState extends State<SignUpForm> {
 
   AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
 
-  late String password = '';
   late String confirmPassword = '';
+  UserEntity userEntity = UserEntity(
+    favoriteCategories: [],
+    email: '',
+    password: '',
+    userName: '',
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -54,16 +61,26 @@ class _SignUpFormState extends State<SignUpForm> {
                 }
                 return null;
               },
-              onChanged: (String value) {},
+              onChanged: (String value) {
+                setState(() {
+                  userEntity.copyWith(username: value);
+                });
+              },
             ),
             SizedBox(height: 16.0),
-            EmailTextField(onChanged: (String value) {}),
+            EmailTextField(
+              onChanged: (String value) {
+                setState(() {
+                  userEntity.copyWith(email: value);
+                });
+              },
+            ),
             SizedBox(height: 16.0),
             PasswordTextField(
               hintText: 'Password',
               onChanged: (String value) {
                 setState(() {
-                  password = value;
+                  userEntity.copyWith(password: value);
                 });
               },
             ),
@@ -77,7 +94,7 @@ class _SignUpFormState extends State<SignUpForm> {
               },
             ),
             SizedBox(height: 22.0),
-            PasswordRequirements(password: password),
+            PasswordRequirements(password: userEntity.password ?? ''),
             SizedBox(height: 22.0),
             CustomButton(
               buttonText: 'Sign Up',
@@ -85,11 +102,12 @@ class _SignUpFormState extends State<SignUpForm> {
                 if (formKey.currentState?.validate() ?? false) {
                   FocusScope.of(context).unfocus();
                   // TODO: Handle Signup logic here
+                  AppRoutes.categoriesView(context, userEntity: userEntity);
                   ScaffoldMessenger.of(
                     context,
-                  ).showSnackBar(SnackBar(content: Text('Login successful')));
-                } else if (password != confirmPassword &&
-                    password.isNotEmpty &&
+                  ).showSnackBar(SnackBar(content: Text('success')));
+                } else if (userEntity.password != confirmPassword &&
+                    userEntity.password!.isNotEmpty &&
                     confirmPassword.isNotEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Passwords do not match')),
