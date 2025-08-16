@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/features/auth/presentation/views/change_password_view.dart';
+import 'package:mind_feed/features/auth/presentation/views/check_code_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/login_view.dart';
+import 'package:mind_feed/features/auth/presentation/views/send_code_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/signup_view.dart';
 import 'package:mind_feed/features/onboarding/presentation/views/onboarding_view.dart';
 
@@ -39,15 +42,15 @@ sealed class AppRoutes {
   //   arguments: CreateNewPasswordViewArgs(email: email, code: code),
   // );
 
-  // static Future<Object?> rayResultsPatientDashboard(
-  //   final BuildContext context, {
-  //   required final List<RayEntity> rays,
-  // }) => _pushNamed(
-  //   context,
-  //   RayResultsPatientDashboard.routeName,
-  //   arguments: rays,
-  // );
+  static Future<Object?> checkCodeView(
+    final BuildContext context, {
+    required final String email,
+  }) => _pushNamed(context, CheckCodeView.routeName, arguments: email);
 
+  static Future<Object?> changepasswordView(
+    final BuildContext context, {
+    required final String email,
+  }) => _pushNamed(context, ChangePasswordView.routeName, arguments: email);
   // Routes without arguments
   static Future<Object?> onboardingView(final BuildContext context) =>
       _pushNamedAndRemoveAll(context, OnboardingView.routeName);
@@ -56,6 +59,8 @@ sealed class AppRoutes {
       _pushNamedAndRemoveAll(context, LoginView.routeName);
   static Future<Object?> signup(final BuildContext context) =>
       _pushNamed(context, SignUpView.routeName);
+  static Future<Object?> sendCode(final BuildContext context) =>
+      _pushNamed(context, SendCodeView.routeName);
 }
 
 class CreateNewPasswordViewArgs {
@@ -68,10 +73,11 @@ Map<String, Widget Function(BuildContext, Object?)> _routes = {
   OnboardingView.routeName: (_, _) => const OnboardingView(),
   LoginView.routeName: (_, _) => const LoginView(),
   SignUpView.routeName: (_, _) => const SignUpView(),
-
-  // MainView.routeName: (_, _) => const MainView(),
-  // PatientInformation.routeName: (_, final args) =>
-  //     PatientInformation(user: args! as UserEntity),
+  SendCodeView.routeName: (_, _) => const SendCodeView(),
+  CheckCodeView.routeName: (_, final args) =>
+      CheckCodeView(email: args! as String),
+  ChangePasswordView.routeName: (_, final args) =>
+      ChangePasswordView(email: args! as String),
   // CreateNewPasswordView.routeName: (_, final args) {
   //   final data = args! as CreateNewPasswordViewArgs;
   //   return CreateNewPasswordView(email: data.email, code: data.code);

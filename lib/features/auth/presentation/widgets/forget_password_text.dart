@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/config/routes/on_generate_routes.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
 
 class ForgetPasswordText extends StatelessWidget {
@@ -11,7 +12,7 @@ class ForgetPasswordText extends StatelessWidget {
       children: [
         TextButton(
           onPressed: () {
-            // TODO: Navigate to Forgot Password
+            AppRoutes.sendCode(context);
           },
           child: Text(
             'Forgot Password?',

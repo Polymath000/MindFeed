@@ -17,7 +17,7 @@ class LoginForm extends StatelessWidget {
       child: Column(
         children: [
           Logo(),
-          EmailTextField(),
+          EmailTextField(onChanged: (String value) {}),
           SizedBox(height: 16.0),
           PasswordTextField(hintText: 'Password', onChanged: (String value) {}),
           SizedBox(height: 16.0),

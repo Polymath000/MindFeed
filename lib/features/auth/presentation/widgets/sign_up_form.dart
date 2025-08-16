@@ -54,9 +54,10 @@ class _SignUpFormState extends State<SignUpForm> {
                 }
                 return null;
               },
+              onChanged: (String value) {},
             ),
             SizedBox(height: 16.0),
-            EmailTextField(),
+            EmailTextField(onChanged: (String value) {}),
             SizedBox(height: 16.0),
             PasswordTextField(
               hintText: 'Password',
