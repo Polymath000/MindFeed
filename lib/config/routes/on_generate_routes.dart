@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/features/auth/presentation/views/login_view.dart';
-import 'package:mind_feed/features/auth/presentation/views/signup.dart';
+import 'package:mind_feed/features/auth/presentation/views/signup_view.dart';
 import 'package:mind_feed/features/onboarding/presentation/views/onboarding_view.dart';
 
 sealed class AppRoutes {

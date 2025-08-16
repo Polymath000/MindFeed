@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/config/themes/app_text_style.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
 import 'package:mind_feed/core/widgets/custom_text_field.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/email_text_field.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/password_requirements.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/password_text_field.dart';
-import 'package:mind_feed/features/auth/presentation/widgets/security_tip_text.dart';
-import 'package:mind_feed/features/auth/presentation/widgets/there_is_an_account_text.dart';
 
-class SignUpForm extends StatelessWidget {
+class SignUpForm extends StatefulWidget {
   SignUpForm({super.key});
+
+  @override
+  State<SignUpForm> createState() => _SignUpFormState();
+}
+
+class _SignUpFormState extends State<SignUpForm> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
+
+  late String password = '';
+  late String confirmPassword = '';
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -26,6 +34,7 @@ class SignUpForm extends StatelessWidget {
               'Create Account',
               style: AppTextStyles.displaySmall!.copyWith(
                 fontWeight: FontWeight.w200,
+                color: Colors.white,
               ),
             ),
             const SizedBox(height: 5),
@@ -49,16 +58,46 @@ class SignUpForm extends StatelessWidget {
             SizedBox(height: 16.0),
             EmailTextField(),
             SizedBox(height: 16.0),
-            PasswordTextField(hintText: 'Password'),
+            PasswordTextField(
+              hintText: 'Password',
+              onChanged: (String value) {
+                setState(() {
+                  password = value;
+                });
+              },
+            ),
             SizedBox(height: 16.0),
-            PasswordTextField(hintText: 'Confirm Password'),
+            PasswordTextField(
+              hintText: 'Confirm Password',
+              onChanged: (String value) {
+                setState(() {
+                  confirmPassword = value;
+                });
+              },
+            ),
             SizedBox(height: 22.0),
-            PasswordRequirements(),
+            PasswordRequirements(password: password),
             SizedBox(height: 22.0),
-            CustomButton(buttonText: 'Sign Up', onTap: () {}),
-            SizedBox(height: 22.0),
-            SecurityTipText(),
-            ThereIsAnAccountText(),
+            CustomButton(
+              buttonText: 'Sign Up',
+              onTap: () {
+                if (formKey.currentState?.validate() ?? false) {
+                  FocusScope.of(context).unfocus();
+                  // TODO: Handle Signup logic here
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Login successful')));
+                } else if (password != confirmPassword &&
+                    password.isNotEmpty &&
+                    confirmPassword.isNotEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Passwords do not match')),
+                  );
+                } else {
+                  autovalidateMode = AutovalidateMode.always;
+                }
+              },
+            ),
           ],
         ),
       ),

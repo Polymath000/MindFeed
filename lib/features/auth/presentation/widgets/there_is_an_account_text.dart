@@ -14,7 +14,10 @@ class ThereIsAnAccountText extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Are you have an account?', style: AppTextStyles.bodyMedium),
+            Text(
+              'Are you have an account?',
+              style: AppTextStyles.bodyMedium!.copyWith(color: AppColors.white),
+            ),
             TextButton(
               style: ButtonStyle(
                 padding: MaterialStateProperty.all(EdgeInsets.zero),

@@ -12,8 +12,10 @@ class CustomTextField extends StatelessWidget {
       autofocus: false,
       keyboardType: TextInputType.emailAddress,
       validator: validator,
+      style: TextStyle(color: AppColors.white),
       decoration: InputDecoration(
         labelText: hintText,
+        labelStyle: TextStyle(color: AppColors.white),
         border: OutlineInputBorder(
           borderRadius: AppBorders.xxxs,
           borderSide: BorderSide(color: AppColors.white, width: 2.0),
