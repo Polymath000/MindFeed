@@ -45,7 +45,7 @@ class _CategoryCardState extends State<CategoryCard> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-            ],
+            ], 
           ),
         ),
       ),

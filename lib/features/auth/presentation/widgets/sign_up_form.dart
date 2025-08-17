@@ -3,7 +3,7 @@ import 'package:mind_feed/config/routes/on_generate_routes.dart';
 import 'package:mind_feed/config/themes/app_text_style.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
 import 'package:mind_feed/core/widgets/custom_text_field.dart';
-import 'package:mind_feed/features/auth/domain/entites/user_entity.dart';
+import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/email_text_field.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/password_requirements.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/password_text_field.dart';
@@ -26,6 +26,7 @@ class _SignUpFormState extends State<SignUpForm> {
     email: '',
     password: '',
     userName: '',
+    token: '',
   );
 
   @override
@@ -63,7 +64,7 @@ class _SignUpFormState extends State<SignUpForm> {
               },
               onChanged: (String value) {
                 setState(() {
-                  userEntity.copyWith(username: value);
+                  userEntity.copyWith(name: value);
                 });
               },
             ),

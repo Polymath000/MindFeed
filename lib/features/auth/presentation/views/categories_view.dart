@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/features/auth/domain/entites/user_entity.dart';
+import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/categories_view_body.dart';
 
 class CategoriesView extends StatelessWidget {

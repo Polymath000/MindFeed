@@ -1,4 +1,5 @@
-import 'package:mind_feed/features/auth/domain/entites/user_entity.dart';
+import 'package:mind_feed/core/database/api/api_key.dart';
+import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 
 class UserModel extends UserEntity {
   const UserModel({
@@ -6,6 +7,7 @@ class UserModel extends UserEntity {
     required super.email,
     required super.favoriteCategories,
     required super.password,
+    required super.token,
   });
 
   factory UserModel.fromEntity(final UserEntity userEntity) => UserModel(
@@ -13,6 +15,7 @@ class UserModel extends UserEntity {
     email: userEntity.email,
     password: userEntity.password,
     userName: userEntity.userName,
+    token: userEntity.token,
   );
 
   UserEntity toUserEntity() => UserEntity(
@@ -20,7 +23,26 @@ class UserModel extends UserEntity {
     email: email,
     password: password,
     userName: userName,
+    token: token,
   );
 
-  // TODO : Handle the fromJson and toJson when the API is ready
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      email: json[ApiKey.email],
+      userName: json[ApiKey.userName],
+      favoriteCategories: json[ApiKey.favoriteCategories],
+      password: json[ApiKey.password],
+      token: json[ApiKey.token],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      ApiKey.userName: userName,
+      ApiKey.email: email,
+      ApiKey.favoriteCategories: favoriteCategories,
+      ApiKey.password: password,
+      ApiKey.token: token,
+    };
+  }
 }

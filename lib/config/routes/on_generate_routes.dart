@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/features/auth/domain/entites/user_entity.dart';
+import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/presentation/views/categories_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/change_password_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/check_code_view.dart';

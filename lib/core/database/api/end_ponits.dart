@@ -1,8 +1,7 @@
 sealed class EndPoint {
   const EndPoint();
-  static const String baseUrl = 'https://fast-recharge.online';
-  static const String apiUrl = '$baseUrl/api';
-  static const String storageUrl = '$baseUrl/storage';
+  static const String baseUrl = 'https://l43jj.wiremockapi.cloud/';
+  static const String loginUrl = '$baseUrl/login/';
 
   // static const String addRegister = '/register';
   // static const String addLogin = '/login';
@@ -20,7 +19,7 @@ sealed class EndPoint {
   // static const String getAvailableAppointments = '/appointments/available';
   // static const String getUserAppointments = '/appointments/my';
   // static String getPatientAppiontment(final String email) =>
-  //     '/appointments/by-email?email=$email';
+  //     '/appointments/by-email ?email=$email';
 
   // static const String updateUser = '/me';
   // static const String getUser = '/me';
