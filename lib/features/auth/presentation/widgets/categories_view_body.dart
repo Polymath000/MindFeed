@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/config/themes/app_text_style.dart';
-import 'package:mind_feed/core/constants/borders.dart';
 import 'package:mind_feed/core/utls/app_images.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/auth_background.dart';

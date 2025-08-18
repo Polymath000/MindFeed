@@ -70,6 +70,7 @@ class CheckCodeViewBody extends StatelessWidget {
                         if (value!.isEmpty) {
                           return 'Type the Code please!';
                         }
+                        return null;
                       },
                     ),
                     SizedBox(height: 32),

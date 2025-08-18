@@ -12,24 +12,37 @@ class DioConsumer extends ApiConsumer {
     dio.options.baseUrl = EndPoint.baseUrl;
   }
 
-  //!POST
   @override
-  Future post(
+  Future<Response> post(
     String path, {
-    dynamic data,
+    data,
     Map<String, dynamic>? queryParameters,
     bool isFormData = false,
   }) async {
     try {
-      dio.post(
+      final response = dio.post(
         path,
-        data: isFormData ? FormData.fromMap(data) : data,
+        data: isFormData
+            ? FormData.fromMap(data as Map<String, dynamic>)
+            : data,
         queryParameters: queryParameters,
       );
+      return response;
     } on DioException catch (e) {
       handleDioException(e);
+      rethrow;
     }
   }
+  // //!POST
+  // @override
+  // Future post(
+  //   String path, {
+  //   dynamic data,
+  //   Map<String, dynamic>? queryParameters,
+  //   bool isFormData = false,
+  // }) async {
+
+  // }
 
   //!GET
   @override

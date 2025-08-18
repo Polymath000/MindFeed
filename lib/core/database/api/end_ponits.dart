@@ -1,7 +1,7 @@
 sealed class EndPoint {
   const EndPoint();
-  static const String baseUrl = 'https://l43jj.wiremockapi.cloud/';
-  static const String loginUrl = '$baseUrl/login/';
+  static const String baseUrl = 'https://l43jj.wiremockapi.cloud';
+  static const String loginUrl = '$baseUrl/login';
 
   // static const String addRegister = '/register';
   // static const String addLogin = '/login';

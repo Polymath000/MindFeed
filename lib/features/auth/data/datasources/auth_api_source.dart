@@ -10,9 +10,10 @@ class AuthApiSource {
   Future<UserModel> login({required LoginParams params}) async {
     final response = await apiConsumer.post(
       EndPoint.loginUrl,
-      data: params,
+      data: params.toJson(),
       isFormData: true,
     );
-    return UserModel.fromJson(response);
+    Map<String, dynamic> jsonData = response.data;
+    return UserModel.fromJson(jsonData);
   }
 }
