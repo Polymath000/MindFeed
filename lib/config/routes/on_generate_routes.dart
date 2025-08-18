@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/features/aricles_by_categories/presentation/views/aricles_by_categories_view.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/presentation/views/categories_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/change_password_view.dart';
@@ -6,7 +7,10 @@ import 'package:mind_feed/features/auth/presentation/views/check_code_view.dart'
 import 'package:mind_feed/features/auth/presentation/views/login_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/send_code_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/signup_view.dart';
+import 'package:mind_feed/features/home/presentation/views/home_view.dart';
+import 'package:mind_feed/features/main/presentation/views/main_view.dart';
 import 'package:mind_feed/features/onboarding/presentation/views/onboarding_view.dart';
+import 'package:mind_feed/features/search/presentation/views/search_view.dart';
 
 sealed class AppRoutes {
   const AppRoutes();
@@ -63,10 +67,19 @@ sealed class AppRoutes {
 
   static Future<Object?> login(final BuildContext context) =>
       _pushNamedAndRemoveAll(context, LoginView.routeName);
+
+  static Future<Object?> search(final BuildContext context) =>
+      _pushNamed(context, SearchView.routeName);
   static Future<Object?> signup(final BuildContext context) =>
       _pushNamed(context, SignUpView.routeName);
   static Future<Object?> sendCode(final BuildContext context) =>
       _pushNamed(context, SendCodeView.routeName);
+  static Future<Object?> ariclesByCategories(final BuildContext context) =>
+      _pushNamed(context, AriclesByCategoriesView.routeName);
+  static Future<Object?> home(final BuildContext context) =>
+      _pushNamed(context, HomeView.routeName);
+  static Future<Object?> main(final BuildContext context) =>
+      _pushNamed(context, MainView.routeName);
 }
 
 class CreateNewPasswordViewArgs {
@@ -79,7 +92,12 @@ Map<String, Widget Function(BuildContext, Object?)> _routes = {
   OnboardingView.routeName: (_, _) => const OnboardingView(),
   LoginView.routeName: (_, _) => const LoginView(),
   SignUpView.routeName: (_, _) => const SignUpView(),
+  SearchView.routeName: (_, _) => const SearchView(),
   SendCodeView.routeName: (_, _) => const SendCodeView(),
+  AriclesByCategoriesView.routeName: (_, _) => const AriclesByCategoriesView(),
+  HomeView.routeName: (_, _) => const HomeView(),
+  MainView.routeName: (_, _) => const MainView(),
+
   CheckCodeView.routeName: (_, final args) =>
       CheckCodeView(email: args! as String),
   ChangePasswordView.routeName: (_, final args) =>
