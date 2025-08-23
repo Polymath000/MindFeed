@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate_on_scroll/flutter_animate_on_scroll.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/config/themes/app_text_style.dart';
 import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/features/home/presentation/widgets/add_to_favorite_article_card.dart';
+import 'package:mind_feed/features/home/presentation/widgets/article_card_image.dart';
+import 'package:mind_feed/features/home/presentation/widgets/article_card_information.dart';
+import 'package:mind_feed/features/home/presentation/widgets/custom_popup_menu_button.dart';
 
 class ArticleCard extends StatelessWidget {
   const ArticleCard({
@@ -11,76 +15,56 @@ class ArticleCard extends StatelessWidget {
     required this.date,
     required this.imagePath,
   });
+
   final String title;
   final String author;
   final String date;
   final String imagePath;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 8),
-      clipBehavior: Clip.antiAlias,
-      decoration: ShapeDecoration(
-        color: AppColors.lightGray,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1, color: AppColors.grey),
-          borderRadius: AppBorders.xxxs,
+    return ZoomIn(
+      config: BaseAnimationConfig(
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+          decoration: BoxDecoration(
+            color: AppColors.lightGray,
+            borderRadius: AppBorders.xxxs,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.15),
+                blurRadius: 6,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ArticleCardImage(imagePath: imagePath),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ArticleCardInformation(
+                      title: title,
+                      author: author,
+                      date: date,
+                    ),
+                    Column(
+                      children: [
+                        const AddToFavoriteArticleCard(),
+                        CustomPopupMenuButton(),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      child: Column(
-        children: [
-          DecoratedBox(
-            decoration: ShapeDecoration(
-              shape: RoundedRectangleBorder(
-                borderRadius: AppBorders.xxxs,
-                side: BorderSide(width: 1, color: AppColors.grey),
-              ),
-            ),
-            child: Image(image: AssetImage(imagePath)),
-          ),
-          ListTile(
-            contentPadding: const EdgeInsets.all(12),
-            tileColor: AppColors.black,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            title: Text(
-              title,
-              style: AppTextStyles.titleLarge?.copyWith(
-                color: AppColors.black,
-                fontWeight: FontWeight.bold,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 4),
-                Text(
-                  author,
-                  style: AppTextStyles.bodyLarge?.copyWith(
-                    color: AppColors.darkGrey,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  date,
-                  style: AppTextStyles.bodyMedium?.copyWith(
-                    color: AppColors.darkGrey,
-                  ),
-                ),
-              ],
-            ),
-            trailing: Column(
-              children: [
-                Icon(Icons.favorite, color: Colors.red),
-                Spacer(),
-                Icon(Icons.more_vert, color: AppColors.gunmetal),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

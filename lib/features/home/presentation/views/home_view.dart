@@ -15,51 +15,113 @@ class HomeView extends StatelessWidget {
         slivers: [
           SliverAppBar(
             pinned: true,
-            expandedHeight: 100.0,
-            flexibleSpace: FlexibleSpaceBar(title: Text('MindFeed')),
             backgroundColor: AppColors.lightGray,
+            actionsPadding: EdgeInsets.symmetric(horizontal: 32),
+            title: Text('MindFeed', style: AppTextStyles.headlineMedium),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: Icon(Icons.settings),
+              ),
+              CircleAvatar(),
+            ],
           ),
           SliverPadding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
             sliver: SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: Text('For You', style: AppTextStyles.headlineMedium),
-                  ),
-                  ArticleCard(
-                    title:
-                        "The Future of AI: How Machine Learning is Transforming Industries",
-                    author: "Sarah Johnson",
-                    date: "2 hours ago",
-                    imagePath: Assets.assetsImagesJustTest,
-                  ),
-                  ArticleCard(
-                    title:
-                        "The Future of AI: How Machine Learning is Transforming Industries",
-                    author: "Sarah Johnson",
-                    date: "2 hours ago",
-                    imagePath: Assets.assetsImagesJustTest,
-                  ),
-                  ArticleCard(
-                    title:
-                        "The Future of AI: How Machine Learning is Transforming Industries",
-                    author: "Sarah Johnson",
-                    date: "2 hours ago",
-                    imagePath: Assets.assetsImagesJustTest,
-                  ),
-                  ArticleCard(
-                    title:
-                        "The Future of AI: How Machine Learning is Transforming Industries",
-                    author: "Sarah Johnson",
-                    date: "2 hours ago",
-                    imagePath: Assets.assetsImagesJustTest,
-                  ),
-                ],
-              ),
+              child: Text('For You', style: AppTextStyles.headlineMedium),
             ),
+          ),
+          SliverToBoxAdapter(
+            child: Row(
+              children: [ChoiceChip(label: Text('All'), selected: false)],
+            ),
+          ),
+          SliverPadding(padding: EdgeInsets.all(16), sliver: ArticlesForTest()),
+        ],
+      ),
+    );
+  }
+}
+
+class ArticlesForTest extends StatelessWidget {
+  const ArticlesForTest({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ArticleCard(
+            title:
+                "The Future of AI: How Machine Learning is Transforming Industries",
+            author: "Sarah Johnson",
+            date: "2 hours ago",
+            imagePath: Assets.assetsImagesJustTest,
+          ),
+          ArticleCard(
+            title:
+                "The Future of AI: How Machine Learning is Transforming Industries",
+            author: "Sarah Johnson",
+            date: "2 hours ago",
+            imagePath: Assets.assetsImagesJustTest,
+          ),
+          ArticleCard(
+            title:
+                "The Future of AI: How Machine Learning is Transforming Industries",
+            author: "Sarah Johnson",
+            date: "2 hours ago",
+            imagePath: Assets.assetsImagesJustTest,
+          ),
+          ArticleCard(
+            title:
+                "The Future of AI: How Machine Learning is Transforming Industries",
+            author: "Sarah Johnson",
+            date: "2 hours ago",
+            imagePath: Assets.assetsImagesJustTest,
+          ),
+          ArticleCard(
+            title:
+                "The Future of AI: How Machine Learning is Transforming Industries",
+            author: "Sarah Johnson",
+            date: "2 hours ago",
+            imagePath: Assets.assetsImagesJustTest,
+          ),
+          ArticleCard(
+            title:
+                "The Future of AI: How Machine Learning is Transforming Industries",
+            author: "Sarah Johnson",
+            date: "2 hours ago",
+            imagePath: Assets.assetsImagesJustTest,
+          ),
+          ArticleCard(
+            title:
+                "The Future of AI: How Machine Learning is Transforming Industries",
+            author: "Sarah Johnson",
+            date: "2 hours ago",
+            imagePath: Assets.assetsImagesJustTest,
+          ),
+          ArticleCard(
+            title:
+                "The Future of AI: How Machine Learning is Transforming Industries",
+            author: "Sarah Johnson",
+            date: "2 hours ago",
+            imagePath: Assets.assetsImagesJustTest,
+          ),
+          ArticleCard(
+            title:
+                "The Future of AI: How Machine Learning is Transforming Industries",
+            author: "Sarah Johnson",
+            date: "2 hours ago",
+            imagePath: Assets.assetsImagesJustTest,
+          ),
+          ArticleCard(
+            title:
+                "The Future of AI: How Machine Learning is Transforming Industries",
+            author: "Sarah Johnson",
+            date: "2 hours ago",
+            imagePath: Assets.assetsImagesJustTest,
           ),
         ],
       ),
