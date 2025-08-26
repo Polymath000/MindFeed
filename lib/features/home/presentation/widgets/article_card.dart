@@ -5,7 +5,7 @@ import 'package:mind_feed/core/constants/borders.dart';
 import 'package:mind_feed/features/home/presentation/widgets/add_to_favorite_article_card.dart';
 import 'package:mind_feed/features/home/presentation/widgets/article_card_image.dart';
 import 'package:mind_feed/features/home/presentation/widgets/article_card_information.dart';
-import 'package:mind_feed/features/home/presentation/widgets/custom_popup_menu_button.dart';
+import 'package:mind_feed/features/home/presentation/widgets/custom_popup_menu_button_for_home.dart';
 
 class ArticleCard extends StatelessWidget {
   const ArticleCard({
@@ -25,6 +25,7 @@ class ArticleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ZoomIn(
       config: BaseAnimationConfig(
+        delay: Duration(microseconds: 320),
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
           decoration: BoxDecoration(
@@ -56,7 +57,7 @@ class ArticleCard extends StatelessWidget {
                     Column(
                       children: [
                         const AddToFavoriteArticleCard(),
-                        CustomPopupMenuButton(),
+                        CustomPopupMenuButtonForHomeView(),
                       ],
                     ),
                   ],

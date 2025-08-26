@@ -126,6 +126,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_advanced_drawer:
+    dependency: "direct main"
+    description:
+      name: flutter_advanced_drawer
+      sha256: "8567eb3751e95e5eac53f81def32d41bfcfa135c9d383f89f089764df6b43274"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.5.0"
   flutter_animate_on_scroll:
     dependency: "direct main"
     description:

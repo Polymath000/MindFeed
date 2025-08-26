@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/features/aricles_by_categories/presentation/views/aricles_by_categories_view.dart';
+import 'package:mind_feed/features/articles_save/presentation/views/articles_saved.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/presentation/views/categories_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/change_password_view.dart';
@@ -80,6 +81,8 @@ sealed class AppRoutes {
       _pushNamed(context, HomeView.routeName);
   static Future<Object?> main(final BuildContext context) =>
       _pushNamed(context, MainView.routeName);
+  static Future<Object?> articlesSaved(final BuildContext context) =>
+      _pushNamed(context, ArticlesSaved.routeName);
 }
 
 class CreateNewPasswordViewArgs {
@@ -95,8 +98,9 @@ Map<String, Widget Function(BuildContext, Object?)> _routes = {
   SearchView.routeName: (_, _) => const SearchView(),
   SendCodeView.routeName: (_, _) => const SendCodeView(),
   AriclesByCategoriesView.routeName: (_, _) => const AriclesByCategoriesView(),
-  HomeView.routeName: (_, _) => const HomeView(),
+  HomeView.routeName: (_, _) => HomeView(),
   MainView.routeName: (_, _) => const MainView(),
+  ArticlesSaved.routeName: (_, _) => const ArticlesSaved(),
 
   CheckCodeView.routeName: (_, final args) =>
       CheckCodeView(email: args! as String),

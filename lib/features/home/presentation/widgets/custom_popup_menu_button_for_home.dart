@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
+import 'package:mind_feed/core/widgets/more_vert_icon.dart';
 
-class CustomPopupMenuButton extends StatelessWidget {
-  const CustomPopupMenuButton({super.key});
+class CustomPopupMenuButtonForHomeView extends StatelessWidget {
+  const CustomPopupMenuButtonForHomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
-      icon: Icon(Icons.more_vert, color: AppColors.gunmetal),
+      icon: MoreVertIcon(),
       onSelected: (value) {
         if (value == 'download') {
           // TODO: handle download action

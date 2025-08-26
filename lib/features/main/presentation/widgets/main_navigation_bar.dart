@@ -36,6 +36,7 @@ class _MainNavigationBarState extends State<MainNavigationBar> {
           tabs: [
             GButton(icon: LineIcons.home, text: 'Home'),
             GButton(icon: LineIcons.search, text: 'Search'),
+            GButton(icon: Icons.save_alt_outlined, text: 'Save'),
             GButton(icon: Icons.category_outlined, text: 'Category'),
           ],
           selectedIndex: widget.selectedIndex,
