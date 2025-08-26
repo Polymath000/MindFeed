@@ -8,6 +8,7 @@ import 'package:mind_feed/features/auth/presentation/views/check_code_view.dart'
 import 'package:mind_feed/features/auth/presentation/views/login_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/send_code_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/signup_view.dart';
+import 'package:mind_feed/features/downloaded_articles_view/presentation/views/downloaded_articles_view.dart';
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 import 'package:mind_feed/features/main/presentation/views/main_view.dart';
 import 'package:mind_feed/features/onboarding/presentation/views/onboarding_view.dart';
@@ -83,6 +84,8 @@ sealed class AppRoutes {
       _pushNamed(context, MainView.routeName);
   static Future<Object?> articlesSaved(final BuildContext context) =>
       _pushNamed(context, ArticlesSaved.routeName);
+  static Future<Object?> downloadedArticlesView(final BuildContext context) =>
+      _pushNamed(context, DownloadedArticlesView.routeName);
 }
 
 class CreateNewPasswordViewArgs {
@@ -101,6 +104,7 @@ Map<String, Widget Function(BuildContext, Object?)> _routes = {
   HomeView.routeName: (_, _) => HomeView(),
   MainView.routeName: (_, _) => const MainView(),
   ArticlesSaved.routeName: (_, _) => const ArticlesSaved(),
+  DownloadedArticlesView.routeName: (_, _) => const DownloadedArticlesView(),
 
   CheckCodeView.routeName: (_, final args) =>
       CheckCodeView(email: args! as String),
