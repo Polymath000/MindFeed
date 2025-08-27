@@ -8,19 +8,20 @@ import 'package:mind_feed/features/home/presentation/widgets/article_card_inform
 import 'package:mind_feed/features/home/presentation/widgets/custom_popup_menu_button_for_home.dart';
 
 class ArticleCard extends StatelessWidget {
-  const ArticleCard({
+  ArticleCard({
     super.key,
     required this.title,
     required this.author,
     required this.date,
     required this.imagePath,
+    this.isDwonload = false,
   });
 
   final String title;
   final String author;
   final String date;
   final String imagePath;
-
+  final bool isDwonload;
   @override
   Widget build(BuildContext context) {
     return ZoomIn(
@@ -57,7 +58,9 @@ class ArticleCard extends StatelessWidget {
                     Column(
                       children: [
                         const AddToFavoriteArticleCard(),
-                        CustomPopupMenuButtonForHomeView(),
+                        CustomPopupMenuButtonForHomeView(
+                          isDwonload: isDwonload,
+                        ),
                       ],
                     ),
                   ],

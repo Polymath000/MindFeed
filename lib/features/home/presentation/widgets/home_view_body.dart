@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/config/themes/app_text_style.dart';
 import 'package:mind_feed/core/utls/app_images.dart';
-import 'package:mind_feed/features/home/presentation/views/home_view.dart';
+import 'package:mind_feed/core/widgets/custom_app_bar.dart';
 import 'package:mind_feed/features/home/presentation/widgets/article_card.dart';
 import 'package:mind_feed/features/home/presentation/widgets/chip_group.dart';
 
@@ -13,38 +11,7 @@ class HomeViewBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        SliverAppBar(
-          pinned: true,
-          backgroundColor: AppColors.lightGray,
-          actionsPadding: EdgeInsets.symmetric(horizontal: 32),
-          leading: IconButton(
-            onPressed: _handleMenuButtonPressed,
-            icon: ValueListenableBuilder<AdvancedDrawerValue>(
-              valueListenable: advancedDrawerController,
-              builder: (_, value, __) {
-                return AnimatedSwitcher(
-                  duration: Duration(milliseconds: 250),
-                  child: Semantics(
-                    label: 'Menu',
-                    onTapHint: 'expand drawer',
-                    child: Icon(
-                      value.visible ? Icons.clear : Icons.menu,
-                      key: ValueKey<bool>(value.visible),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          title: Text('MindFeed', style: AppTextStyles.headlineMedium),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: Icon(Icons.settings),
-            ),
-            CircleAvatar(),
-          ],
-        ),
+        CustomAppBar(title: 'MindFeed'),
         SliverPadding(
           padding: const EdgeInsets.only(
             right: 16,
@@ -63,10 +30,6 @@ class HomeViewBody extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  void _handleMenuButtonPressed() {
-    advancedDrawerController.showDrawer();
   }
 }
 

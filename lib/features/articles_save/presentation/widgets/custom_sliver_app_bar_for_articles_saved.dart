@@ -11,6 +11,7 @@ class CustomSliverAppBarForArticlesSaved extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverAppBar(
       pinned: false,
+      automaticallyImplyLeading: false,
       actions: [
         GestureDetector(
           child: Container(

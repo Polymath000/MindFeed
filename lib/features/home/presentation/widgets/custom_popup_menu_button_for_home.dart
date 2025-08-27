@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mind_feed/core/widgets/more_vert_icon.dart';
 
 class CustomPopupMenuButtonForHomeView extends StatelessWidget {
-  const CustomPopupMenuButtonForHomeView({super.key});
-
+  const CustomPopupMenuButtonForHomeView({super.key, required this.isDwonload});
+  final bool isDwonload;
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
@@ -18,16 +18,27 @@ class CustomPopupMenuButtonForHomeView extends StatelessWidget {
         }
       },
       itemBuilder: (context) => [
-        const PopupMenuItem(
-          value: 'download',
-          child: Row(
-            children: [
-              Icon(Icons.download, size: 20),
-              SizedBox(width: 8),
-              Text('Download'),
-            ],
-          ),
-        ),
+        isDwonload
+            ? PopupMenuItem(
+                value: 'Delete',
+                child: Row(
+                  children: [
+                    Icon(Icons.delete, size: 20),
+                    SizedBox(width: 8),
+                    Text('Delete'),
+                  ],
+                ),
+              )
+            : const PopupMenuItem(
+                value: 'download',
+                child: Row(
+                  children: [
+                    Icon(Icons.download, size: 20),
+                    SizedBox(width: 8),
+                    Text('Download'),
+                  ],
+                ),
+              ),
         const PopupMenuItem(
           value: 'save',
           child: Row(
