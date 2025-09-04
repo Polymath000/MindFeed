@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
@@ -34,10 +35,30 @@ class _MainNavigationBarState extends State<MainNavigationBar> {
           color: AppColors.black,
           haptic: true,
           tabs: [
-            GButton(icon: LineIcons.home, text: 'Home'),
-            GButton(icon: LineIcons.search, text: 'Search'),
-            GButton(icon: Icons.save_alt_outlined, text: 'Save'),
-            GButton(icon: Icons.category_outlined, text: 'Category'),
+            GButton(
+              icon: widget.selectedIndex == 0
+                  ? FontAwesomeIcons.solidHouse
+                  : FontAwesomeIcons.house,
+              text: 'Home',
+            ),
+            GButton(
+              icon: widget.selectedIndex == 1
+                  ? FontAwesomeIcons.magnifyingGlass
+                  : Icons.search,
+              text: 'Search',
+            ),
+            GButton(
+              icon: widget.selectedIndex == 2
+                  ? FontAwesomeIcons.solidFloppyDisk
+                  : FontAwesomeIcons.floppyDisk,
+              text: 'Save',
+            ),
+            GButton(
+              icon: widget.selectedIndex == 3
+                  ? Icons.category
+                  : Icons.category_outlined,
+              text: 'Category',
+            ),
           ],
           selectedIndex: widget.selectedIndex,
           onTabChange: widget.onDestinationSelected,

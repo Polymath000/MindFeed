@@ -15,6 +15,7 @@ class ArticleCard extends StatelessWidget {
     required this.date,
     required this.imagePath,
     this.isDwonload = false,
+    this.isFav = false,
   });
 
   final String title;
@@ -22,6 +23,7 @@ class ArticleCard extends StatelessWidget {
   final String date;
   final String imagePath;
   final bool isDwonload;
+  final bool isFav;
   @override
   Widget build(BuildContext context) {
     return ZoomIn(
@@ -57,7 +59,7 @@ class ArticleCard extends StatelessWidget {
                     ),
                     Column(
                       children: [
-                        const AddToFavoriteArticleCard(),
+                        AddToFavoriteArticleCard(isFav: isFav),
                         CustomPopupMenuButtonForHomeView(
                           isDwonload: isDwonload,
                         ),

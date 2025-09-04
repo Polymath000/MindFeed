@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mind_feed/config/routes/on_generate_routes.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/core/utls/app_images.dart';
 import 'package:mind_feed/features/downloaded_articles_view/presentation/views/downloaded_articles_view.dart';
+import 'package:mind_feed/features/favoritemovies/presentation/views/favorite_movies_view.dart';
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -12,10 +14,7 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // use the routeName provided by the caller (e.g. HomeView) so the correct
-    // tile is highlighted even when the enclosing Navigator route is different
     final String currentRoute = routeName;
-
     return SafeArea(
       child: ListTileTheme(
         textColor: AppColors.white,
@@ -46,7 +45,7 @@ class CustomDrawer extends StatelessWidget {
                 if (!isHome) AppRoutes.main(context);
                 advancedDrawerController.hideDrawer();
               },
-              leading: Icon(Icons.home),
+              leading: Icon(FontAwesomeIcons.solidHouse),
               title: Text('Home'),
             ),
             ListTile(
@@ -62,28 +61,36 @@ class CustomDrawer extends StatelessWidget {
                 if (!isDownload) AppRoutes.downloadedArticlesView(context);
                 advancedDrawerController.hideDrawer();
               },
-              leading: Icon(Icons.download_rounded),
+              leading: Icon(FontAwesomeIcons.download),
               title: Text('Downloads'),
             ),
             ListTile(
+              iconColor: currentRoute == FavoriteMoviesView.routeName
+                  ? AppColors.amber
+                  : AppColors.white,
+              textColor: currentRoute == FavoriteMoviesView.routeName
+                  ? AppColors.amber
+                  : AppColors.white,
               onTap: () {
+                final bool isFav = currentRoute == FavoriteMoviesView.routeName;
+                if (!isFav) AppRoutes.favoriteMoviesView(context);
                 advancedDrawerController.hideDrawer();
               },
-              leading: Icon(Icons.favorite),
+              leading: Icon(FontAwesomeIcons.solidHeart),
               title: Text('Favourites'),
             ),
             ListTile(
               onTap: () {
                 advancedDrawerController.hideDrawer();
               },
-              leading: Icon(Icons.person),
+              leading: Icon(FontAwesomeIcons.user),
               title: Text('Profile'),
             ),
             ListTile(
               onTap: () {
                 advancedDrawerController.hideDrawer();
               },
-              leading: Icon(Icons.settings),
+              leading: Icon(FontAwesomeIcons.gears),
               title: Text('Settings'),
             ),
 

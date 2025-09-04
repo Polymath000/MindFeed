@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AddToFavoriteArticleCard extends StatefulWidget {
-  const AddToFavoriteArticleCard({super.key});
-
+  AddToFavoriteArticleCard({super.key, required this.isFav});
+  bool isFav;
   @override
   State<AddToFavoriteArticleCard> createState() =>
       _AddToFavoriteArticleCardState();
 }
 
 class _AddToFavoriteArticleCardState extends State<AddToFavoriteArticleCard> {
-  bool isSelected = false;
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: Icon(isSelected ? Icons.favorite : Icons.favorite_border),
+      icon: Icon(
+        widget.isFav ? FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart,
+      ),
       color: Colors.red,
       onPressed: () {
         setState(() {
-          isSelected = !isSelected;
+          widget.isFav = !widget.isFav;
         });
       },
     );
