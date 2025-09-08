@@ -22,6 +22,14 @@ class Assets {
   /// assets/images/logo.svg
   static const String assetsImagesLogo = "assets/images/logo.svg";
 
+  /// Assets for assetsImagesMITNewsAICoding
+  /// assets/images/MIT_News-AI_coding.png
+  static const String assetsImagesMITNewsAICoding = "assets/images/MIT_News-AI_coding.png";
+
+  /// Assets for assetsImagesMeJustForTest
+  /// assets/images/MeJustForTest.jpg
+  static const String assetsImagesMeJustForTest = "assets/images/MeJustForTest.jpg";
+
   /// Assets for assetsImagesOnBoarding1
   /// assets/images/onBoarding_1.jpg
   static const String assetsImagesOnBoarding1 = "assets/images/onBoarding_1.jpg";

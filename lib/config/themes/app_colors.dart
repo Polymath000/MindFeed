@@ -82,6 +82,8 @@ sealed class AppColors {
   static const Color blue = Colors.blue;
   static const Color brown = Colors.brown;
   static const Color cyan = Colors.cyan;
+  static const Color lightCyan = Color.fromARGB(255, 39, 220, 244);
+
   static const Color darkBlue = Color(0xFF1E88E5);
   static const Color darkGrey = Color(0xFF4B5563); // 0xff334155
   static const Color grey = Colors.grey;

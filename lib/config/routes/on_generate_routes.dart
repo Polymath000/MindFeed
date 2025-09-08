@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/features/aricles_by_categories/presentation/views/aricles_by_categories_view.dart';
+import 'package:mind_feed/features/article/presentation/views/article_view.dart';
+import 'package:mind_feed/features/article/presentation/widgets/author_card.dart';
 import 'package:mind_feed/features/articles_save/presentation/views/articles_saved.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/presentation/views/categories_view.dart';
@@ -8,6 +10,7 @@ import 'package:mind_feed/features/auth/presentation/views/check_code_view.dart'
 import 'package:mind_feed/features/auth/presentation/views/login_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/send_code_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/signup_view.dart';
+import 'package:mind_feed/features/author/presentation/views/author_view.dart';
 import 'package:mind_feed/features/downloaded_articles_view/presentation/views/downloaded_articles_view.dart';
 import 'package:mind_feed/features/favoritemovies/presentation/views/favorite_movies_view.dart';
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
@@ -89,6 +92,10 @@ sealed class AppRoutes {
       _pushNamed(context, DownloadedArticlesView.routeName);
   static Future<Object?> favoriteMoviesView(final BuildContext context) =>
       _pushNamed(context, FavoriteMoviesView.routeName);
+  static Future<Object?> articleView(final BuildContext context) =>
+      _pushNamed(context, ArticleView.routeName);
+  static Future<Object?> authorView(final BuildContext context) =>
+      _pushNamed(context, AuthorView.routeName);
 }
 
 class CreateNewPasswordViewArgs {
@@ -109,6 +116,8 @@ Map<String, Widget Function(BuildContext, Object?)> _routes = {
   ArticlesSaved.routeName: (_, _) => const ArticlesSaved(),
   DownloadedArticlesView.routeName: (_, _) => const DownloadedArticlesView(),
   FavoriteMoviesView.routeName: (_, _) => const FavoriteMoviesView(),
+  ArticleView.routeName: (_, _) => const ArticleView(),
+  AuthorView.routeName: (_, _) => const AuthorView(),
 
   CheckCodeView.routeName: (_, final args) =>
       CheckCodeView(email: args! as String),
