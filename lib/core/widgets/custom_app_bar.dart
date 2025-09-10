@@ -12,7 +12,9 @@ class CustomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverAppBar(
       pinned: true,
-      backgroundColor: AppColors.lightGray,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? Color(0xff1F1F2E)
+          : AppColors.lightGray,
       actionsPadding: EdgeInsets.symmetric(horizontal: 32),
       leading: IconButton(
         onPressed: _handleMenuButtonPressed,

@@ -24,6 +24,7 @@ class HomeView extends StatelessWidget {
       ),
       drawer: CustomDrawer(routeName: routeName),
       child: Scaffold(
+        backgroundColor: Color(0xff121212),
         body: HomeViewBody(),
         floatingActionButton: FloatingActionButton(onPressed: () {}),
       ),

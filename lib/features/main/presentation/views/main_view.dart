@@ -37,12 +37,13 @@ class _MainViewState extends State<MainView> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       body: widgetOptions.elementAt(selectedIndex),
       bottomNavigationBar: Container(
         decoration: !isDrawerVisible
             ? BoxDecoration(
-                color: Colors.white,
+                color: isDark ? Color(0xff2A2A2A) : Colors.white,
                 boxShadow: [
                   BoxShadow(
                     blurRadius: 20,

@@ -18,13 +18,14 @@ class SettingsMenu extends StatelessWidget {
           Text(
             title,
             style: AppTextStyles.bodyLarge!.copyWith(
-              color: isDark ? AppColors.darkGrey : AppColors.black,
+              color: isDark ? AppColors.white : AppColors.black,
             ),
           ),
+          SizedBox(height: 4),
           Container(
-            padding: EdgeInsets.symmetric(vertical: 6),
+            padding: EdgeInsets.symmetric(vertical: 8),
             decoration: BoxDecoration(
-              color: isDark ? AppColors.darkerGrey : AppColors.darkGrey,
+              color: isDark ? AppColors.darkerGrey : AppColors.grey,
               borderRadius: AppBorders.xxxs,
               border: Border.all(color: AppColors.lightGrey),
             ),
@@ -51,18 +52,23 @@ Widget buildSettingsMenuItem({
   required IconData icon,
   required String title,
   required void Function()? onTap,
+  required BuildContext context,
 }) {
+  bool isDark = Theme.of(context).brightness == Brightness.dark;
   return ListTile(
-    leading: Icon(icon, color: AppColors.white),
+    leading: Icon(icon, color: isDark ? AppColors.white : AppColors.black),
     title: Text(
       title,
-      style: const TextStyle(
-        color: AppColors.white,
+      style: TextStyle(
+        color: isDark ? AppColors.white : AppColors.black,
         fontSize: 16,
         fontFamily: 'Inter',
       ),
     ),
-    trailing: const Icon(Icons.chevron_right, color: AppColors.white),
+    trailing: Icon(
+      Icons.chevron_right,
+      color: isDark ? AppColors.white : AppColors.darkGrey,
+    ),
     onTap: onTap,
   );
 }
@@ -71,13 +77,15 @@ Widget buildSettingsMenuItemSwitcher({
   required IconData icon,
   required String title,
   void Function()? onTap,
+  required BuildContext context,
 }) {
+  bool isDark = Theme.of(context).brightness == Brightness.dark;
   return ListTile(
-    leading: Icon(icon, color: AppColors.white),
+    leading: Icon(icon, color: isDark ? AppColors.white : AppColors.black),
     title: Text(
       title,
-      style: const TextStyle(
-        color: AppColors.white,
+      style: TextStyle(
+        color: isDark ? AppColors.white : AppColors.black,
         fontSize: 16,
         fontFamily: 'Inter',
       ),
@@ -91,13 +99,17 @@ Widget buildSettingsMenuItemWithDropMenu({
   required IconData icon,
   required String title,
   void Function()? onTap,
+  required String beforeTrailing,
+  required BuildContext context,
 }) {
+  bool isDark = Theme.of(context).brightness == Brightness.dark;
+
   return ListTile(
-    leading: Icon(icon, color: AppColors.white),
+    leading: Icon(icon, color: isDark ? AppColors.white : AppColors.black),
     title: Text(
       title,
-      style: const TextStyle(
-        color: AppColors.white,
+      style: TextStyle(
+        color: isDark ? AppColors.white : AppColors.black,
         fontSize: 16,
         fontFamily: 'Inter',
       ),
@@ -106,12 +118,52 @@ Widget buildSettingsMenuItemWithDropMenu({
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          '123',
-          style: AppTextStyles.bodyMedium!.copyWith(color: AppColors.white),
+          beforeTrailing,
+          style: AppTextStyles.bodyMedium!.copyWith(
+            color: isDark ? AppColors.white : AppColors.black,
+          ),
         ),
-        Icon(Icons.chevron_right, color: AppColors.white),
+        Icon(
+          Icons.chevron_right,
+          color: isDark ? AppColors.white : AppColors.black,
+        ),
       ],
     ),
     onTap: onTap,
+  );
+}
+
+Widget buildSettingsMenuItemWithDropdown<T>({
+  required IconData icon,
+  required String title,
+  required T value,
+  required List<DropdownMenuItem<T>> items,
+  required void Function(T?)? onChanged,
+  required BuildContext context,
+}) {
+  bool isDark = Theme.of(context).brightness == Brightness.dark;
+
+  return ListTile(
+    leading: Icon(icon, color: isDark ? AppColors.white : AppColors.black),
+    title: Text(
+      title,
+      style: TextStyle(
+        color: isDark ? AppColors.white : AppColors.black,
+        fontSize: 16,
+        fontFamily: 'Inter',
+      ),
+    ),
+    trailing: DropdownButton<T>(
+      value: value,
+      items: items,
+      onChanged: onChanged,
+      underline: const SizedBox(),
+      icon: Icon(
+        Icons.expand_more,
+        color: isDark ? AppColors.white : AppColors.black,
+      ),
+      dropdownColor: isDark ? AppColors.darkerGrey : AppColors.grey,
+      style: TextStyle(color: isDark ? AppColors.white : AppColors.black),
+    ),
   );
 }

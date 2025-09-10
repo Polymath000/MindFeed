@@ -19,6 +19,8 @@ class MainNavigationBar extends StatefulWidget {
 class _MainNavigationBarState extends State<MainNavigationBar> {
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
@@ -31,32 +33,38 @@ class _MainNavigationBarState extends State<MainNavigationBar> {
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           duration: Duration(milliseconds: 400),
           tabBackgroundColor: AppColors.lightGray,
-          color: AppColors.black,
+          color: isDark ? AppColors.lightGray : AppColors.black,
           haptic: true,
+
           tabs: [
             GButton(
               icon: widget.selectedIndex == 0
                   ? FontAwesomeIcons.solidHouse
                   : FontAwesomeIcons.house,
               text: 'Home',
+              // iconActiveColor: AppColors.black,
+              backgroundColor: AppColors.grey,
             ),
             GButton(
               icon: widget.selectedIndex == 1
                   ? FontAwesomeIcons.magnifyingGlass
                   : Icons.search,
               text: 'Search',
+              backgroundColor: AppColors.grey,
             ),
             GButton(
               icon: widget.selectedIndex == 2
                   ? FontAwesomeIcons.solidFloppyDisk
                   : FontAwesomeIcons.floppyDisk,
               text: 'Save',
+              backgroundColor: AppColors.grey,
             ),
             GButton(
               icon: widget.selectedIndex == 3
                   ? Icons.category
                   : Icons.category_outlined,
               text: 'Category',
+              backgroundColor: AppColors.grey,
             ),
           ],
           selectedIndex: widget.selectedIndex,

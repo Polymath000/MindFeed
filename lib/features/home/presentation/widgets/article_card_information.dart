@@ -16,6 +16,7 @@ class ArticleCardInformation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -24,7 +25,7 @@ class ArticleCardInformation extends StatelessWidget {
           child: Text(
             title,
             style: AppTextStyles.titleLarge?.copyWith(
-              color: AppColors.black,
+              color: isDark ? AppColors.white : AppColors.black,
               fontWeight: FontWeight.bold,
             ),
             maxLines: 2,
@@ -34,13 +35,15 @@ class ArticleCardInformation extends StatelessWidget {
         Text(
           author,
           style: AppTextStyles.bodyLarge?.copyWith(
-            color: AppColors.darkGrey,
+            color: isDark ? AppColors.grey : AppColors.darkGrey,
             fontWeight: FontWeight.bold,
           ),
         ),
         Text(
           date,
-          style: AppTextStyles.bodyMedium?.copyWith(color: AppColors.darkGrey),
+          style: AppTextStyles.bodyMedium?.copyWith(
+            color: isDark ? AppColors.grey : AppColors.darkGrey,
+          ),
         ),
       ],
     );

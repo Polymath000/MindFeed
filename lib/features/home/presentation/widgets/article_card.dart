@@ -27,6 +27,7 @@ class ArticleCard extends StatelessWidget {
   final bool isFav;
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     return ZoomIn(
       config: BaseAnimationConfig(
         delay: Duration(microseconds: 320),
@@ -37,7 +38,7 @@ class ArticleCard extends StatelessWidget {
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
             decoration: BoxDecoration(
-              color: AppColors.lightGray,
+              color: isDark ? Color(0xff23262b) : AppColors.lightGray,
               borderRadius: AppBorders.xxxs,
               boxShadow: [
                 BoxShadow(
