@@ -102,6 +102,7 @@ sealed class AppColors {
   static const Color transparent = Colors.transparent;
   static const Color waterBlue = Color(0xFF0284C7);
   static const Color white = Colors.white;
+  static const Color darkerGrey = Color(0xFF111827);
 
   // Custom colors
   static const Color success = Color(0xFF3B9A1E);

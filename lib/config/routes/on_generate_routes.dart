@@ -17,6 +17,7 @@ import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 import 'package:mind_feed/features/main/presentation/views/main_view.dart';
 import 'package:mind_feed/features/onboarding/presentation/views/onboarding_view.dart';
 import 'package:mind_feed/features/search/presentation/views/search_view.dart';
+import 'package:mind_feed/features/settings/presentation/views/settings_view.dart';
 
 sealed class AppRoutes {
   const AppRoutes();
@@ -96,6 +97,8 @@ sealed class AppRoutes {
       _pushNamed(context, ArticleView.routeName);
   static Future<Object?> authorView(final BuildContext context) =>
       _pushNamed(context, AuthorView.routeName);
+  static Future<Object?> settingsView(final BuildContext context) =>
+      _pushNamed(context, SettingsView.routeName);
 }
 
 class CreateNewPasswordViewArgs {
@@ -118,6 +121,7 @@ Map<String, Widget Function(BuildContext, Object?)> _routes = {
   FavoriteMoviesView.routeName: (_, _) => const FavoriteMoviesView(),
   ArticleView.routeName: (_, _) => const ArticleView(),
   AuthorView.routeName: (_, _) => const AuthorView(),
+  SettingsView.routeName: (_, _) => const SettingsView(),
 
   CheckCodeView.routeName: (_, final args) =>
       CheckCodeView(email: args! as String),

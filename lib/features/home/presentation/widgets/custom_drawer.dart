@@ -7,6 +7,7 @@ import 'package:mind_feed/core/utls/app_images.dart';
 import 'package:mind_feed/features/downloaded_articles_view/presentation/views/downloaded_articles_view.dart';
 import 'package:mind_feed/features/favoritemovies/presentation/views/favorite_movies_view.dart';
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
+import 'package:mind_feed/features/settings/presentation/views/settings_view.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key, required this.routeName});
@@ -80,28 +81,20 @@ class CustomDrawer extends StatelessWidget {
               title: Text('Favourites'),
             ),
             ListTile(
+              iconColor: currentRoute == SettingsView.routeName
+                  ? AppColors.amber
+                  : AppColors.white,
+              textColor: currentRoute == SettingsView.routeName
+                  ? AppColors.amber
+                  : AppColors.white,
               onTap: () {
-                advancedDrawerController.hideDrawer();
-              },
-              leading: Icon(FontAwesomeIcons.user),
-              title: Text('Profile'),
-            ),
-            ListTile(
-              onTap: () {
+                final bool isFav = currentRoute == SettingsView.routeName;
+                if (!isFav) AppRoutes.settingsView(context);
                 advancedDrawerController.hideDrawer();
               },
               leading: Icon(FontAwesomeIcons.gears),
               title: Text('Settings'),
             ),
-
-            // Spacer(),
-            // DefaultTextStyle(
-            //   style: TextStyle(fontSize: 12, color: Colors.white54),
-            //   child: Container(
-            //     margin: const EdgeInsets.symmetric(vertical: 16.0),
-            //     child: Text('Terms of Service | Privacy Policy'),
-            //   ),
-            // ),
           ],
         ),
       ),
