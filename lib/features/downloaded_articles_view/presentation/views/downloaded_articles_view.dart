@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
+import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/features/downloaded_articles_view/presentation/widgets/downloaded_articles_view_body.dart';
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 import 'package:mind_feed/features/home/presentation/widgets/custom_drawer.dart';
@@ -10,6 +11,8 @@ class DownloadedArticlesView extends StatelessWidget {
   static const routeName = 'downloadedArticlesView';
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return AdvancedDrawer(
       backdrop: CustombackgroundForTheDrawerInHomePage(),
       controller: advancedDrawerController,
@@ -22,7 +25,10 @@ class DownloadedArticlesView extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       drawer: CustomDrawer(routeName: routeName),
-      child: Scaffold(body: DownloadedArticlesViewBody()),
+      child: Scaffold(
+        body: DownloadedArticlesViewBody(),
+        backgroundColor: isDark ? AppColors.lightBlack : AppColors.white,
+      ),
     );
   }
 }

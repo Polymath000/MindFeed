@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/features/articles_save/presentation/widgets/saved_articles_view_body.dart';
 
 class ArticlesSaved extends StatelessWidget {
@@ -7,6 +8,11 @@ class ArticlesSaved extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: SavedArticlesViewBody());
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Scaffold(
+      body: SavedArticlesViewBody(),
+      backgroundColor: isDark ? AppColors.lightBlack : AppColors.white,
+    );
   }
 }

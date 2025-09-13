@@ -14,18 +14,19 @@ class ListCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
       child: isleft
-          ? SlideInLeft(config: ListCardBody())
-          : SlideInRight(config: ListCardBody()),
+          ? SlideInLeft(config: ListCardBody(context))
+          : SlideInRight(config: ListCardBody(context)),
     );
   }
 
-  BaseAnimationConfig ListCardBody() {
+  BaseAnimationConfig ListCardBody(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     return BaseAnimationConfig(
       delay: Duration(microseconds: 50),
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: AppColors.lightGray,
+          color: isDark ? AppColors.spaceBlack : AppColors.lightGray,
           borderRadius: AppBorders.xxxs,
           border: Border.all(color: AppColors.grey),
         ),
@@ -39,13 +40,22 @@ class ListCard extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       'Reading list',
-                      style: AppTextStyles.titleLarge,
+                      style: AppTextStyles.titleLarge!.copyWith(
+                        color: isDark ? AppColors.white : AppColors.black,
+                      ),
                     ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('6 Articles saved', style: AppTextStyles.bodyLarge),
+                      Text(
+                        '6 Articles saved',
+                        style: AppTextStyles.bodyLarge!.copyWith(
+                          color: isDark
+                              ? AppColors.lightGray
+                              : AppColors.darkGrey,
+                        ),
+                      ),
                       CustomPopupMenuButtonForSavedArticlesView(),
                     ],
                   ),

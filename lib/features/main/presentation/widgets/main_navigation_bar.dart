@@ -43,28 +43,28 @@ class _MainNavigationBarState extends State<MainNavigationBar> {
                   : FontAwesomeIcons.house,
               text: 'Home',
               // iconActiveColor: AppColors.black,
-              backgroundColor: AppColors.grey,
+              backgroundColor: isDark ? AppColors.grey : AppColors.lightGray,
             ),
             GButton(
               icon: widget.selectedIndex == 1
                   ? FontAwesomeIcons.magnifyingGlass
                   : Icons.search,
               text: 'Search',
-              backgroundColor: AppColors.grey,
+              backgroundColor: isDark ? AppColors.grey : AppColors.lightGray,
             ),
             GButton(
               icon: widget.selectedIndex == 2
                   ? FontAwesomeIcons.solidFloppyDisk
                   : FontAwesomeIcons.floppyDisk,
               text: 'Save',
-              backgroundColor: AppColors.grey,
+              backgroundColor: isDark ? AppColors.grey : AppColors.lightGray,
             ),
             GButton(
               icon: widget.selectedIndex == 3
                   ? Icons.category
                   : Icons.category_outlined,
               text: 'Category',
-              backgroundColor: AppColors.grey,
+              backgroundColor: isDark ? AppColors.grey : AppColors.lightGray,
             ),
           ],
           selectedIndex: widget.selectedIndex,

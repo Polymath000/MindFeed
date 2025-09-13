@@ -19,7 +19,6 @@ class ThemeWidget extends StatelessWidget {
         } else {
           currentTheme = ThemeMode.system;
         }
-
         return buildSettingsMenuItemWithDropdown<ThemeMode>(
           icon: FontAwesomeIcons.circleHalfStroke,
           title: "Theme",

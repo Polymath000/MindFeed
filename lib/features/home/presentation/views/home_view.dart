@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
+import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/features/home/presentation/widgets/custom_drawer.dart';
 import 'package:mind_feed/features/home/presentation/widgets/custombackground_for_the_drawer_in_home_page.dart';
 import 'package:mind_feed/features/home/presentation/widgets/home_view_body.dart';
@@ -11,6 +12,8 @@ class HomeView extends StatelessWidget {
   static const String routeName = 'home';
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return AdvancedDrawer(
       backdrop: CustombackgroundForTheDrawerInHomePage(),
       controller: advancedDrawerController,
@@ -24,7 +27,7 @@ class HomeView extends StatelessWidget {
       ),
       drawer: CustomDrawer(routeName: routeName),
       child: Scaffold(
-        backgroundColor: Color(0xff121212),
+        backgroundColor: isDark ? AppColors.lightBlack : AppColors.white,
         body: HomeViewBody(),
         floatingActionButton: FloatingActionButton(onPressed: () {}),
       ),

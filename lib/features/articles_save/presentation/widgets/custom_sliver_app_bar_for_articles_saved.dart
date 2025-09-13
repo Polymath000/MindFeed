@@ -9,6 +9,8 @@ class CustomSliverAppBarForArticlesSaved extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return SliverAppBar(
       pinned: false,
       automaticallyImplyLeading: false,
@@ -28,7 +30,7 @@ class CustomSliverAppBarForArticlesSaved extends StatelessWidget {
               child: Text(
                 'New list',
                 style: AppTextStyles.titleMedium!.copyWith(
-                  color: AppColors.white,
+                  color: isDark ? AppColors.lightBlack : AppColors.white,
                 ),
               ),
             ),

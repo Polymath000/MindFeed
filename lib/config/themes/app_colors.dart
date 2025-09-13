@@ -114,4 +114,10 @@ sealed class AppColors {
   static const Color lightGray = Color(0xFFE5E7EB);
   static const Color mediumGray = Color(0xFFD1D5DB);
   static const Color textGray = Color(0xFF9CA3AF);
+  static const Color lightBlack = Color.fromARGB(255, 20, 20, 20);
+  static const Color darkSurface = Color.fromARGB(255, 61, 61, 61);
+  static const Color darkerEdge = Color.fromARGB(255, 29, 28, 28);
+  static const Color lightSurface = Color(0xFFF5F5F5);
+  static const Color softShadow = Color(0xFFE0E0E0);
+  static const Color spaceBlack = Color(0xff23262b);
 }

@@ -60,7 +60,7 @@ Widget buildSettingsMenuItem({
     title: Text(
       title,
       style: TextStyle(
-        color: isDark ? AppColors.white : AppColors.black,
+        color: AppColors.white,
         fontSize: 16,
         fontFamily: 'Inter',
       ),
@@ -85,7 +85,7 @@ Widget buildSettingsMenuItemSwitcher({
     title: Text(
       title,
       style: TextStyle(
-        color: isDark ? AppColors.white : AppColors.black,
+        color: AppColors.white,
         fontSize: 16,
         fontFamily: 'Inter',
       ),
@@ -109,7 +109,7 @@ Widget buildSettingsMenuItemWithDropMenu({
     title: Text(
       title,
       style: TextStyle(
-        color: isDark ? AppColors.white : AppColors.black,
+        color: AppColors.white,
         fontSize: 16,
         fontFamily: 'Inter',
       ),
@@ -148,7 +148,7 @@ Widget buildSettingsMenuItemWithDropdown<T>({
     title: Text(
       title,
       style: TextStyle(
-        color: isDark ? AppColors.white : AppColors.black,
+        color: AppColors.white,
         fontSize: 16,
         fontFamily: 'Inter',
       ),

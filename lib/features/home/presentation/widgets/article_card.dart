@@ -38,7 +38,7 @@ class ArticleCard extends StatelessWidget {
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
             decoration: BoxDecoration(
-              color: isDark ? Color(0xff23262b) : AppColors.lightGray,
+              color: isDark ? AppColors.spaceBlack : AppColors.lightGray,
               borderRadius: AppBorders.xxxs,
               boxShadow: [
                 BoxShadow(

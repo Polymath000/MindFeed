@@ -6,6 +6,8 @@ class MoreVertIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Icon(Icons.more_vert, color: AppColors.gunmetal);
+        bool isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Icon(Icons.more_vert, color:isDark? AppColors.white:AppColors.gunmetal);
   }
 }
