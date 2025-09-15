@@ -13,16 +13,20 @@ dependencies:
   dartz: ^0.10.1
   data_connection_checker_tv: ^0.3.5-nullsafety
   dio: ^5.9.0
+  expandable: ^5.0.1
+  file_picker: ^10.3.3
   flutter:
     sdk: flutter
   flutter_advanced_drawer: ^1.5.0
   flutter_animate_on_scroll: ^0.3.0
   flutter_bloc: ^9.1.1
+  flutter_localization: ^0.3.3
   flutter_svg: ^2.2.0
   font_awesome_flutter: ^10.10.0
   google_nav_bar: ^5.0.7
   line_icons: ^2.0.3
   logger: ^2.6.1
+  markdown_widget: ^2.3.2+8
   modal_progress_hud_nsn: ^0.5.1
   shared_preferences: ^2.5.3
 
@@ -37,6 +41,7 @@ flutter_assets:
   filename: app_images.dart
 
 flutter:
+  generate: true
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:
   assets:

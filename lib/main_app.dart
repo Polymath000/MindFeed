@@ -9,6 +9,7 @@ import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
 import 'package:mind_feed/features/main/presentation/views/main_view.dart';
 import 'package:mind_feed/features/settings/presentation/controllers/theme_mode_cubit/theme_mode_cubit.dart';
+import 'package:mind_feed/l10n/generated/app_localizations.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -18,6 +19,8 @@ class MyApp extends StatelessWidget {
     return BlocBuilder<ThemeModeCubit, ThemeModeState>(
       builder: (context, state) {
         return MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           initialRoute: MainView.routeName,
           onGenerateRoute: onGenerateRoute,
           theme: const ThemeConfig().light,

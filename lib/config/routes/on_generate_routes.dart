@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/features/add_article/presentation/views/add_article.dart';
 import 'package:mind_feed/features/aricles_by_categories/presentation/views/aricles_by_categories_view.dart';
 import 'package:mind_feed/features/article/presentation/views/article_view.dart';
 import 'package:mind_feed/features/article/presentation/widgets/author_card.dart';
@@ -99,6 +100,9 @@ sealed class AppRoutes {
       _pushNamed(context, AuthorView.routeName);
   static Future<Object?> settingsView(final BuildContext context) =>
       _pushNamed(context, SettingsView.routeName);
+
+  static Future<Object?> addArticleView(final BuildContext context) =>
+      _pushNamed(context, AddArticleView.routeName);
 }
 
 class CreateNewPasswordViewArgs {
@@ -122,6 +126,7 @@ Map<String, Widget Function(BuildContext, Object?)> _routes = {
   ArticleView.routeName: (_, _) => const ArticleView(),
   AuthorView.routeName: (_, _) => const AuthorView(),
   SettingsView.routeName: (_, _) => const SettingsView(),
+  AddArticleView.routeName: (_, _) => AddArticleView(),
 
   CheckCodeView.routeName: (_, final args) =>
       CheckCodeView(email: args! as String),
