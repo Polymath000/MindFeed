@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/features/aricles_by_categories/presentation/views/aricles_by_categories_view.dart';
+import 'package:mind_feed/features/profile/presentation/views/profile_view.dart';
 import 'package:mind_feed/features/articles_save/presentation/views/articles_saved.dart';
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 import 'package:mind_feed/features/main/presentation/widgets/main_navigation_bar.dart';
@@ -76,5 +76,5 @@ final List<Widget> widgetOptions = <Widget>[
   HomeView(),
   const SearchView(),
   ArticlesSaved(),
-  const AriclesByCategoriesView(),
+  const ProfileView(),
 ];

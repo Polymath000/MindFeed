@@ -61,9 +61,9 @@ class _MainNavigationBarState extends State<MainNavigationBar> {
             ),
             GButton(
               icon: widget.selectedIndex == 3
-                  ? Icons.category
-                  : Icons.category_outlined,
-              text: 'Category',
+                  ? FontAwesomeIcons.solidUser
+                  : FontAwesomeIcons.user,
+              text: 'Profile',
               backgroundColor: isDark ? AppColors.grey : AppColors.lightGray,
             ),
           ],

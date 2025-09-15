@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/features/add_article/presentation/views/home.dart';
+import 'package:mind_feed/features/add_article/presentation/views/home_of_add_article_view.dart';
 import 'package:mind_feed/features/add_article/presentation/widget/device_preference_notifier.dart';
 import 'package:mind_feed/main.dart';
 

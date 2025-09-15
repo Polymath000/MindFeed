@@ -8,4 +8,5 @@ class AppIcons {
   static final IconData download = FontAwesomeIcons.download;
   static final IconData save = FontAwesomeIcons.bookmark;
   static final IconData delete = FontAwesomeIcons.trash;
+  static final IconData edit = FontAwesomeIcons.pencil;
 }
