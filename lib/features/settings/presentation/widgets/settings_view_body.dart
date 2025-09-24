@@ -52,20 +52,6 @@ class SettingsViewBody extends StatelessWidget {
                       beforeTrailing: '',
                       context: context,
                     ),
-                    buildSettingsMenuItemWithDropMenu(
-                      icon: FontAwesomeIcons.bookOpen,
-                      title: "Reading Mode",
-                      onTap: () {},
-                      beforeTrailing: '',
-                      context: context,
-                    ),
-                    buildSettingsMenuItemWithDropMenu(
-                      icon: FontAwesomeIcons.globe,
-                      title: "Language",
-                      onTap: () {},
-                      beforeTrailing: '',
-                      context: context,
-                    ),
                   ],
                 ),
                 SettingsMenu(

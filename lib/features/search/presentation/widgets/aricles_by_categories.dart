@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate_on_scroll/flutter_animate_on_scroll.dart';
+import 'package:mind_feed/config/routes/on_generate_routes.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/config/themes/app_text_style.dart';
 import 'package:mind_feed/core/constants/borders.dart';
@@ -31,7 +32,7 @@ class AriclesByCategories extends StatelessWidget {
                 child: InkWell(
                   borderRadius: AppBorders.xxs,
                   onTap: () {
-                    // TODO: handle category selection here
+                    AppRoutes.articlesCategoryView(context);
                   },
                   child: Container(
                     decoration: BoxDecoration(

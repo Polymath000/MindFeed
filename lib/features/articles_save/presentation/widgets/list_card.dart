@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate_on_scroll/flutter_animate_on_scroll.dart';
+import 'package:mind_feed/config/routes/on_generate_routes.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/config/themes/app_text_style.dart';
 import 'package:mind_feed/core/constants/borders.dart';
@@ -14,78 +15,83 @@ class ListCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
       child: isleft
-          ? SlideInLeft(config: ListCardBody(context))
-          : SlideInRight(config: ListCardBody(context)),
+          ? SlideInLeft(config: listCardBody(context))
+          : SlideInRight(config: listCardBody(context)),
     );
   }
 
-  BaseAnimationConfig ListCardBody(BuildContext context) {
+  BaseAnimationConfig listCardBody(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     return BaseAnimationConfig(
       delay: Duration(microseconds: 50),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.spaceBlack : AppColors.lightGray,
-          borderRadius: AppBorders.xxxs,
-          border: Border.all(color: AppColors.grey),
-        ),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Reading list',
-                      style: AppTextStyles.titleLarge!.copyWith(
-                        color: isDark ? AppColors.white : AppColors.black,
-                      ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '6 Articles saved',
-                        style: AppTextStyles.bodyLarge!.copyWith(
-                          color: isDark
-                              ? AppColors.lightGray
-                              : AppColors.darkGrey,
+      child: GestureDetector(
+        onTap: () {
+          AppRoutes.listSavedArticles(context);
+        },
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.spaceBlack : AppColors.lightGray,
+            borderRadius: AppBorders.xxxs,
+            border: Border.all(color: AppColors.grey),
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Reading list',
+                        style: AppTextStyles.titleLarge!.copyWith(
+                          color: isDark ? AppColors.white : AppColors.black,
                         ),
                       ),
-                      CustomPopupMenuButtonForSavedArticlesView(),
-                    ],
-                  ),
-                ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '6 Articles saved',
+                          style: AppTextStyles.bodyLarge!.copyWith(
+                            color: isDark
+                                ? AppColors.lightGray
+                                : AppColors.darkGrey,
+                          ),
+                        ),
+                        CustomPopupMenuButtonForSavedArticlesView(),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  Image(
-                    height: 100,
-                    image: AssetImage(Assets.assetsImagesJustTest),
-                  ),
-                  Image(
-                    height: 100,
-                    image: AssetImage(Assets.assetsImagesJustTest),
-                  ),
-                  Image(
-                    height: 100,
-                    image: AssetImage(Assets.assetsImagesJustTest),
-                  ),
-                  Image(
-                    height: 100,
-                    image: AssetImage(Assets.assetsImagesJustTest),
-                  ),
-                ],
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    Image(
+                      height: 100,
+                      image: AssetImage(Assets.assetsImagesJustTest),
+                    ),
+                    Image(
+                      height: 100,
+                      image: AssetImage(Assets.assetsImagesJustTest),
+                    ),
+                    Image(
+                      height: 100,
+                      image: AssetImage(Assets.assetsImagesJustTest),
+                    ),
+                    Image(
+                      height: 100,
+                      image: AssetImage(Assets.assetsImagesJustTest),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

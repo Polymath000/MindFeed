@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/features/add_article/presentation/views/add_article.dart';
+import 'package:mind_feed/features/articles_save/presentation/views/list_saved_articles.dart';
 import 'package:mind_feed/features/profile/presentation/views/profile_view.dart';
-import 'package:mind_feed/features/search/presentation/widgets/aricles_by_categories.dart';
 import 'package:mind_feed/features/article/presentation/views/article_view.dart';
-import 'package:mind_feed/features/article/presentation/widgets/author_card.dart';
 import 'package:mind_feed/features/articles_save/presentation/views/articles_saved.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/presentation/views/categories_view.dart';
@@ -18,6 +17,7 @@ import 'package:mind_feed/features/favoritemovies/presentation/views/favorite_mo
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 import 'package:mind_feed/features/main/presentation/views/main_view.dart';
 import 'package:mind_feed/features/onboarding/presentation/views/onboarding_view.dart';
+import 'package:mind_feed/features/search/presentation/views/articles_category_view.dart';
 import 'package:mind_feed/features/search/presentation/views/search_view.dart';
 import 'package:mind_feed/features/settings/presentation/views/settings_view.dart';
 
@@ -105,6 +105,12 @@ sealed class AppRoutes {
 
   static Future<Object?> profileView(final BuildContext context) =>
       _pushNamed(context, ProfileView.routeName);
+
+        static Future<Object?> listSavedArticles(final BuildContext context) =>
+      _pushNamed(context, ListSavedArticles.routeName);
+
+              static Future<Object?> articlesCategoryView(final BuildContext context) =>
+      _pushNamed(context, ArticlesCategoryView.routeName);
 }
 
 class CreateNewPasswordViewArgs {
@@ -129,6 +135,8 @@ Map<String, Widget Function(BuildContext, Object?)> _routes = {
   SettingsView.routeName: (_, _) => const SettingsView(),
   AddArticleView.routeName: (_, _) => AddArticleView(),
   ProfileView.routeName: (_, _) => ProfileView(),
+  ListSavedArticles.routeName: (_, _) => ListSavedArticles(),
+  ArticlesCategoryView.routeName: (_, _) => ArticlesCategoryView(),
 
   CheckCodeView.routeName: (_, final args) =>
       CheckCodeView(email: args! as String),
