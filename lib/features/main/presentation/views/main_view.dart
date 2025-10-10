@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/features/profile/presentation/views/profile_view.dart';
-import 'package:mind_feed/features/articles_save/presentation/views/articles_saved.dart';
+import 'package:mind_feed/features/collections/presentation/views/articles_saved.dart';
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 import 'package:mind_feed/features/main/presentation/widgets/main_navigation_bar.dart';
 import 'package:mind_feed/features/search/presentation/views/search_view.dart';

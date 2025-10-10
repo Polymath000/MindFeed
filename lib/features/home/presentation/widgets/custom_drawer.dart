@@ -4,8 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mind_feed/config/routes/on_generate_routes.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/core/utls/app_images.dart';
-import 'package:mind_feed/features/downloaded_articles_view/presentation/views/downloaded_articles_view.dart';
-import 'package:mind_feed/features/favoritemovies/presentation/views/favorite_movies_view.dart';
+import 'package:mind_feed/features/collections/presentation/views/downloaded_articles_view.dart';
+import 'package:mind_feed/features/collections/presentation/views/favorite_movies_view.dart';
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 import 'package:mind_feed/features/settings/presentation/views/settings_view.dart';
 

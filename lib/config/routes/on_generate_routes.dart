@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/features/add_article/presentation/views/add_article.dart';
-import 'package:mind_feed/features/articles_save/presentation/views/list_saved_articles.dart';
+import 'package:mind_feed/features/collections/presentation/views/list_saved_articles.dart';
 import 'package:mind_feed/features/profile/presentation/views/profile_view.dart';
-import 'package:mind_feed/features/article/presentation/views/article_view.dart';
-import 'package:mind_feed/features/articles_save/presentation/views/articles_saved.dart';
+import 'package:mind_feed/features/home/presentation/views/article_view.dart';
+import 'package:mind_feed/features/collections/presentation/views/articles_saved.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/presentation/views/categories_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/change_password_view.dart';
@@ -12,8 +12,8 @@ import 'package:mind_feed/features/auth/presentation/views/login_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/send_code_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/signup_view.dart';
 import 'package:mind_feed/features/author/presentation/views/author_view.dart';
-import 'package:mind_feed/features/downloaded_articles_view/presentation/views/downloaded_articles_view.dart';
-import 'package:mind_feed/features/favoritemovies/presentation/views/favorite_movies_view.dart';
+import 'package:mind_feed/features/collections/presentation/views/downloaded_articles_view.dart';
+import 'package:mind_feed/features/collections/presentation/views/favorite_movies_view.dart';
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 import 'package:mind_feed/features/main/presentation/views/main_view.dart';
 import 'package:mind_feed/features/onboarding/presentation/views/onboarding_view.dart';
@@ -56,6 +56,10 @@ sealed class AppRoutes {
   //   CreateNewPasswordView.routeName,
   //   arguments: CreateNewPasswordViewArgs(email: email, code: code),
   // );
+  // TODO: implement custom Tranition animation
+  static Future<Object?> article(final BuildContext context) =>
+      Navigator.of(context).push<Object>(createRoute());
+
   static Future<Object?> categoriesView(
     final BuildContext context, {
     required final UserEntity userEntity,
@@ -106,10 +110,10 @@ sealed class AppRoutes {
   static Future<Object?> profileView(final BuildContext context) =>
       _pushNamed(context, ProfileView.routeName);
 
-        static Future<Object?> listSavedArticles(final BuildContext context) =>
+  static Future<Object?> listSavedArticles(final BuildContext context) =>
       _pushNamed(context, ListSavedArticles.routeName);
 
-              static Future<Object?> articlesCategoryView(final BuildContext context) =>
+  static Future<Object?> articlesCategoryView(final BuildContext context) =>
       _pushNamed(context, ArticlesCategoryView.routeName);
 }
 
@@ -159,3 +163,22 @@ Route<dynamic>? Function(RouteSettings)? onGenerateRoute = (final settings) {
     settings: settings,
   );
 };
+
+Route<Object> createRoute() {
+  return PageRouteBuilder<Object>(
+    pageBuilder: (context, animation, secondaryAnimation) =>
+        const ArticleView(),
+    transitionDuration: const Duration(milliseconds: 1000),
+    reverseTransitionDuration: const Duration(milliseconds: 1000),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(1.0, 0.0);
+      const end = Offset.zero;
+      const curve = Curves.bounceOut;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      var offsetAnimation = animation.drive(tween);
+
+      return SlideTransition(position: offsetAnimation, child: child);
+    },
+  );
+}
