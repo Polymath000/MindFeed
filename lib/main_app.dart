@@ -7,7 +7,7 @@ import 'package:mind_feed/config/themes/app_text_style.dart';
 import 'package:mind_feed/config/themes/theme_config.dart';
 import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
-import 'package:mind_feed/features/main/presentation/views/main_view.dart';
+import 'package:mind_feed/features/onboarding/presentation/views/onboarding_view.dart';
 import 'package:mind_feed/features/settings/presentation/controllers/theme_mode_cubit/theme_mode_cubit.dart';
 import 'package:mind_feed/l10n/generated/app_localizations.dart';
 
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          initialRoute: MainView.routeName,
+          initialRoute: OnboardingView.routeName,
           onGenerateRoute: onGenerateRoute,
           theme: const ThemeConfig().light,
           darkTheme: const ThemeConfig().dark,

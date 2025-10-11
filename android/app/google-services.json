@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "750601970491",
+    "project_id": "mindfeed-5f150",
+    "storage_bucket": "mindfeed-5f150.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:750601970491:android:b051de0e4ac3a081a58d1e",
+        "android_client_info": {
+          "package_name": "com.example.mind_feed"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOWdaRgSoRcXttKlkVG2ZCPSkUxpj1ChA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
