@@ -13,12 +13,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/services/shared_preferences_singleton.dart';
 
-class UserRepoImpl extends AuthRepository {
+class AuthRepoImpl extends AuthRepository {
   NetworkInfo networkInfo;
   final AuthApiSource authApiSource;
   final UserCacheDataSource userCacheDataSource;
   late CacheHelper cacheHelper;
-  UserRepoImpl({
+  AuthRepoImpl({
     required this.authApiSource,
     required this.networkInfo,
     required this.userCacheDataSource,
@@ -28,22 +28,23 @@ class UserRepoImpl extends AuthRepository {
     // TODO: implement forgetPassword
     throw UnimplementedError();
   }
-final sharedPreferences = SharedPreferences.getInstance();
+
+  final sharedPreferences = SharedPreferences.getInstance();
   @override
   Future<Either<Failure, String>> login(LoginParams params) async {
     if (await networkInfo.isConnected!) {
       try {
         final remote = await authApiSource.login(params: params);
         if (remote.isEmpty) {
-          return Left(Failure(errMessage: 'No User Found'));
+          return Left(Failure(message: 'No User Found'));
         }
-        await  SharedPreferencesSingleton.setString(tokenKey, remote) ;
+        await SharedPreferencesSingleton.setString(tokenKey, remote);
         return Right(remote);
       } on ServerException catch (e) {
-        return Left(Failure(errMessage: e.errorModel.errorMessage));
+        return Left(ServerFailure(message: e.errorModel.errorMessage));
       }
     } else {
-      return Left(Failure(errMessage: 'You are Offline'));
+      return Left(Failure(message: 'You are Offline'));
     }
   }
 

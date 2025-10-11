@@ -6,14 +6,12 @@ class UserModel extends UserEntity {
     required super.userName,
     required super.email,
     required super.favoriteCategories,
-    required super.password,
     required super.token,
   });
 
   factory UserModel.fromEntity(final UserEntity userEntity) => UserModel(
     favoriteCategories: userEntity.favoriteCategories,
     email: userEntity.email,
-    password: userEntity.password,
     userName: userEntity.userName,
     token: userEntity.token,
   );
@@ -21,7 +19,6 @@ class UserModel extends UserEntity {
   UserEntity toUserEntity() => UserEntity(
     favoriteCategories: favoriteCategories,
     email: email,
-    password: password,
     userName: userName,
     token: token,
   );
@@ -31,7 +28,6 @@ class UserModel extends UserEntity {
       email: json[ApiKey.email],
       userName: json[ApiKey.userName] ?? '',
       favoriteCategories: json[ApiKey.favoriteCategories] ?? [],
-      password: json[ApiKey.password],
       token: json[ApiKey.token] ?? '',
     );
   }
@@ -41,7 +37,6 @@ class UserModel extends UserEntity {
       ApiKey.userName: userName,
       ApiKey.email: email,
       ApiKey.favoriteCategories: favoriteCategories,
-      ApiKey.password: password,
       ApiKey.token: token,
     };
   }

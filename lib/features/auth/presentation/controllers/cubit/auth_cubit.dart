@@ -23,14 +23,14 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     LoginParams params = LoginParams(email: email, password: password);
     final failureOrLogin = await Login(
-      repo: UserRepoImpl(
+      repo: AuthRepoImpl(
         authApiSource: AuthApiSource(apiConsumer: DioConsumer(dio: Dio())),
         networkInfo: NetworkInfoImpl(DataConnectionChecker()),
         userCacheDataSource: UserCacheDataSource(cacheHelper: CacheHelper()),
       ),
     ).call(params: params);
     failureOrLogin.fold(
-      (failure) => emit(AuthFailure(errorMessage: failure.errMessage)),
+      (failure) => emit(AuthFailure(errorMessage: failure.message)),
       (user) => emit(AuthSuccess()),
     );
   }

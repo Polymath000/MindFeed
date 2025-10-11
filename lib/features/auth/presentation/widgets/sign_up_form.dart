@@ -19,12 +19,11 @@ class _SignUpFormState extends State<SignUpForm> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
-
+  String password = '';
   late String confirmPassword = '';
   UserEntity userEntity = UserEntity(
     favoriteCategories: [],
     email: '',
-    password: '',
     userName: '',
     token: '',
   );
@@ -81,7 +80,7 @@ class _SignUpFormState extends State<SignUpForm> {
               hintText: 'Password',
               onChanged: (String value) {
                 setState(() {
-                  userEntity.copyWith(password: value);
+                  password = value;
                 });
               },
             ),
@@ -95,7 +94,7 @@ class _SignUpFormState extends State<SignUpForm> {
               },
             ),
             SizedBox(height: 22.0),
-            PasswordRequirements(password: userEntity.password ?? ''),
+            PasswordRequirements(password: password),
             SizedBox(height: 22.0),
             CustomButton(
               buttonText: 'Sign Up',
@@ -107,8 +106,8 @@ class _SignUpFormState extends State<SignUpForm> {
                   ScaffoldMessenger.of(
                     context,
                   ).showSnackBar(SnackBar(content: Text('success')));
-                } else if (userEntity.password != confirmPassword &&
-                    userEntity.password!.isNotEmpty &&
+                } else if (password != confirmPassword &&
+                    password.isNotEmpty &&
                     confirmPassword.isNotEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Passwords do not match')),

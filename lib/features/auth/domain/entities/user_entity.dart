@@ -1,13 +1,11 @@
 class UserEntity {
   final String? userName;
   final String? email;
-  final String? password;
   final List<String>? favoriteCategories;
   final String? token;
   const UserEntity({
     required this.favoriteCategories,
     required this.email,
-    required this.password,
     required this.userName,
     required this.token,
   });
@@ -15,13 +13,11 @@ class UserEntity {
   UserEntity copyWith({
     final String? name,
     final String? email,
-    final String? password,
     final List<String>? categories,
     final String? token,
   }) => UserEntity(
     favoriteCategories: categories ?? favoriteCategories,
     email: email ?? this.email,
-    password: password ?? this.password,
     userName: name ?? userName,
     token: token ?? this.token,
   );
