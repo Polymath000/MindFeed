@@ -19,10 +19,10 @@ class UserEntity {
     final List<String>? categories,
     final String? token,
   }) => UserEntity(
-    favoriteCategories: categories ?? this.favoriteCategories,
+    favoriteCategories: categories ?? favoriteCategories,
     email: email ?? this.email,
     password: password ?? this.password,
-    userName: name ?? this.userName,
+    userName: name ?? userName,
     token: token ?? this.token,
   );
 }

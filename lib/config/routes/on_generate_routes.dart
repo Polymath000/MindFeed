@@ -90,7 +90,7 @@ sealed class AppRoutes {
   static Future<Object?> home(final BuildContext context) =>
       _pushNamed(context, HomeView.routeName);
   static Future<Object?> main(final BuildContext context) =>
-      _pushNamed(context, MainView.routeName);
+      _pushNamedAndRemoveAll(context, MainView.routeName);
   static Future<Object?> articlesSaved(final BuildContext context) =>
       _pushNamed(context, ArticlesSaved.routeName);
   static Future<Object?> downloadedArticlesView(final BuildContext context) =>

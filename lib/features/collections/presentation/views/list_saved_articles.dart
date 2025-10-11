@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/config/themes/app_text_style.dart';
-import 'package:mind_feed/core/widgets/custom_app_bar.dart';
 import 'package:mind_feed/features/home/presentation/widgets/home_view_body.dart';
 
 class ListSavedArticles extends StatelessWidget {

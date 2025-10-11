@@ -1,4 +1,6 @@
 import 'package:dartz/dartz.dart';
+import 'package:mind_feed/core/constants/constants.dart' show tokenKey;
+import 'package:mind_feed/core/database/cache/cache_helper.dart';
 import 'package:mind_feed/core/errors/expentions.dart';
 import 'package:mind_feed/core/errors/failure.dart';
 import 'package:mind_feed/core/network/network_info.dart';
@@ -7,11 +9,15 @@ import 'package:mind_feed/features/auth/data/datasources/auth_api_source.dart';
 import 'package:mind_feed/features/auth/data/datasources/user_cache_source.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/domain/repos/auth_repo.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../../core/services/shared_preferences_singleton.dart';
 
 class UserRepoImpl extends AuthRepository {
   NetworkInfo networkInfo;
   final AuthApiSource authApiSource;
   final UserCacheDataSource userCacheDataSource;
+  late CacheHelper cacheHelper;
   UserRepoImpl({
     required this.authApiSource,
     required this.networkInfo,
@@ -22,16 +28,16 @@ class UserRepoImpl extends AuthRepository {
     // TODO: implement forgetPassword
     throw UnimplementedError();
   }
-
+final sharedPreferences = SharedPreferences.getInstance();
   @override
-  Future<Either<Failure, UserEntity>> login(LoginParams params) async {
+  Future<Either<Failure, String>> login(LoginParams params) async {
     if (await networkInfo.isConnected!) {
       try {
         final remote = await authApiSource.login(params: params);
-        if (remote.token!.isEmpty) {
+        if (remote.isEmpty) {
           return Left(Failure(errMessage: 'No User Found'));
         }
-        userCacheDataSource.cacheUser(remote);
+        await  SharedPreferencesSingleton.setString(tokenKey, remote) ;
         return Right(remote);
       } on ServerException catch (e) {
         return Left(Failure(errMessage: e.errorModel.errorMessage));
@@ -42,7 +48,7 @@ class UserRepoImpl extends AuthRepository {
   }
 
   @override
-  Future<Either<Failure, UserEntity>> signup(UserEntity userEntity) {
+  Future<Either<Failure, String>> signup(UserEntity userEntity) {
     // TODO: implement signup
     throw UnimplementedError();
   }
