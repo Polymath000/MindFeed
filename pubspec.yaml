@@ -24,6 +24,7 @@ dependencies:
   flutter_localization: ^0.3.3
   flutter_svg: ^2.2.0
   font_awesome_flutter: ^10.10.0
+  get_it: ^8.2.0
   google_nav_bar: ^5.0.7
   line_icons: ^2.0.3
   logger: ^2.6.1
