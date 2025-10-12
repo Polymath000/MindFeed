@@ -4,6 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mind_feed/config/routes/on_generate_routes.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
+import 'package:mind_feed/core/widgets/custom_loading_indecator.dart';
 import 'package:mind_feed/features/auth/presentation/controllers/login_cubit/login_cubit.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/auth_background.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/login_form.dart';
@@ -27,7 +28,7 @@ class LoginViewBody extends StatelessWidget {
       builder: (context, state) {
         return ModalProgressHUD(
           inAsyncCall: state is LoginLoading,
-          progressIndicator: SpinKitFadingCircle(color:AppColors.blue,),
+          progressIndicator: CustomLoadingIndecator(),
           child: Stack(
             children: [
               authBackground(),

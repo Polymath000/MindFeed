@@ -26,7 +26,6 @@ void main() async {
   await globalDevicePreferenceNotifier.loadDevicePreferences();
   setupServiceLocator();
   await SharedPreferencesSingleton.init();
-  print('Token => ${SharedPreferencesSingleton.getString(tokenKey)}');
   runApp(
     BlocProvider(create: (context) => ThemeModeCubit(), child: const MyApp()),
   );

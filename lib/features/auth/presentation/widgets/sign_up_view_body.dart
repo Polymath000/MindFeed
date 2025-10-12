@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mind_feed/config/routes/on_generate_routes.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
+import 'package:mind_feed/core/widgets/custom_loading_indecator.dart';
 import 'package:mind_feed/features/auth/presentation/controllers/signup_cubit/signup_cubit.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/auth_background.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/security_tip_text.dart';
@@ -28,7 +29,7 @@ class SignUpViewBody extends StatelessWidget {
       },
       builder: (context, state) {
         return ModalProgressHUD(
-          progressIndicator: SpinKitFadingCircle(color: AppColors.blue),
+          progressIndicator: CustomLoadingIndecator(),
           inAsyncCall: state is SignupLoading,
           child: Stack(
             children: [
