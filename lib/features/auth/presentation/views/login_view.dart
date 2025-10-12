@@ -5,10 +5,10 @@ import 'package:mind_feed/core/helpers/setup_service_locator.dart';
 
 import 'package:mind_feed/features/auth/data/repos/auth_repo_impl.dart'
     show AuthRepoImpl;
-import 'package:mind_feed/features/auth/presentation/controllers/cubit/auth_cubit.dart';
+import 'package:mind_feed/features/auth/presentation/controllers/login_cubit/login_cubit.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/login_view_body.dart';
 
-import '../../domain/usecases/login.dart';
+import '../../domain/usecases/login_use_case.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -19,7 +19,7 @@ class LoginView extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.white,
       body: BlocProvider.value(
-        value: AuthCubit(
+        value: LoginCubit(
           loginUseCase: LoginUseCase(repo: getIt.get<AuthRepoImpl>()),
         ),
         child: LoginViewBody(),

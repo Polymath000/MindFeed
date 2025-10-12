@@ -15,6 +15,16 @@ import '../../features/auth/data/repos/auth_repo_impl.dart';
 final getIt = GetIt.instance;
 
 void setupServiceLocator() {
+  getIt.registerSingleton<DioConsumer>(DioConsumer(dio: Dio()));
+  getIt.registerSingleton<AuthApiSource>(
+    AuthApiSource(apiConsumer: getIt.get<DioConsumer>()),
+  );
+  getIt.registerSingleton<NetworkInfoImpl>(
+    NetworkInfoImpl(DataConnectionChecker()),
+  );
+  getIt.registerSingleton<UserCacheDataSource>(
+    UserCacheDataSource(cacheHelper: CacheHelper()),
+  );
   getIt.registerSingleton<AuthRepoImpl>(
     AuthRepoImpl(
       authApiSource: getIt.get<AuthApiSource>(),
@@ -22,18 +32,4 @@ void setupServiceLocator() {
       userCacheDataSource: getIt<UserCacheDataSource>(),
     ),
   );
-
-  getIt.registerSingleton<NetworkInfoImpl>(
-    NetworkInfoImpl(DataConnectionChecker()),
-  );
-
-  getIt.registerSingleton<UserCacheDataSource>(
-    UserCacheDataSource(cacheHelper: CacheHelper()),
-  );
-
-  getIt.registerSingleton<AuthApiSource>(
-    AuthApiSource(apiConsumer: getIt.get<DioConsumer>()),
-  );
-
-  getIt.registerSingleton<DioConsumer>(DioConsumer(dio: Dio()));
 }

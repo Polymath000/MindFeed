@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/helpers/setup_service_locator.dart';
 import 'package:mind_feed/core/services/shared_preferences_singleton.dart'
     show SharedPreferencesSingleton;
@@ -23,8 +24,9 @@ void main() async {
   );
   globalDevicePreferenceNotifier = DevicePreferenceNotifier();
   await globalDevicePreferenceNotifier.loadDevicePreferences();
-setupServiceLocator();
+  setupServiceLocator();
   await SharedPreferencesSingleton.init();
+  print('Token => ${SharedPreferencesSingleton.getString(tokenKey)}');
   runApp(
     BlocProvider(create: (context) => ThemeModeCubit(), child: const MyApp()),
   );

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mind_feed/config/routes/on_generate_routes.dart';
+import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
-import 'package:mind_feed/features/auth/presentation/controllers/cubit/auth_cubit.dart';
+import 'package:mind_feed/features/auth/presentation/controllers/login_cubit/login_cubit.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/auth_background.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/login_form.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/no_account_text.dart';
@@ -13,18 +15,19 @@ class LoginViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthCubit, AuthState>(
+    return BlocConsumer<LoginCubit, LoginState>(
       listener: (context, state) {
-        if (state is AuthFailure) {
+        if (state is LoginFailure) {
           customShowSnackBar(message: state.errorMessage, context: context);
-        } else if (state is AuthSuccess) {
+        } else if (state is LoginSuccess) {
           AppRoutes.main(context);
           customShowSnackBar(message: 'Login Success', context: context);
         }
       },
       builder: (context, state) {
         return ModalProgressHUD(
-          inAsyncCall: state is AuthLoading,
+          inAsyncCall: state is LoginLoading,
+          progressIndicator: SpinKitFadingCircle(color:AppColors.blue,),
           child: Stack(
             children: [
               authBackground(),

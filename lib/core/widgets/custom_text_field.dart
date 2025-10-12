@@ -3,19 +3,21 @@ import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/core/constants/borders.dart';
 
 class CustomTextField extends StatelessWidget {
-  const CustomTextField({
+  CustomTextField({
     super.key,
     required this.hintText,
     this.validator,
-    required this.onChanged,
+    this.onChanged,
+    this.textEditingController,
   });
   final String hintText;
   final String? Function(String?)? validator;
   final ValueChanged<String>? onChanged;
-
+  TextEditingController? textEditingController;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: textEditingController,
       onChanged: onChanged,
       autofocus: false,
       keyboardType: TextInputType.emailAddress,

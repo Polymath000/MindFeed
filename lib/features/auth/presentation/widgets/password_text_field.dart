@@ -3,14 +3,15 @@ import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/core/constants/borders.dart';
 
 class PasswordTextField extends StatefulWidget {
-  const PasswordTextField({
+  PasswordTextField({
     super.key,
     required this.hintText,
-    required this.onChanged,
+    this.onChanged,
+    this.controller,
   });
   final String hintText;
   final ValueChanged<String>? onChanged;
-
+  TextEditingController? controller;
   @override
   State<PasswordTextField> createState() => _PasswordTextFieldState();
 }
@@ -27,6 +28,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: widget.controller,
       onChanged: widget.onChanged,
       keyboardType: TextInputType.visiblePassword,
       autofocus: false,
