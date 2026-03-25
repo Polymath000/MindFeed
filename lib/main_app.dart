@@ -23,7 +23,10 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          initialRoute: SharedPreferencesSingleton.getString(tokenKey)!.isEmpty
+          initialRoute:
+              (SharedPreferencesSingleton.getString(tokenKey) == null
+                  ? true
+                  : SharedPreferencesSingleton.getString(tokenKey)!.isEmpty)
               ? OnboardingView.routeName
               : MainView.routeName,
           onGenerateRoute: onGenerateRoute,

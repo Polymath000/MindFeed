@@ -1,7 +1,14 @@
+import 'package:hive_flutter/adapters.dart';
+part 'user_entity.g.dart';
+@HiveType(typeId: 0)
 class UserEntity {
+  @HiveField(0)
   final String? userName;
+  @HiveField(1)
   final String? email;
+  @HiveField(2)
   final List<String>? favoriteCategories;
+  @HiveField(3)
   final String? token;
   const UserEntity({
     required this.favoriteCategories,

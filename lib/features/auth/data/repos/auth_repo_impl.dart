@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:mind_feed/core/constants/constants.dart' show tokenKey;
 import 'package:mind_feed/core/database/cache/cache_helper.dart';
 import 'package:mind_feed/core/errors/expentions.dart';
@@ -49,11 +50,12 @@ class AuthRepoImpl extends AuthRepository {
   }
 
   @override
-  Future<Either<Failure, String>> signup(SignupParams params) async{
+  Future<Either<Failure, Response>> signup(SignupParams params) async{
     if (await networkInfo.isConnected!) {
       try {
         final remote = await authApiSource.signUp(params: params);
-        await SharedPreferencesSingleton.setString(tokenKey, remote);
+        
+        // await SharedPreferencesSingleton.setString(tokenKey, remote);
         return Right(remote);
       } on ServerException catch (e) {
         return Left(ServerFailure(message: e.errorModel.errorMessage));

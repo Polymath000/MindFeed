@@ -2,6 +2,7 @@ import 'package:data_connection_checker_tv/data_connection_checker.dart'
     show DataConnectionChecker;
 import 'package:dio/dio.dart' show Dio;
 import 'package:get_it/get_it.dart' show GetIt;
+import 'package:mind_feed/core/constants/constants.dart' show userKey;
 import 'package:mind_feed/core/database/api/dio_consumer.dart';
 import 'package:mind_feed/core/database/cache/cache_helper.dart'
     show CacheHelper;
@@ -23,7 +24,7 @@ void setupServiceLocator() {
     NetworkInfoImpl(DataConnectionChecker()),
   );
   getIt.registerSingleton<UserCacheDataSource>(
-    UserCacheDataSource(cacheHelper: CacheHelper()),
+    UserCacheDataSource(cacheHelper: CacheHelper(kBoxName: userKey)),
   );
   getIt.registerSingleton<AuthRepoImpl>(
     AuthRepoImpl(
