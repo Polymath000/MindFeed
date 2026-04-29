@@ -20,7 +20,7 @@ class DioConsumer extends ApiConsumer {
     bool isFormData = false,
   }) async {
     try {
-      final response = dio.post(
+      final response = await dio.post(
         path,
         data: isFormData
             ? FormData.fromMap(data as Map<String, dynamic>)
@@ -30,7 +30,6 @@ class DioConsumer extends ApiConsumer {
       return response;
     } on DioException catch (e) {
       handleDioException(e);
-      rethrow;
     }
   }
 

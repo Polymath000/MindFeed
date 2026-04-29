@@ -8,7 +8,7 @@ class LoggerInterceptor extends Interceptor {
   @override
   void onError(final DioException err, final ErrorInterceptorHandler handler) {
     final options = err.requestOptions;
-    final requestPath = '${options.baseUrl}${options.path}';
+    final requestPath = options.uri;
     logger
       ..e('${options.method} request ==> $requestPath') //Error log
       ..d(
@@ -23,7 +23,7 @@ class LoggerInterceptor extends Interceptor {
     final RequestOptions options,
     final RequestInterceptorHandler handler,
   ) {
-    final requestPath = '${options.baseUrl}${options.path}';
+    final requestPath = options.uri;
     logger.i('${options.method} request ==> $requestPath'); //Info log
     handler.next(options); // continue with the Request
   }

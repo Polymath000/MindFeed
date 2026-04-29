@@ -41,8 +41,8 @@ class _MainViewState extends State<MainView> {
     return Scaffold(
       body: widgetOptions.elementAt(selectedIndex),
       bottomNavigationBar: Container(
-        decoration: !isDrawerVisible
-            ? BoxDecoration(
+        decoration: 
+            BoxDecoration(
                 color: isDark ? Color(0xff2A2A2A) : Colors.white,
                 boxShadow: [
                   BoxShadow(
@@ -51,9 +51,8 @@ class _MainViewState extends State<MainView> {
                   ),
                 ],
               )
-            : null,
-        child: !isDrawerVisible
-            ? MainNavigationBar(
+            ,
+        child:  MainNavigationBar(
                 selectedIndex: selectedIndex,
                 onDestinationSelected: (int index) {
                   setState(() {
@@ -61,12 +60,7 @@ class _MainViewState extends State<MainView> {
                   });
                 },
               )
-            : Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 15.0,
-                  vertical: 8,
-                ),
-              ),
+           
       ),
     );
   }
