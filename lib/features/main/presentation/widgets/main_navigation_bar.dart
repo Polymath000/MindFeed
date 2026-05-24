@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
+import 'package:mind_feed/core/utls/app_icons.dart';
 
 class MainNavigationBar extends StatefulWidget {
   MainNavigationBar({
@@ -39,30 +39,30 @@ class _MainNavigationBarState extends State<MainNavigationBar> {
           tabs: [
             GButton(
               icon: widget.selectedIndex == 0
-                  ? FontAwesomeIcons.solidHouse
-                  : FontAwesomeIcons.house,
+                  ? AppIcons.home
+                  : AppIcons.homeOutline,
               text: 'Home',
               // iconActiveColor: AppColors.black,
               backgroundColor: isDark ? AppColors.grey : AppColors.lightGray,
             ),
             GButton(
               icon: widget.selectedIndex == 1
-                  ? FontAwesomeIcons.magnifyingGlass
+                  ? AppIcons.search
                   : Icons.search,
               text: 'Search',
               backgroundColor: isDark ? AppColors.grey : AppColors.lightGray,
             ),
             GButton(
               icon: widget.selectedIndex == 2
-                  ? FontAwesomeIcons.solidFloppyDisk
-                  : FontAwesomeIcons.floppyDisk,
+                  ? AppIcons.bookmarkFilled
+                  : AppIcons.bookmarkOutline,
               text: 'Save',
               backgroundColor: isDark ? AppColors.grey : AppColors.lightGray,
             ),
             GButton(
               icon: widget.selectedIndex == 3
-                  ? FontAwesomeIcons.solidUser
-                  : FontAwesomeIcons.user,
+                  ? AppIcons.person
+                  : AppIcons.personOutline,
               text: 'Profile',
               backgroundColor: isDark ? AppColors.grey : AppColors.lightGray,
             ),

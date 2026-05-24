@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/utls/app_icons.dart';
 
 class CustomSearchBar extends StatelessWidget {
   const CustomSearchBar({super.key});
@@ -17,7 +17,7 @@ class CustomSearchBar extends StatelessWidget {
               decoration: InputDecoration(
                 hintText: 'Search',
                 prefixIcon: Icon(Icons.search_rounded),
-                suffixIcon: Icon(FontAwesomeIcons.xmark, size: 22),
+                suffixIcon: Icon(AppIcons.close, size: 22),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: AppBorders.xxxs,
                   borderSide: BorderSide(color: AppColors.lightBlue),
@@ -33,10 +33,7 @@ class CustomSearchBar extends StatelessWidget {
           IconButton(
             onPressed: () {},
             padding: EdgeInsets.all(14),
-            icon: Icon(
-              FontAwesomeIcons.magnifyingGlass,
-              color: AppColors.white,
-            ),
+            icon: Icon(AppIcons.search, color: AppColors.white),
             style: IconButton.styleFrom(
               backgroundColor: AppColors.darkBlue,
               shape: RoundedRectangleBorder(borderRadius: AppBorders.xxxs),

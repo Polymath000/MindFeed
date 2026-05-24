@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/config/themes/app_text_style.dart';
+import 'package:mind_feed/core/utls/app_icons.dart';
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 
 class CustomAppBar extends StatelessWidget {
@@ -28,8 +28,8 @@ class CustomAppBar extends StatelessWidget {
                 onTapHint: 'expand drawer',
                 child: Icon(
                   value.visible
-                      ? FontAwesomeIcons.xmark
-                      : FontAwesomeIcons.indent,
+                      ? AppIcons.close
+                      : AppIcons.menu,
                   key: ValueKey<bool>(value.visible),
                 ),
               ),

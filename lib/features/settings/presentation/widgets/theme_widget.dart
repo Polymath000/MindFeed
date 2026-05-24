@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mind_feed/core/utls/app_icons.dart';
 import 'package:mind_feed/features/settings/presentation/controllers/theme_mode_cubit/theme_mode_cubit.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/settings_menu.dart';
 
@@ -20,7 +20,7 @@ class ThemeWidget extends StatelessWidget {
           currentTheme = ThemeMode.system;
         }
         return buildSettingsMenuItemWithDropdown<ThemeMode>(
-          icon: FontAwesomeIcons.circleHalfStroke,
+          icon: AppIcons.theme,
           title: "Theme",
           value: currentTheme,
           items: const [

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mind_feed/core/utls/app_icons.dart';
 
 class AddToFavoriteArticleCard extends StatefulWidget {
   AddToFavoriteArticleCard({super.key, required this.isFav});
@@ -14,7 +14,7 @@ class _AddToFavoriteArticleCardState extends State<AddToFavoriteArticleCard> {
   Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(
-        widget.isFav ? FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart,
+        widget.isFav ? AppIcons.favorite : AppIcons.favoriteOutline,
       ),
       color: Colors.red,
       onPressed: () {

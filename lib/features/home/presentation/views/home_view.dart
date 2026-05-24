@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mind_feed/config/routes/on_generate_routes.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
+import 'package:mind_feed/core/utls/app_icons.dart';
 import 'package:mind_feed/features/home/presentation/widgets/custom_drawer.dart';
 import 'package:mind_feed/features/home/presentation/widgets/custombackground_for_the_drawer_in_home_page.dart';
 import 'package:mind_feed/features/home/presentation/widgets/home_view_body.dart';
@@ -36,7 +36,7 @@ class HomeView extends StatelessWidget {
             AppRoutes.addArticleView(context);
           },
           tooltip: 'Add Article',
-          child: Icon(FontAwesomeIcons.plus),
+          child: Icon(AppIcons.add),
         ),
       ),
     );

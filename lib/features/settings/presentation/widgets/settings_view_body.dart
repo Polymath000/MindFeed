@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mind_feed/core/widgets/custom_app_bar.dart';
+import 'package:mind_feed/core/utls/app_icons.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/settings_menu.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/theme_widget.dart';
 
@@ -22,19 +22,19 @@ class SettingsViewBody extends StatelessWidget {
                   title: 'Account',
                   children: [
                     buildSettingsMenuItem(
-                      icon: FontAwesomeIcons.userPen,
+                      icon: AppIcons.editProfile,
                       title: "Edit Profile",
                       onTap: () {},
                       context: context,
                     ),
                     buildSettingsMenuItem(
-                      icon: FontAwesomeIcons.lock,
+                      icon: AppIcons.lock,
                       title: "Change Password",
                       onTap: () {},
                       context: context,
                     ),
                     buildSettingsMenuItem(
-                      icon: FontAwesomeIcons.rightFromBracket,
+                      icon: AppIcons.logout,
                       title: "Logout",
                       onTap: () {},
                       context: context,
@@ -46,7 +46,7 @@ class SettingsViewBody extends StatelessWidget {
                   children: [
                     ThemeWidget(),
                     buildSettingsMenuItemWithDropMenu(
-                      icon: FontAwesomeIcons.textWidth,
+                      icon: AppIcons.textFormat,
                       title: "Font Size",
                       onTap: () {},
                       beforeTrailing: '',
@@ -58,7 +58,7 @@ class SettingsViewBody extends StatelessWidget {
                   title: 'Notifications',
                   children: [
                     buildSettingsMenuItemSwitcher(
-                      icon: FontAwesomeIcons.solidNewspaper,
+                      icon: AppIcons.news,
                       title: "New Articles",
                       context: context,
                     ),
@@ -73,13 +73,13 @@ class SettingsViewBody extends StatelessWidget {
                   title: 'Storage & Downloads',
                   children: [
                     buildSettingsMenuItemWithDropMenu(
-                      icon: FontAwesomeIcons.download,
+                      icon: AppIcons.download,
                       title: "Manage Downloads",
                       beforeTrailing: '',
                       context: context,
                     ),
                     buildSettingsMenuItemSwitcher(
-                      icon: FontAwesomeIcons.database,
+                      icon: AppIcons.database,
                       title: "Data Saver",
                       context: context,
                     ),

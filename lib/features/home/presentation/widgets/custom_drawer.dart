@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mind_feed/config/routes/on_generate_routes.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
+import 'package:mind_feed/core/utls/app_icons.dart';
 import 'package:mind_feed/core/utls/app_images.dart';
 import 'package:mind_feed/features/collections/presentation/views/downloaded_articles_view.dart';
 import 'package:mind_feed/features/collections/presentation/views/favorite_movies_view.dart';
@@ -46,7 +46,7 @@ class CustomDrawer extends StatelessWidget {
                 if (!isHome) AppRoutes.main(context);
                 advancedDrawerController.hideDrawer();
               },
-              leading: Icon(FontAwesomeIcons.solidHouse),
+              leading: Icon(AppIcons.home),
               title: Text('Home'),
             ),
             ListTile(
@@ -62,7 +62,7 @@ class CustomDrawer extends StatelessWidget {
                 if (!isDownload) AppRoutes.downloadedArticlesView(context);
                 advancedDrawerController.hideDrawer();
               },
-              leading: Icon(FontAwesomeIcons.download),
+              leading: Icon(AppIcons.download),
               title: Text('Downloads'),
             ),
             ListTile(
@@ -77,7 +77,7 @@ class CustomDrawer extends StatelessWidget {
                 if (!isFav) AppRoutes.favoriteMoviesView(context);
                 advancedDrawerController.hideDrawer();
               },
-              leading: Icon(FontAwesomeIcons.solidHeart),
+              leading: Icon(AppIcons.favorite),
               title: Text('Favourites'),
             ),
             ListTile(
@@ -92,7 +92,7 @@ class CustomDrawer extends StatelessWidget {
                 if (!isFav) AppRoutes.settingsView(context);
                 advancedDrawerController.hideDrawer();
               },
-              leading: Icon(FontAwesomeIcons.gears),
+              leading: Icon(AppIcons.settings),
               title: Text('Settings'),
             ),
           ],
