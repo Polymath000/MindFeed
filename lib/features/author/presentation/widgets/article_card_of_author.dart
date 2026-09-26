@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate_on_scroll/flutter_animate_on_scroll.dart';
 import 'package:mind_feed/config/routes/on_generate_routes.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/config/themes/app_text_style.dart';
-import 'package:mind_feed/core/constants/borders.dart';
-import 'package:mind_feed/features/home/presentation/widgets/add_to_favorite_article_card.dart';
-import 'package:mind_feed/features/home/presentation/widgets/article_card_image.dart';
-import 'package:mind_feed/features/home/presentation/widgets/custom_popup_menu_button_for_home.dart';
+import 'package:mind_feed/core/design/editorial_design.dart';
 
 class ArticleCardOfAuthor extends StatelessWidget {
-  ArticleCardOfAuthor({
+  const ArticleCardOfAuthor({
     super.key,
     required this.title,
     required this.imagePath,
@@ -21,68 +15,80 @@ class ArticleCardOfAuthor extends StatelessWidget {
   final String imagePath;
   final bool isDwonload;
   final bool isFav;
+
   @override
   Widget build(BuildContext context) {
-    bool isDark = Theme.of(context).brightness == Brightness.dark;
-    return ZoomIn(
-      config: BaseAnimationConfig(
-        delay: Duration(microseconds: 320),
-        child: GestureDetector(
-          onTap: () {
-            AppRoutes.articleView(context);
-          },
-          child: Container(
-            margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.spaceBlack : AppColors.lightGray,
-              borderRadius: AppBorders.xxxs,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
-                  blurRadius: 6,
-                  offset: const Offset(0, 3),
+    return InkWell(
+      onTap: () => AppRoutes.article(context),
+      borderRadius: EditorialRadii.card,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: const Color(0xFF262422),
+          borderRadius: EditorialRadii.card,
+          border: Border.all(color: const Color(0xFF383530)),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.asset(
+                imagePath,
+                width: 90,
+                height: 90,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => Container(
+                  width: 90,
+                  height: 90,
+                  color: EditorialPalette.cream,
+                  child: const Icon(Icons.article_outlined, color: EditorialPalette.ink),
                 ),
-              ],
+              ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Row(
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    width: MediaQuery.sizeOf(context).width * 0.35,
-                    child: ArticleCardImage(imagePath: imagePath),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: EditorialPalette.softCream,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      height: 1.25,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(width: 8),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      SizedBox(
-                        width: MediaQuery.sizeOf(context).height * 0.18,
-                        child: Text(
-                          title,
-                          style: AppTextStyles.titleLarge?.copyWith(
-                            color: isDark ? AppColors.white : AppColors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+                      IconButton(
+                        icon: Icon(
+                          isFav ? Icons.bookmark : Icons.bookmark_border_rounded,
+                          size: 18,
+                          color: EditorialPalette.softCream,
                         ),
+                        onPressed: () {},
                       ),
-                      Row(
-                        children: [
-                          AddToFavoriteArticleCard(isFav: isFav),
-                          CustomPopupMenuButtonForHomeView(
-                            isDwonload: isDwonload,
-                          ),
-                        ],
+                      IconButton(
+                        icon: const Icon(
+                          Icons.ios_share_rounded,
+                          size: 18,
+                          color: EditorialPalette.softCream,
+                        ),
+                        onPressed: () {},
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

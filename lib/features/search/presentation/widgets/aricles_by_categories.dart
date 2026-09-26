@@ -7,7 +7,7 @@ import 'package:mind_feed/core/constants/borders.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/categories_view_body.dart';
 
 class AriclesByCategories extends StatelessWidget {
-  const AriclesByCategories({Key? key}) : super(key: key);
+  const AriclesByCategories({super.key});
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

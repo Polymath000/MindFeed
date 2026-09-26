@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/config/themes/app_text_style.dart';
+import 'package:mind_feed/config/routes/on_generate_routes.dart';
+import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/password_requirements.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/password_text_field.dart';
@@ -18,6 +18,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
   AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
   String password = '';
   String confirmPassword = '';
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -25,56 +26,66 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
       autovalidateMode: autovalidateMode,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-
         children: [
-          Text(
+          const Text(
             'New Password',
-            style: AppTextStyles.bodyLarge!.copyWith(color: AppColors.white),
+            style: TextStyle(
+              color: EditorialPalette.softCream,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 8),
           PasswordTextField(
-            hintText: 'Enter your new password',
+            hintText: 'Enter new password',
             onChanged: (value) {
               setState(() {
                 password = value;
               });
             },
           ),
-          SizedBox(height: 16),
-          Text(
+          const SizedBox(height: 16),
+          const Text(
             'Confirm New Password',
-            style: AppTextStyles.bodyLarge!.copyWith(color: AppColors.white),
+            style: TextStyle(
+              color: EditorialPalette.softCream,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 8),
           PasswordTextField(
-            hintText: 'Enter your confirm password',
+            hintText: 'Re-enter new password',
             onChanged: (value) {
-              setState(() {});
+              setState(() {
+                confirmPassword = value;
+              });
             },
           ),
-          SizedBox(height: 32),
-          Align(
-            alignment: Alignment.center,
-            child: PasswordRequirements(password: password),
-          ),
-          SizedBox(height: 32),
+          const SizedBox(height: 20),
+          PasswordRequirements(password: password),
+          const SizedBox(height: 24),
           CustomButton(
-            buttonText: 'Change Password',
+            buttonText: 'Update Password',
             onTap: () {
               if (formKey.currentState?.validate() ?? false) {
-                FocusScope.of(context).unfocus();
-                // TODO: Handle Change Password logic here (Navigate to home page )
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text('Success')));
-              } else if (password != confirmPassword &&
-                  password.isNotEmpty &&
-                  confirmPassword.isNotEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Passwords do not match')),
-                );
+                if (password != confirmPassword &&
+                    password.isNotEmpty &&
+                    confirmPassword.isNotEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Passwords do not match')),
+                  );
+                } else {
+                  FocusScope.of(context).unfocus();
+                  AppRoutes.login(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Password updated successfully')),
+                  );
+                }
               } else {
-                autovalidateMode = AutovalidateMode.always;
+                setState(() {
+                  autovalidateMode = AutovalidateMode.always;
+                });
               }
             },
           ),

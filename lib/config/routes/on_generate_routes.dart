@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/features/add_article/presentation/views/add_article.dart';
 import 'package:mind_feed/features/collections/presentation/views/list_saved_articles.dart';
 import 'package:mind_feed/features/profile/presentation/views/profile_view.dart';
@@ -45,20 +46,11 @@ sealed class AppRoutes {
     arguments: arguments,
   );
 
-  // Routes with arguments
-
-  // static Future<Object?> createNewPasswordView(
-  //   final BuildContext context, {
-  //   required final String email,
-  //   required final String code,
-  // }) => _pushNamed(
-  //   context,
-  //   CreateNewPasswordView.routeName,
-  //   arguments: CreateNewPasswordViewArgs(email: email, code: code),
-  // );
-  // TODO: implement custom Tranition animation
-  static Future<Object?> article(final BuildContext context) =>
-      Navigator.of(context).push<Object>(createRoute());
+  static Future<Object?> article(
+    final BuildContext context, {
+    final EditorialNewsItem? item,
+  }) =>
+      Navigator.of(context).push<Object>(createRoute(item: item));
 
   static Future<Object?> categoriesView(
     final BuildContext context, {
@@ -74,7 +66,7 @@ sealed class AppRoutes {
     final BuildContext context, {
     required final String email,
   }) => _pushNamed(context, ChangePasswordView.routeName, arguments: email);
-  // Routes without arguments
+
   static Future<Object?> onboardingView(final BuildContext context) =>
       _pushNamedAndRemoveAll(context, OnboardingView.routeName);
 
@@ -124,6 +116,7 @@ class CreateNewPasswordViewArgs {
 }
 
 Map<String, Widget Function(BuildContext, Object?)> _routes = {
+  '/': (_, _) => const MainView(),
   OnboardingView.routeName: (_, _) => const OnboardingView(),
   LoginView.routeName: (_, _) => const LoginView(),
   SignUpView.routeName: (_, _) => const SignUpView(),
@@ -134,7 +127,8 @@ Map<String, Widget Function(BuildContext, Object?)> _routes = {
   ArticlesSaved.routeName: (_, _) => const ArticlesSaved(),
   DownloadedArticlesView.routeName: (_, _) => const DownloadedArticlesView(),
   FavoriteMoviesView.routeName: (_, _) => const FavoriteMoviesView(),
-  ArticleView.routeName: (_, _) => const ArticleView(),
+  ArticleView.routeName: (_, final args) =>
+      ArticleView(item: args is EditorialNewsItem ? args : null),
   AuthorView.routeName: (_, _) => const AuthorView(),
   SettingsView.routeName: (_, _) => const SettingsView(),
   AddArticleView.routeName: (_, _) => AddArticleView(),
@@ -148,14 +142,14 @@ Map<String, Widget Function(BuildContext, Object?)> _routes = {
       ChangePasswordView(email: args! as String),
   CategoriesView.routeName: (_, final args) =>
       CategoriesView(userEntity: args! as UserEntity),
-  // CreateNewPasswordView.routeName: (_, final args) {
-  //   final data = args! as CreateNewPasswordViewArgs;
-  //   return CreateNewPasswordView(email: data.email, code: data.code);
-  // },
 };
 
 Route<dynamic>? Function(RouteSettings)? onGenerateRoute = (final settings) {
+  final targetName = (settings.name == null || settings.name == '/')
+      ? MainView.routeName
+      : settings.name;
   final builder =
+      _routes[targetName] ??
       _routes[settings.name] ??
       (_, _) => const Scaffold(body: Center(child: Text('Page not found')));
   return MaterialPageRoute(
@@ -164,21 +158,46 @@ Route<dynamic>? Function(RouteSettings)? onGenerateRoute = (final settings) {
   );
 };
 
-Route<Object> createRoute() {
+Route<Object> createRoute({final EditorialNewsItem? item}) {
   return PageRouteBuilder<Object>(
     pageBuilder: (context, animation, secondaryAnimation) =>
-        const ArticleView(),
-    transitionDuration: const Duration(milliseconds: 1000),
-    reverseTransitionDuration: const Duration(milliseconds: 1000),
+        ArticleView(item: item),
+    transitionDuration: const Duration(milliseconds: 550),
+    reverseTransitionDuration: const Duration(milliseconds: 400),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(1.0, 0.0);
-      const end = Offset.zero;
-      const curve = Curves.bounceOut;
+      final curvedAnimation = CurvedAnimation(
+        parent: animation,
+        curve: Curves.fastOutSlowIn,
+        reverseCurve: Curves.easeInCubic,
+      );
+      final slideAnimation = Tween<Offset>(
+        begin: const Offset(0.0, 0.16),
+        end: Offset.zero,
+      ).animate(curvedAnimation);
+      final scaleAnimation = Tween<double>(
+        begin: 0.88,
+        end: 1.0,
+      ).animate(curvedAnimation);
+      final fadeAnimation = Tween<double>(
+        begin: 0.0,
+        end: 1.0,
+      ).animate(
+        CurvedAnimation(
+          parent: animation,
+          curve: const Interval(0.0, 0.65, curve: Curves.easeOut),
+        ),
+      );
 
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      var offsetAnimation = animation.drive(tween);
-
-      return SlideTransition(position: offsetAnimation, child: child);
+      return FadeTransition(
+        opacity: fadeAnimation,
+        child: SlideTransition(
+          position: slideAnimation,
+          child: ScaleTransition(
+            scale: scaleAnimation,
+            child: child,
+          ),
+        ),
+      );
     },
   );
 }

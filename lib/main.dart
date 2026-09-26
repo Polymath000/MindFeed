@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart' show Hive;
 import 'package:hive_flutter/adapters.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/core/constants/constants.dart';
@@ -29,7 +28,7 @@ void main() async {
   await globalDevicePreferenceNotifier.loadDevicePreferences();
   await SharedPreferencesSingleton.init();
   await Hive.initFlutter();
-  // Hive.registerAdapter(ModelAdapter());
+  Hive.registerAdapter(UserEntityAdapter());
   await Hive.openBox<UserEntity>(userKey);
   setupServiceLocator();
   runApp(

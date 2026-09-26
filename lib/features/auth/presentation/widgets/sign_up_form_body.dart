@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mind_feed/config/themes/app_text_style.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/core/params/signup_params.dart';
+import 'package:mind_feed/core/utls/app_images.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
 import 'package:mind_feed/core/widgets/custom_text_field.dart';
 import 'package:mind_feed/features/auth/presentation/controllers/signup_cubit/signup_cubit.dart';
@@ -26,10 +28,11 @@ class _SignUpFormBodyState extends State<SignUpFormBody> {
   late final TextEditingController _confirmPasswordController;
 
   AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
-  SignupParams params = SignupParams(email: '', password: '', displayName: '');
   String _password = '';
+
   @override
   void initState() {
+    super.initState();
     _usernameController = TextEditingController();
     _passwordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
@@ -39,7 +42,6 @@ class _SignUpFormBodyState extends State<SignUpFormBody> {
         _password = _passwordController.text;
       });
     });
-    super.initState();
   }
 
   @override
@@ -59,50 +61,72 @@ class _SignUpFormBodyState extends State<SignUpFormBody> {
       child: Center(
         child: Column(
           children: [
-            SizedBox(height: 85.0),
-            Text(
-              'Create Account',
-              style: AppTextStyles.displaySmall!.copyWith(
-                fontWeight: FontWeight.w200,
-                color: Colors.white,
+            const SizedBox(height: 32.0),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: const Color(0xFF262422),
+                shape: BoxShape.circle,
+                border: Border.all(color: const Color(0xFF383530), width: 1.5),
+              ),
+              child: SvgPicture.asset(
+                Assets.assetsImagesLogo,
+                height: 44,
+                width: 44,
               ),
             ),
-            const SizedBox(height: 5),
-            Text(
-              'Join thousands of readers worldwide',
-              style: AppTextStyles.bodyMedium!.copyWith(
-                fontWeight: FontWeight.w300,
-                color: Colors.grey,
+            const SizedBox(height: 16),
+            const Text(
+              'Join MindFeed',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w800,
+                letterSpacing: -0.8,
+                color: EditorialPalette.softCream,
               ),
             ),
-            SizedBox(height: 50.0),
+            const SizedBox(height: 6),
+            const Text(
+              'Start your journey with curated insights',
+              style: TextStyle(
+                fontSize: 13.5,
+                fontWeight: FontWeight.w400,
+                color: Color(0xFFAAA49B),
+              ),
+            ),
+            const SizedBox(height: 32.0),
             CustomTextField(
-              hintText: 'Username',
+              hintText: 'Full name or username',
+              prefixIcon: const Icon(
+                Icons.person_outline_rounded,
+                color: Color(0xFFAAA49B),
+                size: 20,
+              ),
               validator: (value) {
-                if (value == null || value.isEmpty) {
+                if (value == null || value.trim().isEmpty) {
                   return 'Please enter your username';
                 }
                 return null;
               },
               textEditingController: _usernameController,
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 14.0),
             EmailTextField(controller: _emailController),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 14.0),
             PasswordTextField(
-              hintText: 'Password',
+              hintText: 'Create password',
               controller: _passwordController,
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 14.0),
             PasswordTextField(
-              hintText: 'Confirm Password',
+              hintText: 'Confirm password',
               controller: _confirmPasswordController,
             ),
-            SizedBox(height: 22.0),
+            const SizedBox(height: 18.0),
             PasswordRequirements(password: _password),
-            SizedBox(height: 22.0),
+            const SizedBox(height: 22.0),
             CustomButton(
-              buttonText: 'Sign Up',
+              buttonText: 'Create Account',
               onTap: () {
                 if (formKey.currentState?.validate() ?? false) {
                   final password = _passwordController.text;
@@ -118,14 +142,16 @@ class _SignUpFormBodyState extends State<SignUpFormBody> {
                     FocusScope.of(context).unfocus();
                     context.read<SignupCubit>().eitherFailureOrSignup(
                       params: SignupParams(
-                        displayName: _usernameController.text,
-                        email: _emailController.text,
+                        displayName: _usernameController.text.trim(),
+                        email: _emailController.text.trim(),
                         password: password,
                       ),
                     );
                   }
                 } else {
-                  autovalidateMode = AutovalidateMode.always;
+                  setState(() {
+                    autovalidateMode = AutovalidateMode.always;
+                  });
                 }
               },
             ),

@@ -9,7 +9,7 @@ import 'package:mind_feed/features/home/presentation/widgets/article_card_inform
 import 'package:mind_feed/features/home/presentation/widgets/custom_popup_menu_button_for_home.dart';
 
 class ArticleCard extends StatelessWidget {
-  ArticleCard({
+  const ArticleCard({
     super.key,
     required this.title,
     required this.author,
@@ -42,7 +42,7 @@ class ArticleCard extends StatelessWidget {
               borderRadius: AppBorders.xxxs,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
+                  color: Colors.black.withValues(alpha: 0.15),
                   blurRadius: 6,
                   offset: const Offset(0, 3),
                 ),

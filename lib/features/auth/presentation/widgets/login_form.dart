@@ -8,7 +8,7 @@ import 'package:mind_feed/features/auth/presentation/widgets/logo.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/password_text_field.dart';
 
 class LoginForm extends StatefulWidget {
-  LoginForm({super.key});
+  const LoginForm({super.key});
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -20,6 +20,7 @@ class _LoginFormState extends State<LoginForm> {
   AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
   String password = '';
   String email = '';
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -27,7 +28,7 @@ class _LoginFormState extends State<LoginForm> {
       key: formKey,
       child: Column(
         children: [
-          Logo(),
+          const Logo(),
           EmailTextField(
             onChanged: (String value) {
               setState(() {
@@ -35,7 +36,7 @@ class _LoginFormState extends State<LoginForm> {
               });
             },
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           PasswordTextField(
             hintText: 'Password',
             onChanged: (String value) {
@@ -44,11 +45,11 @@ class _LoginFormState extends State<LoginForm> {
               });
             },
           ),
-          SizedBox(height: 16.0),
-          ForgetPasswordText(),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 8.0),
+          const ForgetPasswordText(),
+          const SizedBox(height: 20.0),
           CustomButton(
-            buttonText: 'Login',
+            buttonText: 'Sign In',
             onTap: () {
               if (formKey.currentState?.validate() ?? false) {
                 FocusScope.of(context).unfocus();
@@ -56,12 +57,10 @@ class _LoginFormState extends State<LoginForm> {
                   email: email,
                   password: password,
                 );
-                // TODO: Handle login logic here
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text('Login successful')));
               } else {
-                autovalidateMode = AutovalidateMode.always;
+                setState(() {
+                  autovalidateMode = AutovalidateMode.always;
+                });
               }
             },
           ),
