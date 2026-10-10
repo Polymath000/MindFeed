@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 
@@ -29,7 +29,7 @@ class CustomArticleCardOfProfile extends StatelessWidget {
         ],
       ),
       child: InkWell(
-        onTap: () => AppRoutes.article(context),
+        onTap: () => Navigator.pushNamed(context, AppRoutes.article, arguments: item),
         borderRadius: EditorialRadii.card,
         child: Padding(
           padding: const EdgeInsets.all(16.0),

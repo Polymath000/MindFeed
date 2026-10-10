@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/utls/app_images.dart';
+import 'package:mind_feed/core/constants/app_images.dart';
 
 class OnBoardingBackground extends StatelessWidget {
   const OnBoardingBackground({

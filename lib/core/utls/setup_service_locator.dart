@@ -17,19 +17,19 @@ import '../../features/auth/data/repos/auth_repo_impl.dart';
 final getIt = GetIt.instance;
 
 void setupServiceLocator() {
-  getIt.registerSingleton<DioConsumer>(DioConsumer(dio: Dio()));
-  getIt.registerSingleton<AuthApiSource>(
-    AuthApiSource(apiConsumer: getIt.get<DioConsumer>()),
+  getIt.registerLazySingleton<DioConsumer>(() => DioConsumer(dio: Dio()));
+  getIt.registerLazySingleton<AuthApiSource>(
+    () => AuthApiSource(apiConsumer: getIt.get<DioConsumer>()),
   );
-  getIt.registerSingleton<NetworkInfoImpl>(
-    kIsWeb ? NetworkInfoImpl() : NetworkInfoImpl(DataConnectionChecker()),
+  getIt.registerLazySingleton<NetworkInfoImpl>(
+    () => kIsWeb ? NetworkInfoImpl() : NetworkInfoImpl(DataConnectionChecker()),
   );
   if (Hive.isBoxOpen(userKey)) {
-    getIt.registerSingleton<UserCacheDataSource>(
-      UserCacheDataSource(cacheHelper: CacheHelper(kBoxName: userKey)),
+    getIt.registerLazySingleton<UserCacheDataSource>(
+      () => UserCacheDataSource(cacheHelper: CacheHelper(kBoxName: userKey)),
     );
-    getIt.registerSingleton<AuthRepoImpl>(
-      AuthRepoImpl(
+    getIt.registerLazySingleton<AuthRepoImpl>(
+      () => AuthRepoImpl(
         authApiSource: getIt.get<AuthApiSource>(),
         networkInfo: getIt.get<NetworkInfoImpl>(),
         userCacheDataSource: getIt<UserCacheDataSource>(),

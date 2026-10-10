@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class DotsWidget extends StatelessWidget {
   // Now only takes the currentPage index as a parameter

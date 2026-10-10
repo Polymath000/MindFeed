@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class MoreVertIcon extends StatelessWidget {
   const MoreVertIcon({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/core/widgets/custom_loading_indecator.dart';
 import 'package:mind_feed/features/auth/presentation/controllers/login_cubit/login_cubit.dart';
@@ -19,7 +19,7 @@ class LoginViewBody extends StatelessWidget {
         if (state is LoginFailure) {
           customShowSnackBar(message: state.errorMessage, context: context);
         } else if (state is LoginSuccess) {
-          AppRoutes.main(context);
+          Navigator.pushNamedAndRemoveUntil(context, AppRoutes.main, (route) => false);
           customShowSnackBar(message: 'Login Success', context: context);
         }
       },

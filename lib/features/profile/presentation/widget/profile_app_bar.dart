@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 
 class ProfileAppBar extends StatelessWidget {
@@ -27,7 +27,7 @@ class ProfileAppBar extends StatelessWidget {
           child: EditorialIconButton(
             icon: Icons.settings_outlined,
             label: 'Settings',
-            onPressed: () => AppRoutes.settingsView(context),
+            onPressed: () => Navigator.pushNamed(context, AppRoutes.settings),
           ),
         ),
       ],

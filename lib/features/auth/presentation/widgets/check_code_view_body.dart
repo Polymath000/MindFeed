@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
 import 'package:mind_feed/core/widgets/custom_text_field.dart';
@@ -39,7 +39,7 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
                           EditorialIconButton(
                             icon: Icons.arrow_back_rounded,
                             label: 'Back',
-                            onPressed: () => AppRoutes.pop(context),
+                            onPressed: () => Navigator.pop(context),
                           ),
                           const SizedBox(width: 12),
                           const Text(
@@ -87,7 +87,7 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
                         onTap: () {
                           if (formKey.currentState?.validate() ?? false) {
                             FocusScope.of(context).unfocus();
-                            AppRoutes.changepasswordView(context, email: widget.email);
+                            Navigator.pushNamed(context, AppRoutes.changePassword, arguments: widget.email);
                           } else {
                             setState(() {
                               autovalidateMode = AutovalidateMode.always;

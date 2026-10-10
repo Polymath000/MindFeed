@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
-import 'package:mind_feed/core/utls/app_images.dart';
+import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/settings_menu.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/theme_widget.dart';
 
@@ -340,7 +340,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                   stampColor: EditorialPalette.lilac,
                   title: 'Change Password',
                   subtitle: 'Update your account access passphrase',
-                  onTap: () => AppRoutes.changepasswordView(context, email: 'wade@mindfeed.app'),
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.changePassword, arguments: 'wade@mindfeed.app'),
                 ),
                 PaperSettingsTile(
                   icon: Icons.shield_outlined,

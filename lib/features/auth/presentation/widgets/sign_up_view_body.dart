@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/core/widgets/custom_loading_indecator.dart';
 import 'package:mind_feed/features/auth/presentation/controllers/signup_cubit/signup_cubit.dart';
@@ -18,7 +18,7 @@ class SignUpViewBody extends StatelessWidget {
     return BlocConsumer<SignupCubit, SignupState>(
       listener: (context, state) {
         if (state is SignupSuccess) {
-          AppRoutes.main(context);
+          Navigator.pushNamedAndRemoveUntil(context, AppRoutes.main, (route) => false);
           customShowSnackBar(message: 'Sign Up Success', context: context);
         } else if (state is SignupFailure) {
           customShowSnackBar(message: state.errorMessage, context: context);

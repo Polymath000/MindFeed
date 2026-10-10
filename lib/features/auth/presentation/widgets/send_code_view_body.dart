@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/auth_background.dart';
@@ -40,7 +40,7 @@ class _SendCodeViewBodyState extends State<SendCodeViewBody> {
                           EditorialIconButton(
                             icon: Icons.arrow_back_rounded,
                             label: 'Back',
-                            onPressed: () => AppRoutes.pop(context),
+                            onPressed: () => Navigator.pop(context),
                           ),
                           const SizedBox(width: 12),
                           const Text(
@@ -85,7 +85,7 @@ class _SendCodeViewBodyState extends State<SendCodeViewBody> {
                         onTap: () {
                           if (formKey.currentState?.validate() ?? false) {
                             FocusScope.of(context).unfocus();
-                            AppRoutes.checkCodeView(context, email: email);
+                            Navigator.pushNamed(context, AppRoutes.checkCode, arguments: email);
                           } else {
                             setState(() {
                               autovalidateMode = AutovalidateMode.always;

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_card_stack.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_mock_data.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
-import 'package:mind_feed/core/utls/app_images.dart';
+import 'package:mind_feed/core/constants/app_images.dart';
 
 class HomeViewBody extends StatefulWidget {
   const HomeViewBody({super.key});
@@ -250,7 +250,7 @@ class _HomeViewBodyState extends State<HomeViewBody>
                       EditorialIconButton(
                         icon: Icons.grid_view_rounded,
                         label: 'Open profile',
-                        onPressed: () => AppRoutes.profileView(context),
+                        onPressed: () => Navigator.pushNamed(context, AppRoutes.profile),
                       ),
                     ],
                   ),
@@ -324,7 +324,7 @@ class _HomeViewBodyState extends State<HomeViewBody>
                     items: stories,
                     height: 570,
                     onOpenArticle: (item) =>
-                        AppRoutes.article(context, item: item),
+                        Navigator.pushNamed(context, AppRoutes.article, arguments: item),
                     onDismiss: (item) {
                       ScaffoldMessenger.of(context).clearSnackBars();
                       ScaffoldMessenger.of(context).showSnackBar(

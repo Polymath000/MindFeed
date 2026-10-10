@@ -1,10 +1,10 @@
-import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:mind_feed/core/constants/constants.dart' show tokenKey;
 import 'package:mind_feed/core/database/cache/cache_helper.dart';
 import 'package:mind_feed/core/errors/expentions.dart';
-import 'package:mind_feed/core/errors/failure.dart';
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/network/network_info.dart';
+import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/params/login_params.dart';
 import 'package:mind_feed/features/auth/data/datasources/auth_api_source.dart';
 import 'package:mind_feed/features/auth/data/datasources/user_cache_source.dart';
@@ -24,31 +24,31 @@ class AuthRepoImpl extends AuthRepository {
     required this.userCacheDataSource,
   });
   @override
-  Future<Either<Failure, void>> forgetPassword(String email) {
+  Future<ApiResult<void>> forgetPassword(String email) {
     // TODO: implement forgetPassword
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, String>> login(LoginParams params) async {
+  Future<ApiResult<String>> login(LoginParams params) async {
     if (await networkInfo.isConnected!) {
       try {
         final remote = await authApiSource.login(params: params);
         if (remote.isEmpty) {
-          return Left(Failure(message: 'No User Found'));
+          return FailureResult(Failure(message: 'No User Found'));
         }
         await SharedPreferencesSingleton.setString(tokenKey, remote);
-        return Right(remote);
+        return Success(remote);
       } on ServerException catch (e) {
-        return Left(ServerFailure(message: e.errorModel.errorMessage));
+        return FailureResult(ServerFailure(message: e.errorModel.errorMessage));
       }
     } else {
-      return Left(Failure(message: 'You are Offline'));
+      return FailureResult(Failure(message: 'You are Offline'));
     }
   }
 
   @override
-  Future<Either<Failure, Response>> signup(SignupParams params) async {
+  Future<ApiResult<Response>> signup(SignupParams params) async {
     if (await networkInfo.isConnected!) {
       try {
         final remote = await authApiSource.signUp(params: params);
@@ -62,12 +62,12 @@ class AuthRepoImpl extends AuthRepository {
           }
         }
 
-        return Right(remote);
+        return Success(remote);
       } on ServerException catch (e) {
-        return Left(ServerFailure(message: e.errorModel.errorMessage));
+        return FailureResult(ServerFailure(message: e.errorModel.errorMessage));
       }
     } else {
-      return Left(Failure(message: 'You are Offline'));
+      return FailureResult(Failure(message: 'You are Offline'));
     }
   }
 }

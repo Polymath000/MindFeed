@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class CustomLoadingIndecator extends StatelessWidget {
   const CustomLoadingIndecator({

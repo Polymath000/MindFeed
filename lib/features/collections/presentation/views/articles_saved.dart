@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_mock_data.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
@@ -86,7 +86,7 @@ class _ArticlesSavedState extends State<ArticlesSaved> {
               const SizedBox(height: 8),
               EditorialSavedStack(
                 items: _filteredStories,
-                onOpenArticle: (item) => AppRoutes.article(context),
+                onOpenArticle: (item) => Navigator.pushNamed(context, AppRoutes.article, arguments: item),
                 onDeleteArticle: (item) {
                   setState(() {
                     _savedStories.removeWhere((el) => el.id == item.id);

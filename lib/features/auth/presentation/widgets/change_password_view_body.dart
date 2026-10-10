@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/auth_background.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/change_password_form.dart';
@@ -28,7 +28,7 @@ class ChangePasswordViewBody extends StatelessWidget {
                         EditorialIconButton(
                           icon: Icons.arrow_back_rounded,
                           label: 'Back',
-                          onPressed: () => AppRoutes.pop(context),
+                          onPressed: () => Navigator.pop(context),
                         ),
                         const SizedBox(width: 12),
                         const Text(

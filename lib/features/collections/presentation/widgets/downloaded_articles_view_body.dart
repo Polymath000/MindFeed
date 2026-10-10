@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart' hide SearchBar;
-import 'package:mind_feed/core/utls/app_images.dart';
+import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/widgets/custom_app_bar.dart';
 import 'package:mind_feed/core/widgets/search_bar.dart';
 import 'package:mind_feed/features/home/presentation/widgets/article_card.dart';
