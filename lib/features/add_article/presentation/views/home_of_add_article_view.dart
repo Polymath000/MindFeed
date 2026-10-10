@@ -1,4 +1,5 @@
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -216,7 +217,7 @@ class _HomeState extends State<Home> {
                 onPressed: _switchPreview,
                 tooltip: AppLocalizations.of(context)!.previewToolTip,
                 icon: Icon(
-                  _isPreview ? Icons.visibility_off : Icons.visibility,
+                  _isPreview ? AppIcons.visibilityOff : AppIcons.visibility,
                 ),
               ),
             PopupMenuButton<MenuItem>(
@@ -244,7 +245,7 @@ class _HomeState extends State<Home> {
                   value: MenuItem.switchView,
                   child: Row(
                     children: [
-                      const Icon(Icons.rotate_left),
+                      const Icon(AppIcons.rotateLeft),
                       const SizedBox(width: 8),
                       Text(AppLocalizations.of(context)!.switchViewMenuItem),
                     ],
@@ -254,7 +255,7 @@ class _HomeState extends State<Home> {
                   value: MenuItem.open,
                   child: Row(
                     children: [
-                      const Icon(Icons.file_open),
+                      const Icon(AppIcons.fileOpen),
                       const SizedBox(width: 8),
                       Text(AppLocalizations.of(context)!.openFileMenuItem),
                     ],
@@ -264,7 +265,7 @@ class _HomeState extends State<Home> {
                   value: MenuItem.clear,
                   child: Row(
                     children: [
-                      const Icon(Icons.clear_all),
+                      const Icon(AppIcons.clearAll),
                       const SizedBox(width: 8),
                       Text(AppLocalizations.of(context)!.clear),
                     ],
@@ -274,7 +275,7 @@ class _HomeState extends State<Home> {
                   value: MenuItem.save,
                   child: Row(
                     children: [
-                      const Icon(Icons.save),
+                      const Icon(AppIcons.save),
                       const SizedBox(width: 8),
                       Text(AppLocalizations.of(context)!.save),
                     ],

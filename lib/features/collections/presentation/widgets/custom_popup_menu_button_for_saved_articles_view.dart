@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/widgets/more_vert_icon.dart';
 
 class CustomPopupMenuButtonForSavedArticlesView extends StatelessWidget {
@@ -12,7 +13,7 @@ class CustomPopupMenuButtonForSavedArticlesView extends StatelessWidget {
           value: 'Edit Info',
           child: Row(
             children: [
-              Icon(Icons.edit, size: 20),
+              Icon(AppIcons.editAlt, size: 20),
               SizedBox(width: 8),
               Text('Edit List Info'),
             ],
@@ -22,7 +23,7 @@ class CustomPopupMenuButtonForSavedArticlesView extends StatelessWidget {
           value: 'Download',
           child: Row(
             children: [
-              Icon(Icons.download, size: 20),
+              Icon(AppIcons.downloadAlt, size: 20),
               SizedBox(width: 8),
               Text('Download'),
             ],

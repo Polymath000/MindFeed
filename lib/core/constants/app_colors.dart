@@ -140,6 +140,7 @@ sealed class AppColors {
   static const Color charcoalDark = Color(0xFF24221E);
   static const Color charcoalDarker = Color(0xFF23211F);
   static const Color darkBg = Color(0xff1F1F2E);
+  static const Color inkDark = Color(0xFF1E1D1A);
   static const Color greenDark = Color(0xFF1B5E20);
   static const Color inkDarker = Color(0xFF191816);
   static const Color inkDarkest = Color(0xFF131210);

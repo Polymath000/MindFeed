@@ -1,6 +1,6 @@
 import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 
@@ -104,7 +104,7 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
           ),
           child: const Row(
             children: [
-              Icon(Icons.delete_outline_rounded, color: Colors.white, size: 28),
+              Icon(AppIcons.delete, color: Colors.white, size: 28),
               SizedBox(width: 8),
               Text(
                 'Delete',
@@ -136,14 +136,15 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
                 ),
               ),
               SizedBox(width: 8),
-              Icon(Icons.delete_outline_rounded, color: Colors.white, size: 28),
+              Icon(AppIcons.delete, color: Colors.white, size: 28),
             ],
           ),
         ),
         onDismissed: (_) => _deleteItem(index, item),
         child: GestureDetector(
           onVerticalDragEnd: (details) {
-            if (details.primaryVelocity != null && details.primaryVelocity! < -200) {
+            if (details.primaryVelocity != null &&
+                details.primaryVelocity! < -200) {
               widget.onOpenArticle(item);
             }
           },

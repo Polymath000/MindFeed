@@ -1,4 +1,5 @@
 import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
@@ -40,19 +41,19 @@ class MainNavigationBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _Nav(
-                  icon: Icons.home_rounded,
+                  icon: AppIcons.home,
                   label: 'Home',
                   active: selectedIndex == 0,
                   onTap: () => onDestinationSelected(0),
                 ),
                 _Nav(
-                  icon: Icons.search_rounded,
+                  icon: AppIcons.search,
                   label: 'Search',
                   active: selectedIndex == 1,
                   onTap: () => onDestinationSelected(1),
                 ),
                 _Nav(
-                  icon: Icons.bookmark_rounded,
+                  icon: AppIcons.bookmarkFilled,
                   label: 'Saved news',
                   active: selectedIndex == 2,
                   onTap: () => onDestinationSelected(2),

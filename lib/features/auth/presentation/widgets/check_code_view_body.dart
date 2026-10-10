@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
@@ -38,7 +39,7 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
                       Row(
                         children: [
                           EditorialIconButton(
-                            icon: Icons.arrow_back_rounded,
+                            icon: AppIcons.arrowBackRounded,
                             label: 'Back',
                             onPressed: () => Navigator.pop(context),
                           ),

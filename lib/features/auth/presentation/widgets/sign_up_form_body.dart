@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
@@ -99,7 +100,7 @@ class _SignUpFormBodyState extends State<SignUpFormBody> {
             CustomTextField(
               hintText: 'Full name or username',
               prefixIcon: const Icon(
-                Icons.person_outline_rounded,
+                AppIcons.personOutline,
                 color: AppColors.greyText,
                 size: 20,
               ),

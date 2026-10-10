@@ -140,6 +140,4 @@ Never handleDioException(DioException e) {
         ErrorModel(errorMessage: e.toString(), status: 500),
       );
   }
-
-  throw UnknownException(ErrorModel(errorMessage: e.toString(), status: 500));
 }

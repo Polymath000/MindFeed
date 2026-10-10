@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/config/routes/app_routes.dart';
@@ -43,7 +44,7 @@ class _ArticlesSavedState extends State<ArticlesSaved> {
               Row(
                 children: [
                   EditorialIconButton(
-                    icon: Icons.arrow_back_rounded,
+                    icon: AppIcons.arrowBackRounded,
                     label: 'Back',
                     onPressed: () => Navigator.maybePop(context),
                   ),

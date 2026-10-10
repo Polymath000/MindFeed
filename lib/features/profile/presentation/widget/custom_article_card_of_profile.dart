@@ -1,4 +1,5 @@
 import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/config/routes/app_routes.dart';
@@ -96,17 +97,17 @@ class CustomArticleCardOfProfile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.edit_outlined, size: 18, color: AppColors.ink),
+                    icon: const Icon(AppIcons.edit, size: 18, color: AppColors.ink),
                     tooltip: 'Edit article',
                     onPressed: () {},
                   ),
                   IconButton(
-                    icon: const Icon(Icons.delete_outline_rounded, size: 18, color: AppColors.ink),
+                    icon: const Icon(AppIcons.delete, size: 18, color: AppColors.ink),
                     tooltip: 'Delete article',
                     onPressed: onDelete,
                   ),
                   IconButton(
-                    icon: const Icon(Icons.ios_share_rounded, size: 18, color: AppColors.ink),
+                    icon: const Icon(AppIcons.iosShareRounded, size: 18, color: AppColors.ink),
                     tooltip: 'Share article',
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(

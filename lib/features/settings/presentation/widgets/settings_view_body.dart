@@ -1,4 +1,5 @@
 import 'package:mind_feed/core/constants/constants.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
@@ -40,7 +41,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
             Row(
               children: [
                 EditorialIconButton(
-                  icon: Icons.arrow_back_rounded,
+                  icon: AppIcons.arrowBackRounded,
                   label: 'Back',
                   onPressed: () => Navigator.maybePop(context),
                 ),
@@ -106,7 +107,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                         errorBuilder: (_, _, _) => const CircleAvatar(
                           radius: 22,
                           backgroundColor: AppColors.blush,
-                          child: Icon(Icons.person, color: AppColors.ink),
+                          child: Icon(AppIcons.personAlt, color: AppColors.ink),
                         ),
                       ),
                     ),
@@ -184,7 +185,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                   labelBuilder: (s) => s,
                 ),
                 PaperSettingsSwitchTile(
-                  icon: Icons.menu_book_outlined,
+                  icon: AppIcons.menuBookOutlined,
                   stampColor: AppColors.lilac,
                   title: 'Serif Literary Immersion',
                   subtitle: 'Render longform stories in classic editorial serif typography',
@@ -196,7 +197,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                   },
                 ),
                 PaperSettingsSwitchTile(
-                  icon: Icons.visibility_outlined,
+                  icon: AppIcons.visibilityOutlined,
                   stampColor: AppColors.powder,
                   title: 'Bionic Reading Guide',
                   subtitle: 'Subtly emphasize key word anchors for swift reading pace',
@@ -214,7 +215,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
               kicker: 'DISPATCHES',
               children: [
                 PaperSettingsSwitchTile(
-                  icon: Icons.wb_sunny_outlined,
+                  icon: AppIcons.wbSunnyOutlined,
                   stampColor: AppColors.butter,
                   title: 'Morning Edition Briefing',
                   subtitle: 'Curated 7:00 AM daily reading digest delivered quietly',
@@ -226,7 +227,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                   },
                 ),
                 PaperSettingsSwitchTile(
-                  icon: Icons.notifications_active_outlined,
+                  icon: AppIcons.notificationsActiveOutlined,
                   stampColor: AppColors.blush,
                   title: 'Investigative Breaking Alerts',
                   subtitle: 'Instant alerts for major global stories and science breakthroughs',
@@ -238,7 +239,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                   },
                 ),
                 PaperSettingsTile(
-                  icon: Icons.volume_up_outlined,
+                  icon: AppIcons.volumeUpOutlined,
                   stampColor: AppColors.mint,
                   title: 'Audio Narration Cadence',
                   subtitle: 'Speech synthesis voice for article reading',
@@ -254,7 +255,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                         ),
                       ),
                       SizedBox(width: 4),
-                      Icon(Icons.arrow_forward_ios_rounded, size: 12, color: AppColors.mutedInk),
+                      Icon(AppIcons.arrowForwardIosRounded, size: 12, color: AppColors.mutedInk),
                     ],
                   ),
                   onTap: () {
@@ -274,7 +275,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
               kicker: 'OFFLINE ARCHIVE',
               children: [
                 PaperSettingsTile(
-                  icon: Icons.inventory_2_outlined,
+                  icon: AppIcons.inventory2Outlined,
                   stampColor: AppColors.sand,
                   title: 'Offline Reading Archive',
                   subtitle: '${_cachedMegabytes.toStringAsFixed(1)} MB cached across 14 articles',
@@ -308,7 +309,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                   ),
                 ),
                 PaperSettingsSwitchTile(
-                  icon: Icons.network_check_rounded,
+                  icon: AppIcons.networkCheckRounded,
                   stampColor: AppColors.powder,
                   title: 'Data Preservation Mode',
                   subtitle: 'Load compressed imagery when connected to cellular data',
@@ -320,7 +321,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                   },
                 ),
                 PaperSettingsSwitchTile(
-                  icon: Icons.wifi_rounded,
+                  icon: AppIcons.wifiRounded,
                   stampColor: AppColors.cream,
                   title: 'Download on Wi-Fi Only',
                   subtitle: 'Save high-fidelity offline articles only on Wi-Fi',
@@ -338,14 +339,14 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
               kicker: 'JOURNAL & PRIVACY',
               children: [
                 PaperSettingsTile(
-                  icon: Icons.lock_outline_rounded,
+                  icon: AppIcons.lock,
                   stampColor: AppColors.lilac,
                   title: 'Change Password',
                   subtitle: 'Update your account access passphrase',
                   onTap: () => Navigator.pushNamed(context, AppRoutes.changePassword, arguments: 'wade@mindfeed.app'),
                 ),
                 PaperSettingsTile(
-                  icon: Icons.shield_outlined,
+                  icon: AppIcons.shieldOutlined,
                   stampColor: AppColors.mint,
                   title: 'Editorial Ethics & Privacy Charter',
                   subtitle: 'MindFeed independent journalism charter and zero-tracker guarantee',
@@ -402,7 +403,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                   },
                 ),
                 PaperSettingsTile(
-                  icon: Icons.logout_rounded,
+                  icon: AppIcons.logout,
                   stampColor: AppColors.blush,
                   title: 'Sign Out of Edition',
                   subtitle: 'End active session on this device',

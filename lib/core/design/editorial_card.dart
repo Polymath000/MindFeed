@@ -1,4 +1,5 @@
 import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
@@ -133,7 +134,7 @@ class EditorialCard extends StatelessWidget {
                     errorBuilder: (_, _, _) => const CircleAvatar(
                       radius: 19,
                       backgroundColor: AppColors.blush,
-                      child: Icon(Icons.person, color: AppColors.ink),
+                      child: Icon(AppIcons.personAlt, color: AppColors.ink),
                     ),
                   ),
                 ),
@@ -186,8 +187,8 @@ class EditorialCard extends StatelessWidget {
                 children: [
                   EditorialIconButton(
                     icon: item.isLiked
-                        ? Icons.thumb_up
-                        : Icons.thumb_up_outlined,
+                        ? AppIcons.thumbUp
+                        : AppIcons.thumbUpOutlined,
                     label: 'Like article',
                     light: true,
                     onPressed: onLike,
@@ -195,15 +196,15 @@ class EditorialCard extends StatelessWidget {
                   const SizedBox(width: 6),
                   EditorialIconButton(
                     icon: item.isSaved
-                        ? Icons.bookmark
-                        : Icons.bookmark_border_rounded,
+                        ? AppIcons.bookmark
+                        : AppIcons.bookmarkBorderRounded,
                     label: 'Save article',
                     light: true,
                     onPressed: onSave,
                   ),
                   const SizedBox(width: 6),
                   EditorialIconButton(
-                    icon: Icons.ios_share_rounded,
+                    icon: AppIcons.iosShareRounded,
                     label: 'Share article',
                     light: true,
                     onPressed: onShare ?? () => showEditorialShareSheet(context, title: item.title),

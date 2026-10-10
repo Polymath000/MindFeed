@@ -1,32 +1,7 @@
 import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-
-sealed class EditorialPalette {
-  static const ink = Color(0xFF171614);
-  static const charcoal = Color(0xFF262422);
-  static const cream = Color(0xFFFFF1C6);
-  static const butter = Color(0xFFFFE8A1);
-  static const blush = Color(0xFFFFDDE0);
-  static const powder = Color(0xFFDCEEFF);
-  static const lilac = Color(0xFFE9DEFF);
-  static const mint = Color(0xFFD7F5E8);
-  static const peach = Color(0xFFFFE5D0);
-  static const sand = Color(0xFFF5EEDC);
-  static const mutedInk = Color(0xFF514D46);
-  static const softCream = Color(0xFFFFF8E6);
-}
-
-sealed class EditorialSpace {
-  static const page = 20.0;
-  static const compact = 12.0;
-  static const roomy = 24.0;
-}
-
-sealed class EditorialRadii {
-  static const card = BorderRadius.all(Radius.circular(26));
-  static const control = BorderRadius.all(Radius.circular(24));
-}
 
 class EditorialIconButton extends StatelessWidget {
   const EditorialIconButton({
@@ -49,22 +24,13 @@ class EditorialIconButton extends StatelessWidget {
       message: label,
       child: IconButton(
         onPressed: onPressed,
-        icon: Icon(
-          icon,
-          color: light ? AppColors.ink : AppColors.softCream,
-        ),
+        icon: Icon(icon, color: light ? AppColors.ink : AppColors.softCream),
         iconSize: 21,
         constraints: const BoxConstraints.tightFor(width: 48, height: 48),
         style: IconButton.styleFrom(
-          backgroundColor: light
-              ? AppColors.cream
-              : AppColors.ink,
-          foregroundColor: light
-              ? AppColors.ink
-              : AppColors.softCream,
-          shape: const RoundedRectangleBorder(
-            borderRadius: AppBorders.control,
-          ),
+          backgroundColor: light ? AppColors.cream : AppColors.ink,
+          foregroundColor: light ? AppColors.ink : AppColors.softCream,
+          shape: const RoundedRectangleBorder(borderRadius: AppBorders.control),
         ),
       ),
     ),
@@ -121,7 +87,7 @@ class _EditorialFollowButtonState extends State<EditorialFollowButton> {
           );
         },
         icon: Icon(
-          _isFollowing ? Icons.check_rounded : Icons.add_rounded,
+          _isFollowing ? AppIcons.checkRounded : AppIcons.add,
           size: 16,
           color: _isFollowing ? AppColors.ink : AppColors.softCream,
         ),
@@ -134,15 +100,11 @@ class _EditorialFollowButtonState extends State<EditorialFollowButton> {
           ),
         ),
         style: FilledButton.styleFrom(
-          backgroundColor: _isFollowing
-              ? AppColors.cream
-              : AppColors.ink,
+          backgroundColor: _isFollowing ? AppColors.cream : AppColors.ink,
           elevation: _isFollowing ? 1 : 0,
           minimumSize: const Size(82, 40),
           padding: const EdgeInsets.symmetric(horizontal: 14),
-          shape: const RoundedRectangleBorder(
-            borderRadius: AppBorders.control,
-          ),
+          shape: const RoundedRectangleBorder(borderRadius: AppBorders.control),
         ),
       ),
     ),
@@ -154,7 +116,9 @@ void showEditorialShareSheet(
   required String title,
   String? url,
 }) {
-  final shareUrl = url ?? 'https://mindfeed.app/stories/${Uri.encodeComponent(title.split('\n').first)}';
+  final shareUrl =
+      url ??
+      'https://mindfeed.app/stories/${Uri.encodeComponent(title.split('\n').first)}';
 
   showModalBottomSheet(
     context: context,
@@ -163,10 +127,10 @@ void showEditorialShareSheet(
     builder: (ctx) => Container(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
       decoration: const BoxDecoration(
-        color: Color(0xFF1E1D1A),
+        color: AppColors.inkDark,
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         border: Border(
-          top: BorderSide(color: Color(0xFF383530), width: 1.5),
+          top: BorderSide(color: AppColors.borderDark, width: 1.5),
         ),
       ),
       child: Column(
@@ -178,7 +142,7 @@ void showEditorialShareSheet(
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                color: const Color(0xFF55524C),
+                color: AppColors.mutedInk,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -186,7 +150,7 @@ void showEditorialShareSheet(
           const SizedBox(height: 20),
           const Row(
             children: [
-              Icon(Icons.ios_share_rounded, color: AppColors.cream, size: 20),
+              Icon(AppIcons.iosShareRounded, color: AppColors.cream, size: 20),
               SizedBox(width: 8),
               Text(
                 'Share Story',
@@ -216,7 +180,7 @@ void showEditorialShareSheet(
             children: [
               _buildShareAction(
                 ctx,
-                icon: Icons.link_rounded,
+                icon: AppIcons.linkRounded,
                 label: 'Copy Link',
                 onTap: () {
                   Navigator.pop(ctx);
@@ -231,7 +195,7 @@ void showEditorialShareSheet(
               ),
               _buildShareAction(
                 ctx,
-                icon: Icons.chat_bubble_outline_rounded,
+                icon: AppIcons.chatBubbleOutlineRounded,
                 label: 'Message',
                 onTap: () {
                   Navigator.pop(ctx);
@@ -242,7 +206,7 @@ void showEditorialShareSheet(
               ),
               _buildShareAction(
                 ctx,
-                icon: Icons.alternate_email_rounded,
+                icon: AppIcons.alternateEmailRounded,
                 label: 'Post to X',
                 onTap: () {
                   Navigator.pop(ctx);
@@ -253,7 +217,7 @@ void showEditorialShareSheet(
               ),
               _buildShareAction(
                 ctx,
-                icon: Icons.bookmark_add_outlined,
+                icon: AppIcons.bookmarkAddOutlined,
                 label: 'Bookmark',
                 onTap: () {
                   Navigator.pop(ctx);
@@ -288,9 +252,9 @@ Widget _buildShareAction(
             width: 52,
             height: 52,
             decoration: BoxDecoration(
-              color: const Color(0xFF2A2825),
+              color: AppColors.darkTile,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFF383530)),
+              border: Border.all(color: AppColors.borderDark),
             ),
             child: Icon(icon, color: AppColors.cream, size: 22),
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/features/settings/presentation/controllers/theme_mode_cubit/theme_mode_cubit.dart';
@@ -52,7 +53,7 @@ class ThemeWidget extends StatelessWidget {
                       current: currentTheme,
                       title: 'Warm Paper',
                       subtitle: 'Daylight Print',
-                      icon: Icons.menu_book_rounded,
+                      icon: AppIcons.menuBookRounded,
                       cardColor: AppColors.softCream,
                       textColor: AppColors.ink,
                     ),
@@ -65,7 +66,7 @@ class ThemeWidget extends StatelessWidget {
                       current: currentTheme,
                       title: 'Midnight Ink',
                       subtitle: 'Dimmed Study',
-                      icon: Icons.nightlight_round,
+                      icon: AppIcons.nightlightRound,
                       cardColor: AppColors.charcoalDarker,
                       textColor: AppColors.softCream,
                     ),
@@ -78,7 +79,7 @@ class ThemeWidget extends StatelessWidget {
                       current: currentTheme,
                       title: 'Auto Cadence',
                       subtitle: 'Solar Sync',
-                      icon: Icons.brightness_auto_rounded,
+                      icon: AppIcons.brightnessAutoRounded,
                       cardColor: AppColors.sandDark,
                       textColor: AppColors.ink,
                     ),
@@ -138,7 +139,7 @@ class ThemeWidget extends StatelessWidget {
                 Icon(icon, size: 18, color: textColor),
                 if (isSelected)
                   const Icon(
-                    Icons.check_circle_rounded,
+                    AppIcons.checkCircleRounded,
                     size: 15,
                     color: AppColors.ink,
                   ),

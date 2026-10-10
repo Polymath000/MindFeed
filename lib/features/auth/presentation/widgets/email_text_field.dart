@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/widgets/custom_text_field.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 
@@ -18,7 +19,7 @@ class EmailTextField extends StatelessWidget {
       hintText: 'Email address',
       keyboardType: TextInputType.emailAddress,
       prefixIcon: const Icon(
-        Icons.mail_outline_rounded,
+        AppIcons.mailOutlineRounded,
         color: AppColors.greyText,
         size: 20,
       ),

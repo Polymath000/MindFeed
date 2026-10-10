@@ -1,4 +1,5 @@
 import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
@@ -34,12 +35,12 @@ class CustomSearchBar extends StatelessWidget {
           prefixIcon: trailingSearchIcon
               ? null
               : const Icon(
-                  Icons.search_rounded,
+                  AppIcons.search,
                   color: AppColors.softCream,
                 ),
           suffixIcon: trailingSearchIcon
               ? const Icon(
-                  Icons.search_rounded,
+                  AppIcons.search,
                   color: AppColors.greyText,
                 )
               : null,

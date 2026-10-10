@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/auth_background.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/change_password_form.dart';
@@ -29,7 +30,7 @@ class ChangePasswordViewBody extends StatelessWidget {
                     Row(
                       children: [
                         EditorialIconButton(
-                          icon: Icons.arrow_back_rounded,
+                          icon: AppIcons.arrowBackRounded,
                           label: 'Back',
                           onPressed: () => Navigator.pop(context),
                         ),

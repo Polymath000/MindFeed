@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 
@@ -165,7 +166,7 @@ class PaperSettingsTile extends StatelessWidget {
               trailing!
             else if (onTap != null)
               const Icon(
-                Icons.arrow_forward_ios_rounded,
+                AppIcons.arrowForwardIosRounded,
                 size: 14,
                 color: AppColors.mutedInk,
               ),
@@ -423,7 +424,7 @@ Widget buildSettingsMenuItemWithDropMenu({
           ),
         const SizedBox(width: 4),
         const Icon(
-          Icons.arrow_forward_ios_rounded,
+          AppIcons.arrowForwardIosRounded,
           size: 13,
           color: AppColors.mutedInk,
         ),
@@ -450,7 +451,7 @@ Widget buildSettingsMenuItemWithDropdown<T>({
       onChanged: onChanged,
       underline: const SizedBox(),
       icon: const Icon(
-        Icons.expand_more_rounded,
+        AppIcons.expandMoreRounded,
         color: AppColors.ink,
       ),
       dropdownColor: AppColors.whiteLight,

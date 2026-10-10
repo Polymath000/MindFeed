@@ -1,4 +1,5 @@
 import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
@@ -60,7 +61,7 @@ class PasswordRequirements extends StatelessWidget {
     return Row(
       children: [
         Icon(
-          isValid ? Icons.check_circle_rounded : Icons.radio_button_unchecked,
+          isValid ? AppIcons.checkCircleRounded : AppIcons.radioButtonUnchecked,
           size: 14,
           color: isValid ? AppColors.successGreen : AppColors.greyIcon,
         ),

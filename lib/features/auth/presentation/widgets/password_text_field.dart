@@ -1,4 +1,5 @@
 import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
@@ -64,7 +65,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
           fontSize: 14,
         ),
         prefixIcon: const Icon(
-          Icons.lock_outline_rounded,
+          AppIcons.lock,
           color: AppColors.greyText,
           size: 20,
         ),
@@ -75,7 +76,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
             });
           },
           icon: Icon(
-            _isObscured ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+            _isObscured ? AppIcons.visibilityOffOutlined : AppIcons.visibilityOutlined,
             color: AppColors.greyText,
             size: 20,
           ),

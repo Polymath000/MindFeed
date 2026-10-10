@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
@@ -31,7 +32,7 @@ class PersonalInfromation extends StatelessWidget {
                       errorBuilder: (_, _, _) => const CircleAvatar(
                         radius: 48,
                         backgroundColor: AppColors.blush,
-                        child: Icon(Icons.person, size: 48, color: AppColors.ink),
+                        child: Icon(AppIcons.personAlt, size: 48, color: AppColors.ink),
                       ),
                     ),
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 
 class MoreVertIcon extends StatelessWidget {
@@ -8,6 +9,6 @@ class MoreVertIcon extends StatelessWidget {
   Widget build(BuildContext context) {
         bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Icon(Icons.more_vert, color:isDark? AppColors.white:AppColors.gunmetal);
+    return Icon(AppIcons.moreVert, color:isDark? AppColors.white:AppColors.gunmetal);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:expandable/expandable.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/features/add_article/presentation/widget/format_markdown.dart';
 import 'package:mind_feed/l10n/generated/app_localizations.dart';
@@ -193,7 +194,7 @@ class _MarkdownTextInputState extends State<MarkdownTextInput> {
                     ExpandableButton(
                       child: const Padding(
                         padding: EdgeInsets.all(10),
-                        child: Icon(Icons.close),
+                        child: Icon(AppIcons.closeAlt),
                       ),
                     ),
                   ],
@@ -233,7 +234,7 @@ class _MarkdownTextInputState extends State<MarkdownTextInput> {
                               )!.enterLinkTextDialogTitle,
                             ),
                             IconButton(
-                              icon: const Icon(Icons.close),
+                              icon: const Icon(AppIcons.closeAlt),
                               onPressed: () => Navigator.pop(context),
                             ),
                           ],

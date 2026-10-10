@@ -1,4 +1,5 @@
 import 'package:mind_feed/core/constants/constants.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -250,7 +251,7 @@ class _HomeViewBodyState extends State<HomeViewBody>
                         ),
                       ),
                       EditorialIconButton(
-                        icon: Icons.grid_view_rounded,
+                        icon: AppIcons.gridViewRounded,
                         label: 'Open profile',
                         onPressed: () => Navigator.pushNamed(context, AppRoutes.profile),
                       ),
