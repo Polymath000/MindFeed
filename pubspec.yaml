@@ -9,14 +9,12 @@ environment:
 
 dependencies:
   bloc: ^9.0.0
-  cloud_firestore: ^6.0.3
   cupertino_icons: ^1.0.8
   dartz: ^0.10.1
   data_connection_checker_tv: ^0.3.5-nullsafety
   dio: ^5.9.0
   expandable: ^5.0.1
   file_picker: ^10.3.3
-  firebase_core: ^4.1.1
   flutter:
     sdk: flutter
   flutter_advanced_drawer: ^1.5.0
