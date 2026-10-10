@@ -7,4 +7,6 @@ class AppConstants {
   static const String themeModeKey = 'themeMode';
   static const String tokenKey = "token";
   static const String userKey = "user";
+  static const String supabaseUrl = "YOUR_SUPABASE_URL";
+  static const String supabaseAnonKey = "YOUR_SUPABASE_ANON_KEY";
 }

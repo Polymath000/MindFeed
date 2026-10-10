@@ -11,6 +11,8 @@ import 'package:mind_feed/features/add_article/presentation/widget/device_prefer
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/settings/presentation/controllers/theme_mode_cubit/theme_mode_cubit.dart';
 import 'package:mind_feed/main_app.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:mind_feed/core/networking/supabase_interceptor.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +25,13 @@ void main() async {
   globalDevicePreferenceNotifier = DevicePreferenceNotifier();
   await globalDevicePreferenceNotifier.loadDevicePreferences();
   await SharedPreferencesSingleton.init();
+  
+  await Supabase.initialize(
+    url: AppConstants.supabaseUrl,
+    publishableKey: AppConstants.supabaseAnonKey,
+    httpClient: SupabaseInterceptor(),
+  );
+
   await Hive.initFlutter();
   Hive.registerAdapter(UserEntityAdapter());
   await Hive.openBox<UserEntity>(AppConstants.userKey);

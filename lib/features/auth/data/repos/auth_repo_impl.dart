@@ -3,7 +3,7 @@ import 'package:mind_feed/core/constants/constants.dart' show AppConstants;
 import 'package:mind_feed/core/database/cache/cache_helper.dart';
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_error_handler.dart';
-import 'package:mind_feed/core/network/network_info.dart';
+import 'package:mind_feed/core/networking/network_info.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/params/login_params.dart';
 import 'package:mind_feed/features/auth/data/datasources/auth_api_source.dart';
@@ -31,7 +31,7 @@ class AuthRepoImpl extends AuthRepository {
 
   @override
   Future<ApiResult<String>> login(LoginParams params) async {
-    if (await networkInfo.isConnected!) {
+    if (await networkInfo.isConnected) {
       try {
         final remote = await authApiSource.login(params: params);
         if (remote.isEmpty) {
@@ -49,7 +49,7 @@ class AuthRepoImpl extends AuthRepository {
 
   @override
   Future<ApiResult<Response>> signup(SignupParams params) async {
-    if (await networkInfo.isConnected!) {
+    if (await networkInfo.isConnected) {
       try {
         final remote = await authApiSource.signUp(params: params);
 
