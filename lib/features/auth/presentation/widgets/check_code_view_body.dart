@@ -46,7 +46,7 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
                           const Text(
                             'Check Code',
                             style: TextStyle(
-                              color: EditorialPalette.softCream,
+                              color: AppColors.softCream,
                               fontSize: 22,
                               fontWeight: FontWeight.w800,
                             ),
@@ -66,7 +66,7 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
                       const Text(
                         'Verification Code',
                         style: TextStyle(
-                          color: EditorialPalette.softCream,
+                          color: AppColors.softCream,
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                         ),

@@ -7,13 +7,13 @@ Widget authBackground() {
     height: double.infinity,
     width: double.infinity,
     decoration: const BoxDecoration(
-      color: EditorialPalette.ink,
+      color: AppColors.ink,
       gradient: RadialGradient(
         center: Alignment(0.0, -0.6),
         radius: 1.2,
         colors: [
           AppColors.charcoalDark,
-          EditorialPalette.ink,
+          AppColors.ink,
         ],
       ),
     ),

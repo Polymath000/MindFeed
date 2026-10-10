@@ -22,7 +22,7 @@ class ThereIsAnAccountText extends StatelessWidget {
           TextButton(
             style: TextButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              foregroundColor: EditorialPalette.cream,
+              foregroundColor: AppColors.cream,
             ),
             onPressed: () {
               Navigator.pop(context);
@@ -30,7 +30,7 @@ class ThereIsAnAccountText extends StatelessWidget {
             child: const Text(
               'Sign In',
               style: TextStyle(
-                color: EditorialPalette.cream,
+                color: AppColors.cream,
                 fontWeight: FontWeight.w800,
                 fontSize: 14,
               ),

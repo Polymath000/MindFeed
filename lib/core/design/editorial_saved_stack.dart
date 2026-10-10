@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/constants/borders.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
@@ -49,7 +50,7 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
         content: Text('Removed "${item.title.split('\n').first}"'),
         action: SnackBarAction(
           label: 'UNDO',
-          textColor: EditorialPalette.butter,
+          textColor: AppColors.butter,
           onPressed: () {
             setState(() {
               _savedItems.insert(index, item);
@@ -99,7 +100,7 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           decoration: BoxDecoration(
             color: AppColors.red,
-            borderRadius: EditorialRadii.card,
+            borderRadius: AppBorders.card,
           ),
           child: const Row(
             children: [
@@ -121,7 +122,7 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           decoration: BoxDecoration(
             color: AppColors.red,
-            borderRadius: EditorialRadii.card,
+            borderRadius: AppBorders.card,
           ),
           child: const Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -148,14 +149,14 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
           },
           child: InkWell(
             onTap: () => widget.onOpenArticle(item),
-            borderRadius: EditorialRadii.card,
+            borderRadius: AppBorders.card,
             child: Container(
               width: double.infinity,
               margin: const EdgeInsets.only(bottom: 4),
               padding: const EdgeInsets.fromLTRB(20, 24, 20, 26),
               decoration: BoxDecoration(
                 color: item.color,
-                borderRadius: EditorialRadii.card,
+                borderRadius: AppBorders.card,
                 boxShadow: const [
                   BoxShadow(
                     color: Colors.black26,
@@ -174,7 +175,7 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
                       height: 1.18,
                       fontWeight: FontWeight.w800,
                       letterSpacing: -0.8,
-                      color: EditorialPalette.ink,
+                      color: AppColors.ink,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -183,7 +184,7 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
                     style: const TextStyle(
                       fontSize: 13,
                       height: 1.4,
-                      color: EditorialPalette.ink,
+                      color: AppColors.ink,
                     ),
                   ),
                   if (isFirst) const SizedBox(height: 14),

@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
@@ -10,7 +11,7 @@ class ProfileAppBar extends StatelessWidget {
     return SliverAppBar(
       automaticallyImplyLeading: false,
       pinned: true,
-      backgroundColor: EditorialPalette.ink,
+      backgroundColor: AppColors.ink,
       surfaceTintColor: Colors.transparent,
       centerTitle: true,
       leading: Padding(
@@ -34,7 +35,7 @@ class ProfileAppBar extends StatelessWidget {
       title: const Text(
         'Profile',
         style: TextStyle(
-          color: EditorialPalette.softCream,
+          color: AppColors.softCream,
           fontSize: 22,
           fontWeight: FontWeight.w800,
           letterSpacing: -0.5,

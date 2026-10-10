@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -193,9 +194,9 @@ class _HomeViewBodyState extends State<HomeViewBody>
               constraints: const BoxConstraints(maxWidth: 600),
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(
-                  EditorialSpace.page,
+                  AppConstants.page,
                   12,
-                  EditorialSpace.page,
+                  AppConstants.page,
                   24,
                 ),
                 children: [
@@ -237,7 +238,7 @@ class _HomeViewBodyState extends State<HomeViewBody>
                                 child: Text(
                                   'MindFeed',
                                   style: GoogleFonts.playfairDisplay(
-                                    color: EditorialPalette.softCream,
+                                    color: AppColors.softCream,
                                     fontSize: 29,
                                     fontWeight: FontWeight.w800,
                                     letterSpacing: -0.6,
@@ -279,7 +280,7 @@ class _HomeViewBodyState extends State<HomeViewBody>
                               ),
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? EditorialPalette.cream
+                                    ? AppColors.cream
                                     : Colors.white.withAlpha(15),
                                 borderRadius: BorderRadius.circular(22),
                                 border: Border.all(
@@ -291,7 +292,7 @@ class _HomeViewBodyState extends State<HomeViewBody>
                                 boxShadow: isSelected
                                     ? [
                                         BoxShadow(
-                                          color: EditorialPalette.cream
+                                          color: AppColors.cream
                                               .withAlpha(65),
                                           blurRadius: 12,
                                           offset: const Offset(0, 3),
@@ -303,8 +304,8 @@ class _HomeViewBodyState extends State<HomeViewBody>
                                 topic,
                                 style: TextStyle(
                                   color: isSelected
-                                      ? EditorialPalette.ink
-                                      : EditorialPalette.softCream
+                                      ? AppColors.ink
+                                      : AppColors.softCream
                                           .withAlpha(185),
                                   fontSize: 14.5,
                                   fontWeight: isSelected

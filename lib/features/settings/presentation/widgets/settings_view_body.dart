@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
@@ -30,9 +31,9 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
         constraints: const BoxConstraints(maxWidth: 600),
         child: ListView(
           padding: const EdgeInsets.fromLTRB(
-            EditorialSpace.page,
+            AppConstants.page,
             12,
-            EditorialSpace.page,
+            AppConstants.page,
             48,
           ),
           children: [
@@ -55,7 +56,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                           fontSize: 9.5,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 1.2,
-                          color: EditorialPalette.mutedInk,
+                          color: AppColors.mutedInk,
                         ),
                       ),
                       SizedBox(height: 2),
@@ -65,7 +66,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
                           letterSpacing: -0.6,
-                          color: EditorialPalette.ink,
+                          color: AppColors.ink,
                         ),
                       ),
                     ],
@@ -93,7 +94,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                   Container(
                     padding: const EdgeInsets.all(3),
                     decoration: const BoxDecoration(
-                      color: EditorialPalette.cream,
+                      color: AppColors.cream,
                       shape: BoxShape.circle,
                     ),
                     child: ClipOval(
@@ -104,8 +105,8 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                         fit: BoxFit.cover,
                         errorBuilder: (_, _, _) => const CircleAvatar(
                           radius: 22,
-                          backgroundColor: EditorialPalette.blush,
-                          child: Icon(Icons.person, color: EditorialPalette.ink),
+                          backgroundColor: AppColors.blush,
+                          child: Icon(Icons.person, color: AppColors.ink),
                         ),
                       ),
                     ),
@@ -121,7 +122,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w800,
-                            color: EditorialPalette.ink,
+                            color: AppColors.ink,
                             letterSpacing: -0.3,
                           ),
                         ),
@@ -130,7 +131,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                           'Editorial Reader • MindFeed Edition',
                           style: TextStyle(
                             fontSize: 12,
-                            color: EditorialPalette.mutedInk,
+                            color: AppColors.mutedInk,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -140,7 +141,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: EditorialPalette.mint,
+                      color: AppColors.mint,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: AppColors.mintDark),
                     ),
@@ -184,7 +185,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                 ),
                 PaperSettingsSwitchTile(
                   icon: Icons.menu_book_outlined,
-                  stampColor: EditorialPalette.lilac,
+                  stampColor: AppColors.lilac,
                   title: 'Serif Literary Immersion',
                   subtitle: 'Render longform stories in classic editorial serif typography',
                   value: _serifMode,
@@ -196,7 +197,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                 ),
                 PaperSettingsSwitchTile(
                   icon: Icons.visibility_outlined,
-                  stampColor: EditorialPalette.powder,
+                  stampColor: AppColors.powder,
                   title: 'Bionic Reading Guide',
                   subtitle: 'Subtly emphasize key word anchors for swift reading pace',
                   value: _bionicGuide,
@@ -214,7 +215,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
               children: [
                 PaperSettingsSwitchTile(
                   icon: Icons.wb_sunny_outlined,
-                  stampColor: EditorialPalette.butter,
+                  stampColor: AppColors.butter,
                   title: 'Morning Edition Briefing',
                   subtitle: 'Curated 7:00 AM daily reading digest delivered quietly',
                   value: _morningBriefing,
@@ -226,7 +227,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                 ),
                 PaperSettingsSwitchTile(
                   icon: Icons.notifications_active_outlined,
-                  stampColor: EditorialPalette.blush,
+                  stampColor: AppColors.blush,
                   title: 'Investigative Breaking Alerts',
                   subtitle: 'Instant alerts for major global stories and science breakthroughs',
                   value: _breakingAlerts,
@@ -238,7 +239,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                 ),
                 PaperSettingsTile(
                   icon: Icons.volume_up_outlined,
-                  stampColor: EditorialPalette.mint,
+                  stampColor: AppColors.mint,
                   title: 'Audio Narration Cadence',
                   subtitle: 'Speech synthesis voice for article reading',
                   trailing: const Row(
@@ -249,11 +250,11 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                         style: TextStyle(
                           fontSize: 12.5,
                           fontWeight: FontWeight.w700,
-                          color: EditorialPalette.ink,
+                          color: AppColors.ink,
                         ),
                       ),
                       SizedBox(width: 4),
-                      Icon(Icons.arrow_forward_ios_rounded, size: 12, color: EditorialPalette.mutedInk),
+                      Icon(Icons.arrow_forward_ios_rounded, size: 12, color: AppColors.mutedInk),
                     ],
                   ),
                   onTap: () {
@@ -274,7 +275,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
               children: [
                 PaperSettingsTile(
                   icon: Icons.inventory_2_outlined,
-                  stampColor: EditorialPalette.sand,
+                  stampColor: AppColors.sand,
                   title: 'Offline Reading Archive',
                   subtitle: '${_cachedMegabytes.toStringAsFixed(1)} MB cached across 14 articles',
                   trailing: TextButton(
@@ -293,7 +294,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                           }
                         : null,
                     style: TextButton.styleFrom(
-                      foregroundColor: EditorialPalette.ink,
+                      foregroundColor: AppColors.ink,
                       backgroundColor: AppColors.sandLight,
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                       shape: RoundedRectangleBorder(
@@ -308,7 +309,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                 ),
                 PaperSettingsSwitchTile(
                   icon: Icons.network_check_rounded,
-                  stampColor: EditorialPalette.powder,
+                  stampColor: AppColors.powder,
                   title: 'Data Preservation Mode',
                   subtitle: 'Load compressed imagery when connected to cellular data',
                   value: _dataPreservation,
@@ -320,7 +321,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                 ),
                 PaperSettingsSwitchTile(
                   icon: Icons.wifi_rounded,
-                  stampColor: EditorialPalette.cream,
+                  stampColor: AppColors.cream,
                   title: 'Download on Wi-Fi Only',
                   subtitle: 'Save high-fidelity offline articles only on Wi-Fi',
                   value: _wifiOnly,
@@ -338,14 +339,14 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
               children: [
                 PaperSettingsTile(
                   icon: Icons.lock_outline_rounded,
-                  stampColor: EditorialPalette.lilac,
+                  stampColor: AppColors.lilac,
                   title: 'Change Password',
                   subtitle: 'Update your account access passphrase',
                   onTap: () => Navigator.pushNamed(context, AppRoutes.changePassword, arguments: 'wade@mindfeed.app'),
                 ),
                 PaperSettingsTile(
                   icon: Icons.shield_outlined,
-                  stampColor: EditorialPalette.mint,
+                  stampColor: AppColors.mint,
                   title: 'Editorial Ethics & Privacy Charter',
                   subtitle: 'MindFeed independent journalism charter and zero-tracker guarantee',
                   onTap: () {
@@ -367,7 +368,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w800,
-                                color: EditorialPalette.ink,
+                                color: AppColors.ink,
                               ),
                             ),
                             const SizedBox(height: 12),
@@ -376,7 +377,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                               style: TextStyle(
                                 fontSize: 13.5,
                                 height: 1.5,
-                                color: EditorialPalette.mutedInk,
+                                color: AppColors.mutedInk,
                               ),
                             ),
                             const SizedBox(height: 20),
@@ -384,8 +385,8 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                               width: double.infinity,
                               child: FilledButton(
                                 style: FilledButton.styleFrom(
-                                  backgroundColor: EditorialPalette.ink,
-                                  foregroundColor: EditorialPalette.cream,
+                                  backgroundColor: AppColors.ink,
+                                  foregroundColor: AppColors.cream,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(16),
                                   ),
@@ -402,7 +403,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                 ),
                 PaperSettingsTile(
                   icon: Icons.logout_rounded,
-                  stampColor: EditorialPalette.blush,
+                  stampColor: AppColors.blush,
                   title: 'Sign Out of Edition',
                   subtitle: 'End active session on this device',
                   onTap: () {

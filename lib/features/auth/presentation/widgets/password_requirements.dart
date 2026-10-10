@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/constants/borders.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
@@ -14,7 +15,7 @@ class PasswordRequirements extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.charcoal,
         border: Border.all(color: AppColors.borderDark),
-        borderRadius: EditorialRadii.card,
+        borderRadius: AppBorders.card,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -22,7 +23,7 @@ class PasswordRequirements extends StatelessWidget {
           const Text(
             'Password requirements:',
             style: TextStyle(
-              color: EditorialPalette.softCream,
+              color: AppColors.softCream,
               fontSize: 13,
               fontWeight: FontWeight.w700,
             ),

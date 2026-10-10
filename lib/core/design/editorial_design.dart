@@ -1,3 +1,5 @@
+import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 sealed class EditorialPalette {
@@ -49,19 +51,19 @@ class EditorialIconButton extends StatelessWidget {
         onPressed: onPressed,
         icon: Icon(
           icon,
-          color: light ? EditorialPalette.ink : EditorialPalette.softCream,
+          color: light ? AppColors.ink : AppColors.softCream,
         ),
         iconSize: 21,
         constraints: const BoxConstraints.tightFor(width: 48, height: 48),
         style: IconButton.styleFrom(
           backgroundColor: light
-              ? EditorialPalette.cream
-              : EditorialPalette.ink,
+              ? AppColors.cream
+              : AppColors.ink,
           foregroundColor: light
-              ? EditorialPalette.ink
-              : EditorialPalette.softCream,
+              ? AppColors.ink
+              : AppColors.softCream,
           shape: const RoundedRectangleBorder(
-            borderRadius: EditorialRadii.control,
+            borderRadius: AppBorders.control,
           ),
         ),
       ),
@@ -121,25 +123,25 @@ class _EditorialFollowButtonState extends State<EditorialFollowButton> {
         icon: Icon(
           _isFollowing ? Icons.check_rounded : Icons.add_rounded,
           size: 16,
-          color: _isFollowing ? EditorialPalette.ink : EditorialPalette.softCream,
+          color: _isFollowing ? AppColors.ink : AppColors.softCream,
         ),
         label: Text(
           _isFollowing ? 'Following' : 'Follow',
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w700,
-            color: _isFollowing ? EditorialPalette.ink : EditorialPalette.softCream,
+            color: _isFollowing ? AppColors.ink : AppColors.softCream,
           ),
         ),
         style: FilledButton.styleFrom(
           backgroundColor: _isFollowing
-              ? EditorialPalette.cream
-              : EditorialPalette.ink,
+              ? AppColors.cream
+              : AppColors.ink,
           elevation: _isFollowing ? 1 : 0,
           minimumSize: const Size(82, 40),
           padding: const EdgeInsets.symmetric(horizontal: 14),
           shape: const RoundedRectangleBorder(
-            borderRadius: EditorialRadii.control,
+            borderRadius: AppBorders.control,
           ),
         ),
       ),
@@ -184,12 +186,12 @@ void showEditorialShareSheet(
           const SizedBox(height: 20),
           const Row(
             children: [
-              Icon(Icons.ios_share_rounded, color: EditorialPalette.cream, size: 20),
+              Icon(Icons.ios_share_rounded, color: AppColors.cream, size: 20),
               SizedBox(width: 8),
               Text(
                 'Share Story',
                 style: TextStyle(
-                  color: EditorialPalette.softCream,
+                  color: AppColors.softCream,
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.4,
@@ -290,13 +292,13 @@ Widget _buildShareAction(
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: const Color(0xFF383530)),
             ),
-            child: Icon(icon, color: EditorialPalette.cream, size: 22),
+            child: Icon(icon, color: AppColors.cream, size: 22),
           ),
           const SizedBox(height: 8),
           Text(
             label,
             style: const TextStyle(
-              color: EditorialPalette.softCream,
+              color: AppColors.softCream,
               fontSize: 12,
               fontWeight: FontWeight.w600,
             ),

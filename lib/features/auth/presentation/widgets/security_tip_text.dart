@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/constants/borders.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
@@ -12,7 +13,7 @@ class SecurityTipText extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.charcoal,
         border: Border.all(color: AppColors.borderDark),
-        borderRadius: EditorialRadii.card,
+        borderRadius: AppBorders.card,
       ),
       padding: const EdgeInsets.all(16),
       child: const Row(
@@ -20,7 +21,7 @@ class SecurityTipText extends StatelessWidget {
         children: [
           Icon(
             Icons.shield_outlined,
-            color: EditorialPalette.cream,
+            color: AppColors.cream,
             size: 20,
           ),
           SizedBox(width: 12),
@@ -31,7 +32,7 @@ class SecurityTipText extends StatelessWidget {
                 Text(
                   'Security Recommendation',
                   style: TextStyle(
-                    color: EditorialPalette.softCream,
+                    color: AppColors.softCream,
                     fontSize: 13.5,
                     fontWeight: FontWeight.w700,
                   ),

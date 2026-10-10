@@ -1,3 +1,7 @@
+import 'package:mind_feed/features/settings/presentation/controllers/settings_cubit/settings_cubit.dart';
+import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
+import 'package:mind_feed/features/collections/presentation/cubit/collections_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/presentation/views/categories_view.dart';
@@ -61,7 +65,7 @@ sealed class AppRoutes {
       case AppRoutes.home:
         return MaterialPageRoute(builder: (_) => HomeView(), settings: settings);
       case AppRoutes.articlesSaved:
-        return MaterialPageRoute(builder: (_) => const ArticlesSaved(), settings: settings);
+        return MaterialPageRoute(builder: (_) => BlocProvider(create: (_) => CollectionsCubit(), child: const ArticlesSaved()), settings: settings);
       case AppRoutes.downloadedArticles:
         return MaterialPageRoute(builder: (_) => const DownloadedArticlesView(), settings: settings);
       case AppRoutes.favoriteMovies:
@@ -72,9 +76,9 @@ sealed class AppRoutes {
       case AppRoutes.author:
         return MaterialPageRoute(builder: (_) => const AuthorView(), settings: settings);
       case AppRoutes.settings:
-        return MaterialPageRoute(builder: (_) => const SettingsView(), settings: settings);
+        return MaterialPageRoute(builder: (_) => BlocProvider(create: (_) => SettingsCubit()..loadSettings(), child: const SettingsView()), settings: settings);
       case AppRoutes.addArticle:
-        return MaterialPageRoute(builder: (_) => AddArticleView(), settings: settings);
+        return MaterialPageRoute(builder: (_) => BlocProvider(create: (_) => AddArticleCubit(), child: AddArticleView()), settings: settings);
       case AppRoutes.profile:
         return MaterialPageRoute(builder: (_) => ProfileView(), settings: settings);
       case AppRoutes.listSavedArticles:

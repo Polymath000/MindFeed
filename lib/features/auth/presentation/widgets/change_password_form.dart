@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
@@ -30,7 +31,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
           const Text(
             'New Password',
             style: TextStyle(
-              color: EditorialPalette.softCream,
+              color: AppColors.softCream,
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
@@ -48,7 +49,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
           const Text(
             'Confirm New Password',
             style: TextStyle(
-              color: EditorialPalette.softCream,
+              color: AppColors.softCream,
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),

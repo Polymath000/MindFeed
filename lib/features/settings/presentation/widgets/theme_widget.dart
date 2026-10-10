@@ -30,7 +30,7 @@ class ThemeWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: EditorialPalette.ink,
+                  color: AppColors.ink,
                   letterSpacing: -0.2,
                 ),
               ),
@@ -39,7 +39,7 @@ class ThemeWidget extends StatelessWidget {
                 'Select your preferred journal contrast and paper tone.',
                 style: TextStyle(
                   fontSize: 12,
-                  color: EditorialPalette.mutedInk,
+                  color: AppColors.mutedInk,
                 ),
               ),
               const SizedBox(height: 14),
@@ -54,7 +54,7 @@ class ThemeWidget extends StatelessWidget {
                       subtitle: 'Daylight Print',
                       icon: Icons.menu_book_rounded,
                       cardColor: AppColors.softCream,
-                      textColor: EditorialPalette.ink,
+                      textColor: AppColors.ink,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -80,7 +80,7 @@ class ThemeWidget extends StatelessWidget {
                       subtitle: 'Solar Sync',
                       icon: Icons.brightness_auto_rounded,
                       cardColor: AppColors.sandDark,
-                      textColor: EditorialPalette.ink,
+                      textColor: AppColors.ink,
                     ),
                   ),
                 ],
@@ -116,7 +116,7 @@ class ThemeWidget extends StatelessWidget {
           color: cardColor,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? EditorialPalette.ink : AppColors.creamDark,
+            color: isSelected ? AppColors.ink : AppColors.creamDark,
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected
@@ -140,7 +140,7 @@ class ThemeWidget extends StatelessWidget {
                   const Icon(
                     Icons.check_circle_rounded,
                     size: 15,
-                    color: EditorialPalette.ink,
+                    color: AppColors.ink,
                   ),
               ],
             ),

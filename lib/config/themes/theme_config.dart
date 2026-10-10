@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 
@@ -16,11 +17,11 @@ final class ThemeConfig {
     const getSetting = SettingsEntity();
 
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: EditorialPalette.butter,
+      seedColor: AppColors.butter,
       brightness: brightness,
       surface: brightness == Brightness.dark
-          ? EditorialPalette.ink
-          : EditorialPalette.softCream,
+          ? AppColors.ink
+          : AppColors.softCream,
     );
 
     return ThemeData(

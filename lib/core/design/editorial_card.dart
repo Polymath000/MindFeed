@@ -1,3 +1,5 @@
+import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
@@ -26,12 +28,12 @@ class EditorialCard extends StatelessWidget {
     label: 'Read ${item.title.replaceAll('\n', ' ')}',
     child: InkWell(
       onTap: onOpen,
-      borderRadius: EditorialRadii.card,
+      borderRadius: AppBorders.card,
       child: Container(
         padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
         decoration: BoxDecoration(
           color: item.color,
-          borderRadius: EditorialRadii.card,
+          borderRadius: AppBorders.card,
           boxShadow: const [
             BoxShadow(
               color: Colors.black26,
@@ -88,7 +90,7 @@ class EditorialCard extends StatelessWidget {
                   child: const Text(
                     '5 MIN READ',
                     style: TextStyle(
-                      color: EditorialPalette.ink,
+                      color: AppColors.ink,
                       fontSize: 9.5,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.4,
@@ -105,7 +107,7 @@ class EditorialCard extends StatelessWidget {
                 height: 1.15,
                 fontWeight: FontWeight.w800,
                 letterSpacing: -0.9,
-                color: EditorialPalette.ink,
+                color: AppColors.ink,
               ),
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
@@ -114,7 +116,7 @@ class EditorialCard extends StatelessWidget {
             Text(
               item.updated,
               style: const TextStyle(
-                color: EditorialPalette.mutedInk,
+                color: AppColors.mutedInk,
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
               ),
@@ -130,8 +132,8 @@ class EditorialCard extends StatelessWidget {
                     fit: BoxFit.cover,
                     errorBuilder: (_, _, _) => const CircleAvatar(
                       radius: 19,
-                      backgroundColor: EditorialPalette.blush,
-                      child: Icon(Icons.person, color: EditorialPalette.ink),
+                      backgroundColor: AppColors.blush,
+                      child: Icon(Icons.person, color: AppColors.ink),
                     ),
                   ),
                 ),
@@ -144,7 +146,7 @@ class EditorialCard extends StatelessWidget {
                         item.authorRole,
                         style: const TextStyle(
                           fontSize: 10.5,
-                          color: EditorialPalette.mutedInk,
+                          color: AppColors.mutedInk,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -153,7 +155,7 @@ class EditorialCard extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
-                          color: EditorialPalette.ink,
+                          color: AppColors.ink,
                         ),
                       ),
                     ],
@@ -171,7 +173,7 @@ class EditorialCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 14.5,
                     height: 1.48,
-                    color: EditorialPalette.ink,
+                    color: AppColors.ink,
                     fontWeight: FontWeight.w400,
                   ),
                 ),

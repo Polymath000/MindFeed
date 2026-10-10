@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/constants/borders.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
@@ -53,7 +54,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
         return null;
       },
       style: const TextStyle(
-        color: EditorialPalette.softCream,
+        color: AppColors.softCream,
         fontSize: 15,
       ),
       decoration: InputDecoration(
@@ -86,23 +87,23 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
           horizontal: 20,
         ),
         border: const OutlineInputBorder(
-          borderRadius: EditorialRadii.control,
+          borderRadius: AppBorders.control,
           borderSide: BorderSide(color: AppColors.borderDark, width: 1.0),
         ),
         enabledBorder: const OutlineInputBorder(
-          borderRadius: EditorialRadii.control,
+          borderRadius: AppBorders.control,
           borderSide: BorderSide(color: AppColors.borderDark, width: 1.0),
         ),
         focusedBorder: const OutlineInputBorder(
-          borderRadius: EditorialRadii.control,
-          borderSide: BorderSide(color: EditorialPalette.cream, width: 1.5),
+          borderRadius: AppBorders.control,
+          borderSide: BorderSide(color: AppColors.cream, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: EditorialRadii.control,
+          borderRadius: AppBorders.control,
           borderSide: BorderSide(color: Colors.red.shade400, width: 1.0),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: EditorialRadii.control,
+          borderRadius: AppBorders.control,
           borderSide: BorderSide(color: Colors.red.shade400, width: 1.5),
         ),
       ),

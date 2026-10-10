@@ -47,7 +47,7 @@ class _SendCodeViewBodyState extends State<SendCodeViewBody> {
                           const Text(
                             'Reset Password',
                             style: TextStyle(
-                              color: EditorialPalette.softCream,
+                              color: AppColors.softCream,
                               fontSize: 22,
                               fontWeight: FontWeight.w800,
                             ),
@@ -67,7 +67,7 @@ class _SendCodeViewBodyState extends State<SendCodeViewBody> {
                       const Text(
                         'Email',
                         style: TextStyle(
-                          color: EditorialPalette.softCream,
+                          color: AppColors.softCream,
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                         ),

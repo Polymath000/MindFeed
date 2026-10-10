@@ -13,7 +13,7 @@ class ForgetPasswordText extends StatelessWidget {
       child: TextButton(
         style: TextButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-          foregroundColor: EditorialPalette.softCream,
+          foregroundColor: AppColors.softCream,
         ),
         onPressed: () {
           Navigator.pushNamed(context, AppRoutes.sendCode);

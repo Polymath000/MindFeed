@@ -23,7 +23,7 @@ class NoAccountText extends StatelessWidget {
           TextButton(
             style: TextButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              foregroundColor: EditorialPalette.cream,
+              foregroundColor: AppColors.cream,
             ),
             onPressed: () {
               FocusScope.of(context).unfocus();
@@ -32,7 +32,7 @@ class NoAccountText extends StatelessWidget {
             child: const Text(
               'Sign Up',
               style: TextStyle(
-                color: EditorialPalette.cream,
+                color: AppColors.cream,
                 fontWeight: FontWeight.w800,
                 fontSize: 14,
               ),

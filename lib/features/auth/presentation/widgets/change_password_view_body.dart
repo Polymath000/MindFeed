@@ -37,7 +37,7 @@ class ChangePasswordViewBody extends StatelessWidget {
                         const Text(
                           'Change Password',
                           style: TextStyle(
-                            color: EditorialPalette.softCream,
+                            color: AppColors.softCream,
                             fontSize: 22,
                             fontWeight: FontWeight.w800,
                           ),

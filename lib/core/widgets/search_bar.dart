@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/constants/borders.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
@@ -26,7 +27,7 @@ class CustomSearchBar extends StatelessWidget {
       child: TextField(
         controller: controller,
         onChanged: onChanged,
-        style: const TextStyle(color: EditorialPalette.softCream, fontSize: 14),
+        style: const TextStyle(color: AppColors.softCream, fontSize: 14),
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: const TextStyle(color: AppColors.greyText, fontSize: 14),
@@ -34,7 +35,7 @@ class CustomSearchBar extends StatelessWidget {
               ? null
               : const Icon(
                   Icons.search_rounded,
-                  color: EditorialPalette.softCream,
+                  color: AppColors.softCream,
                 ),
           suffixIcon: trailingSearchIcon
               ? const Icon(
@@ -49,12 +50,12 @@ class CustomSearchBar extends StatelessWidget {
             horizontal: 18,
           ),
           border: const OutlineInputBorder(
-            borderRadius: EditorialRadii.control,
+            borderRadius: AppBorders.control,
             borderSide: BorderSide.none,
           ),
           focusedBorder: const OutlineInputBorder(
-            borderRadius: EditorialRadii.control,
-            borderSide: BorderSide(color: EditorialPalette.cream, width: 2),
+            borderRadius: AppBorders.control,
+            borderSide: BorderSide(color: AppColors.cream, width: 2),
           ),
         ),
       ),

@@ -34,7 +34,7 @@ class Logo extends StatelessWidget {
               fontSize: 32,
               fontWeight: FontWeight.w800,
               letterSpacing: -1.0,
-              color: EditorialPalette.softCream,
+              color: AppColors.softCream,
             ),
           ),
           const SizedBox(height: 6),

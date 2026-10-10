@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/widgets/search_bar.dart';
@@ -7,7 +8,7 @@ class SearchView extends StatelessWidget {
   static const String routeName = 'search';
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: EditorialPalette.ink,
+    backgroundColor: AppColors.ink,
     body: SafeArea(
       child: Center(
         child: ConstrainedBox(
@@ -18,7 +19,7 @@ class SearchView extends StatelessWidget {
               const Text(
                 'Search',
                 style: TextStyle(
-                  color: EditorialPalette.softCream,
+                  color: AppColors.softCream,
                   fontSize: 32,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -1,
@@ -28,7 +29,7 @@ class SearchView extends StatelessWidget {
               const Text(
                 'Browse topics',
                 style: TextStyle(
-                  color: EditorialPalette.softCream,
+                  color: AppColors.softCream,
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                 ),
@@ -43,10 +44,10 @@ class SearchView extends StatelessWidget {
                           (topic) => Chip(
                             label: Text(topic),
                             labelStyle: const TextStyle(
-                              color: EditorialPalette.ink,
+                              color: AppColors.ink,
                               fontWeight: FontWeight.w700,
                             ),
-                            backgroundColor: EditorialPalette.cream,
+                            backgroundColor: AppColors.cream,
                             side: BorderSide.none,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,

@@ -1,3 +1,5 @@
+import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:convert';
 import 'dart:io';
 
@@ -89,41 +91,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> _openFilePicker() async {
-    try {
-      final FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['md'],
-      );
-      if (result != null) {
-        _filePath = result.files.single.path ?? "";
-        _fileName = _filePath.substring(
-          _filePath.lastIndexOf("/") + 1,
-          _filePath.lastIndexOf("."),
-        );
-        final File file = File(_filePath);
-        _inputText = await file.readAsString();
-        _textEditingController.text = _inputText;
-        setState(() {});
-      }
-    } catch (e) {
-      if (mounted) {
-        await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(AppLocalizations.of(context)!.error),
-            content: Text(
-              AppLocalizations.of(context)!.unableToOpenFileFromMenuError,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(AppLocalizations.of(context)!.ok),
-              ),
-            ],
-          ),
-        );
-      }
-    }
+    context.read<AddArticleCubit>().openFile();
   }
 
   Future<void> _clearText() async {
@@ -148,10 +116,7 @@ class _HomeState extends State<Home> {
           ),
           TextButton(
             onPressed: () {
-              setState(() {
-                _inputText = "";
-                _textEditingController.clear();
-              });
+              context.read<AddArticleCubit>().clearText();
               Navigator.pop(context);
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -163,22 +128,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> _saveFile() async {
-    if (_inputText.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.emptyInputTextContent),
-        ),
-      );
-      return;
-    } else {
-      await FilePicker.platform.saveFile(
-        dialogTitle: AppLocalizations.of(context)!.saveFileDialogTitle,
-        fileName: (!kIsWeb && Platform.isWindows) ? null : "$_fileName.md",
-        type: FileType.custom,
-        allowedExtensions: ['md'],
-        bytes: utf8.encode(_inputText),
-      );
-    }
+    context.read<AddArticleCubit>().saveFile(_inputText);
   }
 
   Widget _markdownPreviewWidget() {
@@ -334,11 +284,24 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
-        body: _isLoading
-            ? const Center(child: CircularProgressIndicator.adaptive())
-            : (widget.devicePreferenceNotifier.value.isSplitLayout)
-            ? _splitView()
-            : _fullView(),
+        body: BlocConsumer<AddArticleCubit, AddArticleState>(
+          listener: (context, state) {
+            if (state is AddArticleError) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+            } else if (state is AddArticleFileLoaded) {
+              _inputText = state.content;
+              _textEditingController.text = state.content;
+            }
+          },
+          builder: (context, state) {
+            if (state is AddArticleLoading) {
+              return const Center(child: CircularProgressIndicator.adaptive());
+            }
+            return (widget.devicePreferenceNotifier.value.isSplitLayout)
+                ? _splitView()
+                : _fullView();
+          },
+        ),
       ),
     );
   }

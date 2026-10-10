@@ -35,7 +35,7 @@ class _UserArticlesState extends State<UserArticles> {
                 const Text(
                   'My Articles',
                   style: TextStyle(
-                    color: EditorialPalette.softCream,
+                    color: AppColors.softCream,
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.6,
@@ -51,7 +51,7 @@ class _UserArticlesState extends State<UserArticles> {
                   child: Text(
                     '${_articles.length} published',
                     style: const TextStyle(
-                      color: EditorialPalette.cream,
+                      color: AppColors.cream,
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
                     ),

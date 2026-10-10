@@ -83,7 +83,7 @@ class _SignUpFormBodyState extends State<SignUpFormBody> {
                 fontSize: 28,
                 fontWeight: FontWeight.w800,
                 letterSpacing: -0.8,
-                color: EditorialPalette.softCream,
+                color: AppColors.softCream,
               ),
             ),
             const SizedBox(height: 6),

@@ -17,7 +17,7 @@ class AuthorView extends StatelessWidget {
         .toList();
 
     return Scaffold(
-      backgroundColor: EditorialPalette.ink,
+      backgroundColor: AppColors.ink,
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 600),
@@ -37,7 +37,7 @@ class AuthorView extends StatelessWidget {
                           const Text(
                             'Published Stories',
                             style: TextStyle(
-                              color: EditorialPalette.softCream,
+                              color: AppColors.softCream,
                               fontSize: 22,
                               fontWeight: FontWeight.w800,
                               letterSpacing: -0.6,
