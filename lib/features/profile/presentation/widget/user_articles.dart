@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_mock_data.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/features/profile/presentation/widget/custom_article_card_of_profile.dart';

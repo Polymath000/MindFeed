@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_mock_data.dart';
 import 'package:mind_feed/features/author/presentation/views/author_personal_info.dart';
 import 'package:mind_feed/features/author/presentation/widgets/author_app_bar.dart';

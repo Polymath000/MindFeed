@@ -1,22 +1,17 @@
-import 'package:data_connection_checker_tv/data_connection_checker.dart';
-import 'package:flutter/foundation.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 abstract class NetworkInfo {
-  Future<bool>? get isConnected;
+  Future<bool> get isConnected;
 }
 
 class NetworkInfoImpl implements NetworkInfo {
-  final DataConnectionChecker? dataConnectionChecker;
-  NetworkInfoImpl([this.dataConnectionChecker]);
+  final Connectivity connectivity;
+
+  NetworkInfoImpl(this.connectivity);
 
   @override
-  Future<bool>? get isConnected async {
-    if (kIsWeb) {
-      return true;
-    }
-    if (dataConnectionChecker != null) {
-      return await dataConnectionChecker!.hasConnection;
-    }
-    return true;
+  Future<bool> get isConnected async {
+    final result = await connectivity.checkConnectivity();
+    return result.isNotEmpty && !result.contains(ConnectivityResult.none);
   }
 }

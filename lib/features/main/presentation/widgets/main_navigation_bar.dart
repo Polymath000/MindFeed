@@ -2,7 +2,6 @@ import 'package:mind_feed/core/constants/borders.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
 
 class MainNavigationBar extends StatelessWidget {
   const MainNavigationBar({

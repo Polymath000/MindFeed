@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:mind_feed/core/constants/constants.dart' show AppConstants;
 import 'package:mind_feed/core/database/cache/cache_helper.dart';
-import 'package:mind_feed/core/errors/expentions.dart';
 import 'package:mind_feed/core/errors/failures.dart';
+import 'package:mind_feed/core/networking/api_error_handler.dart';
 import 'package:mind_feed/core/network/network_info.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/params/login_params.dart';
@@ -35,15 +35,15 @@ class AuthRepoImpl extends AuthRepository {
       try {
         final remote = await authApiSource.login(params: params);
         if (remote.isEmpty) {
-          return FailureResult(Failure(message: 'No User Found'));
+          return const FailureResult(ServerFailure('No User Found'));
         }
         await SharedPreferencesSingleton.setString(AppConstants.tokenKey, remote);
         return Success(remote);
-      } on ServerException catch (e) {
-        return FailureResult(ServerFailure(message: e.errorModel.errorMessage));
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
       }
     } else {
-      return FailureResult(Failure(message: 'You are Offline'));
+      return const FailureResult(ServerFailure('You are Offline'));
     }
   }
 
@@ -55,7 +55,7 @@ class AuthRepoImpl extends AuthRepository {
 
         final responseData = remote.data;
         if (responseData is Map) {
-          final responseMap = Map<String, dynamic>.from(responseData as Map);
+          final responseMap = Map<String, dynamic>.from(responseData);
           final token = responseMap['idToken'] as String?;
           if (token != null && token.isNotEmpty) {
             await SharedPreferencesSingleton.setString(AppConstants.tokenKey, token);
@@ -63,11 +63,11 @@ class AuthRepoImpl extends AuthRepository {
         }
 
         return Success(remote);
-      } on ServerException catch (e) {
-        return FailureResult(ServerFailure(message: e.errorModel.errorMessage));
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
       }
     } else {
-      return FailureResult(Failure(message: 'You are Offline'));
+      return const FailureResult(ServerFailure('You are Offline'));
     }
   }
 }

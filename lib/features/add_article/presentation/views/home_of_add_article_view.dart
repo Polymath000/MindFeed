@@ -1,11 +1,7 @@
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:convert';
-import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:markdown_widget/widget/markdown_block.dart';
@@ -27,10 +23,7 @@ class _HomeState extends State<Home> {
   static const _methodChannel = MethodChannel(
     "com.adeeteya.markdown_editor/channel",
   );
-  String _filePath = "/storage/emulated/0/Download";
-  String _fileName = 'Markdown';
   bool _isPreview = false;
-  bool _isLoading = true;
   String _inputText = '';
   final TextEditingController _textEditingController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -84,10 +77,6 @@ class _HomeState extends State<Home> {
           ),
         );
       }
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
 

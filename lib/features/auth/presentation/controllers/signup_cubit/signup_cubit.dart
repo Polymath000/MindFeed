@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mind_feed/core/params/signup_params.dart';
 import 'package:mind_feed/features/auth/domain/usecases/signup_use_case.dart';
 

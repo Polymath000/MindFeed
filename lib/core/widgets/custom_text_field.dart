@@ -1,6 +1,5 @@
 import 'package:mind_feed/core/constants/borders.dart';
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 
 class CustomTextField extends StatelessWidget {

@@ -5,7 +5,6 @@ class AppIcons {
   static const IconData share = Icons.share_rounded;
   static const IconData displaySettings = Icons.tune_rounded;
   static const IconData download = Icons.download_rounded;
-  static const IconData save = Icons.bookmark_outline_rounded;
   static const IconData delete = Icons.delete_outline_rounded;
   static const IconData edit = Icons.edit_outlined;
   static const IconData close = Icons.close_rounded;
@@ -15,34 +14,25 @@ class AppIcons {
   static const IconData favorite = Icons.favorite_rounded;
   static const IconData favoriteOutline = Icons.favorite_border_rounded;
   static const IconData home = Icons.home_rounded;
-  static const IconData homeOutline = Icons.home_outlined;
   static const IconData settings = Icons.settings_rounded;
   static const IconData bookmarkFilled = Icons.bookmark_rounded;
-  static const IconData bookmarkOutline = Icons.bookmark_outline_rounded;
-  static const IconData person = Icons.person_rounded;
   static const IconData personOutline = Icons.person_outline_rounded;
-  static const IconData editProfile = Icons.manage_accounts_outlined;
   static const IconData lock = Icons.lock_outline_rounded;
   static const IconData logout = Icons.logout_rounded;
-  static const IconData textFormat = Icons.text_fields_rounded;
-  static const IconData news = Icons.article_rounded;
-  static const IconData database = Icons.storage_rounded;
-  static const IconData theme = Icons.brightness_6_rounded;
 
   // Automatically extracted icons
   static const IconData menuBookRounded = Icons.menu_book_rounded;
-  static const IconData homeAlt = Icons.home;
   static const IconData arrowBackRounded = Icons.arrow_back_rounded;
   static const IconData code = Icons.code;
   static const IconData visibilityOutlined = Icons.visibility_outlined;
-  static const IconData shareAlt = Icons.share;
   static const IconData radioButtonUnchecked = Icons.radio_button_unchecked;
   static const IconData list = Icons.list;
   static const IconData wifiRounded = Icons.wifi_rounded;
   static const IconData shieldOutlined = Icons.shield_outlined;
   static const IconData checkRounded = Icons.check_rounded;
   static const IconData bookmark = Icons.bookmark;
-  static const IconData chatBubbleOutlineRounded = Icons.chat_bubble_outline_rounded;
+  static const IconData chatBubbleOutlineRounded =
+      Icons.chat_bubble_outline_rounded;
   static const IconData save = Icons.save;
   static const IconData brightnessAutoRounded = Icons.brightness_auto_rounded;
   static const IconData bookmarkBorderRounded = Icons.bookmark_border_rounded;
@@ -52,7 +42,6 @@ class AppIcons {
   static const IconData fileOpen = Icons.file_open;
   static const IconData articleOutlined = Icons.article_outlined;
   static const IconData networkCheckRounded = Icons.network_check_rounded;
-  static const IconData favoriteAlt = Icons.favorite;
   static const IconData bookmarkAddOutlined = Icons.bookmark_add_outlined;
   static const IconData visibilityOffOutlined = Icons.visibility_off_outlined;
   static const IconData gridViewRounded = Icons.grid_view_rounded;
@@ -60,13 +49,14 @@ class AppIcons {
   static const IconData personAlt = Icons.person;
   static const IconData linkRounded = Icons.link_rounded;
   static const IconData formatBold = Icons.format_bold;
-  static const IconData settingsAlt = Icons.settings;
   static const IconData moreVert = Icons.more_vert;
-  static const IconData notificationsActiveOutlined = Icons.notifications_active_outlined;
+  static const IconData notificationsActiveOutlined =
+      Icons.notifications_active_outlined;
   static const IconData wbSunnyOutlined = Icons.wb_sunny_outlined;
   static const IconData nightlightRound = Icons.nightlight_round;
   static const IconData inventory2Outlined = Icons.inventory_2_outlined;
-  static const IconData arrowForwardIosRounded = Icons.arrow_forward_ios_rounded;
+  static const IconData arrowForwardIosRounded =
+      Icons.arrow_forward_ios_rounded;
   static const IconData menuBookOutlined = Icons.menu_book_outlined;
   static const IconData thumbUpOutlined = Icons.thumb_up_outlined;
   static const IconData imageOutlined = Icons.image_outlined;
@@ -77,9 +67,7 @@ class AppIcons {
   static const IconData visibilityOff = Icons.visibility_off;
   static const IconData minimizeRounded = Icons.minimize_rounded;
   static const IconData alternateEmailRounded = Icons.alternate_email_rounded;
-  static const IconData menuAlt = Icons.menu;
   static const IconData boltRounded = Icons.bolt_rounded;
-  static const IconData deleteAlt = Icons.delete;
   static const IconData closeAlt = Icons.close;
   static const IconData clearAll = Icons.clear_all;
   static const IconData mailOutlineRounded = Icons.mail_outline_rounded;

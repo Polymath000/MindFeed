@@ -19,8 +19,8 @@ class OnBoardingBackground extends StatelessWidget {
               : Assets.assetsImagesOnBoarding3);
     return ColorFiltered(
       colorFilter: ColorFilter.mode(
-        Colors.black.withOpacity(
-          currentPage == 2 ? 0.45 : (currentPage == 1 ? 0.55 : 0.65),
+        Colors.black.withValues(
+          alpha: currentPage == 2 ? 0.45 : (currentPage == 1 ? 0.55 : 0.65),
         ),
         BlendMode.darken,
       ),

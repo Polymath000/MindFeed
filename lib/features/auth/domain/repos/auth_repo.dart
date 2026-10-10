@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/params/login_params.dart';
 import 'package:mind_feed/core/params/signup_params.dart' show SignupParams;

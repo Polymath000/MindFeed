@@ -1,5 +1,5 @@
 import 'package:mind_feed/core/database/cache/cache_helper.dart';
-import 'package:mind_feed/core/errors/expentions.dart';
+import 'package:mind_feed/core/errors/exceptions.dart';
 import 'package:mind_feed/features/auth/data/models/user_model.dart';
 import 'dart:convert';
 
@@ -12,7 +12,7 @@ class UserCacheDataSource {
     if (userToCache != null) {
       cacheHelper.saveData(key: key, value: json.encode(userToCache.toJson()));
     } else {
-      throw CacheExeption(errorMessage: "No Internet Connection");
+      throw CacheException(errorMessage: "No Internet Connection");
     }
   }
 
@@ -21,7 +21,7 @@ class UserCacheDataSource {
     if (jsonString != null) {
       return Future.value(UserModel.fromJson(json.decode(jsonString)));
     } else {
-      throw CacheExeption(errorMessage: "No Internet Connection");
+      throw CacheException(errorMessage: "No Internet Connection");
     }
   }
 }

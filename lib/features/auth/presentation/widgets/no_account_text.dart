@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/features/auth/presentation/views/signup_view.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 

@@ -35,7 +35,10 @@ class _CategoryCardState extends State<CategoryCard> {
                 widget.category[1],
                 width: 40,
                 height: 40,
-                color: isSelected ? AppColors.black : AppColors.white,
+                colorFilter: ColorFilter.mode(
+                  isSelected ? AppColors.black : AppColors.white,
+                  BlendMode.srcIn,
+                ),
               ),
               SizedBox(height: 8),
               Text(

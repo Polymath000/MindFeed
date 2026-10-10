@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/features/settings/presentation/controllers/theme_mode_cubit/theme_mode_cubit.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 

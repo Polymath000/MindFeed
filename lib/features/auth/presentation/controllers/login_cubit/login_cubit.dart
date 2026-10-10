@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mind_feed/core/params/login_params.dart';
 import 'package:mind_feed/features/auth/domain/usecases/login_use_case.dart';
 
