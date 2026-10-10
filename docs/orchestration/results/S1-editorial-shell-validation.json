@@ -1,0 +1,17 @@
+[
+  {
+    "command": "flutter analyze lib/config/themes lib/core/design lib/core/widgets/custom_app_bar.dart lib/core/widgets/search_bar.dart lib/features/home lib/features/collections lib/features/main lib/features/search lib/config/routes/on_generate_routes.dart test",
+    "exit_code": 0,
+    "owner": "Hermes"
+  },
+  {
+    "command": "flutter test",
+    "exit_code": 0,
+    "owner": "Hermes"
+  },
+  {
+    "command": "flutter build web",
+    "exit_code": 0,
+    "owner": "Hermes"
+  }
+]

@@ -30,16 +30,22 @@ class LoginViewBody extends StatelessWidget {
           child: Stack(
             children: [
               authBackground(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: SafeArea(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        LoginForm(),
-                        SizedBox(height: 16.0),
-                        NoAccountText(),
-                      ],
+              SafeArea(
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 440),
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 16.0,
+                      ),
+                      child: const Column(
+                        children: [
+                          LoginForm(),
+                          SizedBox(height: 24.0),
+                          NoAccountText(),
+                        ],
+                      ),
                     ),
                   ),
                 ),

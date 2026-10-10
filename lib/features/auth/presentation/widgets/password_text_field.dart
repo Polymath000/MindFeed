@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/design/editorial_design.dart';
 
 class PasswordTextField extends StatefulWidget {
-  PasswordTextField({
+  const PasswordTextField({
     super.key,
     required this.hintText,
     this.onChanged,
     this.controller,
   });
+
   final String hintText;
   final ValueChanged<String>? onChanged;
-  TextEditingController? controller;
+  final TextEditingController? controller;
+
   @override
   State<PasswordTextField> createState() => _PasswordTextFieldState();
 }
 
 class _PasswordTextFieldState extends State<PasswordTextField> {
-  bool isObscured = true;
+  bool _isObscured = true;
   final FocusNode _passwordFocusNode = FocusNode();
+
   @override
   void dispose() {
     _passwordFocusNode.dispose();
@@ -32,8 +34,9 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       onChanged: widget.onChanged,
       keyboardType: TextInputType.visiblePassword,
       autofocus: false,
-      obscureText: isObscured,
-      obscuringCharacter: '*',
+      obscureText: _isObscured,
+      obscuringCharacter: '•',
+      focusNode: _passwordFocusNode,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Please enter your password';
@@ -45,33 +48,61 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
           return 'Password must contain at least one number';
         } else if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
           return 'Password must contain at least one special character';
-        } else {
-          return null;
         }
+        return null;
       },
-      style: TextStyle(color: AppColors.white),
-      focusNode: _passwordFocusNode,
+      style: const TextStyle(
+        color: EditorialPalette.softCream,
+        fontSize: 15,
+      ),
       decoration: InputDecoration(
-        labelStyle: TextStyle(color: AppColors.white),
-        labelText: widget.hintText,
+        hintText: widget.hintText,
+        hintStyle: const TextStyle(
+          color: Color(0xFFAAA49B),
+          fontSize: 14,
+        ),
+        prefixIcon: const Icon(
+          Icons.lock_outline_rounded,
+          color: Color(0xFFAAA49B),
+          size: 20,
+        ),
         suffixIcon: IconButton(
           onPressed: () {
             setState(() {
-              isObscured = !isObscured;
+              _isObscured = !_isObscured;
             });
           },
           icon: Icon(
-            isObscured ? Icons.visibility_off : Icons.visibility,
-            color: AppColors.white,
+            _isObscured ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+            color: const Color(0xFFAAA49B),
+            size: 20,
           ),
         ),
-        border: OutlineInputBorder(
-          borderRadius: AppBorders.xxxs,
-          borderSide: BorderSide(color: AppColors.white, width: 2.0),
+        filled: true,
+        fillColor: const Color(0xFF262422),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 16,
+          horizontal: 20,
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: AppBorders.xxxs,
-          borderSide: BorderSide(color: AppColors.white, width: 2.0),
+        border: const OutlineInputBorder(
+          borderRadius: EditorialRadii.control,
+          borderSide: BorderSide(color: Color(0xFF383530), width: 1.0),
+        ),
+        enabledBorder: const OutlineInputBorder(
+          borderRadius: EditorialRadii.control,
+          borderSide: BorderSide(color: Color(0xFF383530), width: 1.0),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: EditorialRadii.control,
+          borderSide: BorderSide(color: EditorialPalette.cream, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: EditorialRadii.control,
+          borderSide: BorderSide(color: Colors.red.shade400, width: 1.0),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: EditorialRadii.control,
+          borderSide: BorderSide(color: Colors.red.shade400, width: 1.5),
         ),
       ),
     );

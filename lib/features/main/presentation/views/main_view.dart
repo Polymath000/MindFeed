@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/features/profile/presentation/views/profile_view.dart';
 import 'package:mind_feed/features/collections/presentation/views/articles_saved.dart';
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 import 'package:mind_feed/features/main/presentation/widgets/main_navigation_bar.dart';
@@ -13,62 +12,18 @@ class MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<MainView> {
-  int selectedIndex = 0;
-  bool isDrawerVisible = false;
+  var selectedIndex = 0;
 
   @override
-  void initState() {
-    super.initState();
-    advancedDrawerController.addListener(_onDrawerChanged);
-  }
-
-  @override
-  void dispose() {
-    advancedDrawerController.removeListener(_onDrawerChanged);
-    super.dispose();
-  }
-
-  void _onDrawerChanged() {
-    final visible = advancedDrawerController.value.visible;
-    if (visible != isDrawerVisible) {
-      setState(() => isDrawerVisible = visible);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    bool isDark = Theme.of(context).brightness == Brightness.dark;
-    return Scaffold(
-      body: widgetOptions.elementAt(selectedIndex),
-      bottomNavigationBar: Container(
-        decoration: 
-            BoxDecoration(
-                color: isDark ? Color(0xff2A2A2A) : Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 20,
-                    color: Colors.black.withOpacity(.1),
-                  ),
-                ],
-              )
-            ,
-        child:  MainNavigationBar(
-                selectedIndex: selectedIndex,
-                onDestinationSelected: (int index) {
-                  setState(() {
-                    selectedIndex = index;
-                  });
-                },
-              )
-           
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: const Color(0xFF171614),
+    body: IndexedStack(
+      index: selectedIndex,
+      children: const [HomeView(), SearchView(), ArticlesSaved()],
+    ),
+    bottomNavigationBar: MainNavigationBar(
+      selectedIndex: selectedIndex,
+      onDestinationSelected: (index) => setState(() => selectedIndex = index),
+    ),
+  );
 }
-
-final List<Widget> widgetOptions = <Widget>[
-  HomeView(),
-  const SearchView(),
-  ArticlesSaved(),
-  const ProfileView(),
-];

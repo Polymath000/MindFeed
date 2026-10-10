@@ -1,46 +1,62 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/core/constants/borders.dart';
-import 'package:mind_feed/core/utls/app_icons.dart';
+import 'package:mind_feed/core/design/editorial_design.dart';
 
 class CustomSearchBar extends StatelessWidget {
-  const CustomSearchBar({super.key});
+  const CustomSearchBar({
+    super.key,
+    this.semanticLabel = 'Search news',
+    this.hintText = 'Search',
+    this.trailingSearchIcon = false,
+    this.controller,
+    this.onChanged,
+  });
+  final String semanticLabel;
+  final String hintText;
+  final bool trailingSearchIcon;
+  final TextEditingController? controller;
+  final ValueChanged<String>? onChanged;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search',
-                prefixIcon: Icon(Icons.search_rounded),
-                suffixIcon: Icon(AppIcons.close, size: 22),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: AppBorders.xxxs,
-                  borderSide: BorderSide(color: AppColors.lightBlue),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 18),
+    child: Semantics(
+      textField: true,
+      label: semanticLabel,
+      child: TextField(
+        controller: controller,
+        onChanged: onChanged,
+        style: const TextStyle(color: EditorialPalette.softCream, fontSize: 14),
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: const TextStyle(color: Color(0xFFAAA49B), fontSize: 14),
+          prefixIcon: trailingSearchIcon
+              ? null
+              : const Icon(
+                  Icons.search_rounded,
+                  color: EditorialPalette.softCream,
                 ),
-                border: OutlineInputBorder(
-                  borderRadius: AppBorders.xxxs,
-                  borderSide: BorderSide(color: AppColors.white),
-                ),
-              ),
-            ),
+          suffixIcon: trailingSearchIcon
+              ? const Icon(
+                  Icons.search_rounded,
+                  color: Color(0xFFAAA49B),
+                )
+              : null,
+          filled: true,
+          fillColor: const Color(0xFF2A2825),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 14,
+            horizontal: 18,
           ),
-          SizedBox(width: 12),
-          IconButton(
-            onPressed: () {},
-            padding: EdgeInsets.all(14),
-            icon: Icon(AppIcons.search, color: AppColors.white),
-            style: IconButton.styleFrom(
-              backgroundColor: AppColors.darkBlue,
-              shape: RoundedRectangleBorder(borderRadius: AppBorders.xxxs),
-            ),
+          border: const OutlineInputBorder(
+            borderRadius: EditorialRadii.control,
+            borderSide: BorderSide.none,
           ),
-        ],
+          focusedBorder: const OutlineInputBorder(
+            borderRadius: EditorialRadii.control,
+            borderSide: BorderSide(color: EditorialPalette.cream, width: 2),
+          ),
+        ),
       ),
-    );
-  }
+    ),
+  );
 }

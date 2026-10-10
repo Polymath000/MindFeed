@@ -8,8 +8,17 @@ class ProfileViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [ProfileAppBar(), PersonalInfromation(), UserArticles()],
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 600),
+        child: const CustomScrollView(
+          slivers: [
+            ProfileAppBar(),
+            PersonalInfromation(),
+            UserArticles(),
+          ],
+        ),
+      ),
     );
   }
 }

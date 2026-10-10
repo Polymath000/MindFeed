@@ -1,39 +1,85 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/config/themes/app_text_style.dart';
-import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/design/editorial_design.dart';
 
-class SettingsMenu extends StatelessWidget {
-  const SettingsMenu({super.key, required this.children, required this.title});
-  final List<Widget> children;
+class PaperSettingsSection extends StatelessWidget {
+  const PaperSettingsSection({
+    super.key,
+    required this.title,
+    required this.children,
+    this.kicker,
+  });
+
   final String title;
+  final String? kicker;
+  final List<Widget> children;
+
   @override
   Widget build(BuildContext context) {
-    bool isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: AppTextStyles.bodyLarge!.copyWith(
-              color: isDark ? AppColors.white : AppColors.black,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                if (kicker != null) ...[
+                  Text(
+                    kicker!.toUpperCase(),
+                    style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.2,
+                      color: EditorialPalette.mutedInk,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  const Text('•', style: TextStyle(color: EditorialPalette.mutedInk, fontSize: 10)),
+                  const SizedBox(width: 8),
+                ],
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.2,
+                    color: EditorialPalette.ink,
+                  ),
+                ),
+              ],
             ),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 6),
           Container(
-            padding: EdgeInsets.symmetric(vertical: 8),
             decoration: BoxDecoration(
-              color: isDark ? AppColors.darkerGrey : AppColors.grey,
-              borderRadius: AppBorders.xxxs,
-              border: Border.all(color: AppColors.lightGrey),
+              color: const Color(0xFFFFFDF9),
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(
+                color: const Color(0xFFE5DECE),
+                width: 1.2,
+              ),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x0C30281C),
+                  blurRadius: 10,
+                  offset: Offset(0, 3),
+                ),
+              ],
             ),
             child: Column(
               children: [
                 for (var i = 0; i < children.length; i++) ...[
                   children[i],
-                  if (i < children.length - 1) buildDivider(),
+                  if (i < children.length - 1)
+                    const Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: Color(0xFFF1EBE0),
+                      indent: 60,
+                      endIndent: 16,
+                    ),
                 ],
               ],
             ),
@@ -44,8 +90,285 @@ class SettingsMenu extends StatelessWidget {
   }
 }
 
-Widget buildDivider() {
-  return const Divider(height: 1, thickness: 1, color: Color(0xFF1F2937));
+class PaperSettingsTile extends StatelessWidget {
+  const PaperSettingsTile({
+    super.key,
+    required this.icon,
+    required this.title,
+    this.subtitle,
+    this.trailing,
+    this.stampColor = EditorialPalette.sand,
+    this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String? subtitle;
+  final Widget? trailing;
+  final Color stampColor;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(22),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+        child: Row(
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: stampColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: const Color(0xFFDDD4C0),
+                  width: 1,
+                ),
+              ),
+              child: Icon(icon, size: 19, color: EditorialPalette.ink),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: EditorialPalette.ink,
+                      letterSpacing: -0.2,
+                    ),
+                  ),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle!,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        height: 1.3,
+                        color: EditorialPalette.mutedInk,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            if (trailing != null)
+              trailing!
+            else if (onTap != null)
+              const Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 14,
+                color: EditorialPalette.mutedInk,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PaperSettingsSwitchTile extends StatelessWidget {
+  const PaperSettingsSwitchTile({
+    super.key,
+    required this.icon,
+    required this.title,
+    this.subtitle,
+    required this.value,
+    required this.onChanged,
+    this.stampColor = EditorialPalette.sand,
+  });
+
+  final IconData icon;
+  final String title;
+  final String? subtitle;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  final Color stampColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+      child: Row(
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: stampColor,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: const Color(0xFFDDD4C0),
+                width: 1,
+              ),
+            ),
+            child: Icon(icon, size: 19, color: EditorialPalette.ink),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: EditorialPalette.ink,
+                    letterSpacing: -0.2,
+                  ),
+                ),
+                if (subtitle != null) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle!,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      height: 1.3,
+                      color: EditorialPalette.mutedInk,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          Switch.adaptive(
+            value: value,
+            onChanged: onChanged,
+            activeThumbColor: EditorialPalette.ink,
+            activeTrackColor: EditorialPalette.butter,
+            inactiveThumbColor: const Color(0xFFB5ADA0),
+            inactiveTrackColor: const Color(0xFFE9E2D4),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PaperSegmentedOptions<T> extends StatelessWidget {
+  const PaperSegmentedOptions({
+    super.key,
+    required this.title,
+    this.subtitle,
+    required this.options,
+    required this.selectedOption,
+    required this.onChanged,
+    required this.labelBuilder,
+  });
+
+  final String title;
+  final String? subtitle;
+  final List<T> options;
+  final T selectedOption;
+  final ValueChanged<T> onChanged;
+  final String Function(T) labelBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: EditorialPalette.ink,
+              letterSpacing: -0.2,
+            ),
+          ),
+          if (subtitle != null) ...[
+            const SizedBox(height: 2),
+            Text(
+              subtitle!,
+              style: const TextStyle(
+                fontSize: 12,
+                color: EditorialPalette.mutedInk,
+              ),
+            ),
+          ],
+          const SizedBox(height: 12),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            child: Row(
+              children: options.map((option) {
+                final isSelected = option == selectedOption;
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: GestureDetector(
+                    onTap: () => onChanged(option),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? EditorialPalette.ink
+                            : const Color(0xFFF6F0E4),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: isSelected
+                              ? EditorialPalette.ink
+                              : const Color(0xFFE2DAC8),
+                        ),
+                      ),
+                      child: Text(
+                        labelBuilder(option),
+                        style: TextStyle(
+                          color: isSelected
+                              ? EditorialPalette.cream
+                              : EditorialPalette.ink,
+                          fontSize: 12.5,
+                          fontWeight: isSelected
+                              ? FontWeight.w800
+                              : FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SettingsMenu extends StatelessWidget {
+  const SettingsMenu({
+    super.key,
+    required this.children,
+    required this.title,
+  });
+
+  final List<Widget> children;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return PaperSettingsSection(
+      title: title,
+      children: children,
+    );
+  }
 }
 
 Widget buildSettingsMenuItem({
@@ -54,21 +377,9 @@ Widget buildSettingsMenuItem({
   required void Function()? onTap,
   required BuildContext context,
 }) {
-  bool isDark = Theme.of(context).brightness == Brightness.dark;
-  return ListTile(
-    leading: Icon(icon, color: isDark ? AppColors.white : AppColors.black),
-    title: Text(
-      title,
-      style: TextStyle(
-        color: AppColors.white,
-        fontSize: 16,
-        fontFamily: 'Inter',
-      ),
-    ),
-    trailing: Icon(
-      Icons.chevron_right,
-      color: isDark ? AppColors.white : AppColors.darkGrey,
-    ),
+  return PaperSettingsTile(
+    icon: icon,
+    title: title,
     onTap: onTap,
   );
 }
@@ -79,19 +390,11 @@ Widget buildSettingsMenuItemSwitcher({
   void Function()? onTap,
   required BuildContext context,
 }) {
-  bool isDark = Theme.of(context).brightness == Brightness.dark;
-  return ListTile(
-    leading: Icon(icon, color: isDark ? AppColors.white : AppColors.black),
-    title: Text(
-      title,
-      style: TextStyle(
-        color: AppColors.white,
-        fontSize: 16,
-        fontFamily: 'Inter',
-      ),
-    ),
-    trailing: Switch(value: true, onChanged: (value) {}),
-    onTap: onTap,
+  return PaperSettingsSwitchTile(
+    icon: icon,
+    title: title,
+    value: true,
+    onChanged: (_) => onTap?.call(),
   );
 }
 
@@ -102,30 +405,26 @@ Widget buildSettingsMenuItemWithDropMenu({
   required String beforeTrailing,
   required BuildContext context,
 }) {
-  bool isDark = Theme.of(context).brightness == Brightness.dark;
-
-  return ListTile(
-    leading: Icon(icon, color: isDark ? AppColors.white : AppColors.black),
-    title: Text(
-      title,
-      style: TextStyle(
-        color: AppColors.white,
-        fontSize: 16,
-        fontFamily: 'Inter',
-      ),
-    ),
+  return PaperSettingsTile(
+    icon: icon,
+    title: title,
     trailing: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          beforeTrailing,
-          style: AppTextStyles.bodyMedium!.copyWith(
-            color: isDark ? AppColors.white : AppColors.black,
+        if (beforeTrailing.isNotEmpty)
+          Text(
+            beforeTrailing,
+            style: const TextStyle(
+              color: EditorialPalette.mutedInk,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-        Icon(
-          Icons.chevron_right,
-          color: isDark ? AppColors.white : AppColors.black,
+        const SizedBox(width: 4),
+        const Icon(
+          Icons.arrow_forward_ios_rounded,
+          size: 13,
+          color: EditorialPalette.mutedInk,
         ),
       ],
     ),
@@ -141,29 +440,23 @@ Widget buildSettingsMenuItemWithDropdown<T>({
   required void Function(T?)? onChanged,
   required BuildContext context,
 }) {
-  bool isDark = Theme.of(context).brightness == Brightness.dark;
-
-  return ListTile(
-    leading: Icon(icon, color: isDark ? AppColors.white : AppColors.black),
-    title: Text(
-      title,
-      style: TextStyle(
-        color: AppColors.white,
-        fontSize: 16,
-        fontFamily: 'Inter',
-      ),
-    ),
+  return PaperSettingsTile(
+    icon: icon,
+    title: title,
     trailing: DropdownButton<T>(
       value: value,
       items: items,
       onChanged: onChanged,
       underline: const SizedBox(),
-      icon: Icon(
-        Icons.expand_more,
-        color: isDark ? AppColors.white : AppColors.black,
+      icon: const Icon(
+        Icons.expand_more_rounded,
+        color: EditorialPalette.ink,
       ),
-      dropdownColor: isDark ? AppColors.darkerGrey : AppColors.grey,
-      style: TextStyle(color: isDark ? AppColors.white : AppColors.black),
+      dropdownColor: const Color(0xFFFFFDF9),
+      style: const TextStyle(
+        color: EditorialPalette.ink,
+        fontWeight: FontWeight.w600,
+      ),
     ),
   );
 }

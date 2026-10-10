@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/config/themes/app_text_style.dart';
+import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/utls/app_images.dart';
 
 class PersonalInfromation extends StatelessWidget {
@@ -12,42 +11,70 @@ class PersonalInfromation extends StatelessWidget {
       slivers: [
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.only(top: 32.0, bottom: 14),
+            padding: const EdgeInsets.only(top: 24.0, bottom: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  backgroundImage: AssetImage(Assets.assetsImagesMeJustForTest),
-                  radius: 60,
+                Container(
+                  padding: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: EditorialPalette.cream, width: 2),
+                  ),
+                  child: ClipOval(
+                    child: Image.asset(
+                      Assets.assetsImagesWadeAvatar,
+                      width: 96,
+                      height: 96,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => const CircleAvatar(
+                        radius: 48,
+                        backgroundColor: EditorialPalette.blush,
+                        child: Icon(Icons.person, size: 48, color: EditorialPalette.ink),
+                      ),
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 12),
-                Text(
+                const SizedBox(height: 14),
+                const Text(
                   'Abdelrahman Khaled',
-                  style: AppTextStyles.titleLarge!.copyWith(
+                  style: TextStyle(
+                    color: EditorialPalette.softCream,
+                    fontSize: 22,
                     fontWeight: FontWeight.w800,
+                    letterSpacing: -0.5,
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  'abdalrahmankhaled642004@gmail.com',
-                  style: AppTextStyles.titleMedium!.copyWith(
-                    color: AppColors.grey,
+                const Text(
+                  'Senior Editorial Contributor • MindFeed',
+                  style: TextStyle(
+                    color: Color(0xFFAAA49B),
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-              ],
-            ),
-          ),
-        ),
-
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 50),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildStatItem("1.2K", "Followers"),
-                const SizedBox(width: 32),
-                _buildStatItem("348", "Following"),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildStatItem('14', 'Articles'),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 24),
+                      width: 1,
+                      height: 32,
+                      color: const Color(0xFF383530),
+                    ),
+                    _buildStatItem('1.2K', 'Followers'),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 24),
+                      width: 1,
+                      height: 32,
+                      color: const Color(0xFF383530),
+                    ),
+                    _buildStatItem('348', 'Following'),
+                  ],
+                ),
               ],
             ),
           ),
@@ -63,19 +90,18 @@ class PersonalInfromation extends StatelessWidget {
         Text(
           value,
           style: const TextStyle(
-            color: AppColors.cyan,
-            fontSize: 25,
-            fontWeight: FontWeight.w700,
-            height: 1.4,
+            color: EditorialPalette.cream,
+            fontSize: 20,
+            fontWeight: FontWeight.w800,
           ),
         ),
+        const SizedBox(height: 2),
         Text(
           label,
           style: const TextStyle(
-            color: AppColors.darkGrey,
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-            height: 1.3,
+            color: Color(0xFFAAA49B),
+            fontSize: 12.5,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],

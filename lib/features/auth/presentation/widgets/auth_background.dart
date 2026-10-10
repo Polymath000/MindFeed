@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/utls/app_images.dart';
+import 'package:mind_feed/core/design/editorial_design.dart';
 
-Image authBackground() {
-  return Image.asset(
-    Assets.assetsImagesBack,
+Widget authBackground() {
+  return Container(
     height: double.infinity,
     width: double.infinity,
-    fit: BoxFit.cover,
+    decoration: const BoxDecoration(
+      color: EditorialPalette.ink,
+      gradient: RadialGradient(
+        center: Alignment(0.0, -0.6),
+        radius: 1.2,
+        colors: [
+          Color(0xFF24221E),
+          EditorialPalette.ink,
+        ],
+      ),
+    ),
   );
 }

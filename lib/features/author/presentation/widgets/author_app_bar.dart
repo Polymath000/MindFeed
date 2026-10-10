@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/config/themes/app_text_style.dart';
+import 'package:mind_feed/core/design/editorial_design.dart';
 
 class AuthorAppBar extends StatelessWidget {
   const AuthorAppBar({super.key});
@@ -8,13 +7,42 @@ class AuthorAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
+      automaticallyImplyLeading: false,
       pinned: true,
-      backgroundColor: Theme.of(context).brightness == Brightness.dark
-          ? Color(0xff1F1F2E)
-          : AppColors.lightGray,
-      actionsPadding: EdgeInsets.symmetric(horizontal: 32),
+      backgroundColor: EditorialPalette.ink,
+      surfaceTintColor: Colors.transparent,
       centerTitle: true,
-      title: Text('Author Profile', style: AppTextStyles.headlineMedium),
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: EditorialIconButton(
+          icon: Icons.arrow_back_rounded,
+          label: 'Back',
+          onPressed: () => Navigator.maybePop(context),
+        ),
+      ),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 16.0),
+          child: EditorialIconButton(
+            icon: Icons.ios_share_rounded,
+            label: 'Share profile',
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Profile link copied to clipboard')),
+              );
+            },
+          ),
+        ),
+      ],
+      title: const Text(
+        'Author Profile',
+        style: TextStyle(
+          color: EditorialPalette.softCream,
+          fontSize: 22,
+          fontWeight: FontWeight.w800,
+          letterSpacing: -0.5,
+        ),
+      ),
     );
   }
 }
