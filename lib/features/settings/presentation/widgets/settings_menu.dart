@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class PaperSettingsSection extends StatelessWidget {
   const PaperSettingsSection({
@@ -54,15 +55,15 @@ class PaperSettingsSection extends StatelessWidget {
           const SizedBox(height: 6),
           Container(
             decoration: BoxDecoration(
-              color: const Color(0xFFFFFDF9),
+              color: AppColors.whiteLight,
               borderRadius: BorderRadius.circular(22),
               border: Border.all(
-                color: const Color(0xFFE5DECE),
+                color: AppColors.creamBorder,
                 width: 1.2,
               ),
               boxShadow: const [
                 BoxShadow(
-                  color: Color(0x0C30281C),
+                  color: AppColors.transparentDark,
                   blurRadius: 10,
                   offset: Offset(0, 3),
                 ),
@@ -76,7 +77,7 @@ class PaperSettingsSection extends StatelessWidget {
                     const Divider(
                       height: 1,
                       thickness: 1,
-                      color: Color(0xFFF1EBE0),
+                      color: AppColors.sandLighter,
                       indent: 60,
                       endIndent: 16,
                     ),
@@ -124,7 +125,7 @@ class PaperSettingsTile extends StatelessWidget {
                 color: stampColor,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: const Color(0xFFDDD4C0),
+                  color: AppColors.creamDark,
                   width: 1,
                 ),
               ),
@@ -206,7 +207,7 @@ class PaperSettingsSwitchTile extends StatelessWidget {
               color: stampColor,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: const Color(0xFFDDD4C0),
+                color: AppColors.creamDark,
                 width: 1,
               ),
             ),
@@ -247,8 +248,8 @@ class PaperSettingsSwitchTile extends StatelessWidget {
             onChanged: onChanged,
             activeThumbColor: EditorialPalette.ink,
             activeTrackColor: EditorialPalette.butter,
-            inactiveThumbColor: const Color(0xFFB5ADA0),
-            inactiveTrackColor: const Color(0xFFE9E2D4),
+            inactiveThumbColor: AppColors.greyBrown,
+            inactiveTrackColor: AppColors.sandDarker,
           ),
         ],
       ),
@@ -320,12 +321,12 @@ class PaperSegmentedOptions<T> extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: isSelected
                             ? EditorialPalette.ink
-                            : const Color(0xFFF6F0E4),
+                            : AppColors.creamLight,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
                           color: isSelected
                               ? EditorialPalette.ink
-                              : const Color(0xFFE2DAC8),
+                              : AppColors.sandDarkest,
                         ),
                       ),
                       child: Text(
@@ -452,7 +453,7 @@ Widget buildSettingsMenuItemWithDropdown<T>({
         Icons.expand_more_rounded,
         color: EditorialPalette.ink,
       ),
-      dropdownColor: const Color(0xFFFFFDF9),
+      dropdownColor: AppColors.whiteLight,
       style: const TextStyle(
         color: EditorialPalette.ink,
         fontWeight: FontWeight.w600,

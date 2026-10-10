@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class AuthorPersonalInfo extends StatelessWidget {
   const AuthorPersonalInfo({super.key});
@@ -47,7 +48,7 @@ class AuthorPersonalInfo extends StatelessWidget {
             const Text(
               'Investigative Tech & Science Lead • MindFeed',
               style: TextStyle(
-                color: Color(0xFFAAA49B),
+                color: AppColors.greyText,
                 fontSize: 13.5,
                 fontWeight: FontWeight.w500,
               ),
@@ -63,14 +64,14 @@ class AuthorPersonalInfo extends StatelessWidget {
                   margin: const EdgeInsets.symmetric(horizontal: 24),
                   width: 1,
                   height: 32,
-                  color: const Color(0xFF383530),
+                  color: AppColors.borderDark,
                 ),
                 _buildStatItem('48.2K', 'Followers'),
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 24),
                   width: 1,
                   height: 32,
-                  color: const Color(0xFF383530),
+                  color: AppColors.borderDark,
                 ),
                 _buildStatItem('192', 'Following'),
               ],
@@ -97,7 +98,7 @@ class AuthorPersonalInfo extends StatelessWidget {
         Text(
           label,
           style: const TextStyle(
-            color: Color(0xFFAAA49B),
+            color: AppColors.greyText,
             fontSize: 12.5,
             fontWeight: FontWeight.w500,
           ),

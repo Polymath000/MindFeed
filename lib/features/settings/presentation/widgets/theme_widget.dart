@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/features/settings/presentation/controllers/theme_mode_cubit/theme_mode_cubit.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class ThemeWidget extends StatelessWidget {
   const ThemeWidget({super.key});
@@ -52,7 +53,7 @@ class ThemeWidget extends StatelessWidget {
                       title: 'Warm Paper',
                       subtitle: 'Daylight Print',
                       icon: Icons.menu_book_rounded,
-                      cardColor: const Color(0xFFFFF8E6),
+                      cardColor: AppColors.softCream,
                       textColor: EditorialPalette.ink,
                     ),
                   ),
@@ -65,8 +66,8 @@ class ThemeWidget extends StatelessWidget {
                       title: 'Midnight Ink',
                       subtitle: 'Dimmed Study',
                       icon: Icons.nightlight_round,
-                      cardColor: const Color(0xFF23211F),
-                      textColor: const Color(0xFFFFF8E6),
+                      cardColor: AppColors.charcoalDarker,
+                      textColor: AppColors.softCream,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -78,7 +79,7 @@ class ThemeWidget extends StatelessWidget {
                       title: 'Auto Cadence',
                       subtitle: 'Solar Sync',
                       icon: Icons.brightness_auto_rounded,
-                      cardColor: const Color(0xFFEDE5D4),
+                      cardColor: AppColors.sandDark,
                       textColor: EditorialPalette.ink,
                     ),
                   ),
@@ -115,13 +116,13 @@ class ThemeWidget extends StatelessWidget {
           color: cardColor,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? EditorialPalette.ink : const Color(0xFFDDD4C0),
+            color: isSelected ? EditorialPalette.ink : AppColors.creamDark,
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected
               ? const [
                   BoxShadow(
-                    color: Color(0x18000000),
+                    color: AppColors.transparentBlack,
                     blurRadius: 8,
                     offset: Offset(0, 3),
                   ),

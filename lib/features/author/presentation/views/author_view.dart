@@ -4,6 +4,7 @@ import 'package:mind_feed/core/design/editorial_mock_data.dart';
 import 'package:mind_feed/features/author/presentation/views/author_personal_info.dart';
 import 'package:mind_feed/features/author/presentation/widgets/author_app_bar.dart';
 import 'package:mind_feed/features/profile/presentation/widget/custom_article_card_of_profile.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class AuthorView extends StatelessWidget {
   const AuthorView({super.key});
@@ -45,7 +46,7 @@ class AuthorView extends StatelessWidget {
                           Text(
                             '${authorArticles.length} stories',
                             style: const TextStyle(
-                              color: Color(0xFFAAA49B),
+                              color: AppColors.greyText,
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
                             ),

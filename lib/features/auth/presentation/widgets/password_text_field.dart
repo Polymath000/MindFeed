@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class PasswordTextField extends StatefulWidget {
   const PasswordTextField({
@@ -58,12 +59,12 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       decoration: InputDecoration(
         hintText: widget.hintText,
         hintStyle: const TextStyle(
-          color: Color(0xFFAAA49B),
+          color: AppColors.greyText,
           fontSize: 14,
         ),
         prefixIcon: const Icon(
           Icons.lock_outline_rounded,
-          color: Color(0xFFAAA49B),
+          color: AppColors.greyText,
           size: 20,
         ),
         suffixIcon: IconButton(
@@ -74,23 +75,23 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
           },
           icon: Icon(
             _isObscured ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-            color: const Color(0xFFAAA49B),
+            color: AppColors.greyText,
             size: 20,
           ),
         ),
         filled: true,
-        fillColor: const Color(0xFF262422),
+        fillColor: AppColors.charcoal,
         contentPadding: const EdgeInsets.symmetric(
           vertical: 16,
           horizontal: 20,
         ),
         border: const OutlineInputBorder(
           borderRadius: EditorialRadii.control,
-          borderSide: BorderSide(color: Color(0xFF383530), width: 1.0),
+          borderSide: BorderSide(color: AppColors.borderDark, width: 1.0),
         ),
         enabledBorder: const OutlineInputBorder(
           borderRadius: EditorialRadii.control,
-          borderSide: BorderSide(color: Color(0xFF383530), width: 1.0),
+          borderSide: BorderSide(color: AppColors.borderDark, width: 1.0),
         ),
         focusedBorder: const OutlineInputBorder(
           borderRadius: EditorialRadii.control,

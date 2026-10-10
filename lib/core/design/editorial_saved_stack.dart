@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class EditorialSavedStack extends StatefulWidget {
   const EditorialSavedStack({
@@ -68,7 +69,7 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
         child: const Text(
           'No saved articles yet',
           style: TextStyle(
-            color: Color(0xFF8E8E93),
+            color: AppColors.greyIcon,
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -97,7 +98,7 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 24),
           decoration: BoxDecoration(
-            color: const Color(0xFFDC2626),
+            color: AppColors.red,
             borderRadius: EditorialRadii.card,
           ),
           child: const Row(
@@ -119,7 +120,7 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
           alignment: Alignment.centerRight,
           padding: const EdgeInsets.symmetric(horizontal: 24),
           decoration: BoxDecoration(
-            color: const Color(0xFFDC2626),
+            color: AppColors.red,
             borderRadius: EditorialRadii.card,
           ),
           child: const Row(

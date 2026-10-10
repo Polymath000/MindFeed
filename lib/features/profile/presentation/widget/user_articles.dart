@@ -3,6 +3,7 @@ import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_mock_data.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/features/profile/presentation/widget/custom_article_card_of_profile.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class UserArticles extends StatefulWidget {
   const UserArticles({super.key});
@@ -43,9 +44,9 @@ class _UserArticlesState extends State<UserArticles> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF262422),
+                    color: AppColors.charcoal,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: const Color(0xFF383530)),
+                    border: Border.all(color: AppColors.borderDark),
                   ),
                   child: Text(
                     '${_articles.length} published',
@@ -65,7 +66,7 @@ class _UserArticlesState extends State<UserArticles> {
                 child: Center(
                   child: Text(
                     'No published articles yet',
-                    style: TextStyle(color: Color(0xFFAAA49B), fontSize: 14),
+                    style: TextStyle(color: AppColors.greyText, fontSize: 14),
                   ),
                 ),
               )

@@ -7,6 +7,7 @@ import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_mock_data.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class HomeViewBody extends StatefulWidget {
   const HomeViewBody({super.key});
@@ -94,9 +95,9 @@ class _HomeViewBodyState extends State<HomeViewBody>
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Color(0xFF191816),
-                          Color(0xFF131210),
-                          Color(0xFF0E0D0C),
+                          AppColors.inkDarker,
+                          AppColors.inkDarkest,
+                          AppColors.almostBlack,
                         ],
                       ),
                     ),
@@ -283,7 +284,7 @@ class _HomeViewBodyState extends State<HomeViewBody>
                                 borderRadius: BorderRadius.circular(22),
                                 border: Border.all(
                                   color: isSelected
-                                      ? const Color(0xFFFFE388)
+                                      ? AppColors.yellowHighlight
                                       : Colors.white.withAlpha(24),
                                   width: isSelected ? 1.2 : 1.0,
                                 ),

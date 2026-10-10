@@ -4,6 +4,7 @@ import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/settings_menu.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/theme_widget.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class SettingsViewBody extends StatefulWidget {
   const SettingsViewBody({super.key});
@@ -76,12 +77,12 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFFDF8),
+                color: AppColors.whiteLight,
                 borderRadius: BorderRadius.circular(22),
-                border: Border.all(color: const Color(0xFFE5DECE), width: 1.2),
+                border: Border.all(color: AppColors.creamBorder, width: 1.2),
                 boxShadow: const [
                   BoxShadow(
-                    color: Color(0x0C30281C),
+                    color: AppColors.transparentDark,
                     blurRadius: 10,
                     offset: Offset(0, 3),
                   ),
@@ -141,7 +142,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                     decoration: BoxDecoration(
                       color: EditorialPalette.mint,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFBCE8D3)),
+                      border: Border.all(color: AppColors.mintDark),
                     ),
                     child: const Text(
                       'ACTIVE',
@@ -149,7 +150,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                         fontSize: 10,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 0.8,
-                        color: Color(0xFF1B5E20),
+                        color: AppColors.greenDark,
                       ),
                     ),
                   ),
@@ -293,7 +294,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                         : null,
                     style: TextButton.styleFrom(
                       foregroundColor: EditorialPalette.ink,
-                      backgroundColor: const Color(0xFFF3EDE2),
+                      backgroundColor: AppColors.sandLight,
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -354,7 +355,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                       builder: (ctx) => Container(
                         padding: const EdgeInsets.all(24),
                         decoration: const BoxDecoration(
-                          color: Color(0xFFFFFDF8),
+                          color: AppColors.whiteLight,
                           borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
                         ),
                         child: Column(

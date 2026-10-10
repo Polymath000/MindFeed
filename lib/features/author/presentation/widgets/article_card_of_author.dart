@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class ArticleCardOfAuthor extends StatelessWidget {
   const ArticleCardOfAuthor({
@@ -25,9 +26,9 @@ class ArticleCardOfAuthor extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 8),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: const Color(0xFF262422),
+          color: AppColors.charcoal,
           borderRadius: EditorialRadii.card,
-          border: Border.all(color: const Color(0xFF383530)),
+          border: Border.all(color: AppColors.borderDark),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,

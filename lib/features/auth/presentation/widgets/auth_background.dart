@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 Widget authBackground() {
   return Container(
@@ -11,7 +12,7 @@ Widget authBackground() {
         center: Alignment(0.0, -0.6),
         radius: 1.2,
         colors: [
-          Color(0xFF24221E),
+          AppColors.charcoalDark,
           EditorialPalette.ink,
         ],
       ),

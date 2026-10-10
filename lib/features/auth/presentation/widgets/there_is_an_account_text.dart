@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class ThereIsAnAccountText extends StatelessWidget {
   const ThereIsAnAccountText({super.key});
@@ -14,7 +15,7 @@ class ThereIsAnAccountText extends StatelessWidget {
           const Text(
             'Already have an account?',
             style: TextStyle(
-              color: Color(0xFFAAA49B),
+              color: AppColors.greyText,
               fontSize: 14,
             ),
           ),

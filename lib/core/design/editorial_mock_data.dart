@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class EditorialMockData {
   EditorialMockData._();
@@ -10,7 +11,7 @@ class EditorialMockData {
     EditorialNewsItem(
       id: 'story_indian_generic_drugs',
       badge: 'LIVE',
-      badgeColor: const Color(0xFFEF4444),
+      badgeColor: AppColors.redHighlight,
       title: 'Demand for Indian\ngeneric drugs\nskyrockets in...',
       updated: 'Updated just now.',
       authorName: 'Wade Warren',
@@ -24,7 +25,7 @@ class EditorialMockData {
     EditorialNewsItem(
       id: 'story_quantum_breakthrough',
       badge: 'SCIENCE',
-      badgeColor: const Color(0xFF059669),
+      badgeColor: AppColors.greenMain,
       title: 'Quantum Coherence\nAchieved at Room\nTemperature in Lab',
       updated: '12 minutes ago.',
       authorName: 'Dr. Elena Rostova',
@@ -50,7 +51,7 @@ class EditorialMockData {
     EditorialNewsItem(
       id: 'story_apple_retail_expansion',
       badge: 'TECH',
-      badgeColor: const Color(0xFF2563EB),
+      badgeColor: AppColors.blueMain,
       title: 'Apple Hiring Workers for\nFlagship Retail Stores\nAcross Major Hubs',
       updated: '1 hour ago.',
       authorName: 'Sophia Dubois',
@@ -63,7 +64,7 @@ class EditorialMockData {
     EditorialNewsItem(
       id: 'story_neural_prosthetics',
       badge: 'HEALTH',
-      badgeColor: const Color(0xFFD97706),
+      badgeColor: AppColors.amberDark,
       title: 'Next-Gen Bionic Limbs\nRestore Subtle Touch\nSensations',
       updated: '2 hours ago.',
       authorName: 'Dr. Aris Thorne',
@@ -89,7 +90,7 @@ class EditorialMockData {
     EditorialNewsItem(
       id: 'story_deep_space_survey',
       badge: 'SPACE',
-      badgeColor: const Color(0xFF7C3AED),
+      badgeColor: AppColors.purple,
       title: 'James Webb Space\nTelescope Detects Water\nin Exoplanet Core',
       updated: '4 hours ago.',
       authorName: 'Dr. Elena Rostova',
@@ -102,7 +103,7 @@ class EditorialMockData {
     EditorialNewsItem(
       id: 'story_clean_energy_grid',
       badge: 'CLIMATE',
-      badgeColor: const Color(0xFF047857),
+      badgeColor: AppColors.greenMedium,
       title: 'Nordic Power Grid\nSurpasses 98 Percent\nRenewable Benchmark',
       updated: '5 hours ago.',
       authorName: 'Frederik Lind',
@@ -115,7 +116,7 @@ class EditorialMockData {
     EditorialNewsItem(
       id: 'story_generative_agents',
       badge: 'AI',
-      badgeColor: const Color(0xFF4F46E5),
+      badgeColor: AppColors.indigo,
       title: 'Autonomous Software\nAgents Transform System\nArchitecture Work',
       updated: '6 hours ago.',
       authorName: 'Sophia Dubois',
@@ -128,7 +129,7 @@ class EditorialMockData {
     EditorialNewsItem(
       id: 'story_minimalist_typography',
       badge: 'DESIGN',
-      badgeColor: const Color(0xFFB45309),
+      badgeColor: AppColors.amberDarker,
       title: 'The Resurgence of\nTactile Print Sensibility\nin Digital Reading',
       updated: '7 hours ago.',
       authorName: 'Julian Haze',
@@ -141,7 +142,7 @@ class EditorialMockData {
     EditorialNewsItem(
       id: 'story_global_microchip_accord',
       badge: 'ECONOMY',
-      badgeColor: const Color(0xFF0E7490),
+      badgeColor: AppColors.cyanDark,
       title: 'Allied Nations Sign\nHistoric Semiconductor\nSupply Chain Compact',
       updated: '8 hours ago.',
       authorName: 'Amara Kalu',
@@ -154,7 +155,7 @@ class EditorialMockData {
     EditorialNewsItem(
       id: 'story_deep_sea_biodiversity',
       badge: 'SCIENCE',
-      badgeColor: const Color(0xFF065F46),
+      badgeColor: AppColors.greenDarker,
       title: 'Expedition Uncovers\nOver 100 Unknown\nDeep-Ocean Species',
       updated: '9 hours ago.',
       authorName: 'Dr. Aris Thorne',
@@ -180,7 +181,7 @@ class EditorialMockData {
     EditorialNewsItem(
       id: 'story_cognitive_wellness',
       badge: 'HEALTH',
-      badgeColor: const Color(0xFFE11D48),
+      badgeColor: AppColors.roseRed,
       title: 'Circadian Alignment\nProven to Enhance Neural\nMemory Retention',
       updated: '11 hours ago.',
       authorName: 'Wade Warren',

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/features/auth/presentation/views/signup_view.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class NoAccountText extends StatelessWidget {
   const NoAccountText({super.key});
@@ -15,7 +16,7 @@ class NoAccountText extends StatelessWidget {
           const Text(
             "Don't have an account?",
             style: TextStyle(
-              color: Color(0xFFAAA49B),
+              color: AppColors.greyText,
               fontSize: 14,
             ),
           ),
