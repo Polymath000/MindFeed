@@ -1,6 +1,5 @@
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
 
 // import '../../helpers/get_setting.dart' show getSetting;
 import 'app_theme_data.dart' show AppThemeData;
@@ -31,7 +30,6 @@ final class ThemeConfig {
       useSystemColors: false,
       colorScheme: colorScheme,
       brightness: brightness,
-      // colorSchemeSeed: getSetting.seedColor,
       fontFamily: 'Arial',
       fontFamilyFallback: const <String>['Roboto', 'sans-serif'],
       textTheme: AppThemeData.text,

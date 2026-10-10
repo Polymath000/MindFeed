@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:mind_feed/core/constants/constants.dart' show tokenKey;
+import 'package:mind_feed/core/constants/constants.dart' show AppConstants;
 import 'package:mind_feed/core/database/cache/cache_helper.dart';
 import 'package:mind_feed/core/errors/expentions.dart';
 import 'package:mind_feed/core/errors/failures.dart';
@@ -37,7 +37,7 @@ class AuthRepoImpl extends AuthRepository {
         if (remote.isEmpty) {
           return FailureResult(Failure(message: 'No User Found'));
         }
-        await SharedPreferencesSingleton.setString(tokenKey, remote);
+        await SharedPreferencesSingleton.setString(AppConstants.tokenKey, remote);
         return Success(remote);
       } on ServerException catch (e) {
         return FailureResult(ServerFailure(message: e.errorModel.errorMessage));
@@ -58,7 +58,7 @@ class AuthRepoImpl extends AuthRepository {
           final responseMap = Map<String, dynamic>.from(responseData as Map);
           final token = responseMap['idToken'] as String?;
           if (token != null && token.isNotEmpty) {
-            await SharedPreferencesSingleton.setString(tokenKey, token);
+            await SharedPreferencesSingleton.setString(AppConstants.tokenKey, token);
           }
         }
 

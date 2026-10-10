@@ -4,7 +4,7 @@ import 'package:dio/dio.dart' show Dio;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:get_it/get_it.dart' show GetIt;
 import 'package:hive/hive.dart' show Hive;
-import 'package:mind_feed/core/constants/constants.dart' show userKey;
+import 'package:mind_feed/core/constants/constants.dart' show AppConstants;
 import 'package:mind_feed/core/database/api/dio_consumer.dart';
 import 'package:mind_feed/core/database/cache/cache_helper.dart'
     show CacheHelper;
@@ -24,9 +24,9 @@ void setupServiceLocator() {
   getIt.registerLazySingleton<NetworkInfoImpl>(
     () => kIsWeb ? NetworkInfoImpl() : NetworkInfoImpl(DataConnectionChecker()),
   );
-  if (Hive.isBoxOpen(userKey)) {
+  if (Hive.isBoxOpen(AppConstants.userKey)) {
     getIt.registerLazySingleton<UserCacheDataSource>(
-      () => UserCacheDataSource(cacheHelper: CacheHelper(kBoxName: userKey)),
+      () => UserCacheDataSource(cacheHelper: CacheHelper(kBoxName: AppConstants.userKey)),
     );
     getIt.registerLazySingleton<AuthRepoImpl>(
       () => AuthRepoImpl(

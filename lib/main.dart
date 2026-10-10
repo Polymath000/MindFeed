@@ -25,7 +25,7 @@ void main() async {
   await SharedPreferencesSingleton.init();
   await Hive.initFlutter();
   Hive.registerAdapter(UserEntityAdapter());
-  await Hive.openBox<UserEntity>(userKey);
+  await Hive.openBox<UserEntity>(AppConstants.userKey);
   setupServiceLocator();
   runApp(
     BlocProvider(create: (context) => ThemeModeCubit(), child: const MyApp()),

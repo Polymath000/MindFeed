@@ -12,7 +12,7 @@ class ThemeModeCubit extends Cubit<ThemeModeState> {
 
   void getThemeMode() {
     try {
-      final theme = SharedPreferencesSingleton.getString(themeModeKey);
+      final theme = SharedPreferencesSingleton.getString(AppConstants.themeModeKey);
       if (theme == ThemeMode.light.name) {
         emit(const ThemeModeLight());
       } else if (theme == ThemeMode.dark.name) {
@@ -27,7 +27,7 @@ class ThemeModeCubit extends Cubit<ThemeModeState> {
 
   Future<void> changeThemeMode(ThemeMode themeMode) async {
     try {
-      await SharedPreferencesSingleton.setString(themeModeKey, themeMode.name);
+      await SharedPreferencesSingleton.setString(AppConstants.themeModeKey, themeMode.name);
     } catch (_) {}
     if (themeMode == ThemeMode.light) {
       emit(const ThemeModeLight());

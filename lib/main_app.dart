@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           darkTheme: const ThemeConfig().dark,
           themeMode:
               SharedPreferencesSingleton.getString(
-                themeModeKey,
+                AppConstants.themeModeKey,
               )?.toEnum(ThemeMode.values) ??
               ThemeMode.system,
           debugShowCheckedModeBanner: false,
