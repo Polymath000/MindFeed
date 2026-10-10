@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
@@ -52,7 +50,8 @@ class EditorialMockData {
       id: 'story_apple_retail_expansion',
       badge: 'TECH',
       badgeColor: AppColors.blueMain,
-      title: 'Apple Hiring Workers for\nFlagship Retail Stores\nAcross Major Hubs',
+      title:
+          'Apple Hiring Workers for\nFlagship Retail Stores\nAcross Major Hubs',
       updated: '1 hour ago.',
       authorName: 'Sophia Dubois',
       authorRole: 'Tech & Markets',
@@ -143,7 +142,8 @@ class EditorialMockData {
       id: 'story_global_microchip_accord',
       badge: 'ECONOMY',
       badgeColor: AppColors.cyanDark,
-      title: 'Allied Nations Sign\nHistoric Semiconductor\nSupply Chain Compact',
+      title:
+          'Allied Nations Sign\nHistoric Semiconductor\nSupply Chain Compact',
       updated: '8 hours ago.',
       authorName: 'Amara Kalu',
       authorRole: 'Economics Lead',
@@ -169,7 +169,8 @@ class EditorialMockData {
       id: 'story_champions_league_final',
       badge: 'SPORT',
       badgeColor: AppColors.ink,
-      title: 'European Football Final\nSets Global Streaming\nViewership Record',
+      title:
+          'European Football Final\nSets Global Streaming\nViewership Record',
       updated: '10 hours ago.',
       authorName: 'Marcus Chen',
       authorRole: 'Sports Editor',
@@ -193,8 +194,15 @@ class EditorialMockData {
     ),
   ];
 
-  static List<EditorialNewsItem> get savedStories =>
-      stories.where((s) => s.isLive || s.badge == 'SPORT' || s.badge == 'TECH' || s.badge == 'AI').toList();
+  static List<EditorialNewsItem> get savedStories => stories
+      .where(
+        (s) =>
+            s.isLive ||
+            s.badge == 'SPORT' ||
+            s.badge == 'TECH' ||
+            s.badge == 'AI',
+      )
+      .toList();
 
   static List<EditorialNewsItem> get userArticles => [
     stories[0],
