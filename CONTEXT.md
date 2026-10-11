@@ -43,4 +43,11 @@ The codebase follows **Feature-First Clean Architecture**:
   - Centralized colors and removed obsolete constants.
 - **State Management & Build Upgrades**:
   - Encapsulated `CollectionsCubit` provision inside `ArticlesSaved` widget hierarchy, fixing `ProviderNotFoundException` when mounted inside `MainView` (`IndexedStack`).
-  - Upgraded Gradle wrapper to `9.1.0`, AGP to `9.0.1`, and Kotlin to `2.3.20`, eliminating all build deprecation warnings.
+  - Upgraded Gradle wrapper to `9.3.1`, AGP to `9.1.0`, and Kotlin to `2.4.0`. Migrated Android Gradle DSL (`android/app/build.gradle.kts`) to modern `kotlin { compilerOptions { jvmTarget = JVM_17 } }` and configured Kotlin target validation warnings.
+- **Onboarding View Theme Alignment**:
+  - Re-themed onboarding screens (`OnboardingView`, `OnboardingViewBody`, `OnBoardingBackground`, `OnBoardingPageView`, `PageViewItem`, `DotsWidget`, `NextButton`, `SkipButton`) to match the app-wide editorial paper/ink design system.
+  - Applied `AppColors.ink` as primary background and dark vignette blend.
+  - Switched titles to `GoogleFonts.playfairDisplay` with `AppColors.softCream` and body descriptions to `AppColors.greyText`.
+  - Replaced decoupled dot indicators with an integrated progress action button in `NextButton`: includes a subtle literary chapter badge (`01 / 03`), label morphing (`Continue` -> `Get Started`), and a smooth hairline progress track along the button's bottom edge.
+  - Replaced raw text button with an editorial styled pill `SkipButton` featuring `AppColors.charcoal`, `AppColors.borderDark`, and `AppColors.softCream`.
+  - Added full widget test covering the onboarding page transitions and theme controls in `test/widget_test.dart`.

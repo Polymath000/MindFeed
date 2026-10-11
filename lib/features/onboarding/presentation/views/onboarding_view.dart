@@ -8,7 +8,7 @@ class OnboardingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: AppColors.black,
+      backgroundColor: AppColors.ink,
       body: OnboardingViewBody(),
     );
   }

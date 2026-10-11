@@ -18,10 +18,10 @@ class MyApp extends StatelessWidget {
     return BlocBuilder<ThemeModeCubit, ThemeModeState>(
       builder: (context, state) {
         return MaterialApp(
-          title: 'MindFeed',
+          title: AppConstants.appName,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          initialRoute: AppRoutes.main,
+          initialRoute: AppRoutes.onboarding,
           onGenerateRoute: AppRoutes.onGenerateRoute,
           theme: const ThemeConfig().light,
           darkTheme: const ThemeConfig().dark,
