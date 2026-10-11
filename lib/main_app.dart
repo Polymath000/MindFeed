@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/config/extensions/string_extension.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/config/themes/app_text_style.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_text_styles.dart';
 import 'package:mind_feed/config/themes/theme_config.dart';
 import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
@@ -18,16 +18,16 @@ class MyApp extends StatelessWidget {
     return BlocBuilder<ThemeModeCubit, ThemeModeState>(
       builder: (context, state) {
         return MaterialApp(
-          title: 'MindFeed',
+          title: AppConstants.appName,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          initialRoute: '/',
-          onGenerateRoute: onGenerateRoute,
+          initialRoute: AppRoutes.onboarding,
+          onGenerateRoute: AppRoutes.onGenerateRoute,
           theme: const ThemeConfig().light,
           darkTheme: const ThemeConfig().dark,
           themeMode:
               SharedPreferencesSingleton.getString(
-                themeModeKey,
+                AppConstants.themeModeKey,
               )?.toEnum(ThemeMode.values) ??
               ThemeMode.system,
           debugShowCheckedModeBanner: false,

@@ -4,7 +4,7 @@ import 'package:mind_feed/features/add_article/presentation/widget/device_prefer
 import 'package:mind_feed/main.dart';
 
 class AddArticleView extends StatelessWidget {
-  AddArticleView({super.key});
+  const AddArticleView({super.key});
   static const String routeName = 'Add Article';
 
   @override

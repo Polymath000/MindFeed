@@ -1,5 +1,6 @@
+import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
 
 class CustomButton extends StatelessWidget {
   const CustomButton({
@@ -21,12 +22,12 @@ class CustomButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
-          backgroundColor: EditorialPalette.cream,
-          foregroundColor: EditorialPalette.ink,
+          backgroundColor: AppColors.cream,
+          foregroundColor: AppColors.ink,
           elevation: 2,
           shadowColor: Colors.black45,
           shape: const RoundedRectangleBorder(
-            borderRadius: EditorialRadii.control,
+            borderRadius: AppBorders.control,
           ),
         ),
         child: Text(
@@ -35,7 +36,7 @@ class CustomButton extends StatelessWidget {
             fontSize: 16,
             fontWeight: FontWeight.w800,
             letterSpacing: -0.2,
-            color: EditorialPalette.ink,
+            color: AppColors.ink,
           ),
         ),
       ),

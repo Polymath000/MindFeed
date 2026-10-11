@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
 import 'package:mind_feed/core/widgets/custom_text_field.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/auth_background.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class CheckCodeViewBody extends StatefulWidget {
   const CheckCodeViewBody({super.key, required this.email});
@@ -37,15 +39,15 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
                       Row(
                         children: [
                           EditorialIconButton(
-                            icon: Icons.arrow_back_rounded,
+                            icon: AppIcons.arrowBackRounded,
                             label: 'Back',
-                            onPressed: () => AppRoutes.pop(context),
+                            onPressed: () => Navigator.pop(context),
                           ),
                           const SizedBox(width: 12),
                           const Text(
                             'Check Code',
                             style: TextStyle(
-                              color: EditorialPalette.softCream,
+                              color: AppColors.softCream,
                               fontSize: 22,
                               fontWeight: FontWeight.w800,
                             ),
@@ -56,7 +58,7 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
                       Text(
                         'We sent a verification code to\n${widget.email}',
                         style: const TextStyle(
-                          color: Color(0xFFAAA49B),
+                          color: AppColors.greyText,
                           fontSize: 15,
                           height: 1.4,
                         ),
@@ -65,7 +67,7 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
                       const Text(
                         'Verification Code',
                         style: TextStyle(
-                          color: EditorialPalette.softCream,
+                          color: AppColors.softCream,
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                         ),
@@ -87,7 +89,7 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
                         onTap: () {
                           if (formKey.currentState?.validate() ?? false) {
                             FocusScope.of(context).unfocus();
-                            AppRoutes.changepasswordView(context, email: widget.email);
+                            Navigator.pushNamed(context, AppRoutes.changePassword, arguments: widget.email);
                           } else {
                             setState(() {
                               autovalidateMode = AutovalidateMode.always;

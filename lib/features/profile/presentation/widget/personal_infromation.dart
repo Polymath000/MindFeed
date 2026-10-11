@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
-import 'package:mind_feed/core/utls/app_images.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/app_images.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class PersonalInfromation extends StatelessWidget {
   const PersonalInfromation({super.key});
@@ -19,7 +20,7 @@ class PersonalInfromation extends StatelessWidget {
                   padding: const EdgeInsets.all(3),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: EditorialPalette.cream, width: 2),
+                    border: Border.all(color: AppColors.cream, width: 2),
                   ),
                   child: ClipOval(
                     child: Image.asset(
@@ -29,8 +30,8 @@ class PersonalInfromation extends StatelessWidget {
                       fit: BoxFit.cover,
                       errorBuilder: (_, _, _) => const CircleAvatar(
                         radius: 48,
-                        backgroundColor: EditorialPalette.blush,
-                        child: Icon(Icons.person, size: 48, color: EditorialPalette.ink),
+                        backgroundColor: AppColors.blush,
+                        child: Icon(AppIcons.personAlt, size: 48, color: AppColors.ink),
                       ),
                     ),
                   ),
@@ -39,7 +40,7 @@ class PersonalInfromation extends StatelessWidget {
                 const Text(
                   'Abdelrahman Khaled',
                   style: TextStyle(
-                    color: EditorialPalette.softCream,
+                    color: AppColors.softCream,
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.5,
@@ -49,7 +50,7 @@ class PersonalInfromation extends StatelessWidget {
                 const Text(
                   'Senior Editorial Contributor • MindFeed',
                   style: TextStyle(
-                    color: Color(0xFFAAA49B),
+                    color: AppColors.greyText,
                     fontSize: 13.5,
                     fontWeight: FontWeight.w500,
                   ),
@@ -63,14 +64,14 @@ class PersonalInfromation extends StatelessWidget {
                       margin: const EdgeInsets.symmetric(horizontal: 24),
                       width: 1,
                       height: 32,
-                      color: const Color(0xFF383530),
+                      color: AppColors.borderDark,
                     ),
                     _buildStatItem('1.2K', 'Followers'),
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 24),
                       width: 1,
                       height: 32,
-                      color: const Color(0xFF383530),
+                      color: AppColors.borderDark,
                     ),
                     _buildStatItem('348', 'Following'),
                   ],
@@ -90,7 +91,7 @@ class PersonalInfromation extends StatelessWidget {
         Text(
           value,
           style: const TextStyle(
-            color: EditorialPalette.cream,
+            color: AppColors.cream,
             fontSize: 20,
             fontWeight: FontWeight.w800,
           ),
@@ -99,7 +100,7 @@ class PersonalInfromation extends StatelessWidget {
         Text(
           label,
           style: const TextStyle(
-            color: Color(0xFFAAA49B),
+            color: AppColors.greyText,
             fontSize: 12.5,
             fontWeight: FontWeight.w500,
           ),

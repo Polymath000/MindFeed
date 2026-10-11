@@ -1,5 +1,7 @@
+import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class PasswordRequirements extends StatelessWidget {
   const PasswordRequirements({super.key, required this.password});
@@ -11,9 +13,9 @@ class PasswordRequirements extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF262422),
-        border: Border.all(color: const Color(0xFF383530)),
-        borderRadius: EditorialRadii.card,
+        color: AppColors.charcoal,
+        border: Border.all(color: AppColors.borderDark),
+        borderRadius: AppBorders.card,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -21,7 +23,7 @@ class PasswordRequirements extends StatelessWidget {
           const Text(
             'Password requirements:',
             style: TextStyle(
-              color: EditorialPalette.softCream,
+              color: AppColors.softCream,
               fontSize: 13,
               fontWeight: FontWeight.w700,
             ),
@@ -58,15 +60,15 @@ class PasswordRequirements extends StatelessWidget {
     return Row(
       children: [
         Icon(
-          isValid ? Icons.check_circle_rounded : Icons.radio_button_unchecked,
+          isValid ? AppIcons.checkCircleRounded : AppIcons.radioButtonUnchecked,
           size: 14,
-          color: isValid ? const Color(0xFF10B981) : const Color(0xFF8E8E93),
+          color: isValid ? AppColors.successGreen : AppColors.greyIcon,
         ),
         const SizedBox(width: 8),
         Text(
           text,
           style: TextStyle(
-            color: isValid ? const Color(0xFF10B981) : const Color(0xFF8E8E93),
+            color: isValid ? AppColors.successGreen : AppColors.greyIcon,
             fontSize: 12,
             fontWeight: isValid ? FontWeight.w600 : FontWeight.w400,
           ),

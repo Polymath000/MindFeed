@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/config/themes/app_text_style.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/borders.dart';
 
 class SkipButton extends StatelessWidget {
   const SkipButton({super.key});
@@ -9,24 +9,38 @@ class SkipButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 40,
-      right: 40,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          GestureDetector(
-            onTap: () {
-              AppRoutes.login(context);
-            },
-            child: Text(
+      top: 16,
+      right: 20,
+      child: SafeArea(
+        child: GestureDetector(
+          onTap: () {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              AppRoutes.login,
+              (route) => false,
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: AppColors.charcoal.withValues(alpha: 0.65),
+              borderRadius: AppBorders.control,
+              border: Border.all(
+                color: AppColors.borderDark,
+                width: 1,
+              ),
+            ),
+            child: const Text(
               'Skip',
-              style: AppTextStyles.bodyLarge!.copyWith(
-                color: AppColors.lightGrey,
-                fontWeight: FontWeight.w300,
+              style: TextStyle(
+                color: AppColors.softCream,
+                fontSize: 13.5,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.2,
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }

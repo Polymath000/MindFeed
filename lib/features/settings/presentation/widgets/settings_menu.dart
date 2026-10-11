@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class PaperSettingsSection extends StatelessWidget {
   const PaperSettingsSection({
@@ -32,11 +33,11 @@ class PaperSettingsSection extends StatelessWidget {
                       fontSize: 10,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 1.2,
-                      color: EditorialPalette.mutedInk,
+                      color: AppColors.mutedInk,
                     ),
                   ),
                   const SizedBox(width: 8),
-                  const Text('•', style: TextStyle(color: EditorialPalette.mutedInk, fontSize: 10)),
+                  const Text('•', style: TextStyle(color: AppColors.mutedInk, fontSize: 10)),
                   const SizedBox(width: 8),
                 ],
                 Text(
@@ -45,7 +46,7 @@ class PaperSettingsSection extends StatelessWidget {
                     fontSize: 14,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.2,
-                    color: EditorialPalette.ink,
+                    color: AppColors.ink,
                   ),
                 ),
               ],
@@ -54,15 +55,15 @@ class PaperSettingsSection extends StatelessWidget {
           const SizedBox(height: 6),
           Container(
             decoration: BoxDecoration(
-              color: const Color(0xFFFFFDF9),
+              color: AppColors.whiteLight,
               borderRadius: BorderRadius.circular(22),
               border: Border.all(
-                color: const Color(0xFFE5DECE),
+                color: AppColors.creamBorder,
                 width: 1.2,
               ),
               boxShadow: const [
                 BoxShadow(
-                  color: Color(0x0C30281C),
+                  color: AppColors.transparentDark,
                   blurRadius: 10,
                   offset: Offset(0, 3),
                 ),
@@ -76,7 +77,7 @@ class PaperSettingsSection extends StatelessWidget {
                     const Divider(
                       height: 1,
                       thickness: 1,
-                      color: Color(0xFFF1EBE0),
+                      color: AppColors.sandLighter,
                       indent: 60,
                       endIndent: 16,
                     ),
@@ -97,7 +98,7 @@ class PaperSettingsTile extends StatelessWidget {
     required this.title,
     this.subtitle,
     this.trailing,
-    this.stampColor = EditorialPalette.sand,
+    this.stampColor = AppColors.sand,
     this.onTap,
   });
 
@@ -124,11 +125,11 @@ class PaperSettingsTile extends StatelessWidget {
                 color: stampColor,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: const Color(0xFFDDD4C0),
+                  color: AppColors.creamDark,
                   width: 1,
                 ),
               ),
-              child: Icon(icon, size: 19, color: EditorialPalette.ink),
+              child: Icon(icon, size: 19, color: AppColors.ink),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -141,7 +142,7 @@ class PaperSettingsTile extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
-                      color: EditorialPalette.ink,
+                      color: AppColors.ink,
                       letterSpacing: -0.2,
                     ),
                   ),
@@ -152,7 +153,7 @@ class PaperSettingsTile extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 12,
                         height: 1.3,
-                        color: EditorialPalette.mutedInk,
+                        color: AppColors.mutedInk,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -164,9 +165,9 @@ class PaperSettingsTile extends StatelessWidget {
               trailing!
             else if (onTap != null)
               const Icon(
-                Icons.arrow_forward_ios_rounded,
+                AppIcons.arrowForwardIosRounded,
                 size: 14,
-                color: EditorialPalette.mutedInk,
+                color: AppColors.mutedInk,
               ),
           ],
         ),
@@ -183,7 +184,7 @@ class PaperSettingsSwitchTile extends StatelessWidget {
     this.subtitle,
     required this.value,
     required this.onChanged,
-    this.stampColor = EditorialPalette.sand,
+    this.stampColor = AppColors.sand,
   });
 
   final IconData icon;
@@ -206,11 +207,11 @@ class PaperSettingsSwitchTile extends StatelessWidget {
               color: stampColor,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: const Color(0xFFDDD4C0),
+                color: AppColors.creamDark,
                 width: 1,
               ),
             ),
-            child: Icon(icon, size: 19, color: EditorialPalette.ink),
+            child: Icon(icon, size: 19, color: AppColors.ink),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -223,7 +224,7 @@ class PaperSettingsSwitchTile extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: EditorialPalette.ink,
+                    color: AppColors.ink,
                     letterSpacing: -0.2,
                   ),
                 ),
@@ -234,7 +235,7 @@ class PaperSettingsSwitchTile extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 12,
                       height: 1.3,
-                      color: EditorialPalette.mutedInk,
+                      color: AppColors.mutedInk,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -245,10 +246,10 @@ class PaperSettingsSwitchTile extends StatelessWidget {
           Switch.adaptive(
             value: value,
             onChanged: onChanged,
-            activeThumbColor: EditorialPalette.ink,
-            activeTrackColor: EditorialPalette.butter,
-            inactiveThumbColor: const Color(0xFFB5ADA0),
-            inactiveTrackColor: const Color(0xFFE9E2D4),
+            activeThumbColor: AppColors.ink,
+            activeTrackColor: AppColors.butter,
+            inactiveThumbColor: AppColors.greyBrown,
+            inactiveTrackColor: AppColors.sandDarker,
           ),
         ],
       ),
@@ -286,7 +287,7 @@ class PaperSegmentedOptions<T> extends StatelessWidget {
             style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w700,
-              color: EditorialPalette.ink,
+              color: AppColors.ink,
               letterSpacing: -0.2,
             ),
           ),
@@ -296,7 +297,7 @@ class PaperSegmentedOptions<T> extends StatelessWidget {
               subtitle!,
               style: const TextStyle(
                 fontSize: 12,
-                color: EditorialPalette.mutedInk,
+                color: AppColors.mutedInk,
               ),
             ),
           ],
@@ -319,21 +320,21 @@ class PaperSegmentedOptions<T> extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? EditorialPalette.ink
-                            : const Color(0xFFF6F0E4),
+                            ? AppColors.ink
+                            : AppColors.creamLight,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
                           color: isSelected
-                              ? EditorialPalette.ink
-                              : const Color(0xFFE2DAC8),
+                              ? AppColors.ink
+                              : AppColors.sandDarkest,
                         ),
                       ),
                       child: Text(
                         labelBuilder(option),
                         style: TextStyle(
                           color: isSelected
-                              ? EditorialPalette.cream
-                              : EditorialPalette.ink,
+                              ? AppColors.cream
+                              : AppColors.ink,
                           fontSize: 12.5,
                           fontWeight: isSelected
                               ? FontWeight.w800
@@ -415,16 +416,16 @@ Widget buildSettingsMenuItemWithDropMenu({
           Text(
             beforeTrailing,
             style: const TextStyle(
-              color: EditorialPalette.mutedInk,
+              color: AppColors.mutedInk,
               fontSize: 13,
               fontWeight: FontWeight.w600,
             ),
           ),
         const SizedBox(width: 4),
         const Icon(
-          Icons.arrow_forward_ios_rounded,
+          AppIcons.arrowForwardIosRounded,
           size: 13,
-          color: EditorialPalette.mutedInk,
+          color: AppColors.mutedInk,
         ),
       ],
     ),
@@ -449,12 +450,12 @@ Widget buildSettingsMenuItemWithDropdown<T>({
       onChanged: onChanged,
       underline: const SizedBox(),
       icon: const Icon(
-        Icons.expand_more_rounded,
-        color: EditorialPalette.ink,
+        AppIcons.expandMoreRounded,
+        color: AppColors.ink,
       ),
-      dropdownColor: const Color(0xFFFFFDF9),
+      dropdownColor: AppColors.whiteLight,
       style: const TextStyle(
-        color: EditorialPalette.ink,
+        color: AppColors.ink,
         fontWeight: FontWeight.w600,
       ),
     ),

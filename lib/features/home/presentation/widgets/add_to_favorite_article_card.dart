@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/utls/app_icons.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 
 class AddToFavoriteArticleCard extends StatefulWidget {
   const AddToFavoriteArticleCard({super.key, required this.isFav});

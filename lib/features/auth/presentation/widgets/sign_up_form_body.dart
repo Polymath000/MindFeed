@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/core/params/signup_params.dart';
-import 'package:mind_feed/core/utls/app_images.dart';
+import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
 import 'package:mind_feed/core/widgets/custom_text_field.dart';
 import 'package:mind_feed/features/auth/presentation/controllers/signup_cubit/signup_cubit.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/email_text_field.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/password_requirements.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/password_text_field.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class SignUpFormBody extends StatefulWidget {
   const SignUpFormBody({super.key});
@@ -65,9 +66,9 @@ class _SignUpFormBodyState extends State<SignUpFormBody> {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: const Color(0xFF262422),
+                color: AppColors.charcoal,
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFF383530), width: 1.5),
+                border: Border.all(color: AppColors.borderDark, width: 1.5),
               ),
               child: SvgPicture.asset(
                 Assets.assetsImagesLogo,
@@ -82,7 +83,7 @@ class _SignUpFormBodyState extends State<SignUpFormBody> {
                 fontSize: 28,
                 fontWeight: FontWeight.w800,
                 letterSpacing: -0.8,
-                color: EditorialPalette.softCream,
+                color: AppColors.softCream,
               ),
             ),
             const SizedBox(height: 6),
@@ -91,15 +92,15 @@ class _SignUpFormBodyState extends State<SignUpFormBody> {
               style: TextStyle(
                 fontSize: 13.5,
                 fontWeight: FontWeight.w400,
-                color: Color(0xFFAAA49B),
+                color: AppColors.greyText,
               ),
             ),
             const SizedBox(height: 32.0),
             CustomTextField(
               hintText: 'Full name or username',
               prefixIcon: const Icon(
-                Icons.person_outline_rounded,
-                color: Color(0xFFAAA49B),
+                AppIcons.personOutline,
+                color: AppColors.greyText,
                 size: 20,
               ),
               validator: (value) {

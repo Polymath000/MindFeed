@@ -1,5 +1,7 @@
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 
 class ProfileAppBar extends StatelessWidget {
@@ -10,13 +12,13 @@ class ProfileAppBar extends StatelessWidget {
     return SliverAppBar(
       automaticallyImplyLeading: false,
       pinned: true,
-      backgroundColor: EditorialPalette.ink,
+      backgroundColor: AppColors.ink,
       surfaceTintColor: Colors.transparent,
       centerTitle: true,
       leading: Padding(
         padding: const EdgeInsets.only(left: 16.0),
         child: EditorialIconButton(
-          icon: Icons.arrow_back_rounded,
+          icon: AppIcons.arrowBackRounded,
           label: 'Back',
           onPressed: () => Navigator.maybePop(context),
         ),
@@ -25,16 +27,16 @@ class ProfileAppBar extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(right: 16.0),
           child: EditorialIconButton(
-            icon: Icons.settings_outlined,
+            icon: AppIcons.settingsOutlined,
             label: 'Settings',
-            onPressed: () => AppRoutes.settingsView(context),
+            onPressed: () => Navigator.pushNamed(context, AppRoutes.settings),
           ),
         ),
       ],
       title: const Text(
         'Profile',
         style: TextStyle(
-          color: EditorialPalette.softCream,
+          color: AppColors.softCream,
           fontSize: 22,
           fontWeight: FontWeight.w800,
           letterSpacing: -0.5,

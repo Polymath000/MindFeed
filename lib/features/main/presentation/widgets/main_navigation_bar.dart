@@ -1,5 +1,7 @@
+import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
 
 class MainNavigationBar extends StatelessWidget {
   const MainNavigationBar({
@@ -24,8 +26,8 @@ class MainNavigationBar extends StatelessWidget {
             margin: const EdgeInsets.only(bottom: 12),
             padding: const EdgeInsets.all(5),
             decoration: const BoxDecoration(
-              color: EditorialPalette.ink,
-              borderRadius: EditorialRadii.control,
+              color: AppColors.ink,
+              borderRadius: AppBorders.control,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black45,
@@ -38,19 +40,19 @@ class MainNavigationBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _Nav(
-                  icon: Icons.home_rounded,
+                  icon: AppIcons.home,
                   label: 'Home',
                   active: selectedIndex == 0,
                   onTap: () => onDestinationSelected(0),
                 ),
                 _Nav(
-                  icon: Icons.search_rounded,
+                  icon: AppIcons.search,
                   label: 'Search',
                   active: selectedIndex == 1,
                   onTap: () => onDestinationSelected(1),
                 ),
                 _Nav(
-                  icon: Icons.bookmark_rounded,
+                  icon: AppIcons.bookmarkFilled,
                   label: 'Saved news',
                   active: selectedIndex == 2,
                   onTap: () => onDestinationSelected(2),
@@ -93,12 +95,12 @@ class _Nav extends StatelessWidget {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: active ? EditorialPalette.softCream : Colors.transparent,
+            color: active ? AppColors.softCream : Colors.transparent,
             shape: BoxShape.circle,
           ),
           child: Icon(
             icon,
-            color: active ? EditorialPalette.ink : EditorialPalette.softCream,
+            color: active ? AppColors.ink : AppColors.softCream,
           ),
         ),
       ),

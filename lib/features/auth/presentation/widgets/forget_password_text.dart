@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class ForgetPasswordText extends StatelessWidget {
   const ForgetPasswordText({super.key});
@@ -12,15 +12,15 @@ class ForgetPasswordText extends StatelessWidget {
       child: TextButton(
         style: TextButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-          foregroundColor: EditorialPalette.softCream,
+          foregroundColor: AppColors.softCream,
         ),
         onPressed: () {
-          AppRoutes.sendCode(context);
+          Navigator.pushNamed(context, AppRoutes.sendCode);
         },
         child: const Text(
           'Forgot password?',
           style: TextStyle(
-            color: Color(0xFFAAA49B),
+            color: AppColors.greyText,
             fontSize: 13,
             fontWeight: FontWeight.w500,
           ),

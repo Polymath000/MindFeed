@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/auth_background.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/change_password_form.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/security_tip_text.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class ChangePasswordViewBody extends StatelessWidget {
   const ChangePasswordViewBody({super.key, required this.email});
@@ -19,22 +20,25 @@ class ChangePasswordViewBody extends StatelessWidget {
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 440),
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 16.0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
                         EditorialIconButton(
-                          icon: Icons.arrow_back_rounded,
+                          icon: AppIcons.arrowBackRounded,
                           label: 'Back',
-                          onPressed: () => AppRoutes.pop(context),
+                          onPressed: () => Navigator.pop(context),
                         ),
                         const SizedBox(width: 12),
                         const Text(
                           'Change Password',
                           style: TextStyle(
-                            color: EditorialPalette.softCream,
+                            color: AppColors.softCream,
                             fontSize: 22,
                             fontWeight: FontWeight.w800,
                           ),
@@ -45,7 +49,7 @@ class ChangePasswordViewBody extends StatelessWidget {
                     const Text(
                       'Keep your MindFeed account secure by choosing a resilient, unique password.',
                       style: TextStyle(
-                        color: Color(0xFFAAA49B),
+                        color: AppColors.greyText,
                         fontSize: 15,
                         height: 1.4,
                       ),

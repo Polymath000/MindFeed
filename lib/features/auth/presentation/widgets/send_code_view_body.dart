@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/auth_background.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/email_text_field.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class SendCodeViewBody extends StatefulWidget {
   const SendCodeViewBody({super.key});
@@ -38,15 +40,15 @@ class _SendCodeViewBodyState extends State<SendCodeViewBody> {
                       Row(
                         children: [
                           EditorialIconButton(
-                            icon: Icons.arrow_back_rounded,
+                            icon: AppIcons.arrowBackRounded,
                             label: 'Back',
-                            onPressed: () => AppRoutes.pop(context),
+                            onPressed: () => Navigator.pop(context),
                           ),
                           const SizedBox(width: 12),
                           const Text(
                             'Reset Password',
                             style: TextStyle(
-                              color: EditorialPalette.softCream,
+                              color: AppColors.softCream,
                               fontSize: 22,
                               fontWeight: FontWeight.w800,
                             ),
@@ -57,7 +59,7 @@ class _SendCodeViewBodyState extends State<SendCodeViewBody> {
                       const Text(
                         'Enter your registered email address to receive password recovery instructions.',
                         style: TextStyle(
-                          color: Color(0xFFAAA49B),
+                          color: AppColors.greyText,
                           fontSize: 15,
                           height: 1.4,
                         ),
@@ -66,7 +68,7 @@ class _SendCodeViewBodyState extends State<SendCodeViewBody> {
                       const Text(
                         'Email',
                         style: TextStyle(
-                          color: EditorialPalette.softCream,
+                          color: AppColors.softCream,
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                         ),
@@ -85,7 +87,7 @@ class _SendCodeViewBodyState extends State<SendCodeViewBody> {
                         onTap: () {
                           if (formKey.currentState?.validate() ?? false) {
                             FocusScope.of(context).unfocus();
-                            AppRoutes.checkCodeView(context, email: email);
+                            Navigator.pushNamed(context, AppRoutes.checkCode, arguments: email);
                           } else {
                             setState(() {
                               autovalidateMode = AutovalidateMode.always;

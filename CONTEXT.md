@@ -22,17 +22,32 @@ The codebase follows **Feature-First Clean Architecture**:
 - **State Management**: BLoC / Cubit (`flutter_bloc`)
 - **Dependency Injection**: `get_it`
 - **Local Storage**: `hive`, `hive_flutter`, `shared_preferences`
-- **Networking**: `dio` (with mock local auth datasource)
+- **Backend & Network**: `supabase_flutter`, `http`, `connectivity_plus` with custom `SupabaseInterceptor`
 - **Zero Firebase Dependency**: Fully decoupled from Firebase SDKs, CLI configurations, and external Google services.
 
 ## 4. Recent Project Changes
-- **Firebase Completely Removed**:
-  - Removed `firebase_core` and `cloud_firestore` from `pubspec.yaml`.
-  - Removed `com.google.gms.google-services` plugin from Android Gradle build files (`android/app/build.gradle.kts` and `android/settings.gradle.kts`).
-  - Removed `lib/firebase_options.dart`, `firebase.json`, and `android/app/google-services.json`.
-  - Removed Firebase initialization call (`Firebase.initializeApp`) from `lib/main.dart`.
-  - Updated `EndPoint` and `AuthApiSource` to provide simulated client-side mock authentication without Firebase Identity Toolkit dependencies.
-- **Android Build Toolchain Upgraded**:
-  - Upgraded Gradle distribution from `8.12` to `8.14` in `android/gradle/wrapper/gradle-wrapper.properties`.
-  - Upgraded Android Gradle Plugin (AGP) from `8.7.3` to `8.11.1` in `android/settings.gradle.kts`.
-  - Upgraded Kotlin Gradle Plugin from `2.1.0` to `2.2.20` in `android/settings.gradle.kts`.
+- **Secret Management (1Password & Environment)**:
+  - Secret keys are never committed in the source code.
+  - Dedicated 1Password vault `MindFeed` created with item `Supabase` containing `PROJECT_URL` and `SUPABASE_PUBLISHABLE_KEY`.
+  - Credentials injected via 1Password CLI (`op inject` / `op run`) or `--dart-define` / `--dart-define-from-file`.
+  - In code, constants resolve via `String.fromEnvironment('PROJECT_URL')` and `String.fromEnvironment('SUPABASE_PUBLISHABLE_KEY')` with fallback to `SUPABASE_URL` / `SUPABASE_ANON_KEY`.
+  - `.env` files are strictly ignored in `.gitignore`.
+- **Supabase & Networking Architecture**:
+  - Replaced legacy REST/Dio infrastructure with `supabase_flutter`.
+  - Added `SupabaseInterceptor` to trace and debug requests in debug mode.
+  - Migrated network connectivity checks to `connectivity_plus` (`NetworkInfoImpl`).
+- **Error Handling & Architecture Synchronization**:
+  - Synced error models with `AcademIQ` using native Dart 3 sealed class `ApiResult<T>`, `Failure`, and `ApiErrorHandler` (supporting `AuthException` and `PostgrestException`).
+- **Styling and Constants Centralization**:
+  - Eliminated raw icon usages in favor of `AppIcons`.
+  - Centralized colors and removed obsolete constants.
+- **State Management & Build Upgrades**:
+  - Encapsulated `CollectionsCubit` provision inside `ArticlesSaved` widget hierarchy, fixing `ProviderNotFoundException` when mounted inside `MainView` (`IndexedStack`).
+  - Upgraded Gradle wrapper to `9.3.1`, AGP to `9.1.0`, and Kotlin to `2.4.0`. Migrated Android Gradle DSL (`android/app/build.gradle.kts`) to modern `kotlin { compilerOptions { jvmTarget = JVM_17 } }` and configured Kotlin target validation warnings.
+- **Onboarding View Theme Alignment**:
+  - Re-themed onboarding screens (`OnboardingView`, `OnboardingViewBody`, `OnBoardingBackground`, `OnBoardingPageView`, `PageViewItem`, `DotsWidget`, `NextButton`, `SkipButton`) to match the app-wide editorial paper/ink design system.
+  - Applied `AppColors.ink` as primary background and dark vignette blend.
+  - Switched titles to `GoogleFonts.playfairDisplay` with `AppColors.softCream` and body descriptions to `AppColors.greyText`.
+  - Replaced decoupled dot indicators with an integrated progress action button in `NextButton`: includes a subtle literary chapter badge (`01 / 03`), label morphing (`Continue` -> `Get Started`), and a smooth hairline progress track along the button's bottom edge.
+  - Replaced raw text button with an editorial styled pill `SkipButton` featuring `AppColors.charcoal`, `AppColors.borderDark`, and `AppColors.softCream`.
+  - Added full widget test covering the onboarding page transitions and theme controls in `test/widget_test.dart`.

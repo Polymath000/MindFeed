@@ -1,5 +1,7 @@
+import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class SecurityTipText extends StatelessWidget {
   const SecurityTipText({super.key});
@@ -9,17 +11,17 @@ class SecurityTipText extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: const Color(0xFF262422),
-        border: Border.all(color: const Color(0xFF383530)),
-        borderRadius: EditorialRadii.card,
+        color: AppColors.charcoal,
+        border: Border.all(color: AppColors.borderDark),
+        borderRadius: AppBorders.card,
       ),
       padding: const EdgeInsets.all(16),
       child: const Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
-            Icons.shield_outlined,
-            color: EditorialPalette.cream,
+            AppIcons.shieldOutlined,
+            color: AppColors.cream,
             size: 20,
           ),
           SizedBox(width: 12),
@@ -30,7 +32,7 @@ class SecurityTipText extends StatelessWidget {
                 Text(
                   'Security Recommendation',
                   style: TextStyle(
-                    color: EditorialPalette.softCream,
+                    color: AppColors.softCream,
                     fontSize: 13.5,
                     fontWeight: FontWeight.w700,
                   ),
@@ -39,7 +41,7 @@ class SecurityTipText extends StatelessWidget {
                 Text(
                   'Use a unique, resilient passphrase. A dedicated password manager ensures strong protection across your reading devices.',
                   style: TextStyle(
-                    color: Color(0xFFAAA49B),
+                    color: AppColors.greyText,
                     fontSize: 12,
                     height: 1.4,
                   ),

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/l10n/generated/app_localizations.dart';
 
@@ -202,25 +203,25 @@ enum MarkdownType {
   IconData get icon {
     switch (this) {
       case MarkdownType.bold:
-        return Icons.format_bold;
+        return AppIcons.formatBold;
       case MarkdownType.italic:
-        return Icons.format_italic;
+        return AppIcons.formatItalic;
       case MarkdownType.strikethrough:
-        return Icons.format_strikethrough;
+        return AppIcons.formatStrikethrough;
       case MarkdownType.link:
-        return Icons.link;
+        return AppIcons.link;
       case MarkdownType.heading:
-        return Icons.text_fields;
+        return AppIcons.textFields;
       case MarkdownType.list:
-        return Icons.list;
+        return AppIcons.list;
       case MarkdownType.code:
-        return Icons.code;
+        return AppIcons.code;
       case MarkdownType.blockquote:
-        return Icons.format_quote_rounded;
+        return AppIcons.formatQuoteRounded;
       case MarkdownType.separator:
-        return Icons.minimize_rounded;
+        return AppIcons.minimizeRounded;
       case MarkdownType.image:
-        return Icons.image_rounded;
+        return AppIcons.imageRounded;
     }
   }
 }

@@ -1,8 +1,10 @@
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_mock_data.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
-import 'package:mind_feed/core/utls/app_images.dart';
+import 'package:mind_feed/core/constants/app_images.dart';
 
 class ArticleView extends StatefulWidget {
   const ArticleView({super.key, this.item});
@@ -54,8 +56,8 @@ class _ArticleViewState extends State<ArticleView> {
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
-                            Icons.arrow_back_rounded,
-                            color: EditorialPalette.ink,
+                            AppIcons.arrowBackRounded,
+                            color: AppColors.ink,
                             size: 22,
                           ),
                         ),
@@ -85,8 +87,8 @@ class _ArticleViewState extends State<ArticleView> {
                         const SizedBox(width: 8),
                         IconButton(
                           icon: const Icon(
-                            Icons.volume_up_outlined,
-                            color: EditorialPalette.ink,
+                            AppIcons.volumeUpOutlined,
+                            color: AppColors.ink,
                           ),
                           tooltip: 'Listen to article',
                           onPressed: () {
@@ -111,7 +113,7 @@ class _ArticleViewState extends State<ArticleView> {
                     height: 1.15,
                     fontWeight: FontWeight.w900,
                     letterSpacing: -1.0,
-                    color: EditorialPalette.ink,
+                    color: AppColors.ink,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -121,19 +123,19 @@ class _ArticleViewState extends State<ArticleView> {
                     Text(
                       _article.updated,
                       style: const TextStyle(
-                        color: EditorialPalette.mutedInk,
+                        color: AppColors.mutedInk,
                         fontSize: 12.5,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8),
-                      child: Text('•', style: TextStyle(color: EditorialPalette.mutedInk)),
+                      child: Text('•', style: TextStyle(color: AppColors.mutedInk)),
                     ),
                     const Text(
                       '6 min read',
                       style: TextStyle(
-                        color: EditorialPalette.mutedInk,
+                        color: AppColors.mutedInk,
                         fontSize: 12.5,
                         fontWeight: FontWeight.w600,
                       ),
@@ -151,8 +153,8 @@ class _ArticleViewState extends State<ArticleView> {
                         fit: BoxFit.cover,
                         errorBuilder: (_, _, _) => const CircleAvatar(
                           radius: 20,
-                          backgroundColor: EditorialPalette.blush,
-                          child: Icon(Icons.person, color: EditorialPalette.ink),
+                          backgroundColor: AppColors.blush,
+                          child: Icon(AppIcons.personAlt, color: AppColors.ink),
                         ),
                       ),
                     ),
@@ -165,7 +167,7 @@ class _ArticleViewState extends State<ArticleView> {
                             _article.authorRole,
                             style: const TextStyle(
                               fontSize: 11,
-                              color: EditorialPalette.mutedInk,
+                              color: AppColors.mutedInk,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -174,7 +176,7 @@ class _ArticleViewState extends State<ArticleView> {
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w800,
-                              color: EditorialPalette.ink,
+                              color: AppColors.ink,
                             ),
                           ),
                         ],
@@ -190,7 +192,7 @@ class _ArticleViewState extends State<ArticleView> {
                     fontSize: 16,
                     height: 1.55,
                     fontWeight: FontWeight.w500,
-                    color: EditorialPalette.ink,
+                    color: AppColors.ink,
                   ),
                 ),
                 const SizedBox(height: 22),
@@ -211,7 +213,7 @@ class _ArticleViewState extends State<ArticleView> {
                             borderRadius: BorderRadius.circular(24),
                           ),
                           child: const Center(
-                            child: Icon(Icons.image_outlined, size: 48, color: EditorialPalette.ink),
+                            child: Icon(AppIcons.imageOutlined, size: 48, color: AppColors.ink),
                           ),
                         ),
                       ),
@@ -225,7 +227,7 @@ class _ArticleViewState extends State<ArticleView> {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: EditorialPalette.ink,
+                          color: AppColors.ink,
                           borderRadius: BorderRadius.circular(24),
                           boxShadow: const [
                             BoxShadow(
@@ -240,8 +242,8 @@ class _ArticleViewState extends State<ArticleView> {
                           children: [
                             EditorialIconButton(
                               icon: _isLiked
-                                  ? Icons.thumb_up
-                                  : Icons.thumb_up_outlined,
+                                  ? AppIcons.thumbUp
+                                  : AppIcons.thumbUpOutlined,
                               label: 'Like article',
                               onPressed: () {
                                 setState(() {
@@ -261,8 +263,8 @@ class _ArticleViewState extends State<ArticleView> {
                             const SizedBox(width: 4),
                             EditorialIconButton(
                               icon: _isSaved
-                                  ? Icons.bookmark
-                                  : Icons.bookmark_border_rounded,
+                                  ? AppIcons.bookmark
+                                  : AppIcons.bookmarkBorderRounded,
                               label: 'Save article',
                               onPressed: () {
                                 setState(() {
@@ -283,7 +285,7 @@ class _ArticleViewState extends State<ArticleView> {
                             ),
                             const SizedBox(width: 4),
                             EditorialIconButton(
-                              icon: Icons.ios_share_rounded,
+                              icon: AppIcons.iosShareRounded,
                               label: 'Share article',
                               onPressed: () => showEditorialShareSheet(
                                 context,
@@ -309,14 +311,14 @@ class _ArticleViewState extends State<ArticleView> {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.bolt_rounded, size: 18, color: EditorialPalette.ink),
+                          Icon(AppIcons.boltRounded, size: 18, color: AppColors.ink),
                           SizedBox(width: 6),
                           Text(
                             'Key Takeaways',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w800,
-                              color: EditorialPalette.ink,
+                              color: AppColors.ink,
                             ),
                           ),
                         ],
@@ -327,7 +329,7 @@ class _ArticleViewState extends State<ArticleView> {
                         style: TextStyle(
                           fontSize: 13.5,
                           height: 1.5,
-                          color: EditorialPalette.ink,
+                          color: AppColors.ink,
                         ),
                       ),
                     ],
@@ -339,7 +341,7 @@ class _ArticleViewState extends State<ArticleView> {
                   style: TextStyle(
                     fontSize: 15,
                     height: 1.6,
-                    color: EditorialPalette.ink,
+                    color: AppColors.ink,
                   ),
                 ),
               ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
-import 'package:mind_feed/core/utls/app_images.dart';
+import 'package:mind_feed/core/constants/app_images.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class Logo extends StatelessWidget {
   const Logo({super.key});
@@ -16,9 +16,9 @@ class Logo extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFF262422),
+              color: AppColors.charcoal,
               shape: BoxShape.circle,
-              border: Border.all(color: const Color(0xFF383530), width: 1.5),
+              border: Border.all(color: AppColors.borderDark, width: 1.5),
             ),
             child: SvgPicture.asset(
               Assets.assetsImagesLogo,
@@ -33,7 +33,7 @@ class Logo extends StatelessWidget {
               fontSize: 32,
               fontWeight: FontWeight.w800,
               letterSpacing: -1.0,
-              color: EditorialPalette.softCream,
+              color: AppColors.softCream,
             ),
           ),
           const SizedBox(height: 6),
@@ -42,7 +42,7 @@ class Logo extends StatelessWidget {
             style: TextStyle(
               fontSize: 13.5,
               fontWeight: FontWeight.w400,
-              color: Color(0xFFAAA49B),
+              color: AppColors.greyText,
             ),
           ),
         ],

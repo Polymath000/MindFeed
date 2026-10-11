@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "openrig-requirements-writer": {
+      "version": "1.0.0",
+      "installedAt": "2026-10-11T15:42:32.179Z",
+      "platform": "gemini",
+      "contentHash": "606951edf0ac27a0670b52a8c5b4644ec80c2b82db333ba6bb5b9af3ca1cdaf1"
+    }
+  }
+}

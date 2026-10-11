@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/config/themes/app_text_style.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class PageViewItem extends StatelessWidget {
   const PageViewItem({
@@ -11,36 +11,36 @@ class PageViewItem extends StatelessWidget {
 
   final String title;
   final String description;
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 0, right: 20),
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            width: 292,
-            child: Text(
-              title,
-              style: AppTextStyles.headlineLarge!.copyWith(
-                color: AppColors.white,
-                fontSize: 36,
-                height: 1.3,
-                fontWeight: FontWeight.w400,
-              ),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.playfairDisplay(
+              color: AppColors.softCream,
+              fontSize: 30,
+              height: 1.25,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.5,
             ),
           ),
-          SizedBox(height: 25),
-          SizedBox(
-            width: 297,
-            child: Text(
-              description,
-              style: AppTextStyles.titleMedium!.copyWith(
-                color: AppColors.lightGrey,
-                fontSize: 18,
-                height: 1.67,
-                wordSpacing: 0.85,
-                fontWeight: FontWeight.w400,
-              ),
+          const SizedBox(height: 14),
+          Text(
+            description,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: AppColors.greyText,
+              fontSize: 15,
+              height: 1.5,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.1,
             ),
           ),
         ],

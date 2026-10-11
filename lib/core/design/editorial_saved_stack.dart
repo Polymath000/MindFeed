@@ -1,6 +1,8 @@
+import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class EditorialSavedStack extends StatefulWidget {
   const EditorialSavedStack({
@@ -48,7 +50,7 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
         content: Text('Removed "${item.title.split('\n').first}"'),
         action: SnackBarAction(
           label: 'UNDO',
-          textColor: EditorialPalette.butter,
+          textColor: AppColors.butter,
           onPressed: () {
             setState(() {
               _savedItems.insert(index, item);
@@ -68,7 +70,7 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
         child: const Text(
           'No saved articles yet',
           style: TextStyle(
-            color: Color(0xFF8E8E93),
+            color: AppColors.greyIcon,
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -97,12 +99,12 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 24),
           decoration: BoxDecoration(
-            color: const Color(0xFFDC2626),
-            borderRadius: EditorialRadii.card,
+            color: AppColors.red,
+            borderRadius: AppBorders.card,
           ),
           child: const Row(
             children: [
-              Icon(Icons.delete_outline_rounded, color: Colors.white, size: 28),
+              Icon(AppIcons.delete, color: Colors.white, size: 28),
               SizedBox(width: 8),
               Text(
                 'Delete',
@@ -119,8 +121,8 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
           alignment: Alignment.centerRight,
           padding: const EdgeInsets.symmetric(horizontal: 24),
           decoration: BoxDecoration(
-            color: const Color(0xFFDC2626),
-            borderRadius: EditorialRadii.card,
+            color: AppColors.red,
+            borderRadius: AppBorders.card,
           ),
           child: const Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -134,27 +136,28 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
                 ),
               ),
               SizedBox(width: 8),
-              Icon(Icons.delete_outline_rounded, color: Colors.white, size: 28),
+              Icon(AppIcons.delete, color: Colors.white, size: 28),
             ],
           ),
         ),
         onDismissed: (_) => _deleteItem(index, item),
         child: GestureDetector(
           onVerticalDragEnd: (details) {
-            if (details.primaryVelocity != null && details.primaryVelocity! < -200) {
+            if (details.primaryVelocity != null &&
+                details.primaryVelocity! < -200) {
               widget.onOpenArticle(item);
             }
           },
           child: InkWell(
             onTap: () => widget.onOpenArticle(item),
-            borderRadius: EditorialRadii.card,
+            borderRadius: AppBorders.card,
             child: Container(
               width: double.infinity,
               margin: const EdgeInsets.only(bottom: 4),
               padding: const EdgeInsets.fromLTRB(20, 24, 20, 26),
               decoration: BoxDecoration(
                 color: item.color,
-                borderRadius: EditorialRadii.card,
+                borderRadius: AppBorders.card,
                 boxShadow: const [
                   BoxShadow(
                     color: Colors.black26,
@@ -173,7 +176,7 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
                       height: 1.18,
                       fontWeight: FontWeight.w800,
                       letterSpacing: -0.8,
-                      color: EditorialPalette.ink,
+                      color: AppColors.ink,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -182,7 +185,7 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
                     style: const TextStyle(
                       fontSize: 13,
                       height: 1.4,
-                      color: EditorialPalette.ink,
+                      color: AppColors.ink,
                     ),
                   ),
                   if (isFirst) const SizedBox(height: 14),

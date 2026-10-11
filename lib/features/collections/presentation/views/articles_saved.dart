@@ -1,28 +1,40 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
-import 'package:mind_feed/core/design/editorial_mock_data.dart';
-import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/design/editorial_saved_stack.dart';
 import 'package:mind_feed/core/widgets/search_bar.dart';
+import 'package:mind_feed/features/collections/presentation/cubit/collections_cubit.dart';
 
-class ArticlesSaved extends StatefulWidget {
+class ArticlesSaved extends StatelessWidget {
   const ArticlesSaved({super.key});
   static const String routeName = 'articlesSaved';
 
   @override
-  State<ArticlesSaved> createState() => _ArticlesSavedState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => CollectionsCubit(),
+      child: const _ArticlesSavedContent(),
+    );
+  }
 }
 
-class _ArticlesSavedState extends State<ArticlesSaved> {
+class _ArticlesSavedContent extends StatefulWidget {
+  const _ArticlesSavedContent();
+
+  @override
+  State<_ArticlesSavedContent> createState() => _ArticlesSavedContentState();
+}
+
+class _ArticlesSavedContentState extends State<_ArticlesSavedContent> {
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
-  late final List<EditorialNewsItem> _savedStories;
 
   @override
   void initState() {
     super.initState();
-    _savedStories = List.from(EditorialMockData.savedStories);
+    context.read<CollectionsCubit>().loadSavedStories();
   }
 
   @override
@@ -31,21 +43,9 @@ class _ArticlesSavedState extends State<ArticlesSaved> {
     super.dispose();
   }
 
-  List<EditorialNewsItem> get _filteredStories {
-    if (_searchQuery.trim().isEmpty) return _savedStories;
-    final query = _searchQuery.toLowerCase();
-    return _savedStories
-        .where(
-          (item) =>
-              item.title.toLowerCase().contains(query) ||
-              item.excerpt.toLowerCase().contains(query),
-        )
-        .toList();
-  }
-
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: EditorialPalette.ink,
+    backgroundColor: AppColors.ink,
     body: SafeArea(
       child: Center(
         child: ConstrainedBox(
@@ -56,7 +56,7 @@ class _ArticlesSavedState extends State<ArticlesSaved> {
               Row(
                 children: [
                   EditorialIconButton(
-                    icon: Icons.arrow_back_rounded,
+                    icon: AppIcons.arrowBackRounded,
                     label: 'Back',
                     onPressed: () => Navigator.maybePop(context),
                   ),
@@ -64,7 +64,7 @@ class _ArticlesSavedState extends State<ArticlesSaved> {
                   const Text(
                     'Saved News',
                     style: TextStyle(
-                      color: EditorialPalette.softCream,
+                      color: AppColors.softCream,
                       fontSize: 25,
                       fontWeight: FontWeight.w800,
                       letterSpacing: -0.6,
@@ -78,19 +78,24 @@ class _ArticlesSavedState extends State<ArticlesSaved> {
                 hintText: 'Search news',
                 trailingSearchIcon: true,
                 onChanged: (value) {
-                  setState(() {
-                    _searchQuery = value;
-                  });
+                  context.read<CollectionsCubit>().searchStories(value);
                 },
               ),
               const SizedBox(height: 8),
-              EditorialSavedStack(
-                items: _filteredStories,
-                onOpenArticle: (item) => AppRoutes.article(context),
-                onDeleteArticle: (item) {
-                  setState(() {
-                    _savedStories.removeWhere((el) => el.id == item.id);
-                  });
+              BlocBuilder<CollectionsCubit, CollectionsState>(
+                builder: (context, state) {
+                  if (state is CollectionsLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is CollectionsLoaded) {
+                    return EditorialSavedStack(
+                      items: state.stories,
+                      onOpenArticle: (item) => Navigator.pushNamed(context, AppRoutes.article, arguments: item),
+                      onDeleteArticle: (item) {
+                        context.read<CollectionsCubit>().deleteArticle(item.id);
+                      },
+                    );
+                  }
+                  return const SizedBox.shrink();
                 },
               ),
             ],

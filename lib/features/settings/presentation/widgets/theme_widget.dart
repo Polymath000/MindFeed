@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/features/settings/presentation/controllers/theme_mode_cubit/theme_mode_cubit.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class ThemeWidget extends StatelessWidget {
   const ThemeWidget({super.key});
@@ -29,7 +30,7 @@ class ThemeWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: EditorialPalette.ink,
+                  color: AppColors.ink,
                   letterSpacing: -0.2,
                 ),
               ),
@@ -38,7 +39,7 @@ class ThemeWidget extends StatelessWidget {
                 'Select your preferred journal contrast and paper tone.',
                 style: TextStyle(
                   fontSize: 12,
-                  color: EditorialPalette.mutedInk,
+                  color: AppColors.mutedInk,
                 ),
               ),
               const SizedBox(height: 14),
@@ -51,9 +52,9 @@ class ThemeWidget extends StatelessWidget {
                       current: currentTheme,
                       title: 'Warm Paper',
                       subtitle: 'Daylight Print',
-                      icon: Icons.menu_book_rounded,
-                      cardColor: const Color(0xFFFFF8E6),
-                      textColor: EditorialPalette.ink,
+                      icon: AppIcons.menuBookRounded,
+                      cardColor: AppColors.softCream,
+                      textColor: AppColors.ink,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -64,9 +65,9 @@ class ThemeWidget extends StatelessWidget {
                       current: currentTheme,
                       title: 'Midnight Ink',
                       subtitle: 'Dimmed Study',
-                      icon: Icons.nightlight_round,
-                      cardColor: const Color(0xFF23211F),
-                      textColor: const Color(0xFFFFF8E6),
+                      icon: AppIcons.nightlightRound,
+                      cardColor: AppColors.charcoalDarker,
+                      textColor: AppColors.softCream,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -77,9 +78,9 @@ class ThemeWidget extends StatelessWidget {
                       current: currentTheme,
                       title: 'Auto Cadence',
                       subtitle: 'Solar Sync',
-                      icon: Icons.brightness_auto_rounded,
-                      cardColor: const Color(0xFFEDE5D4),
-                      textColor: EditorialPalette.ink,
+                      icon: AppIcons.brightnessAutoRounded,
+                      cardColor: AppColors.sandDark,
+                      textColor: AppColors.ink,
                     ),
                   ),
                 ],
@@ -115,13 +116,13 @@ class ThemeWidget extends StatelessWidget {
           color: cardColor,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? EditorialPalette.ink : const Color(0xFFDDD4C0),
+            color: isSelected ? AppColors.ink : AppColors.creamDark,
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected
               ? const [
                   BoxShadow(
-                    color: Color(0x18000000),
+                    color: AppColors.transparentBlack,
                     blurRadius: 8,
                     offset: Offset(0, 3),
                   ),
@@ -137,9 +138,9 @@ class ThemeWidget extends StatelessWidget {
                 Icon(icon, size: 18, color: textColor),
                 if (isSelected)
                   const Icon(
-                    Icons.check_circle_rounded,
+                    AppIcons.checkCircleRounded,
                     size: 15,
-                    color: EditorialPalette.ink,
+                    color: AppColors.ink,
                   ),
               ],
             ),

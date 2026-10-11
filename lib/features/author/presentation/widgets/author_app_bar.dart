@@ -1,3 +1,5 @@
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 
@@ -9,13 +11,13 @@ class AuthorAppBar extends StatelessWidget {
     return SliverAppBar(
       automaticallyImplyLeading: false,
       pinned: true,
-      backgroundColor: EditorialPalette.ink,
+      backgroundColor: AppColors.ink,
       surfaceTintColor: Colors.transparent,
       centerTitle: true,
       leading: Padding(
         padding: const EdgeInsets.only(left: 16.0),
         child: EditorialIconButton(
-          icon: Icons.arrow_back_rounded,
+          icon: AppIcons.arrowBackRounded,
           label: 'Back',
           onPressed: () => Navigator.maybePop(context),
         ),
@@ -24,7 +26,7 @@ class AuthorAppBar extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(right: 16.0),
           child: EditorialIconButton(
-            icon: Icons.ios_share_rounded,
+            icon: AppIcons.iosShareRounded,
             label: 'Share profile',
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -37,7 +39,7 @@ class AuthorAppBar extends StatelessWidget {
       title: const Text(
         'Author Profile',
         style: TextStyle(
-          color: EditorialPalette.softCream,
+          color: AppColors.softCream,
           fontSize: 22,
           fontWeight: FontWeight.w800,
           letterSpacing: -0.5,

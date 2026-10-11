@@ -1,6 +1,6 @@
+import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/password_requirements.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/password_text_field.dart';
@@ -30,7 +30,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
           const Text(
             'New Password',
             style: TextStyle(
-              color: EditorialPalette.softCream,
+              color: AppColors.softCream,
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
@@ -48,7 +48,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
           const Text(
             'Confirm New Password',
             style: TextStyle(
-              color: EditorialPalette.softCream,
+              color: AppColors.softCream,
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
@@ -77,7 +77,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
                   );
                 } else {
                   FocusScope.of(context).unfocus();
-                  AppRoutes.login(context);
+                  Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false);
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Password updated successfully')),
                   );

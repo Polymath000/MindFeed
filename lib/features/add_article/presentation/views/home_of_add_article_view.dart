@@ -1,8 +1,7 @@
-import 'dart:convert';
-import 'dart:io';
+import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:markdown_widget/widget/markdown_block.dart';
@@ -24,10 +23,7 @@ class _HomeState extends State<Home> {
   static const _methodChannel = MethodChannel(
     "com.adeeteya.markdown_editor/channel",
   );
-  String _filePath = "/storage/emulated/0/Download";
-  String _fileName = 'Markdown';
   bool _isPreview = false;
-  bool _isLoading = true;
   String _inputText = '';
   final TextEditingController _textEditingController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -81,49 +77,11 @@ class _HomeState extends State<Home> {
           ),
         );
       }
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
 
   Future<void> _openFilePicker() async {
-    try {
-      final FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['md'],
-      );
-      if (result != null) {
-        _filePath = result.files.single.path ?? "";
-        _fileName = _filePath.substring(
-          _filePath.lastIndexOf("/") + 1,
-          _filePath.lastIndexOf("."),
-        );
-        final File file = File(_filePath);
-        _inputText = await file.readAsString();
-        _textEditingController.text = _inputText;
-        setState(() {});
-      }
-    } catch (e) {
-      if (mounted) {
-        await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(AppLocalizations.of(context)!.error),
-            content: Text(
-              AppLocalizations.of(context)!.unableToOpenFileFromMenuError,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(AppLocalizations.of(context)!.ok),
-              ),
-            ],
-          ),
-        );
-      }
-    }
+    context.read<AddArticleCubit>().openFile();
   }
 
   Future<void> _clearText() async {
@@ -148,10 +106,7 @@ class _HomeState extends State<Home> {
           ),
           TextButton(
             onPressed: () {
-              setState(() {
-                _inputText = "";
-                _textEditingController.clear();
-              });
+              context.read<AddArticleCubit>().clearText();
               Navigator.pop(context);
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -163,22 +118,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> _saveFile() async {
-    if (_inputText.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.emptyInputTextContent),
-        ),
-      );
-      return;
-    } else {
-      await FilePicker.platform.saveFile(
-        dialogTitle: AppLocalizations.of(context)!.saveFileDialogTitle,
-        fileName: (!kIsWeb && Platform.isWindows) ? null : "$_fileName.md",
-        type: FileType.custom,
-        allowedExtensions: ['md'],
-        bytes: utf8.encode(_inputText),
-      );
-    }
+    context.read<AddArticleCubit>().saveFile(_inputText);
   }
 
   Widget _markdownPreviewWidget() {
@@ -266,7 +206,7 @@ class _HomeState extends State<Home> {
                 onPressed: _switchPreview,
                 tooltip: AppLocalizations.of(context)!.previewToolTip,
                 icon: Icon(
-                  _isPreview ? Icons.visibility_off : Icons.visibility,
+                  _isPreview ? AppIcons.visibilityOff : AppIcons.visibility,
                 ),
               ),
             PopupMenuButton<MenuItem>(
@@ -294,7 +234,7 @@ class _HomeState extends State<Home> {
                   value: MenuItem.switchView,
                   child: Row(
                     children: [
-                      const Icon(Icons.rotate_left),
+                      const Icon(AppIcons.rotateLeft),
                       const SizedBox(width: 8),
                       Text(AppLocalizations.of(context)!.switchViewMenuItem),
                     ],
@@ -304,7 +244,7 @@ class _HomeState extends State<Home> {
                   value: MenuItem.open,
                   child: Row(
                     children: [
-                      const Icon(Icons.file_open),
+                      const Icon(AppIcons.fileOpen),
                       const SizedBox(width: 8),
                       Text(AppLocalizations.of(context)!.openFileMenuItem),
                     ],
@@ -314,7 +254,7 @@ class _HomeState extends State<Home> {
                   value: MenuItem.clear,
                   child: Row(
                     children: [
-                      const Icon(Icons.clear_all),
+                      const Icon(AppIcons.clearAll),
                       const SizedBox(width: 8),
                       Text(AppLocalizations.of(context)!.clear),
                     ],
@@ -324,7 +264,7 @@ class _HomeState extends State<Home> {
                   value: MenuItem.save,
                   child: Row(
                     children: [
-                      const Icon(Icons.save),
+                      const Icon(AppIcons.save),
                       const SizedBox(width: 8),
                       Text(AppLocalizations.of(context)!.save),
                     ],
@@ -334,11 +274,24 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
-        body: _isLoading
-            ? const Center(child: CircularProgressIndicator.adaptive())
-            : (widget.devicePreferenceNotifier.value.isSplitLayout)
-            ? _splitView()
-            : _fullView(),
+        body: BlocConsumer<AddArticleCubit, AddArticleState>(
+          listener: (context, state) {
+            if (state is AddArticleError) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+            } else if (state is AddArticleFileLoaded) {
+              _inputText = state.content;
+              _textEditingController.text = state.content;
+            }
+          },
+          builder: (context, state) {
+            if (state is AddArticleLoading) {
+              return const Center(child: CircularProgressIndicator.adaptive());
+            }
+            return (widget.devicePreferenceNotifier.value.isSplitLayout)
+                ? _splitView()
+                : _fullView();
+          },
+        ),
       ),
     );
   }

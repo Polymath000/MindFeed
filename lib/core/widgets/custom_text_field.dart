@@ -1,5 +1,6 @@
+import 'package:mind_feed/core/constants/borders.dart';
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
@@ -33,41 +34,41 @@ class CustomTextField extends StatelessWidget {
       obscureText: obscureText,
       validator: validator,
       style: const TextStyle(
-        color: EditorialPalette.softCream,
+        color: AppColors.softCream,
         fontSize: 15,
       ),
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: const TextStyle(
-          color: Color(0xFFAAA49B),
+          color: AppColors.greyText,
           fontSize: 14,
         ),
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         filled: true,
-        fillColor: const Color(0xFF262422),
+        fillColor: AppColors.charcoal,
         contentPadding: const EdgeInsets.symmetric(
           vertical: 16,
           horizontal: 20,
         ),
         border: const OutlineInputBorder(
-          borderRadius: EditorialRadii.control,
-          borderSide: BorderSide(color: Color(0xFF383530), width: 1.0),
+          borderRadius: AppBorders.control,
+          borderSide: BorderSide(color: AppColors.borderDark, width: 1.0),
         ),
         enabledBorder: const OutlineInputBorder(
-          borderRadius: EditorialRadii.control,
-          borderSide: BorderSide(color: Color(0xFF383530), width: 1.0),
+          borderRadius: AppBorders.control,
+          borderSide: BorderSide(color: AppColors.borderDark, width: 1.0),
         ),
         focusedBorder: const OutlineInputBorder(
-          borderRadius: EditorialRadii.control,
-          borderSide: BorderSide(color: EditorialPalette.cream, width: 1.5),
+          borderRadius: AppBorders.control,
+          borderSide: BorderSide(color: AppColors.cream, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: EditorialRadii.control,
+          borderRadius: AppBorders.control,
           borderSide: BorderSide(color: Colors.red.shade400, width: 1.0),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: EditorialRadii.control,
+          borderRadius: AppBorders.control,
           borderSide: BorderSide(color: Colors.red.shade400, width: 1.5),
         ),
       ),

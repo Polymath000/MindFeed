@@ -1,12 +1,15 @@
+import 'package:mind_feed/core/constants/constants.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_card_stack.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_mock_data.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
-import 'package:mind_feed/core/utls/app_images.dart';
+import 'package:mind_feed/core/constants/app_images.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class HomeViewBody extends StatefulWidget {
   const HomeViewBody({super.key});
@@ -94,9 +97,9 @@ class _HomeViewBodyState extends State<HomeViewBody>
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Color(0xFF191816),
-                          Color(0xFF131210),
-                          Color(0xFF0E0D0C),
+                          AppColors.inkDarker,
+                          AppColors.inkDarkest,
+                          AppColors.almostBlack,
                         ],
                       ),
                     ),
@@ -192,9 +195,9 @@ class _HomeViewBodyState extends State<HomeViewBody>
               constraints: const BoxConstraints(maxWidth: 600),
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(
-                  EditorialSpace.page,
+                  AppConstants.page,
                   12,
-                  EditorialSpace.page,
+                  AppConstants.page,
                   24,
                 ),
                 children: [
@@ -236,7 +239,7 @@ class _HomeViewBodyState extends State<HomeViewBody>
                                 child: Text(
                                   'MindFeed',
                                   style: GoogleFonts.playfairDisplay(
-                                    color: EditorialPalette.softCream,
+                                    color: AppColors.softCream,
                                     fontSize: 29,
                                     fontWeight: FontWeight.w800,
                                     letterSpacing: -0.6,
@@ -248,9 +251,9 @@ class _HomeViewBodyState extends State<HomeViewBody>
                         ),
                       ),
                       EditorialIconButton(
-                        icon: Icons.grid_view_rounded,
+                        icon: AppIcons.gridViewRounded,
                         label: 'Open profile',
-                        onPressed: () => AppRoutes.profileView(context),
+                        onPressed: () => Navigator.pushNamed(context, AppRoutes.profile),
                       ),
                     ],
                   ),
@@ -278,19 +281,19 @@ class _HomeViewBodyState extends State<HomeViewBody>
                               ),
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? EditorialPalette.cream
+                                    ? AppColors.cream
                                     : Colors.white.withAlpha(15),
                                 borderRadius: BorderRadius.circular(22),
                                 border: Border.all(
                                   color: isSelected
-                                      ? const Color(0xFFFFE388)
+                                      ? AppColors.yellowHighlight
                                       : Colors.white.withAlpha(24),
                                   width: isSelected ? 1.2 : 1.0,
                                 ),
                                 boxShadow: isSelected
                                     ? [
                                         BoxShadow(
-                                          color: EditorialPalette.cream
+                                          color: AppColors.cream
                                               .withAlpha(65),
                                           blurRadius: 12,
                                           offset: const Offset(0, 3),
@@ -302,8 +305,8 @@ class _HomeViewBodyState extends State<HomeViewBody>
                                 topic,
                                 style: TextStyle(
                                   color: isSelected
-                                      ? EditorialPalette.ink
-                                      : EditorialPalette.softCream
+                                      ? AppColors.ink
+                                      : AppColors.softCream
                                           .withAlpha(185),
                                   fontSize: 14.5,
                                   fontWeight: isSelected
@@ -324,7 +327,7 @@ class _HomeViewBodyState extends State<HomeViewBody>
                     items: stories,
                     height: 570,
                     onOpenArticle: (item) =>
-                        AppRoutes.article(context, item: item),
+                        Navigator.pushNamed(context, AppRoutes.article, arguments: item),
                     onDismiss: (item) {
                       ScaffoldMessenger.of(context).clearSnackBars();
                       ScaffoldMessenger.of(context).showSnackBar(

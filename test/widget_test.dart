@@ -8,6 +8,7 @@ import 'package:mind_feed/features/main/presentation/views/main_view.dart';
 import 'package:mind_feed/features/main/presentation/widgets/main_navigation_bar.dart';
 import 'package:mind_feed/features/settings/presentation/controllers/theme_mode_cubit/theme_mode_cubit.dart';
 import 'package:mind_feed/features/settings/presentation/views/settings_view.dart';
+import 'package:mind_feed/features/onboarding/presentation/views/onboarding_view.dart';
 
 Widget editorialHarness(Widget child) =>
     MaterialApp(theme: ThemeData.light(), home: child);
@@ -103,4 +104,30 @@ void main() {
     expect(find.text('Typeface Scale'), findsOneWidget);
     expect(find.text('Serif Literary Immersion'), findsOneWidget);
   });
+
+  testWidgets(
+    'onboarding renders editorial theme pages and navigation controls',
+    (tester) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(editorialHarness(const OnboardingView()));
+
+      expect(find.text('Discover Stories That Matter'), findsOneWidget);
+      expect(find.text('Skip'), findsOneWidget);
+      expect(find.text('Continue'), findsOneWidget);
+
+      await tester.tap(find.text('Continue'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Read What You Love'), findsOneWidget);
+
+      await tester.tap(find.text('Continue'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Learn Anytime, Anywhere'), findsOneWidget);
+      expect(find.text('Get Started'), findsOneWidget);
+    },
+  );
 }

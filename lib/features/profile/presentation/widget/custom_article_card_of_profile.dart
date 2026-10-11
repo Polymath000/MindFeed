@@ -1,6 +1,8 @@
+import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 
 class CustomArticleCardOfProfile extends StatelessWidget {
@@ -19,7 +21,7 @@ class CustomArticleCardOfProfile extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       decoration: BoxDecoration(
         color: item.color,
-        borderRadius: EditorialRadii.card,
+        borderRadius: AppBorders.card,
         boxShadow: const [
           BoxShadow(
             color: Colors.black26,
@@ -29,8 +31,8 @@ class CustomArticleCardOfProfile extends StatelessWidget {
         ],
       ),
       child: InkWell(
-        onTap: () => AppRoutes.article(context),
-        borderRadius: EditorialRadii.card,
+        onTap: () => Navigator.pushNamed(context, AppRoutes.article, arguments: item),
+        borderRadius: AppBorders.card,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -58,7 +60,7 @@ class CustomArticleCardOfProfile extends StatelessWidget {
                   Text(
                     item.updated,
                     style: const TextStyle(
-                      color: EditorialPalette.mutedInk,
+                      color: AppColors.mutedInk,
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -73,7 +75,7 @@ class CustomArticleCardOfProfile extends StatelessWidget {
                   height: 1.25,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.6,
-                  color: EditorialPalette.ink,
+                  color: AppColors.ink,
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -84,7 +86,7 @@ class CustomArticleCardOfProfile extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 13,
                   height: 1.4,
-                  color: EditorialPalette.ink,
+                  color: AppColors.ink,
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -94,17 +96,17 @@ class CustomArticleCardOfProfile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.edit_outlined, size: 18, color: EditorialPalette.ink),
+                    icon: const Icon(AppIcons.edit, size: 18, color: AppColors.ink),
                     tooltip: 'Edit article',
                     onPressed: () {},
                   ),
                   IconButton(
-                    icon: const Icon(Icons.delete_outline_rounded, size: 18, color: EditorialPalette.ink),
+                    icon: const Icon(AppIcons.delete, size: 18, color: AppColors.ink),
                     tooltip: 'Delete article',
                     onPressed: onDelete,
                   ),
                   IconButton(
-                    icon: const Icon(Icons.ios_share_rounded, size: 18, color: EditorialPalette.ink),
+                    icon: const Icon(AppIcons.iosShareRounded, size: 18, color: AppColors.ink),
                     tooltip: 'Share article',
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(

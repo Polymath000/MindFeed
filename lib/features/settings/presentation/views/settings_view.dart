@@ -1,5 +1,5 @@
+import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/settings_view_body.dart';
 
 class SettingsView extends StatelessWidget {
@@ -9,7 +9,7 @@ class SettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: EditorialPalette.sand,
+      backgroundColor: AppColors.sand,
       body: SafeArea(
         bottom: false,
         child: SettingsViewBody(),

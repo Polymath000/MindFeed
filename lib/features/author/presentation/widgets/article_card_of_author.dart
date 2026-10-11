@@ -1,6 +1,8 @@
+import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class ArticleCardOfAuthor extends StatelessWidget {
   const ArticleCardOfAuthor({
@@ -19,15 +21,15 @@ class ArticleCardOfAuthor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => AppRoutes.article(context),
-      borderRadius: EditorialRadii.card,
+      onTap: () => AppRoutes.article,
+      borderRadius: AppBorders.card,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: const Color(0xFF262422),
-          borderRadius: EditorialRadii.card,
-          border: Border.all(color: const Color(0xFF383530)),
+          color: AppColors.charcoal,
+          borderRadius: AppBorders.card,
+          border: Border.all(color: AppColors.borderDark),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,8 +44,11 @@ class ArticleCardOfAuthor extends StatelessWidget {
                 errorBuilder: (_, _, _) => Container(
                   width: 90,
                   height: 90,
-                  color: EditorialPalette.cream,
-                  child: const Icon(Icons.article_outlined, color: EditorialPalette.ink),
+                  color: AppColors.cream,
+                  child: const Icon(
+                    AppIcons.articleOutlined,
+                    color: AppColors.ink,
+                  ),
                 ),
               ),
             ),
@@ -55,7 +60,7 @@ class ArticleCardOfAuthor extends StatelessWidget {
                   Text(
                     title,
                     style: const TextStyle(
-                      color: EditorialPalette.softCream,
+                      color: AppColors.softCream,
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                       height: 1.25,
@@ -69,17 +74,19 @@ class ArticleCardOfAuthor extends StatelessWidget {
                     children: [
                       IconButton(
                         icon: Icon(
-                          isFav ? Icons.bookmark : Icons.bookmark_border_rounded,
+                          isFav
+                              ? AppIcons.bookmark
+                              : AppIcons.bookmarkBorderRounded,
                           size: 18,
-                          color: EditorialPalette.softCream,
+                          color: AppColors.softCream,
                         ),
                         onPressed: () {},
                       ),
                       IconButton(
                         icon: const Icon(
-                          Icons.ios_share_rounded,
+                          AppIcons.iosShareRounded,
                           size: 18,
-                          color: EditorialPalette.softCream,
+                          color: AppColors.softCream,
                         ),
                         onPressed: () {},
                       ),

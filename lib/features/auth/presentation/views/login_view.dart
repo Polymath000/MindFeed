@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/core/helpers/setup_service_locator.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/utls/setup_service_locator.dart';
 
 import 'package:mind_feed/features/auth/data/repos/auth_repo_impl.dart'
     show AuthRepoImpl;
