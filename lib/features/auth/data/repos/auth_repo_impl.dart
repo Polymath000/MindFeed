@@ -9,7 +9,6 @@ import 'package:mind_feed/core/params/login_params.dart';
 import 'package:mind_feed/features/auth/data/datasources/auth_api_source.dart';
 import 'package:mind_feed/features/auth/data/datasources/user_cache_source.dart';
 import 'package:mind_feed/features/auth/domain/repos/auth_repo.dart';
-
 import '../../../../core/params/signup_params.dart';
 import '../../../../core/services/shared_preferences_singleton.dart';
 
@@ -18,15 +17,25 @@ class AuthRepoImpl extends AuthRepository {
   final AuthApiSource authApiSource;
   final UserCacheDataSource userCacheDataSource;
   late CacheHelper cacheHelper;
+
   AuthRepoImpl({
     required this.authApiSource,
     required this.networkInfo,
     required this.userCacheDataSource,
   });
+
   @override
-  Future<ApiResult<void>> forgetPassword(String email) {
-    // TODO: implement forgetPassword
-    throw UnimplementedError();
+  Future<ApiResult<void>> forgetPassword(String email) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await authApiSource.resetPassword(email: email);
+        return const Success(null);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
   }
 
   @override
