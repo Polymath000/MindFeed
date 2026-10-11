@@ -41,3 +41,6 @@ The codebase follows **Feature-First Clean Architecture**:
 - **Styling and Constants Centralization**:
   - Eliminated raw icon usages in favor of `AppIcons`.
   - Centralized colors and removed obsolete constants.
+- **State Management & Build Upgrades**:
+  - Encapsulated `CollectionsCubit` provision inside `ArticlesSaved` widget hierarchy, fixing `ProviderNotFoundException` when mounted inside `MainView` (`IndexedStack`).
+  - Upgraded Gradle wrapper to `9.1.0`, AGP to `9.0.1`, and Kotlin to `2.3.20`, eliminating all build deprecation warnings.

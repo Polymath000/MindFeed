@@ -8,15 +8,27 @@ import 'package:mind_feed/core/design/editorial_saved_stack.dart';
 import 'package:mind_feed/core/widgets/search_bar.dart';
 import 'package:mind_feed/features/collections/presentation/cubit/collections_cubit.dart';
 
-class ArticlesSaved extends StatefulWidget {
+class ArticlesSaved extends StatelessWidget {
   const ArticlesSaved({super.key});
   static const String routeName = 'articlesSaved';
 
   @override
-  State<ArticlesSaved> createState() => _ArticlesSavedState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => CollectionsCubit(),
+      child: const _ArticlesSavedContent(),
+    );
+  }
 }
 
-class _ArticlesSavedState extends State<ArticlesSaved> {
+class _ArticlesSavedContent extends StatefulWidget {
+  const _ArticlesSavedContent();
+
+  @override
+  State<_ArticlesSavedContent> createState() => _ArticlesSavedContentState();
+}
+
+class _ArticlesSavedContentState extends State<_ArticlesSavedContent> {
   final TextEditingController _searchController = TextEditingController();
 
   @override

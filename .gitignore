@@ -34,6 +34,8 @@ graphify-out/
 .pub-cache/
 .pub/
 /build/
+/android/build/
+/android/.gradle/
 
 # Symbolication related
 app.*.symbols
