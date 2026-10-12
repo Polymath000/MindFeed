@@ -21,6 +21,7 @@ import 'package:mind_feed/features/onboarding/presentation/views/onboarding_view
 import 'package:mind_feed/features/search/presentation/views/articles_category_view.dart';
 import 'package:mind_feed/features/search/presentation/views/search_view.dart';
 import 'package:mind_feed/features/settings/presentation/views/settings_view.dart';
+import 'package:mind_feed/features/splash/presentation/views/splash_view.dart';
 
 sealed class AppRoutes {
   const AppRoutes();
@@ -66,6 +67,9 @@ sealed class AppRoutes {
     final BuildContext context, {
     required final String email,
   }) => _pushNamed(context, ChangePasswordView.routeName, arguments: email);
+
+  static Future<Object?> splash(final BuildContext context) =>
+      _pushNamedAndRemoveAll(context, SplashView.routeName);
 
   static Future<Object?> onboardingView(final BuildContext context) =>
       _pushNamedAndRemoveAll(context, OnboardingView.routeName);
@@ -116,7 +120,8 @@ class CreateNewPasswordViewArgs {
 }
 
 Map<String, Widget Function(BuildContext, Object?)> _routes = {
-  '/': (_, _) => const MainView(),
+  '/': (_, _) => const SplashView(),
+  SplashView.routeName: (_, _) => const SplashView(),
   OnboardingView.routeName: (_, _) => const OnboardingView(),
   LoginView.routeName: (_, _) => const LoginView(),
   SignUpView.routeName: (_, _) => const SignUpView(),
@@ -146,7 +151,7 @@ Map<String, Widget Function(BuildContext, Object?)> _routes = {
 
 Route<dynamic>? Function(RouteSettings)? onGenerateRoute = (final settings) {
   final targetName = (settings.name == null || settings.name == '/')
-      ? MainView.routeName
+      ? SplashView.routeName
       : settings.name;
   final builder =
       _routes[targetName] ??

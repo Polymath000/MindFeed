@@ -62,6 +62,7 @@ lib/
 ├── config/              # Themes (app_colors, app_text_styles), AppRoutes (onGenerateRoute)
 ├── core/                # Shared utilities, constants, networking, errors, widgets
 └── features/
+    ├── splash/          # Cold-start animated editorial splash & startup routing gatekeeper
     ├── onboarding/      # First-run onboarding experience & 20-category selection
     ├── auth/            # Auth (Email/Password & Google Sign-In via Supabase)
     ├── home/            # Main feed, editorial cards, article reader view, sharing
@@ -77,3 +78,4 @@ lib/
 - **Dependency Pruning:** Removed 4 unused dependencies (`cupertino_icons`, `flutter_localization`, `google_nav_bar`, `line_icons`). Configured official `flutter_localizations` from Flutter SDK and `intl`.
 - **Asset Pruning:** Scanned and removed 9 unused asset files from `assets/images/` (`back.jpeg`, `news_logo.jpg`, `right_phone.jpg`, `right_phone_actual.jpg`, `top_bar_ref.jpg`, `top_right_bright.jpg`, `top_right_ref.jpg`, `top_right_ref2.jpg`, `wade_avatar.jpg`). Synced `app_images.dart` and updated `AuthorCard` to use valid avatar.
 - **Logo Migration:** Replaced the legacy SVG emblem (`assets/images/logo.svg`) with the high-resolution raster emblem `assets/images/MindFeedLogo.png`. Updated all UI usages (`Logo`, `SignUpFormBody`, `CustomDrawer`, `HomeViewBody`) to use Flutter's `Image.asset`, deleted `assets/images/logo.svg`, and cleaned up asset constant declarations in `lib/core/utls/app_images.dart`.
+- **Splash View Implementation (Option 2 - Paper & Ink Minimalist):** Built the editorial splash feature under `lib/features/splash/` using Feature-First Clean Architecture. Features `SplashLogoWidget` with rhythmic breathing pulse animation, gold hairline divider, and `THE CURATED EDITION` subtitle on a deep obsidian canvas (`Color(0xFF0D0C0B)`). Startup flow routes first-time readers to `OnboardingView` and returning readers directly to `MainView` via `CheckAppStartupUseCase`, managed by `SplashCubit` with Dart 3 `sealed class SplashState`, GetIt registration, and full unit & widget test coverage.
