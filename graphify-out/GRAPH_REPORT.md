@@ -1,512 +1,507 @@
-# Graph Report - MindFeed-main  (2026-10-11)
+# Graph Report - mind_feed  (2026-10-13)
 
 ## Corpus Check
-- cluster-only mode — file stats not available
+- 171 files · ~200,497 words
+- Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1590 nodes · 2240 edges · 92 communities
-- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
+- 1713 nodes · 2502 edges · 103 communities (86 shown, 17 thin omitted)
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 125 edges (avg confidence: 0.73)
 - Token cost: 0 input · 0 output
 
-## Graph Freshness
-- Built from commit: `e746009f`
-- Run `git rev-parse HEAD` and compare to check if the graph is stale.
-- Run `graphify update .` after code changes (no API cost).
-
 ## Community Hubs (Navigation)
-- app_colors.dart
-- app_icons.dart
-- main.dart
-- app_text_styles.dart
-- static const String
-- editorial_card_stack.dart
-- home_of_add_article_view.dart
-- password_text_field.dart
-- app_routes.dart
-- signup_cubit.dart
-- app_theme_data.dart
-- cache_helper.dart
-- articles_saved.dart
-- markdown_text_input.dart
-- Business Requirements Document (BRD)
-- StatelessWidget
-- package:flutter/material.dart
-- auth_repo_impl.dart
-- package:mind_feed/core/constants/app_images.dart
-- Mini-requirements
-- Continuation Packet: S1-editorial-shell-recovery
-- package:mind_feed/core/constants/app_colors.dart
-- package:mind_feed/core/constants/app_icons.dart
-- package:mind_feed/core/constants/app_text_styles.dart
-- Task Packet: S1-editorial-shell
-- Task Packet: S2-auth-refinement
-- setup_service_locator.dart
-- api_result.dart
-- editorial_design.dart
-- package:mind_feed/core/constants/borders.dart
-- auth_repo.dart
-- device_preference_notifier.dart
-- article_card.dart
-- borders.dart
-- editorial_models.dart
-- signup_view.dart
-- MindFeed Editorial UI Specification & Architecture
-- package:mind_feed/config/routes/app_routes.dart
-- next_button.dart
-- settings_view_body.dart
-- Mind Feed
-- format_markdown.dart
-- sign_up_form_body.dart
-- onboarding_view_body.dart
-- check_code_view_body.dart
-- constants.dart
-- State
-- auth_api_source.dart
-- change_password_form.dart
-- downloaded_articles_view.dart
-- aricles_by_categories.dart
-- custom_drawer.dart
-- profile_remote_data_source.dart
-- login_cubit.dart
-- send_code_view_body.dart
-- main_navigation_bar.dart
-- editorial_saved_stack.dart
-- shared_preferences_singleton.dart
-- login_form.dart
-- widget_test.dart
-- article_view.dart
-- MindFeed Editorial UI Transformation Plan
-- Hermes Review Result: S1-editorial-shell
-- string_extension.dart
-- profile_view.dart
-- editorial_card.dart
-- main_view.dart
-- home_view.dart
-- package:flutter/foundation.dart
-- Orchestration State
-- login_view.dart
-- api_error_handler.dart
-- signup_params.dart
-- add_article.dart
-- List
-- user_articles.dart
-- custom_app_bar.dart
-- Design Context
-- package:mind_feed/core/design/editorial_models.dart
-- author_view.dart
-- list_card.dart
-- Project Context: Mind Feed
-- custom_article_card_of_profile.dart
-- categories_view_body.dart
-- add_to_favorite_article_card.dart
-- profile_view_body.dart
-- Exception
-- login_params.dart
-- no_account_text.dart
+- Color Palette & Palette Constants
+- Iconography & System Icons
+- Supabase Client & HTTP Interceptor
+- Local Storage & Hive Cache
+- Authentication State & Login Cubit
+- Brand Media & Category Visuals
+- Startup Routing & Splash Flow
+- Article Creation & Publishing Cubit
+- Asset Paths & Image Constants
+- Theme Components & UI Styling
+- App Routes & Navigation Registry
+- Project Context & Architecture Specs
+- Dynamic Theming & Theme Mode Config
+- Navigation Drawer & App Bar Components
+- Markdown Editor & Input Actions
+- Border Geometry & Surface Radius
+- Registration Forms & User Feedback
+- Custom Form Fields & Text Inputs
+- Business Requirements & Product KPIs
+- Article Editor & Content Scaffold
+- Article Card Information Module
+- Editorial Card Stack Module
+- Article Card Module
+- Settings Menu Module
+- Onboarding View Body Module
+- Author Personal Info Module
+- S1-Editorial-Shell-Recovery Module
+- Custom Popup Menu Button For Home Module
+- Sign Up Form Body Module
+- S1-Editorial-Shell Module
+- S2-Auth-Refinement Module
+- Login View Module
+- Network Info Module
+- Editorial Design Module
+- Custom Button Module
+- Auth Repo Module
+- Login Form Module
+- Send Code View Body Module
+- Main Module
+- Settings View Body Module
+- Readme Module
+- Auth Repo Impl Module
+- Editorial Saved Stack Module
+- Auth Api Source Module
+- Login View Body Module
+- Format Markdown Module
+- Change Password Form Module
+- Profile Remote Data Source Module
+- Home View Body Module
+- Main Navigation Bar Module
+- Change Password View Body Module
+- Forget Password Text Module
+- Article View Module
+- Splash Logo Widget Module
+- Signup State Module
+- Plan Module
+- S1-Editorial-Shell-Review Module
+- Failures Module
+- Password Text Field Module
+- Change Password Form Module
+- Theme Mode State Module
+- Skip Button Module
+- Api Result Module
+- User Entity Module
+- Editorial Card Module
+- State Module
+- Api Error Handler Module
+- String Extension Module
+- Signup Params Module
+- Category Card Module
+- User Articles Module
+- .Impeccable Module
+- Editorial Mock Data Module
+- Author View Module
+- Article Card Of Author Module
+- List Card Module
+- Profile App Bar Module
+- Main View Module
+- Custom Article Card Of Profile Module
+- Categories View Body Module
+- Add To Favorite Article Card Module
+- Custom Drawer Module
+- Page View Item Module
+- Profile View Body Module
+- Widget Test Module
+- Exceptions Module
+- Personalize Graphify Module
+- Login Params Module
+- No Account Text Module
+- List Saved Articles Module
+- Saved Articles View Body Module
+- Article Card Module
+- Next Button Module
+- Custom Loading Indecator Module
+- Check Code View Body Module
+- Analysis Options Module
 
 ## God Nodes (most connected - your core abstractions)
-1. `Continuation Packet: S1-editorial-shell-recovery` - 19 edges
-2. `Task Packet: S1-editorial-shell` - 18 edges
-3. `Task Packet: S2-auth-refinement` - 18 edges
-4. `Mini-requirements` - 16 edges
-5. `AddArticleCubit` - 12 edges
-6. `ThemeModeCubit` - 10 edges
-7. `LoginCubit` - 10 edges
-8. `SignupCubit` - 10 edges
-9. `Mind Feed` - 9 edges
-10. `Hermes Review Result: S1-editorial-shell` - 9 edges
+1. `MindFeed Editorial UI Specification & Architecture` - 36 edges
+2. `Continuation Packet: S1-editorial-shell-recovery` - 19 edges
+3. `Mini-requirements` - 18 edges
+4. `Task Packet: S1-editorial-shell` - 18 edges
+5. `Task Packet: S2-auth-refinement` - 18 edges
+6. `Project Context: Mind Feed` - 12 edges
+7. `AddArticleCubit` - 12 edges
+8. `LoginCubit` - 10 edges
+9. `SignupCubit` - 10 edges
+10. `ThemeModeCubit` - 10 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `build` --references--> `LoginCubit`  [EXTRACTED]
-  lib/features/auth/presentation/widgets/login_form.dart → lib/features/auth/presentation/controllers/login_cubit/login_cubit.dart
-- `UserModel` --inherits--> `UserEntity`  [EXTRACTED]
-  lib/features/auth/data/models/user_model.dart → lib/features/auth/domain/entities/user_entity.dart
-- `initState` --references--> `CollectionsCubit`  [EXTRACTED]
-  lib/features/collections/presentation/views/articles_saved.dart → lib/features/collections/presentation/cubit/collections_cubit.dart
-- `_SignUpFormBodyState` --references--> `SignupCubit`  [EXTRACTED]
-  lib/features/auth/presentation/widgets/sign_up_form_body.dart → lib/features/auth/presentation/controllers/signup_cubit/signup_cubit.dart
-- `_LoginFormState` --references--> `LoginCubit`  [EXTRACTED]
-  lib/features/auth/presentation/widgets/login_form.dart → lib/features/auth/presentation/controllers/login_cubit/login_cubit.dart
+- `Category Icon: Business Icon` --conceptually_related_to--> `MindFeed Editorial UI Specification & Architecture`  [INFERRED]
+  assets/images/Business_Icon.svg → docs/UI_SPECIFICATION.md
+- `Category Icon: Education Icon` --conceptually_related_to--> `MindFeed Editorial UI Specification & Architecture`  [INFERRED]
+  assets/images/Education_Icon.svg → docs/UI_SPECIFICATION.md
+- `Visual Asset: Justtest` --conceptually_related_to--> `MindFeed Editorial UI Specification & Architecture`  [INFERRED]
+  assets/images/justTest.webp → docs/UI_SPECIFICATION.md
+- `Brand Asset: Mindfeedlogo` --conceptually_related_to--> `MindFeed Editorial UI Specification & Architecture`  [INFERRED]
+  assets/images/MindFeedLogo.png → docs/UI_SPECIFICATION.md
+- `Visual Asset: Mit News Ai Coding` --conceptually_related_to--> `MindFeed Editorial UI Specification & Architecture`  [INFERRED]
+  assets/images/MIT_News-AI_coding.png → docs/UI_SPECIFICATION.md
 
 ## Import Cycles
 - None detected.
 
-## Communities (92 total, 0 thin omitted)
+## Hyperedges (group relationships)
+- **MindFeed Core Specification & Governance Suite** — brd_business_requirements_document_brd, spec_mind_feed_core_application, context_project_context_mind_feed, docs_ui_specification_mindfeed_editorial_ui_specification_architecture [INFERRED 0.85]
 
-### Community 0 - "app_colors.dart"
+## Communities (103 total, 17 thin omitted)
+
+### Community 0 - "Color Palette & Palette Constants"
 Cohesion: 0.02
-Nodes (120): almostBlack, amber, amberDark, amberDarker, black, blue, blueMain, blush (+112 more)
+Nodes (117): almostBlack, amber, amberDark, amberDarker, black, blue, blueMain, blush (+109 more)
 
-### Community 1 - "app_icons.dart"
+### Community 1 - "Iconography & System Icons"
 Cohesion: 0.03
-Nodes (74): add, alternateEmailRounded, AppIcons, arrowBackRounded, arrowForwardIosRounded, articleOutlined, boltRounded, bookmark (+66 more)
+Nodes (73): add, alternateEmailRounded, AppIcons, arrowBackRounded, arrowForwardIosRounded, articleOutlined, boltRounded, bookmark (+65 more)
 
-### Community 2 - "main.dart"
-Cohesion: 0.06
-Nodes (42): SearchInitial, SearchState, cachedMegabytes, copyWith, dataPreservation, SettingsInitial, SettingsLoaded, SettingsState (+34 more)
-
-### Community 3 - "app_text_styles.dart"
+### Community 2 - "Supabase Client & HTTP Interceptor"
 Cohesion: 0.05
-Nodes (42): @immutable, app_theme_data.dart, bool?, DynamicSchemeVariant, AppThemeData, dark, dynamicSchemeVariant, isAmoledSelected (+34 more)
+Nodes (39): _inner, send, SupabaseInterceptor, _allStories, CollectionsCubit, deleteArticle, loadSavedStories, searchStories (+31 more)
 
-### Community 4 - "static const String"
+### Community 3 - "Local Storage & Hive Cache"
+Cohesion: 0.04
+Nodes (34): box, CacheHelper, clearData, containsKey, getData, getDataFromHive, getDataString, kBoxName (+26 more)
+
+### Community 4 - "Authentication State & Login Cubit"
 Cohesion: 0.05
-Nodes (38): Assets, assetsImagesBack, assetsImagesBusinessIcon, assetsImagesEducationIcon, assetsImagesJustTest, assetsImagesLogo, assetsImagesMeJustForTest, assetsImagesMITNewsAICoding (+30 more)
+Nodes (34): errorMessage, LoginFailure, LoginInitial, LoginLoading, LoginState, LoginSuccess, AppThemeData, ThemeConfig (+26 more)
 
-### Community 5 - "editorial_card_stack.dart"
+### Community 5 - "Brand Media & Category Visuals"
 Cohesion: 0.05
-Nodes (39): Animation, AnimationController, _animController, build, _cards, createState, didUpdateWidget, dispose (+31 more)
+Nodes (42): Category Icon: Business Icon, Category Icon: Education Icon, Visual Asset: Justtest, Brand Asset: Mindfeedlogo, Visual Asset: Mit News Ai Coding, Onboarding Visual: Onboarding 1, Onboarding Visual: Onboarding 2, Onboarding Visual: Onboarding 3 (+34 more)
 
-### Community 6 - "home_of_add_article_view.dart"
+### Community 6 - "Startup Routing & Splash Flow"
 Cohesion: 0.06
-Nodes (40): AddArticleError, AddArticleFileLoaded, AddArticleInitial, AddArticleLoading, AddArticleState, content, fileName, message (+32 more)
+Nodes (22): StartupDestination, StartupLogin, StartupMain, StartupOnboarding, _checkAppStartupUseCase, initApp, _minDisplayDuration, SplashCubit (+14 more)
 
-### Community 7 - "password_text_field.dart"
-Cohesion: 0.06
-Nodes (36): FocusNode, build, CustomTextField, hintText, keyboardType, obscureText, onChanged, prefixIcon (+28 more)
-
-### Community 8 - "app_routes.dart"
-Cohesion: 0.06
-Nodes (34): addArticle, AppRoutes, article, articlesCategory, articlesSaved, author, categories, changePassword (+26 more)
-
-### Community 9 - "signup_cubit.dart"
-Cohesion: 0.08
-Nodes (30): errorMessage, SignupFailure, SignupInitial, SignupLoading, SignupState, SignupSuccess, eitherFailureOrSignup, SignupCubit (+22 more)
-
-### Community 10 - "app_theme_data.dart"
-Cohesion: 0.06
-Nodes (30): card, checkbox, chip, dialog, dropdownMenu, filledButton, floatingActionButton, iconButton (+22 more)
-
-### Community 11 - "cache_helper.dart"
+### Community 7 - "Article Creation & Publishing Cubit"
 Cohesion: 0.07
-Nodes (26): @HiveType, Box, box, clearData, containsKey, getData, getDataFromHive, getDataString (+18 more)
+Nodes (34): AddArticleCubit, clearText, _currentFileName, openFile, saveFile, build, _clearText, createState (+26 more)
 
-### Community 12 - "articles_saved.dart"
-Cohesion: 0.09
-Nodes (26): CollectionsInitial, CollectionsLoaded, CollectionsLoading, CollectionsState, stories, _allStories, CollectionsCubit, deleteArticle (+18 more)
+### Community 8 - "Asset Paths & Image Constants"
+Cohesion: 0.05
+Nodes (30): Assets, assetsImagesBusinessIcon, assetsImagesEducationIcon, assetsImagesJustTest, assetsImagesMindFeedLogo, assetsImagesMITNewsAICoding, assetsImagesOnBoarding1, assetsImagesOnBoarding2 (+22 more)
 
-### Community 13 - "markdown_text_input.dart"
-Cohesion: 0.07
-Nodes (28): Function, int?, actions, actionWidget, _basicInkwell, build, controller, _controllerListener (+20 more)
+### Community 9 - "Theme Components & UI Styling"
+Cohesion: 0.05
+Nodes (22): card, checkbox, chip, dialog, dropdownMenu, filledButton, floatingActionButton, iconButton (+14 more)
 
-### Community 14 - "Business Requirements Document (BRD)"
+### Community 10 - "App Routes & Navigation Registry"
+Cohesion: 0.05
+Nodes (24): addArticle, AppRoutes, article, articlesCategory, articlesSaved, author, categories, changePassword (+16 more)
+
+### Community 11 - "Project Context & Architecture Specs"
 Cohesion: 0.08
+Nodes (31): 1. Overview, 2. Architecture & Directory Structure, 3. Technology Stack & Key Libraries, 4. Recent Project Changes, Architecture & Directory Layout, Project Context: Mind Feed, Project Documentation Authority, Project Summary (+23 more)
+
+### Community 12 - "Dynamic Theming & Theme Mode Config"
+Cohesion: 0.06
+Nodes (23): dark, dynamicSchemeVariant, isAmoledSelected, light, platform, seedColor, SettingsEntity, _themeData (+15 more)
+
+### Community 13 - "Navigation Drawer & App Bar Components"
+Cohesion: 0.08
+Nodes (15): build, CustomAppBar, _handleMenuButtonPressed, title, authBackground, build, DownloadedArticlesView, routeName (+7 more)
+
+### Community 14 - "Markdown Editor & Input Actions"
+Cohesion: 0.07
+Nodes (21): actions, actionWidget, _basicInkwell, build, controller, _controllerListener, createState, dispose (+13 more)
+
+### Community 15 - "Border Geometry & Surface Radius"
+Cohesion: 0.07
+Nodes (24): card, circular, control, l, m, _main, s, xl (+16 more)
+
+### Community 16 - "Registration Forms & User Feedback"
+Cohesion: 0.07
+Nodes (16): customShowSnackBar, build, SignUpForm, build, ThereIsAnAccountText, build, ListForSavedArticles, build (+8 more)
+
+### Community 17 - "Custom Form Fields & Text Inputs"
+Cohesion: 0.08
+Nodes (20): build, CustomTextField, hintText, keyboardType, obscureText, onChanged, prefixIcon, suffixIcon (+12 more)
+
+### Community 18 - "Business Requirements & Product KPIs"
+Cohesion: 0.10
 Nodes (24): 1.1 Purpose, 1.2 Business Problem Statement, 1.3 Vision & Solution, 1. Executive Summary, 2. Business Objectives & Key Performance Indicators (KPIs), 3.1 Competitive Landscape, 3.2 Target Audience Segments, 3. Market Analysis & Value Proposition (+16 more)
 
-### Community 15 - "StatelessWidget"
-Cohesion: 0.10
-Nodes (23): build, buildSettingsMenuItem, buildSettingsMenuItemSwitcher, buildSettingsMenuItemWithDropMenu, children, icon, kicker, onChanged (+15 more)
+### Community 19 - "Article Editor & Content Scaffold"
+Cohesion: 0.08
+Nodes (17): AddArticleView, build, MarkdownEditorApp, routeName, copyWith, DevicePreferenceNotifier, DevicePreferences, hashCode (+9 more)
 
-### Community 16 - "package:flutter/material.dart"
-Cohesion: 0.09
-Nodes (17): customShowSnackBar, build, SignUpForm, build, ListForSavedArticles, build, SavedArticlesViewBody, build (+9 more)
-
-### Community 17 - "auth_repo_impl.dart"
-Cohesion: 0.10
-Nodes (20): ../../../../core/params/signup_params.dart, ../../../../core/services/shared_preferences_singleton.dart, dart:convert, CacheHelper, cacheHelper, getUser, key, UserCacheDataSource (+12 more)
-
-### Community 18 - "package:mind_feed/core/constants/app_images.dart"
-Cohesion: 0.10
-Nodes (17): build, Logo, build, DownloadedArticlesViewBody, build, FavoriteMoviesViewBody, ArticleViewBody, build (+9 more)
-
-### Community 19 - "Mini-requirements"
-Cohesion: 0.09
-Nodes (21): 1. Mandatory Authentication & Onboarding, 2. Home Feed & Discovery, 3. Article Reader, Starring & Sharing, 4. Offline Mode (Text-Only), 5. Article Drafting, Preview, Publishing & Lifecycle, 6. Personal Collections & Settings, Acceptance Criteria, Business Rules (+13 more)
-
-### Community 20 - "Continuation Packet: S1-editorial-shell-recovery"
-Cohesion: 0.10
-Nodes (19): Allowed edit scope, Areas that must not be redesigned, Completed work, Continuation objective, Continuation Packet: S1-editorial-shell-recovery, Current failures, Exact files to inspect, Exact remaining work (+11 more)
-
-### Community 21 - "package:mind_feed/core/constants/app_colors.dart"
-Cohesion: 0.11
-Nodes (14): build, CustomLoadingIndecator, authBackground, build, ThereIsAnAccountText, AuthorPersonalInfo, build, _buildStatItem (+6 more)
-
-### Community 22 - "package:mind_feed/core/constants/app_icons.dart"
-Cohesion: 0.11
-Nodes (15): build, MoreVertIcon, build, CustomPopupMenuButtonForSavedArticlesView, build, CustomPopupMenuButtonForHomeView, isDwonload, build (+7 more)
-
-### Community 23 - "package:mind_feed/core/constants/app_text_styles.dart"
-Cohesion: 0.10
+### Community 20 - "Article Card Information Module"
+Cohesion: 0.08
 Nodes (16): ArticleCardInformation, author, build, date, title, author, build, date (+8 more)
 
-### Community 24 - "Task Packet: S1-editorial-shell"
-Cohesion: 0.11
-Nodes (18): Acceptance criteria, Allowed edit scope, Current project state, Exact broader validation commands, Exact focused test commands, Exact repository path, Files or systems that must not be modified, Implementation requirements (+10 more)
+### Community 21 - "Editorial Card Stack Module"
+Cohesion: 0.09
+Nodes (20): _animController, build, _cards, createState, didUpdateWidget, dispose, _dragOffset, EditorialCardStack (+12 more)
 
-### Community 25 - "Task Packet: S2-auth-refinement"
-Cohesion: 0.11
-Nodes (18): Acceptance criteria, Allowed edit scope, Current project state, Exact broader validation commands, Exact focused test commands, Exact repository path, Files or systems that must not be modified, Implementation requirements (+10 more)
+### Community 22 - "Article Card Module"
+Cohesion: 0.08
+Nodes (13): build, CustomSliverAppBarForArticlesSaved, ArticleCard, author, date, imagePath, isDwonload, isFav (+5 more)
 
-### Community 26 - "setup_service_locator.dart"
+### Community 23 - "Settings Menu Module"
+Cohesion: 0.10
+Nodes (22): build, buildSettingsMenuItem, buildSettingsMenuItemSwitcher, buildSettingsMenuItemWithDropMenu, children, icon, kicker, onChanged (+14 more)
+
+### Community 24 - "Onboarding View Body Module"
+Cohesion: 0.09
+Nodes (14): build, OnBoardingBackground, pageController, build, OnBoardingPageView, pageController, build, createState (+6 more)
+
+### Community 25 - "Author Personal Info Module"
+Cohesion: 0.10
+Nodes (12): build, Logo, AuthorPersonalInfo, build, _buildStatItem, build, DownloadedArticlesViewBody, build (+4 more)
+
+### Community 26 - "S1-Editorial-Shell-Recovery Module"
+Cohesion: 0.19
+Nodes (19): Allowed edit scope, Areas that must not be redesigned, Completed work, Continuation objective, Continuation Packet: S1-editorial-shell-recovery, Current failures, Exact files to inspect, Exact remaining work (+11 more)
+
+### Community 27 - "Custom Popup Menu Button For Home Module"
+Cohesion: 0.11
+Nodes (13): build, MoreVertIcon, build, CustomPopupMenuButtonForSavedArticlesView, build, CustomPopupMenuButtonForHomeView, isDwonload, build (+5 more)
+
+### Community 28 - "Sign Up Form Body Module"
 Cohesion: 0.12
-Nodes (16): Connectivity, ../../features/auth/data/repos/auth_repo_impl.dart, Future, connectivity, isConnected, NetworkInfo, NetworkInfoImpl, getIt (+8 more)
+Nodes (15): SignupCubit, autovalidateMode, build, _confirmPasswordController, createState, dispose, _emailController, formKey (+7 more)
 
-### Community 27 - "api_result.dart"
-Cohesion: 0.16
-Nodes (16): Equatable, ../errors/failures.dart, CacheFailure, Failure, message, props, ServerFailure, ValidationFailure (+8 more)
+### Community 29 - "S1-Editorial-Shell Module"
+Cohesion: 0.20
+Nodes (18): Acceptance criteria, Allowed edit scope, Current project state, Exact broader validation commands, Exact focused test commands, Exact repository path, Files or systems that must not be modified, Implementation requirements (+10 more)
 
-### Community 28 - "editorial_design.dart"
+### Community 30 - "S2-Auth-Refinement Module"
+Cohesion: 0.20
+Nodes (18): Acceptance criteria, Allowed edit scope, Current project state, Exact broader validation commands, Exact focused test commands, Exact repository path, Files or systems that must not be modified, Implementation requirements (+10 more)
+
+### Community 31 - "Login View Module"
+Cohesion: 0.12
+Nodes (7): AuthRepoImpl, build, LoginView, routeName, build, routeName, SignUpView
+
+### Community 32 - "Network Info Module"
+Cohesion: 0.12
+Nodes (6): connectivity, isConnected, NetworkInfo, NetworkInfoImpl, getIt, setupServiceLocator
+
+### Community 33 - "Editorial Design Module"
 Cohesion: 0.12
 Nodes (17): authorName, build, _buildShareAction, createState, EditorialFollowButton, _EditorialFollowButtonState, EditorialIconButton, icon (+9 more)
 
-### Community 29 - "package:mind_feed/core/constants/borders.dart"
+### Community 34 - "Custom Button Module"
 Cohesion: 0.11
-Nodes (14): build, buttonText, CustomButton, height, build, _buildRequirementRow, password, PasswordRequirements (+6 more)
+Nodes (13): build, buttonText, CustomButton, height, build, _buildRequirementRow, password, PasswordRequirements (+5 more)
 
-### Community 30 - "auth_repo.dart"
-Cohesion: 0.14
-Nodes (15): AuthRepoImpl, AuthRepository, forgetPassword, login, signup, call, LoginUseCase, repo (+7 more)
-
-### Community 31 - "device_preference_notifier.dart"
-Cohesion: 0.12
-Nodes (16): int get, copyWith, DevicePreferenceNotifier, DevicePreferences, hashCode, isDarkMode, isSplitLayout, loadDevicePreferences (+8 more)
-
-### Community 32 - "article_card.dart"
-Cohesion: 0.12
-Nodes (16): ArticleCard, author, build, date, imagePath, isDwonload, isFav, title (+8 more)
-
-### Community 33 - "borders.dart"
-Cohesion: 0.12
-Nodes (15): card, circular, control, l, m, _main, s, xl (+7 more)
-
-### Community 34 - "editorial_models.dart"
-Cohesion: 0.13
-Nodes (14): Color, authorAvatar, authorName, authorRole, badge, badgeColor, color, excerpt (+6 more)
-
-### Community 35 - "signup_view.dart"
-Cohesion: 0.13
-Nodes (13): ../controllers/signup_cubit/signup_cubit.dart, ../../data/repos/auth_repo_impl.dart, ../../domain/usecases/signup_use_case.dart, build, routeName, SignUpView, MethodChannel, package:flutter/services.dart (+5 more)
-
-### Community 36 - "MindFeed Editorial UI Specification & Architecture"
-Cohesion: 0.13
-Nodes (14): 1. Visual Design Language (`lib/core/design/editorial_design.dart`), 2. Reusable Modular Components, 3. Screen Implementations, 4. Documentation & Verification Assets, 5. Automated Tests, Card Component (`lib/core/design/editorial_card.dart`), Data Models & Repository (`lib/core/design/editorial_models.dart`, `editorial_mock_data.dart`), Floating Editorial Navigation (`lib/features/main/presentation/widgets/main_navigation_bar.dart`) (+6 more)
-
-### Community 37 - "package:mind_feed/config/routes/app_routes.dart"
-Cohesion: 0.13
-Nodes (12): build, ForgetPasswordText, ArticleCardOfAuthor, build, imagePath, isDwonload, isFav, title (+4 more)
-
-### Community 38 - "next_button.dart"
-Cohesion: 0.13
-Nodes (12): build, currentPage, NextButton, pageController, build, OnBoardingBackground, pageController, build (+4 more)
-
-### Community 39 - "settings_view_body.dart"
+### Community 35 - "Auth Repo Module"
 Cohesion: 0.15
-Nodes (13): _bionicGuide, _breakingAlerts, _cachedMegabytes, createState, _dataPreservation, _fontScale, _morningBriefing, _serifMode (+5 more)
+Nodes (9): AuthRepository, forgetPassword, login, signup, call, LoginUseCase, repo, call (+1 more)
 
-### Community 40 - "Mind Feed"
+### Community 36 - "Login Form Module"
 Cohesion: 0.14
+Nodes (10): LoginCubit, autovalidateMode, build, createState, email, formKey, LoginForm, _LoginFormState (+2 more)
+
+### Community 37 - "Send Code View Body Module"
+Cohesion: 0.14
+Nodes (9): autovalidateMode, createState, email, formKey, autovalidateMode, build, createState, email (+1 more)
+
+### Community 38 - "Main Module"
+Cohesion: 0.12
+Nodes (7): globalDevicePreferenceNotifier, init, initFlutter, loadDevicePreferences, main, channel, main
+
+### Community 39 - "Settings View Body Module"
+Cohesion: 0.15
+Nodes (11): _bionicGuide, _breakingAlerts, _cachedMegabytes, createState, _dataPreservation, _fontScale, _morningBriefing, _serifMode (+3 more)
+
+### Community 40 - "Readme Module"
+Cohesion: 0.22
 Nodes (13): Architecture, Building APK, Features, Getting Started, Installation, Key Dependencies, License, Mind Feed (+5 more)
 
-### Community 41 - "format_markdown.dart"
+### Community 41 - "Auth Repo Impl Module"
 Cohesion: 0.15
-Nodes (12): dart:math, convertToMarkdown, cursorIndex, data, FormatMarkdown, image, MarkdownType, replaceCursorIndex (+4 more)
+Nodes (7): authApiSource, cacheHelper, forgetPassword, login, networkInfo, signup, userCacheDataSource
 
-### Community 42 - "sign_up_form_body.dart"
+### Community 42 - "Editorial Saved Stack Module"
 Cohesion: 0.17
-Nodes (12): autovalidateMode, _confirmPasswordController, createState, dispose, _emailController, formKey, initState, _password (+4 more)
+Nodes (12): build, _buildDismissibleCard, createState, _deleteItem, didUpdateWidget, EditorialSavedStack, _EditorialSavedStackState, initState (+4 more)
 
-### Community 43 - "onboarding_view_body.dart"
+### Community 43 - "Auth Api Source Module"
+Cohesion: 0.15
+Nodes (10): AuthApiSource, _client, currentUser, login, onAuthStateChange, resetPassword, signInWithGoogle, signOut (+2 more)
+
+### Community 45 - "Format Markdown Module"
 Cohesion: 0.17
-Nodes (12): build, createState, _currentPage, dispose, initState, OnboardingViewBody, _OnboardingViewBodyState, _pageController (+4 more)
+Nodes (9): convertToMarkdown, cursorIndex, data, FormatMarkdown, image, MarkdownType, replaceCursorIndex, ResultMarkdown (+1 more)
 
-### Community 44 - "check_code_view_body.dart"
+### Community 46 - "Change Password Form Module"
+Cohesion: 0.23
+Nodes (10): ChangePasswordForm, _ChangePasswordFormState, CheckCodeViewBody, _CheckCodeViewBodyState, PasswordTextField, _PasswordTextFieldState, SendCodeViewBody, _SendCodeViewBodyState (+2 more)
+
+### Community 47 - "Profile Remote Data Source Module"
 Cohesion: 0.18
-Nodes (11): AutovalidateMode, FormState, autovalidateMode, build, CheckCodeViewBody, _CheckCodeViewBodyState, createState, email (+3 more)
+Nodes (9): _client, getCategories, getFavoriteCategories, getProfile, ProfileRemoteDataSource, ProfileRemoteDataSourceImpl, setFavoriteCategories, _supabaseClient (+1 more)
 
-### Community 45 - "constants.dart"
-Cohesion: 0.17
-Nodes (11): AppConstants, appName, compact, page, roomy, supabaseAnonKey, supabaseUrl, themeModeKey (+3 more)
-
-### Community 46 - "State"
+### Community 48 - "Home View Body Module"
 Cohesion: 0.20
-Nodes (11): EditorialSavedStack, _EditorialSavedStackState, build, category, CategoryCard, _CategoryCardState, createState, isSelected (+3 more)
+Nodes (9): _breathingAnimation, _breathingController, createState, dispose, HomeViewBody, _HomeViewBodyState, initState, _selectedTopic (+1 more)
 
-### Community 47 - "auth_api_source.dart"
-Cohesion: 0.17
-Nodes (11): _client, currentUser, login, onAuthStateChange, resetPassword, signInWithGoogle, signOut, signUp (+3 more)
-
-### Community 48 - "change_password_form.dart"
+### Community 49 - "Main Navigation Bar Module"
 Cohesion: 0.18
-Nodes (11): autovalidateMode, build, ChangePasswordForm, _ChangePasswordFormState, confirmPassword, createState, email, formKey (+3 more)
+Nodes (9): active, build, icon, label, MainNavigationBar, _Nav, onDestinationSelected, onTap (+1 more)
 
-### Community 49 - "downloaded_articles_view.dart"
+### Community 50 - "Change Password View Body Module"
 Cohesion: 0.18
-Nodes (10): build, DownloadedArticlesView, routeName, build, FavoriteMoviesView, routeName, package:mind_feed/features/collections/presentation/widgets/downloaded_articles_view_body.dart, package:mind_feed/features/collections/presentation/widgets/favorite_movies_view_body.dart (+2 more)
+Nodes (5): build, ChangePasswordViewBody, email, AuthorAppBar, build
 
-### Community 50 - "aricles_by_categories.dart"
-Cohesion: 0.17
-Nodes (9): build, CustomSliverAppBarForArticlesSaved, build, ChipGroup, AriclesByCategories, build, package:flutter_animate_on_scroll/flutter_animate_on_scroll.dart, package:mind_feed/features/auth/presentation/widgets/categories_view_body.dart (+1 more)
-
-### Community 51 - "custom_drawer.dart"
-Cohesion: 0.17
-Nodes (11): build, CustomDrawer, routeName, build, package:flutter_svg/flutter_svg.dart, package:mind_feed/features/collections/presentation/views/downloaded_articles_view.dart, package:mind_feed/features/collections/presentation/views/favorite_movies_view.dart, package:mind_feed/features/settings/presentation/views/settings_view.dart (+3 more)
-
-### Community 52 - "profile_remote_data_source.dart"
+### Community 51 - "Forget Password Text Module"
 Cohesion: 0.18
-Nodes (11): _client, getCategories, getFavoriteCategories, getProfile, ProfileRemoteDataSource, ProfileRemoteDataSourceImpl, setFavoriteCategories, _supabaseClient (+3 more)
+Nodes (4): build, ForgetPasswordText, build, MyApp
 
-### Community 53 - "login_cubit.dart"
-Cohesion: 0.33
-Nodes (10): errorMessage, LoginFailure, LoginInitial, LoginLoading, LoginState, LoginSuccess, eitherFailureOrLogin, LoginCubit (+2 more)
-
-### Community 54 - "send_code_view_body.dart"
-Cohesion: 0.20
-Nodes (10): GlobalKey, autovalidateMode, build, createState, email, formKey, SendCodeViewBody, _SendCodeViewBodyState (+2 more)
-
-### Community 55 - "main_navigation_bar.dart"
-Cohesion: 0.18
-Nodes (10): IconData, active, build, icon, label, MainNavigationBar, _Nav, onDestinationSelected (+2 more)
-
-### Community 56 - "editorial_saved_stack.dart"
-Cohesion: 0.18
-Nodes (10): build, _buildDismissibleCard, createState, _deleteItem, didUpdateWidget, initState, items, onDeleteArticle (+2 more)
-
-### Community 57 - "shared_preferences_singleton.dart"
-Cohesion: 0.18
-Nodes (10): clear, getBool, getString, init, _instance, remove, setBool, setString (+2 more)
-
-### Community 58 - "login_form.dart"
-Cohesion: 0.20
-Nodes (10): autovalidateMode, build, createState, email, formKey, LoginForm, _LoginFormState, password (+2 more)
-
-### Community 59 - "widget_test.dart"
-Cohesion: 0.18
-Nodes (9): build, ListSavedArticles, routeName, package:mind_feed/features/collections/presentation/views/articles_saved.dart, package:mind_feed/features/home/presentation/views/article_view.dart, package:mind_feed/features/main/presentation/views/main_view.dart, package:mind_feed/features/onboarding/presentation/views/onboarding_view.dart, editorialHarness (+1 more)
-
-### Community 60 - "article_view.dart"
+### Community 52 - "Article View Module"
 Cohesion: 0.20
 Nodes (10): _article, ArticleView, _ArticleViewState, build, createState, initState, _isLiked, _isSaved (+2 more)
 
-### Community 61 - "MindFeed Editorial UI Transformation Plan"
-Cohesion: 0.20
+### Community 53 - "Splash Logo Widget Module"
+Cohesion: 0.22
+Nodes (8): _breathingAnimation, _breathingController, build, createState, dispose, initState, SplashLogoWidget, _SplashLogoWidgetState
+
+### Community 54 - "Signup State Module"
+Cohesion: 0.29
+Nodes (8): errorMessage, SignupFailure, SignupInitial, SignupLoading, SignupState, SignupSuccess, eitherFailureOrSignup, signUpUseCase
+
+### Community 55 - "Plan Module"
+Cohesion: 0.31
 Nodes (9): Architecture decisions, Baseline evidence, Final validation, Goal, MindFeed Editorial UI Transformation Plan, Reference UI description, S1 — Editorial reading shell, S2 — Auth refinement (+1 more)
 
-### Community 62 - "Hermes Review Result: S1-editorial-shell"
-Cohesion: 0.20
+### Community 56 - "S1-Editorial-Shell-Review Module"
+Cohesion: 0.36
 Nodes (9): Executor evidence, Hermes Review Result: S1-editorial-shell, Independent validation, Recovery decision, Remaining failures or unverified claims, Requirement findings, Scope review, Security and safety (+1 more)
 
-### Community 63 - "string_extension.dart"
-Cohesion: 0.20
-Nodes (9): capitalize, reversed, StringExtension, toDateTime, toDouble, toInt, toNum, String (+1 more)
+### Community 57 - "Failures Module"
+Cohesion: 0.27
+Nodes (6): CacheFailure, Failure, message, props, ServerFailure, ValidationFailure
 
-### Community 64 - "profile_view.dart"
+### Community 58 - "Password Text Field Module"
 Cohesion: 0.20
-Nodes (8): build, ProfileView, routeName, ArticlesCategoryView, build, routeName, package:mind_feed/features/profile/presentation/widget/profile_view_body.dart, static const
+Nodes (8): build, controller, createState, dispose, hintText, _isObscured, onChanged, _passwordFocusNode
 
-### Community 65 - "editorial_card.dart"
+### Community 59 - "Change Password Form Module"
+Cohesion: 0.20
+Nodes (7): autovalidateMode, build, confirmPassword, createState, email, formKey, password
+
+### Community 60 - "Theme Mode State Module"
+Cohesion: 0.33
+Nodes (7): ThemeModeDark, ThemeModeInitial, ThemeModeLight, ThemeModeState, ThemeModeSystem, changeThemeMode, getThemeMode
+
+### Community 61 - "Skip Button Module"
+Cohesion: 0.25
+Nodes (4): build, SkipButton, call, CheckAppStartupUseCase
+
+### Community 62 - "Api Result Module"
+Cohesion: 0.33
+Nodes (5): ApiResult, data, failure, FailureResult, Success
+
+### Community 63 - "User Entity Module"
+Cohesion: 0.22
+Nodes (6): StringExtension, copyWith, email, favoriteCategories, token, userName
+
+### Community 64 - "Editorial Card Module"
 Cohesion: 0.22
 Nodes (8): build, EditorialCard, item, onLike, onOpen, onSave, onShare, showActions
 
-### Community 66 - "main_view.dart"
-Cohesion: 0.25
-Nodes (8): build, createState, MainView, _MainViewState, routeName, selectedIndex, package:mind_feed/features/main/presentation/widgets/main_navigation_bar.dart, package:mind_feed/features/search/presentation/views/search_view.dart
-
-### Community 67 - "home_view.dart"
-Cohesion: 0.25
-Nodes (7): AdvancedDrawerController, advancedDrawerController, build, HomeView, routeName, package:flutter_advanced_drawer/flutter_advanced_drawer.dart, package:mind_feed/features/home/presentation/widgets/home_view_body.dart
-
-### Community 68 - "package:flutter/foundation.dart"
-Cohesion: 0.25
-Nodes (7): Client, http.BaseClient, _inner, send, SupabaseInterceptor, package:flutter/foundation.dart, package:http/http.dart
-
-### Community 69 - "Orchestration State"
-Cohesion: 0.25
+### Community 65 - "State Module"
+Cohesion: 0.43
 Nodes (7): Active file leases, Blockers and decisions, Last verified checkpoint, Milestones, Orchestration State, Project, Stage tracker
 
-### Community 70 - "login_view.dart"
+### Community 66 - "Api Error Handler Module"
 Cohesion: 0.25
-Nodes (7): ../../domain/usecases/login_use_case.dart, build, LoginView, routeName, package:mind_feed/features/auth/data/repos/auth_repo_impl.dart, package:mind_feed/features/auth/presentation/controllers/login_cubit/login_cubit.dart, package:mind_feed/features/auth/presentation/widgets/login_view_body.dart
+Nodes (5): ApiErrorHandler, code, handle, message, toFailure
 
-### Community 71 - "api_error_handler.dart"
+### Community 67 - "String Extension Module"
 Cohesion: 0.25
-Nodes (7): ../errors/exceptions.dart, ApiErrorHandler, code, handle, message, toFailure, package:supabase_flutter/supabase_flutter.dart
+Nodes (6): capitalize, reversed, toDateTime, toDouble, toInt, toNum
 
-### Community 72 - "signup_params.dart"
+### Community 68 - "Signup Params Module"
 Cohesion: 0.25
 Nodes (7): displayName, email, password, SignupParams, toJson, toSignUpJson, toUpdateDisplayNameJson
 
-### Community 73 - "add_article.dart"
-Cohesion: 0.25
-Nodes (7): AddArticleView, build, MarkdownEditorApp, routeName, package:mind_feed/features/add_article/presentation/views/home_of_add_article_view.dart, package:mind_feed/features/add_article/presentation/widget/device_preference_notifier.dart, package:mind_feed/main.dart
-
-### Community 74 - "List"
-Cohesion: 0.25
-Nodes (7): copyWith, email, favoriteCategories, token, userName, List, package:hive_flutter/adapters.dart
-
-### Community 75 - "user_articles.dart"
+### Community 69 - "Category Card Module"
 Cohesion: 0.29
-Nodes (7): _articles, build, createState, initState, UserArticles, _UserArticlesState, package:mind_feed/features/profile/presentation/widget/custom_article_card_of_profile.dart
+Nodes (6): build, category, CategoryCard, _CategoryCardState, createState, isSelected
 
-### Community 76 - "custom_app_bar.dart"
+### Community 70 - "User Articles Module"
 Cohesion: 0.29
-Nodes (6): AdvancedDrawerValue, build, CustomAppBar, _handleMenuButtonPressed, title, package:mind_feed/features/home/presentation/views/home_view.dart
+Nodes (6): _articles, build, createState, initState, UserArticles, _UserArticlesState
 
-### Community 77 - "Design Context"
+### Community 71 - ".Impeccable Module"
 Cohesion: 0.29
 Nodes (6): Aesthetic Direction, Brand Personality, Design Context, Design Principles, Quality Bar, Users
 
-### Community 78 - "package:mind_feed/core/design/editorial_models.dart"
+### Community 72 - "Editorial Mock Data Module"
 Cohesion: 0.29
-Nodes (6): EditorialMockData, savedStories, stories, userArticles, package:mind_feed/core/design/editorial_models.dart, static List
+Nodes (4): EditorialMockData, savedStories, stories, userArticles
 
-### Community 79 - "author_view.dart"
+### Community 73 - "Author View Module"
 Cohesion: 0.29
-Nodes (6): AuthorView, build, routeName, package:mind_feed/core/design/editorial_mock_data.dart, package:mind_feed/features/author/presentation/views/author_personal_info.dart, package:mind_feed/features/author/presentation/widgets/author_app_bar.dart
+Nodes (3): AuthorView, build, routeName
 
-### Community 80 - "list_card.dart"
+### Community 74 - "Article Card Of Author Module"
 Cohesion: 0.29
-Nodes (6): build, isleft, ListCard, listCardBody, package:mind_feed/features/collections/presentation/widgets/custom_popup_menu_button_for_saved_articles_view.dart, AppRoutes.listSavedArticles
+Nodes (6): ArticleCardOfAuthor, build, imagePath, isDwonload, isFav, title
 
-### Community 81 - "Project Context: Mind Feed"
+### Community 75 - "List Card Module"
+Cohesion: 0.29
+Nodes (4): build, isleft, ListCard, listCardBody
+
+### Community 76 - "Profile App Bar Module"
+Cohesion: 0.29
+Nodes (3): build, build, ProfileAppBar
+
+### Community 77 - "Main View Module"
+Cohesion: 0.29
+Nodes (4): build, createState, routeName, selectedIndex
+
+### Community 78 - "Custom Article Card Of Profile Module"
 Cohesion: 0.33
-Nodes (5): 1. Overview, 2. Architecture & Directory Structure, 3. Technology Stack & Key Libraries, 4. Recent Project Changes, Project Context: Mind Feed
+Nodes (3): CustomArticleCardOfProfile, item, onDelete
 
-### Community 82 - "custom_article_card_of_profile.dart"
+### Community 79 - "Categories View Body Module"
 Cohesion: 0.33
-Nodes (5): EditorialNewsItem, CustomArticleCardOfProfile, item, onDelete, VoidCallback
+Nodes (3): build, categories, CategoriesViewBody
 
-### Community 83 - "categories_view_body.dart"
-Cohesion: 0.33
-Nodes (5): build, categories, CategoriesViewBody, package:mind_feed/core/widgets/custom_button.dart, package:mind_feed/features/auth/presentation/widgets/category_card.dart
-
-### Community 84 - "add_to_favorite_article_card.dart"
+### Community 80 - "Add To Favorite Article Card Module"
 Cohesion: 0.40
 Nodes (5): AddToFavoriteArticleCard, _AddToFavoriteArticleCardState, build, createState, isFav
 
-### Community 85 - "profile_view_body.dart"
+### Community 82 - "Page View Item Module"
 Cohesion: 0.33
-Nodes (5): build, ProfileViewBody, package:mind_feed/features/profile/presentation/widget/personal_infromation.dart, package:mind_feed/features/profile/presentation/widget/profile_app_bar.dart, package:mind_feed/features/profile/presentation/widget/user_articles.dart
+Nodes (4): build, description, PageViewItem, title
 
-### Community 86 - "Exception"
+### Community 85 - "Exceptions Module"
 Cohesion: 0.60
-Nodes (4): Exception, CacheException, NoInternetException, ServerException
+Nodes (3): CacheException, NoInternetException, ServerException
 
-### Community 87 - "login_params.dart"
+### Community 87 - "Login Params Module"
 Cohesion: 0.40
 Nodes (4): email, LoginParams, password, toJson
 
-### Community 88 - "no_account_text.dart"
+### Community 89 - "List Saved Articles Module"
 Cohesion: 0.40
-Nodes (4): build, NoAccountText, package:mind_feed/features/auth/presentation/views/signup_view.dart, SignUpView.routeName
+Nodes (3): build, ListSavedArticles, routeName
+
+### Community 91 - "Article Card Module"
+Cohesion: 0.40
+Nodes (3): build, build, build
+
+### Community 92 - "Next Button Module"
+Cohesion: 0.40
+Nodes (4): build, currentPage, NextButton, pageController
 
 ## Knowledge Gaps
-- **938 isolated node(s):** `almostBlack`, `amber`, `amberDark`, `amberDarker`, `black` (+933 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1107 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **839 isolated node(s):** `card`, `checkbox`, `chip`, `dialog`, `dropdownMenu` (+834 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1092 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **17 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `UserEntity` connect `cache_helper.dart` to `List`, `main.dart`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
-- **Why does `AuthRepoImpl` connect `auth_repo.dart` to `auth_repo_impl.dart`, `setup_service_locator.dart`, `signup_view.dart`, `login_view.dart`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
-- **Why does `LoginCubit` connect `login_cubit.dart` to `signup_cubit.dart`, `main.dart`, `login_form.dart`?**
+- **Why does `AddArticleCubit` connect `Article Creation & Publishing Cubit` to `Supabase Client & HTTP Interceptor`?**
   _High betweenness centrality (0.010) - this node is a cross-community bridge._
-- **What connects `almostBlack`, `amber`, `amberDark` to the rest of the system?**
-  _938 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `app_colors.dart` be split into smaller, more focused modules?**
+- **Are the 29 inferred relationships involving `MindFeed Editorial UI Specification & Architecture` (e.g. with `Category Icon: Business Icon` and `Category Icon: Education Icon`) actually correct?**
+  _`MindFeed Editorial UI Specification & Architecture` has 29 INFERRED edges - model-reasoned connections that need verification._
+- **What connects `card`, `checkbox`, `chip` to the rest of the system?**
+  _839 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `Color Palette & Palette Constants` be split into smaller, more focused modules?**
   _Cohesion score 0.01652892561983471 - nodes in this community are weakly interconnected._
-- **Should `app_icons.dart` be split into smaller, more focused modules?**
+- **Should `Iconography & System Icons` be split into smaller, more focused modules?**
   _Cohesion score 0.02666666666666667 - nodes in this community are weakly interconnected._
-- **Should `main.dart` be split into smaller, more focused modules?**
-  _Cohesion score 0.06294326241134751 - nodes in this community are weakly interconnected._
+- **Should `Supabase Client & HTTP Interceptor` be split into smaller, more focused modules?**
+  _Cohesion score 0.052600818234950324 - nodes in this community are weakly interconnected._
+- **Should `Local Storage & Hive Cache` be split into smaller, more focused modules?**
+  _Cohesion score 0.04336734693877551 - nodes in this community are weakly interconnected._
