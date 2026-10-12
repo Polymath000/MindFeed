@@ -9,6 +9,8 @@ import 'package:mind_feed/core/networking/network_info.dart';
 import 'package:mind_feed/features/auth/data/datasources/auth_api_source.dart'
     show AuthApiSource;
 import 'package:mind_feed/features/auth/data/datasources/user_cache_source.dart';
+import 'package:mind_feed/features/splash/domain/usecases/check_app_startup_use_case.dart';
+import 'package:mind_feed/features/splash/presentation/controllers/splash_cubit/splash_cubit.dart';
 import '../../features/auth/data/repos/auth_repo_impl.dart';
 
 final getIt = GetIt.instance;
@@ -19,6 +21,12 @@ void setupServiceLocator() {
   );
   getIt.registerLazySingleton<NetworkInfoImpl>(
     () => NetworkInfoImpl(Connectivity()),
+  );
+  getIt.registerLazySingleton<CheckAppStartupUseCase>(
+    () => const CheckAppStartupUseCase(),
+  );
+  getIt.registerFactory<SplashCubit>(
+    () => SplashCubit(checkAppStartupUseCase: getIt<CheckAppStartupUseCase>()),
   );
   if (Hive.isBoxOpen(AppConstants.userKey)) {
     getIt.registerLazySingleton<UserCacheDataSource>(

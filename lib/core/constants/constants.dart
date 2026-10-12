@@ -7,8 +7,11 @@ class AppConstants {
   static const String themeModeKey = 'themeMode';
   static const String tokenKey = "token";
   static const String userKey = "user";
+  static const String isOnboardingSeenKey = "isOnboardingSeen";
   static const String supabaseUrl = String.fromEnvironment('PROJECT_URL');
   static const String supabaseAnonKey = String.fromEnvironment(
     'SUPABASE_PUBLISHABLE_KEY',
   );
 }
+
+const String isOnboardingSeenKey = AppConstants.isOnboardingSeenKey;

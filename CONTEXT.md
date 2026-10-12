@@ -50,4 +50,13 @@ The codebase follows **Feature-First Clean Architecture**:
   - Switched titles to `GoogleFonts.playfairDisplay` with `AppColors.softCream` and body descriptions to `AppColors.greyText`.
   - Replaced decoupled dot indicators with an integrated progress action button in `NextButton`: includes a subtle literary chapter badge (`01 / 03`), label morphing (`Continue` -> `Get Started`), and a smooth hairline progress track along the button's bottom edge.
   - Replaced raw text button with an editorial styled pill `SkipButton` featuring `AppColors.charcoal`, `AppColors.borderDark`, and `AppColors.softCream`.
-  - Added full widget test covering the onboarding page transitions and theme controls in `test/widget_test.dart`.
+- **Logo Modernization & Asset Cleanup**:
+  - Replaced legacy SVG emblem and unused image assets (`MeJustForTest.jpg`, `back.jpeg`, `news_logo.jpg`, etc.) with official `MindFeedLogo.png`.
+  - Updated `Assets.assetsImagesMindFeedLogo` and modernized all references (`Logo`, `SignUpFormBody`, `CustomDrawer`, `HomeViewBody`, `AuthorCard`).
+- **Splash Screen & Dynamic App Startup Flow**:
+  - Implemented `SplashView` with breathing brand logo animation and curated edition tagline in `lib/features/splash/`.
+  - Created `CheckAppStartupUseCase` and `SplashCubit` with sealed states (`SplashNavigateToOnboarding`, `SplashNavigateToLogin`, `SplashNavigateToMain`) checking `isOnboardingSeenKey`.
+  - Integrated `AppRoutes.splash` into `onGenerateRoute` and set `initialRoute: AppRoutes.splash` in `MyApp`.
+  - Registered `CheckAppStartupUseCase` and `SplashCubit` in `setupServiceLocator`.
+  - Persisted onboarding completion in `NextButton` and `SkipButton` via `SharedPreferencesSingleton`.
+  - Added full test suite in `test/splash_test.dart` (15 passing tests total).

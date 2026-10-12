@@ -24,9 +24,11 @@ import 'package:mind_feed/features/search/presentation/views/search_view.dart';
 import 'package:mind_feed/features/settings/presentation/views/settings_view.dart';
 import 'package:mind_feed/features/add_article/presentation/views/add_article.dart';
 import 'package:mind_feed/features/profile/presentation/views/profile_view.dart';
+import 'package:mind_feed/features/splash/presentation/views/splash_view.dart';
 
 sealed class AppRoutes {
   static const String main = '/';
+  static const String splash = '/splash';
   static const String onboarding = '/onboarding';
   static const String login = '/login';
   static const String signup = '/signup';
@@ -49,6 +51,8 @@ sealed class AppRoutes {
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case AppRoutes.splash:
+        return MaterialPageRoute(builder: (_) => const SplashView(), settings: settings);
       case AppRoutes.main:
         return MaterialPageRoute(builder: (_) => const MainView(), settings: settings);
       case AppRoutes.onboarding:
@@ -97,6 +101,7 @@ sealed class AppRoutes {
         return MaterialPageRoute(builder: (_) => const Scaffold(body: Center(child: Text('Page not found'))), settings: settings);
     }
   }
+
 
   static Route<Object> _createArticleRoute({EditorialNewsItem? item, RouteSettings? settings}) {
     return PageRouteBuilder<Object>(

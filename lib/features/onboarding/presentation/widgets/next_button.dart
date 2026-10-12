@@ -3,6 +3,8 @@ import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/constants.dart';
+import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
 
 class NextButton extends StatelessWidget {
   const NextButton({
@@ -30,11 +32,17 @@ class NextButton extends StatelessWidget {
             curve: Curves.easeOutCubic,
           );
         } else {
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            AppRoutes.login,
-            (route) => false,
+          await SharedPreferencesSingleton.setBool(
+            isOnboardingSeenKey,
+            value: true,
           );
+          if (context.mounted) {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              AppRoutes.login,
+              (route) => false,
+            );
+          }
         }
       },
       child: Container(

@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart'
 @immutable
 sealed class SharedPreferencesSingleton {
   const SharedPreferencesSingleton();
-  static late final SharedPreferences _instance;
+  static late SharedPreferences _instance;
 
   static Future<SharedPreferences> init() async =>
       _instance = await SharedPreferences.getInstance();
