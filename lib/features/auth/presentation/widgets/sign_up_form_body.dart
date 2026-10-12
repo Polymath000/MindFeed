@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/core/params/signup_params.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
@@ -70,10 +69,11 @@ class _SignUpFormBodyState extends State<SignUpFormBody> {
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.borderDark, width: 1.5),
               ),
-              child: SvgPicture.asset(
-                Assets.assetsImagesLogo,
+              child: Image.asset(
+                Assets.assetsImagesMindFeedLogo,
                 height: 44,
                 width: 44,
+                fit: BoxFit.contain,
               ),
             ),
             const SizedBox(height: 16),

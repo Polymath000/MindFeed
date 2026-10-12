@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 
@@ -20,10 +19,11 @@ class Logo extends StatelessWidget {
               shape: BoxShape.circle,
               border: Border.all(color: AppColors.borderDark, width: 1.5),
             ),
-            child: SvgPicture.asset(
-              Assets.assetsImagesLogo,
+            child: Image.asset(
+              Assets.assetsImagesMindFeedLogo,
               height: 52,
               width: 52,
+              fit: BoxFit.contain,
             ),
           ),
           const SizedBox(height: 16),

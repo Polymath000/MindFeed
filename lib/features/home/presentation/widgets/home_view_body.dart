@@ -1,7 +1,6 @@
 import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_card_stack.dart';
@@ -226,8 +225,8 @@ class _HomeViewBodyState extends State<HomeViewBody>
                                 ],
                               ),
                               padding: const EdgeInsets.all(5),
-                              child: SvgPicture.asset(
-                                Assets.assetsImagesLogo,
+                              child: Image.asset(
+                                Assets.assetsImagesMindFeedLogo,
                                 fit: BoxFit.contain,
                               ),
                             ),
