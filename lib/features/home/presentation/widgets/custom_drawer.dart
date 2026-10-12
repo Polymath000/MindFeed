@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mind_feed/config/routes/on_generate_routes.dart';
 import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/core/utls/app_icons.dart';
@@ -32,7 +31,10 @@ class CustomDrawer extends StatelessWidget {
                 color: AppColors.black,
                 shape: BoxShape.circle,
               ),
-              child: SvgPicture.asset(Assets.assetsImagesLogo),
+              child: Image.asset(
+                Assets.assetsImagesMindFeedLogo,
+                fit: BoxFit.cover,
+              ),
             ),
             ListTile(
               iconColor: currentRoute == HomeView.routeName

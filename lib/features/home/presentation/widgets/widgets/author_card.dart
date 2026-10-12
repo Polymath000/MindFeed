@@ -15,7 +15,7 @@ class AuthorCard extends StatelessWidget {
       child: Row(
         children: [
           CircleAvatar(
-            backgroundImage: AssetImage(Assets.assetsImagesMeJustForTest),
+            backgroundImage: AssetImage(Assets.assetsImagesWadeAvatar),
           ),
           SizedBox(width: 8),
           Text('Abdelrahman Khaled', style: AppTextStyles.bodyLarge),
