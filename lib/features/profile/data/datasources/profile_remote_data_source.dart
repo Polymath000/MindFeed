@@ -79,16 +79,9 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     required String userId,
     required List<String> categoryIds,
   }) async {
-    await _client
-        .from('profile_favorite_categories')
-        .delete()
-        .eq('user_id', userId);
-
-    if (categoryIds.isNotEmpty) {
-      final rows = categoryIds
-          .map((catId) => {'user_id': userId, 'category_id': catId})
-          .toList();
-      await _client.from('profile_favorite_categories').insert(rows);
-    }
+    await _client.rpc(
+      'set_user_favorite_categories',
+      params: {'p_category_ids': categoryIds},
+    );
   }
 }

@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+import 'package:hive/hive.dart';
 import 'package:mind_feed/core/constants/constants.dart' show AppConstants;
 import 'package:mind_feed/core/database/cache/cache_helper.dart';
 import 'package:mind_feed/core/errors/failures.dart';
@@ -6,11 +6,13 @@ import 'package:mind_feed/core/networking/api_error_handler.dart';
 import 'package:mind_feed/core/networking/network_info.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/params/login_params.dart';
+import 'package:mind_feed/core/params/signup_params.dart';
 import 'package:mind_feed/features/auth/data/datasources/auth_api_source.dart';
 import 'package:mind_feed/features/auth/data/datasources/user_cache_source.dart';
+import 'package:mind_feed/features/auth/domain/entities/auth_result_entity.dart';
+import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/domain/repos/auth_repo.dart';
-import '../../../../core/params/signup_params.dart';
-import '../../../../core/services/shared_preferences_singleton.dart';
+import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
 
 class AuthRepoImpl extends AuthRepository {
   NetworkInfo networkInfo;
@@ -57,26 +59,83 @@ class AuthRepoImpl extends AuthRepository {
   }
 
   @override
-  Future<ApiResult<Response>> signup(SignupParams params) async {
+  Future<ApiResult<AuthResultEntity>> signup(SignupParams params) async {
     if (await networkInfo.isConnected) {
       try {
-        final remote = await authApiSource.signUp(params: params);
-
-        final responseData = remote.data;
-        if (responseData is Map) {
-          final responseMap = Map<String, dynamic>.from(responseData);
-          final token = responseMap['idToken'] as String?;
-          if (token != null && token.isNotEmpty) {
-            await SharedPreferencesSingleton.setString(AppConstants.tokenKey, token);
-          }
+        final result = await authApiSource.signUp(params: params);
+        if (result.hasActiveSession && result.accessToken != null && result.accessToken!.isNotEmpty) {
+          await SharedPreferencesSingleton.setString(AppConstants.tokenKey, result.accessToken!);
         }
-
-        return Success(remote);
+        return Success(result);
       } catch (e) {
         return FailureResult(ApiErrorHandler.handle(e).toFailure());
       }
     } else {
       return const FailureResult(ServerFailure('You are Offline'));
     }
+  }
+
+  @override
+  Future<ApiResult<String>> verifyOtp({
+    required String email,
+    required String token,
+  }) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final accessToken = await authApiSource.verifyOtp(email: email, token: token);
+        await SharedPreferencesSingleton.setString(AppConstants.tokenKey, accessToken);
+        return Success(accessToken);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> resendOtp({required String email}) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await authApiSource.resendOtp(email: email);
+        return const Success(null);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> logout() async {
+    try {
+      await authApiSource.signOut();
+    } catch (_) {
+    } finally {
+      try {
+        if (Hive.isBoxOpen(AppConstants.userKey)) {
+          try {
+            final box = Hive.box<UserEntity>(AppConstants.userKey);
+            await box.clear();
+          } catch (_) {
+            final box = Hive.box(AppConstants.userKey);
+            await box.clear();
+          }
+        }
+      } catch (_) {}
+      try {
+        await SharedPreferencesSingleton.remove(AppConstants.tokenKey);
+      } catch (_) {}
+      try {
+        final allKeys = SharedPreferencesSingleton.getKeys();
+        for (final k in allKeys) {
+          if (k.startsWith('pending_category_sync')) {
+            await SharedPreferencesSingleton.remove(k);
+          }
+        }
+      } catch (_) {}
+    }
+    return const Success(null);
   }
 }

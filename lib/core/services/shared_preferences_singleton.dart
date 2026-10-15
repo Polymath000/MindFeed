@@ -5,22 +5,27 @@ import 'package:shared_preferences/shared_preferences.dart'
 @immutable
 sealed class SharedPreferencesSingleton {
   const SharedPreferencesSingleton();
-  static late final SharedPreferences _instance;
+  static SharedPreferences? _instance;
 
   static Future<SharedPreferences> init() async =>
       _instance = await SharedPreferences.getInstance();
 
-  /// Setters
+  static SharedPreferences get instance {
+    if (_instance == null) {
+      throw StateError('SharedPreferencesSingleton has not been initialized.');
+    }
+    return _instance!;
+  }
+
   static Future<bool> setBool(final String key, {required final bool value}) =>
-      _instance.setBool(key, value);
+      instance.setBool(key, value);
   static Future<bool> setString(final String key, final String value) =>
-      _instance.setString(key, value);
+      instance.setString(key, value);
 
-  /// Getters
-  static bool? getBool(final String key) => _instance.getBool(key);
-  static String? getString(final String key) => _instance.getString(key);
+  static bool? getBool(final String key) => instance.getBool(key);
+  static String? getString(final String key) => instance.getString(key);
+  static Set<String> getKeys() => instance.getKeys();
 
-  /// Removers
-  static Future<bool> remove(final String key) => _instance.remove(key);
-  static Future<bool> clear() => _instance.clear();
+  static Future<bool> remove(final String key) => instance.remove(key);
+  static Future<bool> clear() => instance.clear();
 }

@@ -1,0 +1,322 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:mind_feed/features/home/data/models/article_model.dart';
+import 'package:mind_feed/features/home/data/models/category_model.dart';
+import 'package:mind_feed/features/home/data/models/tag_model.dart';
+
+abstract class ArticlesRemoteDataSource {
+  Future<List<ArticleModel>> getHomeFeed({
+    List<String>? preferredCategoryIds,
+    int limit = 20,
+    int offset = 0,
+  });
+  Future<ArticleModel> getArticleById(String id);
+  Future<List<ArticleModel>> getArticlesByCategory(
+    String categoryId, {
+    int limit = 20,
+    int offset = 0,
+  });
+  Future<List<ArticleModel>> getArticlesByAuthor(
+    String authorId, {
+    int limit = 20,
+    int offset = 0,
+  });
+  Future<List<ArticleModel>> searchArticles(
+    String query, {
+    int limit = 20,
+    int offset = 0,
+  });
+  Future<List<CategoryModel>> getCategories();
+  Future<List<TagModel>> getFixedTags();
+  Future<void> starArticle(String articleId, String userId);
+  Future<void> unstarArticle(String articleId, String userId);
+  Future<bool> isArticleStarred(String articleId, String userId);
+  Future<void> saveBookmark(String articleId, String userId);
+  Future<void> removeBookmark(String articleId, String userId);
+  Future<List<ArticleModel>> getSavedArticles(String userId);
+  Future<bool> isArticleSaved(String articleId, String userId);
+  Future<ArticleModel> saveDraft(Map<String, dynamic> draftData);
+  Future<ArticleModel> publishArticle(String articleId);
+  Future<ArticleModel> updateArticle(
+    String articleId,
+    Map<String, dynamic> updates,
+  );
+  Future<void> deleteArticle(String articleId);
+}
+
+class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
+  final SupabaseClient? _supabaseClient;
+
+  ArticlesRemoteDataSourceImpl({SupabaseClient? supabaseClient})
+      : _supabaseClient = supabaseClient;
+
+  SupabaseClient get _client => _supabaseClient ?? Supabase.instance.client;
+
+  @override
+  Future<List<ArticleModel>> getHomeFeed({
+    List<String>? preferredCategoryIds,
+    int limit = 20,
+    int offset = 0,
+  }) async {
+    if (preferredCategoryIds != null && preferredCategoryIds.isNotEmpty) {
+      final preferredResponse = await _client
+          .from('articles')
+          .select()
+          .eq('status', 'published')
+          .inFilter('category_id', preferredCategoryIds)
+          .order('published_at', ascending: false, nullsFirst: false)
+          .range(offset, offset + limit - 1);
+
+      final preferredArticles = (preferredResponse as List)
+          .map((e) => ArticleModel.fromJson(Map<String, dynamic>.from(e)))
+          .toList();
+
+      if (preferredArticles.length >= limit) {
+        return preferredArticles;
+      }
+
+      final remainingLimit = limit - preferredArticles.length;
+      final remainingResponse = await _client
+          .from('articles')
+          .select()
+          .eq('status', 'published')
+          .not('category_id', 'in', '(${preferredCategoryIds.join(",")})')
+          .order('published_at', ascending: false, nullsFirst: false)
+          .range(0, remainingLimit - 1);
+
+      final remainingArticles = (remainingResponse as List)
+          .map((e) => ArticleModel.fromJson(Map<String, dynamic>.from(e)))
+          .toList();
+
+      return [...preferredArticles, ...remainingArticles];
+    }
+
+    final response = await _client
+        .from('articles')
+        .select()
+        .eq('status', 'published')
+        .order('published_at', ascending: false, nullsFirst: false)
+        .range(offset, offset + limit - 1);
+
+    return (response as List)
+        .map((e) => ArticleModel.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
+  }
+
+  @override
+  Future<ArticleModel> getArticleById(String id) async {
+    final response = await _client
+        .from('articles')
+        .select()
+        .eq('id', id)
+        .single();
+    return ArticleModel.fromJson(Map<String, dynamic>.from(response));
+  }
+
+  @override
+  Future<List<ArticleModel>> getArticlesByCategory(
+    String categoryId, {
+    int limit = 20,
+    int offset = 0,
+  }) async {
+    final response = await _client
+        .from('articles')
+        .select()
+        .eq('status', 'published')
+        .eq('category_id', categoryId)
+        .order('published_at', ascending: false, nullsFirst: false)
+        .range(offset, offset + limit - 1);
+
+    return (response as List)
+        .map((e) => ArticleModel.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
+  }
+
+  @override
+  Future<List<ArticleModel>> getArticlesByAuthor(
+    String authorId, {
+    int limit = 20,
+    int offset = 0,
+  }) async {
+    final response = await _client
+        .from('articles')
+        .select()
+        .eq('author_id', authorId)
+        .order('created_at', ascending: false)
+        .range(offset, offset + limit - 1);
+
+    return (response as List)
+        .map((e) => ArticleModel.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
+  }
+
+  @override
+  Future<List<ArticleModel>> searchArticles(
+    String query, {
+    int limit = 20,
+    int offset = 0,
+  }) async {
+    final response = await _client
+        .from('articles')
+        .select()
+        .eq('status', 'published')
+        .or('title.ilike.%$query%,excerpt.ilike.%$query%,content.ilike.%$query%')
+        .order('published_at', ascending: false, nullsFirst: false)
+        .range(offset, offset + limit - 1);
+
+    return (response as List)
+        .map((e) => ArticleModel.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
+  }
+
+  @override
+  Future<List<CategoryModel>> getCategories() async {
+    final response = await _client
+        .from('categories')
+        .select()
+        .order('name', ascending: true);
+
+    return (response as List)
+        .map((e) => CategoryModel.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
+  }
+
+  @override
+  Future<List<TagModel>> getFixedTags() async {
+    final response = await _client
+        .from('fixed_tags')
+        .select()
+        .order('name', ascending: true);
+
+    return (response as List)
+        .map((e) => TagModel.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
+  }
+
+  @override
+  Future<void> starArticle(String articleId, String userId) async {
+    await _client.from('article_stars').insert({
+      'user_id': userId,
+      'article_id': articleId,
+    });
+  }
+
+  @override
+  Future<void> unstarArticle(String articleId, String userId) async {
+    await _client
+        .from('article_stars')
+        .delete()
+        .match({'user_id': userId, 'article_id': articleId});
+  }
+
+  @override
+  Future<bool> isArticleStarred(String articleId, String userId) async {
+    final response = await _client
+        .from('article_stars')
+        .select('article_id')
+        .eq('user_id', userId)
+        .eq('article_id', articleId)
+        .maybeSingle();
+
+    return response != null;
+  }
+
+  @override
+  Future<void> saveBookmark(String articleId, String userId) async {
+    await _client.from('saved_articles').insert({
+      'user_id': userId,
+      'article_id': articleId,
+    });
+  }
+
+  @override
+  Future<void> removeBookmark(String articleId, String userId) async {
+    await _client
+        .from('saved_articles')
+        .delete()
+        .match({'user_id': userId, 'article_id': articleId});
+  }
+
+  @override
+  Future<List<ArticleModel>> getSavedArticles(String userId) async {
+    final response = await _client
+        .from('saved_articles')
+        .select('article:articles(*)')
+        .eq('user_id', userId)
+        .order('created_at', ascending: false);
+
+    final list = <ArticleModel>[];
+    for (final row in response as List) {
+      final articleData = row['article'];
+      if (articleData is Map<String, dynamic>) {
+        list.add(ArticleModel.fromJson(articleData));
+      } else if (articleData is Map) {
+        list.add(ArticleModel.fromJson(Map<String, dynamic>.from(articleData)));
+      }
+    }
+    return list;
+  }
+
+  @override
+  Future<bool> isArticleSaved(String articleId, String userId) async {
+    final response = await _client
+        .from('saved_articles')
+        .select('article_id')
+        .eq('user_id', userId)
+        .eq('article_id', articleId)
+        .maybeSingle();
+
+    return response != null;
+  }
+
+  @override
+  Future<ArticleModel> saveDraft(Map<String, dynamic> draftData) async {
+    final payload = Map<String, dynamic>.from(draftData);
+    payload['status'] = 'draft';
+    payload.remove('published_at');
+    payload.remove('star_count');
+
+    final response = await _client
+        .from('articles')
+        .insert(payload)
+        .select()
+        .single();
+
+    return ArticleModel.fromJson(Map<String, dynamic>.from(response));
+  }
+
+  @override
+  Future<ArticleModel> publishArticle(String articleId) async {
+    final response = await _client
+        .from('articles')
+        .update({'status': 'published'})
+        .eq('id', articleId)
+        .select()
+        .single();
+
+    return ArticleModel.fromJson(Map<String, dynamic>.from(response));
+  }
+
+  @override
+  Future<ArticleModel> updateArticle(
+    String articleId,
+    Map<String, dynamic> updates,
+  ) async {
+    final payload = Map<String, dynamic>.from(updates);
+    payload.remove('published_at');
+    payload.remove('star_count');
+
+    final response = await _client
+        .from('articles')
+        .update(payload)
+        .eq('id', articleId)
+        .select()
+        .single();
+
+    return ArticleModel.fromJson(Map<String, dynamic>.from(response));
+  }
+
+  @override
+  Future<void> deleteArticle(String articleId) async {
+    await _client.from('articles').delete().eq('id', articleId);
+  }
+}
