@@ -13,11 +13,26 @@ class SignupCubit extends Cubit<SignupState> {
     if (isClosed) return;
     emit(SignupLoading());
     final result = await signUpUseCase.call(params: params);
-    
+
     if (!isClosed) {
       result.when(
-        success: (success) => emit(SignupSuccess()),
-        failure: (failure) => emit(SignupFailure(errorMessage: failure.message)),
+        success: (authResult) {
+          if (authResult.hasActiveSession) {
+            emit(SignupSuccess());
+          } else {
+            emit(SignupRequiresConfirmation(email: authResult.email));
+          }
+        },
+        failure: (failure) {
+          final msg = failure.message.toLowerCase();
+          final isRegistered = msg.contains('already exists') ||
+              msg.contains('already registered') ||
+              msg.contains('user_already_exists');
+          emit(SignupFailure(
+            errorMessage: failure.message,
+            isUserAlreadyRegistered: isRegistered,
+          ));
+        },
       );
     }
   }

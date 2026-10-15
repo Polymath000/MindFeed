@@ -65,12 +65,14 @@ class PasswordRequirements extends StatelessWidget {
           color: isValid ? AppColors.successGreen : AppColors.greyIcon,
         ),
         const SizedBox(width: 8),
-        Text(
-          text,
-          style: TextStyle(
-            color: isValid ? AppColors.successGreen : AppColors.greyIcon,
-            fontSize: 12,
-            fontWeight: isValid ? FontWeight.w600 : FontWeight.w400,
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(
+              color: isValid ? AppColors.successGreen : AppColors.greyIcon,
+              fontSize: 12,
+              fontWeight: isValid ? FontWeight.w600 : FontWeight.w400,
+            ),
           ),
         ),
       ],

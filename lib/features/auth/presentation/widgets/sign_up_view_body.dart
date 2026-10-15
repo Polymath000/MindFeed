@@ -17,11 +17,28 @@ class SignUpViewBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<SignupCubit, SignupState>(
       listener: (context, state) {
-        if (state is SignupSuccess) {
+        if (state is SignupRequiresConfirmation) {
+          Navigator.pushNamed(context, AppRoutes.checkCode, arguments: state.email);
+          customShowSnackBar(message: 'Check your email for your confirmation code', context: context);
+        } else if (state is SignupSuccess) {
           Navigator.pushNamedAndRemoveUntil(context, AppRoutes.main, (route) => false);
           customShowSnackBar(message: 'Sign Up Success', context: context);
         } else if (state is SignupFailure) {
-          customShowSnackBar(message: state.errorMessage, context: context);
+          if (state.isUserAlreadyRegistered) {
+            customShowSnackBar(
+              message: 'An account with this email already exists',
+              context: context,
+              action: SnackBarAction(
+                label: 'Sign In',
+                textColor: Colors.amber,
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, AppRoutes.login);
+                },
+              ),
+            );
+          } else {
+            customShowSnackBar(message: state.errorMessage, context: context);
+          }
         }
       },
       builder: (context, state) {
