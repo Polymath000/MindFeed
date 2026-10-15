@@ -11,11 +11,15 @@ import 'package:mind_feed/features/auth/data/datasources/auth_api_source.dart'
 import 'package:mind_feed/features/auth/data/datasources/user_cache_source.dart';
 import 'package:mind_feed/features/auth/data/repos/auth_repo_impl.dart';
 import 'package:mind_feed/features/auth/domain/repos/auth_repo.dart';
+import 'package:mind_feed/features/auth/domain/usecases/forget_password_use_case.dart';
 import 'package:mind_feed/features/auth/domain/usecases/login_use_case.dart';
 import 'package:mind_feed/features/auth/domain/usecases/logout_use_case.dart';
 import 'package:mind_feed/features/auth/domain/usecases/resend_otp_use_case.dart';
 import 'package:mind_feed/features/auth/domain/usecases/signup_use_case.dart';
+import 'package:mind_feed/features/auth/domain/usecases/update_password_use_case.dart';
 import 'package:mind_feed/features/auth/domain/usecases/verify_otp_use_case.dart';
+import 'package:mind_feed/features/auth/presentation/controllers/change_password_cubit/change_password_cubit.dart';
+import 'package:mind_feed/features/auth/presentation/controllers/forget_password_cubit/forget_password_cubit.dart';
 import 'package:mind_feed/features/home/data/datasources/articles_local_data_source.dart';
 import 'package:mind_feed/features/home/data/datasources/articles_remote_data_source.dart';
 import 'package:mind_feed/features/home/data/repos/articles_repo_impl.dart';
@@ -82,6 +86,18 @@ void setupServiceLocator() {
   );
   getIt.registerLazySingleton<ResendOtpUseCase>(
     () => ResendOtpUseCase(repo: getIt<AuthRepository>()),
+  );
+  getIt.registerLazySingleton<ForgetPasswordUseCase>(
+    () => ForgetPasswordUseCase(repo: getIt<AuthRepository>()),
+  );
+  getIt.registerLazySingleton<UpdatePasswordUseCase>(
+    () => UpdatePasswordUseCase(repo: getIt<AuthRepository>()),
+  );
+  getIt.registerFactory<ForgetPasswordCubit>(
+    () => ForgetPasswordCubit(forgetPasswordUseCase: getIt<ForgetPasswordUseCase>()),
+  );
+  getIt.registerFactory<ChangePasswordCubit>(
+    () => ChangePasswordCubit(updatePasswordUseCase: getIt<UpdatePasswordUseCase>()),
   );
   getIt.registerLazySingleton<ProfileRemoteDataSource>(
     () => ProfileRemoteDataSourceImpl(supabaseClient: getIt<SupabaseClient>()),

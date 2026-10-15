@@ -75,10 +75,15 @@ class AuthRepoImpl extends AuthRepository {
   Future<ApiResult<String>> verifyOtp({
     required String email,
     required String token,
+    bool isPasswordReset = false,
   }) async {
     if (await networkInfo.isConnected) {
       try {
-        final accessToken = await authApiSource.verifyOtp(email: email, token: token);
+        final accessToken = await authApiSource.verifyOtp(
+          email: email,
+          token: token,
+          isPasswordReset: isPasswordReset,
+        );
         return Success(accessToken);
       } catch (e) {
         return FailureResult(ApiErrorHandler.handle(e).toFailure());
@@ -89,10 +94,30 @@ class AuthRepoImpl extends AuthRepository {
   }
 
   @override
-  Future<ApiResult<void>> resendOtp({required String email}) async {
+  Future<ApiResult<void>> resendOtp({
+    required String email,
+    bool isPasswordReset = false,
+  }) async {
     if (await networkInfo.isConnected) {
       try {
-        await authApiSource.resendOtp(email: email);
+        await authApiSource.resendOtp(
+          email: email,
+          isPasswordReset: isPasswordReset,
+        );
+        return const Success(null);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> updatePassword({required String newPassword}) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await authApiSource.updatePassword(newPassword: newPassword);
         return const Success(null);
       } catch (e) {
         return FailureResult(ApiErrorHandler.handle(e).toFailure());

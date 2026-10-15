@@ -10,7 +10,7 @@ class AuthApiSource {
   final SupabaseClient? _supabaseClient;
 
   AuthApiSource({SupabaseClient? supabaseClient})
-      : _supabaseClient = supabaseClient;
+    : _supabaseClient = supabaseClient;
 
   SupabaseClient get _client => _supabaseClient ?? Supabase.instance.client;
 
@@ -29,16 +29,15 @@ class AuthApiSource {
   }
 
   Future<AuthResultEntity> signUp({required SignupParams params}) async {
-    final baseUsername =
-        params.displayName.toLowerCase().replaceAll(RegExp(r'\s+'), '_');
+    final baseUsername = params.displayName.toLowerCase().replaceAll(
+      RegExp(r'\s+'),
+      '_',
+    );
     final response = await _client.auth.signUp(
       email: params.email,
       password: params.password,
       emailRedirectTo: authConfirmRedirectUrl,
-      data: {
-        'display_name': params.displayName,
-        'username': baseUsername,
-      },
+      data: {'display_name': params.displayName, 'username': baseUsername},
     );
 
     final session = response.session;
@@ -55,24 +54,30 @@ class AuthApiSource {
   Future<String> verifyOtp({
     required String email,
     required String token,
+    bool isPasswordReset = false,
   }) async {
     final response = await _client.auth.verifyOTP(
       email: email,
       token: token,
-      type: OtpType.signup,
+      type: isPasswordReset ? OtpType.recovery : OtpType.signup,
     );
 
     final accessToken = response.session?.accessToken;
     if (accessToken == null || accessToken.isEmpty) {
-      throw const AuthException('Verification succeeded but no session was established');
+      throw const AuthException(
+        'Verification succeeded but no session was established',
+      );
     }
 
     return accessToken;
   }
 
-  Future<void> resendOtp({required String email}) async {
+  Future<void> resendOtp({
+    required String email,
+    bool isPasswordReset = false,
+  }) async {
     await _client.auth.resend(
-      type: OtpType.signup,
+      type: isPasswordReset ? OtpType.recovery : OtpType.signup,
       email: email,
       emailRedirectTo: authConfirmRedirectUrl,
     );
@@ -94,6 +99,15 @@ class AuthApiSource {
       email,
       redirectTo: authConfirmRedirectUrl,
     );
+  }
+
+  Future<void> updatePassword({required String newPassword}) async {
+    final response = await _client.auth.updateUser(
+      UserAttributes(password: newPassword),
+    );
+    if (response.user == null) {
+      throw const AuthException('Failed to update password');
+    }
   }
 
   User? get currentUser => _client.auth.currentUser;
