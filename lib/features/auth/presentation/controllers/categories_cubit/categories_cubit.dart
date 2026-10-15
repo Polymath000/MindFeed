@@ -45,17 +45,22 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     );
 
     if (!outcome.isLocalSaved) {
-      emit(CategoriesFailure(
-        errorMessage: outcome.errorMessage ?? 'Failed to save categories locally',
-        selectedCategories: list,
-      ));
+      emit(
+        CategoriesFailure(
+          errorMessage:
+              outcome.errorMessage ?? 'Failed to save categories locally',
+          selectedCategories: list,
+        ),
+      );
       return;
     }
 
-    emit(CategoriesSuccess(
-      list,
-      isPendingSync: outcome.isPendingSync,
-      isRemoteSynced: outcome.isRemoteSynced,
-    ));
+    emit(
+      CategoriesSuccess(
+        list,
+        isPendingSync: outcome.isPendingSync,
+        isRemoteSynced: outcome.isRemoteSynced,
+      ),
+    );
   }
 }

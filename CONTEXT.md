@@ -60,10 +60,17 @@ The codebase follows **Feature-First Clean Architecture**:
   - Registered `CheckAppStartupUseCase` and `SplashCubit` in `setupServiceLocator`.
   - Persisted onboarding completion in `NextButton` and `SkipButton` via `SharedPreferencesSingleton`.
   - Added full test suite in `test/splash_test.dart` (15 passing tests total).
-- **Dev Branch Integration & Reconciliation**:
-  - Pulled and fast-forwarded all latest updates from `dev` (`af38768`).
-  - Integrated Supabase schema migrations, security-invoker RPC (`save_user_favorite_categories`), and Edge Function auth-confirmation flows.
-  - Integrated Clean Architecture data & domain layers for Home, Articles, Categories, Bookmarks, and Offline storage.
-  - Reconciled Service Locator (`setup_service_locator.dart`) registration syntax for `CheckAppStartupUseCase` and `SplashCubit`.
-  - Synchronized `_FakeAuthRepo` in `test/auth_forms_test.dart` to adhere to `AuthRepository` interface; verified all 77 test cases pass cleanly.
+- **Category Onboarding & Catalog Expansion**:
+  - Expanded onboarding and search categories catalog to the 20 official categories matching Supabase seed: `Technology`, `Science`, `Business & Entrepreneurship`, `Personal Development`, `Health & Wellness`, `Education & Learning`, `News & Current Events`, `Politics`, `Finance & Investing`, `Lifestyle`, `Travel & Culture`, `Food & Cooking`, `Sports`, `Entertainment & Movies`, `Books & Literature`, `Art & Design`, `Programming & Software Development`, `History`, `Psychology`, and `Environment & Sustainability`.
+  - Added individual category icon definitions and `getCategoryIcon()` lookup helper in `lib/core/constants/app_icons.dart`.
+  - Completely migrated `CategoryCard` from `SvgPicture` image assets to vector Material `Icon` widgets sourced through `AppIcons`, strictly fulfilling the zero-image guideline.
+  - Extracted `CategoryItem` and `categories` list into a dedicated shared constants file at `lib/core/constants/category_items.dart`.
+  - Redesigned the category selection interface into compact elliptical pill badges `(icon title)` using `BorderRadius.circular(100)` and `Wrap(spacing: 8, runSpacing: 10)`.
+  - Upgraded `CategoryCard` interaction to use `Material` + `InkWell` directly on the pill shape with animated checkmark indicator badge `(icon title ✓)` upon selection, ensuring unmistakable visual feedback and touch responsiveness.
+  - Fixed `CategoriesView` Cubit lifecycle to use `BlocProvider(create: ...)` preventing Cubit recreation on rebuilds, and bound `CategoryCard.isSelected` directly to `state.selectedCategories`.
+  - Pinned the `CustomButton` ("Continue") into a sticky bottom navigation bar wrapped in `SafeArea` inside `CategoriesViewBody`, ensuring it is always visible, accessible, and clickable without scrolling.
+  - Updated widget test harness in `test/features/auth/categories_view_test.dart` to cover the full catalog, selection toggles, and checkmark display.
+- **ValueNotifier State Management Optimization in Auth Forms**:
+  - Replaced multiple unnecessary `setState` calls in `CheckCodeViewBody`, `SendCodeViewBody`, and `PasswordTextField` with `ValueNotifier` and `ValueListenableBuilder`.
+  - Eliminated full widget tree rebuilds during cooldown countdown timer ticks, text entry, obscured password toggles, and form validation updates.
 

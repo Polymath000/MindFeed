@@ -25,13 +25,18 @@ class CategoriesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = categoriesCubit ?? _buildCubit();
-    return Scaffold(
-      body: BlocProvider<CategoriesCubit>.value(
-        value: cubit,
-        child: CategoriesViewBody(
-          userEntity: userEntity,
+    if (categoriesCubit != null) {
+      return Scaffold(
+        body: BlocProvider<CategoriesCubit>.value(
+          value: categoriesCubit!,
+          child: CategoriesViewBody(userEntity: userEntity),
         ),
+      );
+    }
+    return Scaffold(
+      body: BlocProvider<CategoriesCubit>(
+        create: (_) => _buildCubit(),
+        child: CategoriesViewBody(userEntity: userEntity),
       ),
     );
   }

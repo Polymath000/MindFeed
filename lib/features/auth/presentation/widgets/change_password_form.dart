@@ -77,9 +77,15 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
                   );
                 } else {
                   FocusScope.of(context).unfocus();
-                  Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false);
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    AppRoutes.login,
+                    (route) => false,
+                  );
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Password updated successfully')),
+                    const SnackBar(
+                      content: Text('Password updated successfully'),
+                    ),
                   );
                 }
               } else {

@@ -13,9 +13,69 @@ class FakeProfileRemoteDataSource extends Fake implements ProfileRemoteDataSourc
 
   final List<Map<String, dynamic>> allCategories = [
     {'id': 'cat-tech-uuid', 'name': 'Technology', 'slug': 'technology'},
-    {'id': 'cat-biz-uuid', 'name': 'Business', 'slug': 'business'},
-    {'id': 'cat-edu-uuid', 'name': 'Education', 'slug': 'education'},
     {'id': 'cat-sci-uuid', 'name': 'Science', 'slug': 'science'},
+    {
+      'id': 'cat-biz-uuid',
+      'name': 'Business & Entrepreneurship',
+      'slug': 'business-entrepreneurship',
+    },
+    {
+      'id': 'cat-pers-uuid',
+      'name': 'Personal Development',
+      'slug': 'personal-development',
+    },
+    {
+      'id': 'cat-health-uuid',
+      'name': 'Health & Wellness',
+      'slug': 'health-wellness',
+    },
+    {
+      'id': 'cat-edu-uuid',
+      'name': 'Education & Learning',
+      'slug': 'education-learning',
+    },
+    {
+      'id': 'cat-news-uuid',
+      'name': 'News & Current Events',
+      'slug': 'news-current-events',
+    },
+    {'id': 'cat-pol-uuid', 'name': 'Politics', 'slug': 'politics'},
+    {
+      'id': 'cat-fin-uuid',
+      'name': 'Finance & Investing',
+      'slug': 'finance-investing',
+    },
+    {'id': 'cat-life-uuid', 'name': 'Lifestyle', 'slug': 'lifestyle'},
+    {
+      'id': 'cat-trav-uuid',
+      'name': 'Travel & Culture',
+      'slug': 'travel-culture',
+    },
+    {'id': 'cat-food-uuid', 'name': 'Food & Cooking', 'slug': 'food-cooking'},
+    {'id': 'cat-sport-uuid', 'name': 'Sports', 'slug': 'sports'},
+    {
+      'id': 'cat-ent-uuid',
+      'name': 'Entertainment & Movies',
+      'slug': 'entertainment-movies',
+    },
+    {
+      'id': 'cat-book-uuid',
+      'name': 'Books & Literature',
+      'slug': 'books-literature',
+    },
+    {'id': 'cat-art-uuid', 'name': 'Art & Design', 'slug': 'art-design'},
+    {
+      'id': 'cat-prog-uuid',
+      'name': 'Programming & Software Development',
+      'slug': 'programming-software-dev',
+    },
+    {'id': 'cat-hist-uuid', 'name': 'History', 'slug': 'history'},
+    {'id': 'cat-psych-uuid', 'name': 'Psychology', 'slug': 'psychology'},
+    {
+      'id': 'cat-env-uuid',
+      'name': 'Environment & Sustainability',
+      'slug': 'environment-sustainability',
+    },
   ];
 
   @override
@@ -69,11 +129,28 @@ void main() {
     expect(find.text('Choose Your Favorite Categories'), findsOneWidget);
     expect(find.text("Select topics you're interested in"), findsOneWidget);
     expect(find.text('Technology'), findsOneWidget);
-    expect(find.text('Business'), findsOneWidget);
-    expect(find.text('Education'), findsOneWidget);
     expect(find.text('Science'), findsOneWidget);
+    expect(find.text('Business & Entrepreneurship'), findsOneWidget);
+    expect(find.text('Personal Development'), findsOneWidget);
+    expect(find.text('Health & Wellness'), findsOneWidget);
+    expect(find.text('Education & Learning'), findsOneWidget);
+    expect(find.text('News & Current Events'), findsOneWidget);
+    expect(find.text('Politics'), findsOneWidget);
+    expect(find.text('Finance & Investing'), findsOneWidget);
+    expect(find.text('Lifestyle'), findsOneWidget);
+    expect(find.text('Travel & Culture'), findsOneWidget);
+    expect(find.text('Food & Cooking'), findsOneWidget);
+    expect(find.text('Sports'), findsOneWidget);
+    expect(find.text('Entertainment & Movies'), findsOneWidget);
+    expect(find.text('Books & Literature'), findsOneWidget);
+    expect(find.text('Art & Design'), findsOneWidget);
+    expect(find.text('Programming & Software Development'), findsOneWidget);
+    expect(find.text('History'), findsOneWidget);
+    expect(find.text('Psychology'), findsOneWidget);
+    expect(find.text('Environment & Sustainability'), findsOneWidget);
     expect(find.text('Continue'), findsOneWidget);
   });
+
 
   testWidgets('CategoryCard toggles selection on tap', (tester) async {
     bool isSelected = false;
@@ -130,7 +207,12 @@ void main() {
 
     expect(find.text('Technology'), findsOneWidget);
     await tester.tap(find.text('Technology'));
-    await tester.pump();
+    await tester.pumpAndSettle();
+    expect(find.byIcon(Icons.check), findsOneWidget);
+    final card = tester.widget<CategoryCard>(
+      find.byWidgetPredicate((w) => w is CategoryCard && w.title == 'Technology'),
+    );
+    expect(card.isSelected, isTrue);
 
     await tester.ensureVisible(find.text('Continue'));
     await tester.pumpAndSettle();

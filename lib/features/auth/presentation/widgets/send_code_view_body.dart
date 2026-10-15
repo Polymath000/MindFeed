@@ -16,9 +16,15 @@ class SendCodeViewBody extends StatefulWidget {
 
 class _SendCodeViewBodyState extends State<SendCodeViewBody> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final ValueNotifier<AutovalidateMode> _autovalidateMode =
+      ValueNotifier<AutovalidateMode>(AutovalidateMode.disabled);
+  String _email = '';
 
-  AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
-  String email = '';
+  @override
+  void dispose() {
+    _autovalidateMode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,72 +37,78 @@ class _SendCodeViewBodyState extends State<SendCodeViewBody> {
               constraints: const BoxConstraints(maxWidth: 440),
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-                child: Form(
-                  key: formKey,
-                  autovalidateMode: autovalidateMode,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+                child: ValueListenableBuilder<AutovalidateMode>(
+                  valueListenable: _autovalidateMode,
+                  builder: (context, autovalidateMode, _) {
+                    return Form(
+                      key: formKey,
+                      autovalidateMode: autovalidateMode,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          EditorialIconButton(
-                            icon: AppIcons.arrowBackRounded,
-                            label: 'Back',
-                            onPressed: () => Navigator.pop(context),
+                          Row(
+                            children: [
+                              EditorialIconButton(
+                                icon: AppIcons.arrowBackRounded,
+                                label: 'Back',
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                              const SizedBox(width: 12),
+                              const Text(
+                                'Reset Password',
+                                style: TextStyle(
+                                  color: AppColors.softCream,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(height: 40),
                           const Text(
-                            'Reset Password',
+                            'Enter your registered email address to receive password recovery instructions.',
+                            style: TextStyle(
+                              color: AppColors.greyText,
+                              fontSize: 15,
+                              height: 1.4,
+                            ),
+                          ),
+                          const SizedBox(height: 28),
+                          const Text(
+                            'Email',
                             style: TextStyle(
                               color: AppColors.softCream,
-                              fontSize: 22,
-                              fontWeight: FontWeight.w800,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
                             ),
+                          ),
+                          const SizedBox(height: 12),
+                          EmailTextField(
+                            onChanged: (String value) {
+                              _email = value;
+                            },
+                          ),
+                          const SizedBox(height: 28),
+                          CustomButton(
+                            buttonText: 'Send Instructions',
+                            onTap: () {
+                              if (formKey.currentState?.validate() ?? false) {
+                                FocusScope.of(context).unfocus();
+                                Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.checkCode,
+                                  arguments: _email,
+                                );
+                              } else {
+                                _autovalidateMode.value =
+                                    AutovalidateMode.always;
+                              }
+                            },
                           ),
                         ],
                       ),
-                      const SizedBox(height: 40),
-                      const Text(
-                        'Enter your registered email address to receive password recovery instructions.',
-                        style: TextStyle(
-                          color: AppColors.greyText,
-                          fontSize: 15,
-                          height: 1.4,
-                        ),
-                      ),
-                      const SizedBox(height: 28),
-                      const Text(
-                        'Email',
-                        style: TextStyle(
-                          color: AppColors.softCream,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      EmailTextField(
-                        onChanged: (String value) {
-                          setState(() {
-                            email = value;
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 28),
-                      CustomButton(
-                        buttonText: 'Send Instructions',
-                        onTap: () {
-                          if (formKey.currentState?.validate() ?? false) {
-                            FocusScope.of(context).unfocus();
-                            Navigator.pushNamed(context, AppRoutes.checkCode, arguments: email);
-                          } else {
-                            setState(() {
-                              autovalidateMode = AutovalidateMode.always;
-                            });
-                          }
-                        },
-                      ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
               ),
             ),
@@ -106,3 +118,4 @@ class _SendCodeViewBodyState extends State<SendCodeViewBody> {
     );
   }
 }
+

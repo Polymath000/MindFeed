@@ -79,4 +79,78 @@ class AppIcons {
   static const IconData textFields = Icons.text_fields;
   static const IconData volumeUpOutlined = Icons.volume_up_outlined;
   static const IconData formatQuoteRounded = Icons.format_quote_rounded;
+
+  // Category Icons
+  static const IconData technology = Icons.memory_rounded;
+  static const IconData science = Icons.science_rounded;
+  static const IconData businessEntrepreneurship = Icons.business_center_rounded;
+  static const IconData personalDevelopment = Icons.self_improvement_rounded;
+  static const IconData healthWellness = Icons.health_and_safety_rounded;
+  static const IconData educationLearning = Icons.school_rounded;
+  static const IconData newsCurrentEvents = Icons.newspaper_rounded;
+  static const IconData politics = Icons.gavel_rounded;
+  static const IconData financeInvesting = Icons.account_balance_wallet_rounded;
+  static const IconData lifestyle = Icons.local_cafe_rounded;
+  static const IconData travelCulture = Icons.travel_explore_rounded;
+  static const IconData foodCooking = Icons.restaurant_rounded;
+  static const IconData sports = Icons.sports_soccer_rounded;
+  static const IconData entertainmentMovies = Icons.movie_rounded;
+  static const IconData booksLiterature = Icons.menu_book_rounded;
+  static const IconData artDesign = Icons.palette_rounded;
+  static const IconData programmingSoftwareDevelopment = Icons.code_rounded;
+  static const IconData history = Icons.history_edu_rounded;
+  static const IconData psychology = Icons.psychology_rounded;
+  static const IconData environmentSustainability = Icons.eco_rounded;
+
+  static IconData getCategoryIcon(String categoryName) {
+    switch (categoryName) {
+      case 'Technology':
+        return technology;
+      case 'Science':
+        return science;
+      case 'Business & Entrepreneurship':
+      case 'Business':
+        return businessEntrepreneurship;
+      case 'Personal Development':
+        return personalDevelopment;
+      case 'Health & Wellness':
+      case 'Health':
+        return healthWellness;
+      case 'Education & Learning':
+      case 'Education':
+        return educationLearning;
+      case 'News & Current Events':
+        return newsCurrentEvents;
+      case 'Politics':
+        return politics;
+      case 'Finance & Investing':
+      case 'Finance':
+        return financeInvesting;
+      case 'Lifestyle':
+        return lifestyle;
+      case 'Travel & Culture':
+      case 'Culture':
+        return travelCulture;
+      case 'Food & Cooking':
+        return foodCooking;
+      case 'Sports':
+        return sports;
+      case 'Entertainment & Movies':
+        return entertainmentMovies;
+      case 'Books & Literature':
+        return booksLiterature;
+      case 'Art & Design':
+        return artDesign;
+      case 'Programming & Software Development':
+        return programmingSoftwareDevelopment;
+      case 'History':
+        return history;
+      case 'Psychology':
+        return psychology;
+      case 'Environment & Sustainability':
+        return environmentSustainability;
+      default:
+        return Icons.category_rounded;
+    }
+  }
 }

@@ -29,11 +29,12 @@ class CheckCodeViewBody extends StatefulWidget {
 class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController _codeController = TextEditingController();
-  AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
+  final ValueNotifier<AutovalidateMode> _autovalidateMode =
+      ValueNotifier<AutovalidateMode>(AutovalidateMode.disabled);
 
-  bool _isLoading = false;
-  String? _errorMessage;
-  int _resendCooldown = 0;
+  final ValueNotifier<bool> _isLoading = ValueNotifier<bool>(false);
+  final ValueNotifier<String?> _errorMessage = ValueNotifier<String?>(null);
+  final ValueNotifier<int> _resendCooldown = ValueNotifier<int>(0);
   Timer? _cooldownTimer;
   StreamSubscription<AuthState>? _authSubscription;
 
@@ -56,24 +57,14 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
   }
 
   void _startCooldown() {
-    setState(() {
-      _resendCooldown = 60;
-    });
+    _resendCooldown.value = 60;
     _cooldownTimer?.cancel();
     _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_resendCooldown <= 1) {
+      if (_resendCooldown.value <= 1) {
         timer.cancel();
-        if (mounted) {
-          setState(() {
-            _resendCooldown = 0;
-          });
-        }
+        _resendCooldown.value = 0;
       } else {
-        if (mounted) {
-          setState(() {
-            _resendCooldown--;
-          });
-        }
+        _resendCooldown.value--;
       }
     });
   }
@@ -111,17 +102,13 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
 
   Future<void> _handleVerify() async {
     if (!(formKey.currentState?.validate() ?? false)) {
-      setState(() {
-        autovalidateMode = AutovalidateMode.always;
-      });
+      _autovalidateMode.value = AutovalidateMode.always;
       return;
     }
 
     FocusScope.of(context).unfocus();
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
+    _isLoading.value = true;
+    _errorMessage.value = null;
 
     final result = await getIt<VerifyOtpUseCase>().call(
       email: widget.email,
@@ -133,45 +120,33 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
         await _onSuccessfulAuthentication(accessToken);
       },
       failure: (failure) {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-            _errorMessage = failure.message;
-          });
-        }
+        _isLoading.value = false;
+        _errorMessage.value = failure.message;
       },
     );
   }
 
   Future<void> _handleResend() async {
-    if (_resendCooldown > 0 || _isLoading) return;
+    if (_resendCooldown.value > 0 || _isLoading.value) return;
 
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
+    _isLoading.value = true;
+    _errorMessage.value = null;
 
     final result = await getIt<ResendOtpUseCase>().call(email: widget.email);
 
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
-      result.when(
-        success: (_) {
-          _startCooldown();
-          customShowSnackBar(
-            message: 'A new verification code has been dispatched to your email',
-            context: context,
-          );
-        },
-        failure: (failure) {
-          setState(() {
-            _errorMessage = failure.message;
-          });
-        },
-      );
-    }
+    _isLoading.value = false;
+    result.when(
+      success: (_) {
+        _startCooldown();
+        customShowSnackBar(
+          message: 'A new verification code has been dispatched to your email',
+          context: context,
+        );
+      },
+      failure: (failure) {
+        _errorMessage.value = failure.message;
+      },
+    );
   }
 
   @override
@@ -179,8 +154,13 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
     _authSubscription?.cancel();
     _cooldownTimer?.cancel();
     _codeController.dispose();
+    _isLoading.dispose();
+    _errorMessage.dispose();
+    _resendCooldown.dispose();
+    _autovalidateMode.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -194,122 +174,150 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
               child: SingleChildScrollView(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-                child: Form(
-                  key: formKey,
-                  autovalidateMode: autovalidateMode,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+                child: ValueListenableBuilder<AutovalidateMode>(
+                  valueListenable: _autovalidateMode,
+                  builder: (context, autovalidateMode, _) {
+                    return Form(
+                      key: formKey,
+                      autovalidateMode: autovalidateMode,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          EditorialIconButton(
-                            icon: AppIcons.arrowBackRounded,
-                            label: 'Back',
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                          const SizedBox(width: 12),
-                          const Text(
-                            'Verify Email',
-                            style: TextStyle(
-                              color: AppColors.softCream,
-                              fontSize: 22,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 36),
-                      Text(
-                        'We dispatched a 6-digit confirmation code to\n${widget.email}',
-                        style: const TextStyle(
-                          color: AppColors.greyText,
-                          fontSize: 15,
-                          height: 1.4,
-                        ),
-                      ),
-                      if (_errorMessage != null) ...[
-                        const SizedBox(height: 20),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 12),
-                          decoration: BoxDecoration(
-                            color: AppColors.blush.withValues(alpha: 0.15),
-                            border: Border.all(color: AppColors.redHighlight),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Row(
+                          Row(
                             children: [
-                              const Icon(Icons.error_outline,
-                                  color: AppColors.redHighlight, size: 20),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
-                                  _errorMessage!,
-                                  style: const TextStyle(
-                                    color: AppColors.redHighlight,
-                                    fontSize: 13,
-                                    height: 1.3,
-                                  ),
+                              EditorialIconButton(
+                                icon: AppIcons.arrowBackRounded,
+                                label: 'Back',
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                              const SizedBox(width: 12),
+                              const Text(
+                                'Verify Email',
+                                style: TextStyle(
+                                  color: AppColors.softCream,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w800,
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
-                      const SizedBox(height: 28),
-                      const Text(
-                        'Verification Code',
-                        style: TextStyle(
-                          color: AppColors.softCream,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      CustomTextField(
-                        textEditingController: _codeController,
-                        hintText: 'Enter 6-digit code',
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Please enter the verification code';
-                          }
-                          if (value.trim().length < 6) {
-                            return 'Verification code must be 6 digits';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 28),
-                      if (_isLoading)
-                        const Center(child: CustomLoadingIndecator())
-                      else
-                        CustomButton(
-                          buttonText: 'Verify Code',
-                          onTap: _handleVerify,
-                        ),
-                      const SizedBox(height: 20),
-                      Center(
-                        child: TextButton(
-                          onPressed: (_resendCooldown == 0 && !_isLoading)
-                              ? _handleResend
-                              : null,
-                          child: Text(
-                            _resendCooldown > 0
-                                ? 'Resend code in ${_resendCooldown}s'
-                                : 'Resend confirmation code',
+                          const SizedBox(height: 36),
+                          Text(
+                            'We dispatched a 6-digit confirmation code to\n${widget.email}',
+                            style: const TextStyle(
+                              color: AppColors.greyText,
+                              fontSize: 15,
+                              height: 1.4,
+                            ),
+                          ),
+                          ValueListenableBuilder<String?>(
+                            valueListenable: _errorMessage,
+                            builder: (context, errorMessage, _) {
+                              if (errorMessage == null) {
+                                return const SizedBox.shrink();
+                              }
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 20),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 12),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.blush.withValues(alpha: 0.15),
+                                    border: Border.all(color: AppColors.redHighlight),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.error_outline,
+                                          color: AppColors.redHighlight, size: 20),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: Text(
+                                          errorMessage,
+                                          style: const TextStyle(
+                                            color: AppColors.redHighlight,
+                                            fontSize: 13,
+                                            height: 1.3,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 28),
+                          const Text(
+                            'Verification Code',
                             style: TextStyle(
-                              color: (_resendCooldown == 0 && !_isLoading)
-                                  ? AppColors.cream
-                                  : AppColors.greyText,
-                              fontSize: 14,
+                              color: AppColors.softCream,
+                              fontSize: 15,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                        ),
+                          const SizedBox(height: 12),
+                          CustomTextField(
+                            textEditingController: _codeController,
+                            hintText: 'Enter 6-digit code',
+                            keyboardType: TextInputType.number,
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return 'Please enter the verification code';
+                              }
+                              if (value.trim().length < 6) {
+                                return 'Verification code must be 6 digits';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 28),
+                          ValueListenableBuilder<bool>(
+                            valueListenable: _isLoading,
+                            builder: (context, isLoading, _) {
+                              if (isLoading) {
+                                return const Center(
+                                    child: CustomLoadingIndecator());
+                              }
+                              return CustomButton(
+                                buttonText: 'Verify Code',
+                                onTap: _handleVerify,
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          ValueListenableBuilder<int>(
+                            valueListenable: _resendCooldown,
+                            builder: (context, cooldown, _) {
+                              return ValueListenableBuilder<bool>(
+                                valueListenable: _isLoading,
+                                builder: (context, isLoading, _) {
+                                  final canResend = cooldown == 0 && !isLoading;
+                                  return Center(
+                                    child: TextButton(
+                                      onPressed: canResend ? _handleResend : null,
+                                      child: Text(
+                                        cooldown > 0
+                                            ? 'Resend code in ${cooldown}s'
+                                            : 'Resend confirmation code',
+                                        style: TextStyle(
+                                          color: canResend
+                                              ? AppColors.cream
+                                              : AppColors.greyText,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
               ),
             ),
@@ -319,3 +327,4 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
     );
   }
 }
+
