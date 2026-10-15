@@ -19,8 +19,14 @@ import 'package:mind_feed/features/auth/domain/usecases/verify_otp_use_case.dart
 import 'package:mind_feed/features/auth/presentation/widgets/auth_background.dart';
 
 class CheckCodeViewBody extends StatefulWidget {
-  const CheckCodeViewBody({super.key, required this.email});
+  const CheckCodeViewBody({
+    super.key,
+    required this.email,
+    this.isPasswordReset = false,
+  });
+
   final String email;
+  final bool isPasswordReset;
 
   @override
   State<CheckCodeViewBody> createState() => _CheckCodeViewBodyState();
@@ -50,7 +56,25 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
       if (data.event == AuthChangeEvent.signedIn && data.session != null) {
         final session = data.session!;
         if (session.accessToken.isNotEmpty) {
-          await _onSuccessfulAuthentication(session.accessToken);
+          if (widget.isPasswordReset) {
+            if (mounted) {
+              Navigator.pushReplacementNamed(
+                context,
+                AppRoutes.changePassword,
+                arguments: widget.email,
+              );
+            }
+          } else {
+            await _onSuccessfulAuthentication(session.accessToken);
+          }
+        }
+      } else if (data.event == AuthChangeEvent.passwordRecovery) {
+        if (mounted) {
+          Navigator.pushReplacementNamed(
+            context,
+            AppRoutes.changePassword,
+            arguments: widget.email,
+          );
         }
       }
     });
@@ -100,11 +124,22 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
     final result = await getIt<VerifyOtpUseCase>().call(
       email: widget.email,
       token: _codeController.text.trim(),
+      isPasswordReset: widget.isPasswordReset,
     );
 
     result.when(
       success: (accessToken) async {
-        await _onSuccessfulAuthentication(accessToken);
+        if (widget.isPasswordReset) {
+          if (mounted) {
+            Navigator.pushReplacementNamed(
+              context,
+              AppRoutes.changePassword,
+              arguments: widget.email,
+            );
+          }
+        } else {
+          await _onSuccessfulAuthentication(accessToken);
+        }
       },
       failure: (failure) {
         _isLoading.value = false;
@@ -119,7 +154,10 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
     _isLoading.value = true;
     _errorMessage.value = null;
 
-    final result = await getIt<ResendOtpUseCase>().call(email: widget.email);
+    final result = await getIt<ResendOtpUseCase>().call(
+      email: widget.email,
+      isPasswordReset: widget.isPasswordReset,
+    );
 
     _isLoading.value = false;
     result.when(
