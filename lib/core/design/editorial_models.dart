@@ -12,6 +12,9 @@ class EditorialNewsItem {
   final String excerpt;
   final Color color;
   final bool isLive;
+  final String? categoryId;
+  final String? categorySlug;
+  final List<String> tags;
   bool isLiked;
   bool isSaved;
 
@@ -27,6 +30,9 @@ class EditorialNewsItem {
     required this.excerpt,
     required this.color,
     this.isLive = false,
+    this.categoryId,
+    this.categorySlug,
+    this.tags = const [],
     this.isLiked = false,
     this.isSaved = false,
   });

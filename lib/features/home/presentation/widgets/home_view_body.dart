@@ -9,6 +9,10 @@ import 'package:mind_feed/core/design/editorial_mock_data.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:hive/hive.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
+import 'package:mind_feed/features/profile/domain/repos/profile_repo.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_home_feed_use_case.dart';
 
@@ -26,7 +30,7 @@ class _HomeViewBodyState extends State<HomeViewBody>
   late final Animation<double> _breathingAnimation;
   List<EditorialNewsItem>? _remoteStories;
 
-  final List<String> _topics = const [
+  List<String> _topics = [
     'All',
     'Trending',
     'Tech',
@@ -50,21 +54,85 @@ class _HomeViewBodyState extends State<HomeViewBody>
   }
 
   Future<void> _fetchRealStories() async {
-    if (getIt.isRegistered<GetHomeFeedUseCase>()) {
-      final result = await getIt<GetHomeFeedUseCase>().call();
-      if (!mounted) return;
-      result.when(
-        success: (articles) {
-          if (articles.isNotEmpty) {
-            setState(() {
-              _remoteStories =
-                  articles.map((a) => a.toEditorialNewsItem()).toList();
-            });
+    if (!getIt.isRegistered<GetHomeFeedUseCase>()) return;
+
+    final preferredCategoryIds = <String>[];
+    final dynamicFavoriteTopics = <String>[];
+
+    User? user;
+    try {
+      user = Supabase.instance.client.auth.currentUser;
+    } catch (_) {}
+    if (user != null && getIt.isRegistered<ProfileRepository>()) {
+      final favsResult = await getIt<ProfileRepository>().getFavoriteCategories(user.id);
+      favsResult.when(
+        success: (favs) {
+          for (final f in favs) {
+            final catId = f['category_id'] as String?;
+            if (catId != null && catId.isNotEmpty && !preferredCategoryIds.contains(catId)) {
+              preferredCategoryIds.add(catId);
+            }
+            final catObj = f['categories'] as Map<String, dynamic>?;
+            final catName = catObj?['name'] as String?;
+            if (catName != null && catName.isNotEmpty && !dynamicFavoriteTopics.contains(catName)) {
+              dynamicFavoriteTopics.add(catName);
+            }
           }
         },
         failure: (_) {},
       );
     }
+
+    if (preferredCategoryIds.isEmpty && Hive.isBoxOpen(AppConstants.userKey)) {
+      final box = Hive.box<UserEntity>(AppConstants.userKey);
+      final localUser = box.get(AppConstants.userKey);
+      final favNames = localUser?.favoriteCategories;
+      if (favNames != null && favNames.isNotEmpty && getIt.isRegistered<ProfileRepository>()) {
+        final catResult = await getIt<ProfileRepository>().getCategories();
+        catResult.when(
+          success: (allCats) {
+            for (final c in allCats) {
+              final name = c['name'] as String?;
+              final id = c['id'] as String?;
+              if (name != null && id != null && favNames.contains(name)) {
+                if (!preferredCategoryIds.contains(id)) {
+                  preferredCategoryIds.add(id);
+                }
+                if (!dynamicFavoriteTopics.contains(name)) {
+                  dynamicFavoriteTopics.add(name);
+                }
+              }
+            }
+          },
+          failure: (_) {},
+        );
+      }
+    }
+
+    final result = await getIt<GetHomeFeedUseCase>().call(
+      preferredCategoryIds: preferredCategoryIds.isNotEmpty ? preferredCategoryIds : null,
+    );
+
+    if (!mounted) return;
+    result.when(
+      success: (articles) {
+        if (articles.isNotEmpty) {
+          setState(() {
+            _remoteStories = articles.map((a) => a.toEditorialNewsItem()).toList();
+            if (dynamicFavoriteTopics.isNotEmpty) {
+              final newTopics = ['All', 'Trending', ...dynamicFavoriteTopics];
+              for (final def in const ['Tech', 'Science', 'Health', 'Sports']) {
+                if (!newTopics.contains(def)) {
+                  newTopics.add(def);
+                }
+              }
+              _topics = newTopics;
+            }
+          });
+        }
+      },
+      failure: (_) {},
+    );
   }
 
   @override
@@ -81,6 +149,16 @@ class _HomeViewBodyState extends State<HomeViewBody>
           .where((s) => s.isLive || s.badge == 'LIVE' || s.badge == 'TECH')
           .toList();
     }
+
+    final topicLower = _selectedTopic.toLowerCase();
+    final matching = all.where((s) {
+      if (s.badge.toLowerCase() == topicLower) return true;
+      if (s.categorySlug != null && s.categorySlug!.toLowerCase() == topicLower) return true;
+      if (s.tags.any((t) => t.toLowerCase() == topicLower)) return true;
+      return false;
+    }).toList();
+    if (matching.isNotEmpty) return matching;
+
     if (_selectedTopic == 'Tech') {
       return all.where((s) => s.badge == 'TECH' || s.badge == 'AI').toList();
     }

@@ -1,12 +1,20 @@
-import 'package:mind_feed/core/constants/constants.dart';
-import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mind_feed/config/routes/app_routes.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
+import 'package:mind_feed/core/constants/constants.dart';
+import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
+import 'package:mind_feed/core/utls/setup_service_locator.dart';
+import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
+import 'package:mind_feed/features/auth/domain/usecases/logout_use_case.dart';
+import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
+import 'package:mind_feed/features/profile/domain/repos/profile_repo.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/settings_menu.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/theme_widget.dart';
-import 'package:mind_feed/core/constants/app_colors.dart';
 
 class SettingsViewBody extends StatefulWidget {
   const SettingsViewBody({super.key});
@@ -16,6 +24,9 @@ class SettingsViewBody extends StatefulWidget {
 }
 
 class _SettingsViewBodyState extends State<SettingsViewBody> {
+  String _displayName = 'Wade Warren';
+  String _userEmail = 'reader@mindfeed.app';
+  String? _avatarUrl;
   String _fontScale = 'Standard';
   bool _serifMode = true;
   bool _bionicGuide = false;
@@ -23,7 +34,167 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
   bool _breakingAlerts = true;
   bool _dataPreservation = false;
   bool _wifiOnly = true;
-  double _cachedMegabytes = 18.4;
+  double _cachedMegabytes = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadStoredPreferences();
+    _loadUserData();
+  }
+
+  void _safeSetBool(String key, bool value) {
+    try {
+      SharedPreferencesSingleton.setBool(key, value: value);
+    } catch (_) {}
+  }
+
+  void _safeSetString(String key, String value) {
+    try {
+      SharedPreferencesSingleton.setString(key, value);
+    } catch (_) {}
+  }
+
+  void _loadStoredPreferences() {
+    try {
+      setState(() {
+        _fontScale = SharedPreferencesSingleton.getString('pref_font_scale') ?? 'Standard';
+        _serifMode = SharedPreferencesSingleton.getBool('pref_serif_mode') ?? true;
+        _bionicGuide = SharedPreferencesSingleton.getBool('pref_bionic_guide') ?? false;
+        _morningBriefing = SharedPreferencesSingleton.getBool('pref_morning_briefing') ?? true;
+        _breakingAlerts = SharedPreferencesSingleton.getBool('pref_breaking_alerts') ?? true;
+        _dataPreservation = SharedPreferencesSingleton.getBool('pref_data_preservation') ?? false;
+        _wifiOnly = SharedPreferencesSingleton.getBool('pref_wifi_only') ?? true;
+        _cachedMegabytes = 12.6;
+      });
+    } catch (_) {}
+  }
+
+  Future<void> _loadUserData() async {
+    User? user;
+    try {
+      user = Supabase.instance.client.auth.currentUser;
+    } catch (_) {}
+
+    UserEntity? localUser;
+    try {
+      if (Hive.isBoxOpen(AppConstants.userKey)) {
+        localUser = Hive.box<UserEntity>(AppConstants.userKey).get(AppConstants.userKey);
+      }
+    } catch (_) {}
+
+    final initialName = user?.userMetadata?['display_name'] as String? ??
+        localUser?.userName ??
+        (user?.email != null ? user!.email!.split('@').first : 'Wade Warren');
+    final initialEmail = user?.email ?? localUser?.email ?? 'reader@mindfeed.app';
+
+    if (mounted) {
+      setState(() {
+        _displayName = initialName;
+        _userEmail = initialEmail;
+      });
+    }
+
+    if (user != null && getIt.isRegistered<ProfileRepository>()) {
+      try {
+        final profileResult = await getIt<ProfileRepository>().getProfile(user.id);
+        profileResult.when(
+          success: (profile) {
+            final remoteName = profile['display_name'] as String?;
+            final remoteAvatar = profile['avatar_url'] as String?;
+            if (mounted) {
+              setState(() {
+                if (remoteName != null && remoteName.isNotEmpty) {
+                  _displayName = remoteName;
+                }
+                _avatarUrl = remoteAvatar;
+              });
+            }
+          },
+          failure: (_) {},
+        );
+      } catch (_) {}
+    }
+  }
+
+  Future<void> _handleSignOut() async {
+    showDialog(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        backgroundColor: AppColors.whiteLight,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text(
+          'Sign Out',
+          style: TextStyle(
+            color: AppColors.ink,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        content: const Text(
+          'Are you sure you want to sign out of MindFeed on this device?',
+          style: TextStyle(
+            color: AppColors.mutedInk,
+            fontSize: 14,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogCtx),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: AppColors.greyText),
+            ),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: AppColors.ink,
+              foregroundColor: AppColors.cream,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            onPressed: () async {
+              Navigator.pop(dialogCtx);
+              if (getIt.isRegistered<LogoutUseCase>()) {
+                await getIt<LogoutUseCase>().call();
+              }
+              if (!mounted) return;
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                AppRoutes.login,
+                (route) => false,
+              );
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  duration: Duration(seconds: 2),
+                  content: Text('Signed out of MindFeed'),
+                ),
+              );
+            },
+            child: const Text('Sign Out'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _handleClearCache() async {
+    if (getIt.isRegistered<ArticlesRepository>()) {
+      await getIt<ArticlesRepository>().clearDownloadedArticles();
+    }
+    setState(() {
+      _cachedMegabytes = 0.0;
+    });
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        duration: Duration(seconds: 2),
+        content: Text('Reading archive cache cleared'),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,38 +270,50 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                       shape: BoxShape.circle,
                     ),
                     child: ClipOval(
-                      child: Image.asset(
-                        Assets.assetsImagesWadeAvatar,
-                        width: 44,
-                        height: 44,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) => const CircleAvatar(
-                          radius: 22,
-                          backgroundColor: AppColors.blush,
-                          child: Icon(AppIcons.personAlt, color: AppColors.ink),
-                        ),
-                      ),
+                      child: _avatarUrl != null && _avatarUrl!.isNotEmpty
+                          ? Image.network(
+                              _avatarUrl!,
+                              width: 44,
+                              height: 44,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, _, _) => const CircleAvatar(
+                                radius: 22,
+                                backgroundColor: AppColors.blush,
+                                child: Icon(AppIcons.personAlt, color: AppColors.ink),
+                              ),
+                            )
+                          : Image.asset(
+                              Assets.assetsImagesWadeAvatar,
+                              width: 44,
+                              height: 44,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, _, _) => const CircleAvatar(
+                                radius: 22,
+                                backgroundColor: AppColors.blush,
+                                child: Icon(AppIcons.personAlt, color: AppColors.ink),
+                              ),
+                            ),
                     ),
                   ),
                   const SizedBox(width: 14),
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Wade Warren',
-                          style: TextStyle(
+                          _displayName,
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w800,
                             color: AppColors.ink,
                             letterSpacing: -0.3,
                           ),
                         ),
-                        SizedBox(height: 2),
+                        const SizedBox(height: 2),
                         Text(
-                          'Editorial Reader • MindFeed Edition',
-                          style: TextStyle(
+                          _userEmail,
+                          style: const TextStyle(
                             fontSize: 12,
                             color: AppColors.mutedInk,
                             fontWeight: FontWeight.w500,
@@ -174,6 +357,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                     setState(() {
                       _fontScale = val;
                     });
+                    _safeSetString('pref_font_scale', val);
                     ScaffoldMessenger.of(context).clearSnackBars();
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -194,6 +378,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                     setState(() {
                       _serifMode = val;
                     });
+                    _safeSetBool('pref_serif_mode', val);
                   },
                 ),
                 PaperSettingsSwitchTile(
@@ -206,6 +391,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                     setState(() {
                       _bionicGuide = val;
                     });
+                    _safeSetBool('pref_bionic_guide', val);
                   },
                 ),
               ],
@@ -224,6 +410,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                     setState(() {
                       _morningBriefing = val;
                     });
+                    _safeSetBool('pref_morning_briefing', val);
                   },
                 ),
                 PaperSettingsSwitchTile(
@@ -236,6 +423,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                     setState(() {
                       _breakingAlerts = val;
                     });
+                    _safeSetBool('pref_breaking_alerts', val);
                   },
                 ),
                 PaperSettingsTile(
@@ -278,22 +466,9 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                   icon: AppIcons.inventory2Outlined,
                   stampColor: AppColors.sand,
                   title: 'Offline Reading Archive',
-                  subtitle: '${_cachedMegabytes.toStringAsFixed(1)} MB cached across 14 articles',
+                  subtitle: '${_cachedMegabytes.toStringAsFixed(1)} MB cached articles',
                   trailing: TextButton(
-                    onPressed: _cachedMegabytes > 0
-                        ? () {
-                            setState(() {
-                              _cachedMegabytes = 0.0;
-                            });
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                duration: Duration(seconds: 2),
-                                content: Text('Reading cache cleared (18.4 MB freed)'),
-                              ),
-                            );
-                          }
-                        : null,
+                    onPressed: _cachedMegabytes > 0 ? _handleClearCache : null,
                     style: TextButton.styleFrom(
                       foregroundColor: AppColors.ink,
                       backgroundColor: AppColors.sandLight,
@@ -318,6 +493,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                     setState(() {
                       _dataPreservation = val;
                     });
+                    _safeSetBool('pref_data_preservation', val);
                   },
                 ),
                 PaperSettingsSwitchTile(
@@ -330,6 +506,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                     setState(() {
                       _wifiOnly = val;
                     });
+                    _safeSetBool('pref_wifi_only', val);
                   },
                 ),
               ],
@@ -343,7 +520,11 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                   stampColor: AppColors.lilac,
                   title: 'Change Password',
                   subtitle: 'Update your account access passphrase',
-                  onTap: () => Navigator.pushNamed(context, AppRoutes.changePassword, arguments: 'wade@mindfeed.app'),
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    AppRoutes.changePassword,
+                    arguments: _userEmail,
+                  ),
                 ),
                 PaperSettingsTile(
                   icon: AppIcons.shieldOutlined,
@@ -407,15 +588,7 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
                   stampColor: AppColors.blush,
                   title: 'Sign Out of Edition',
                   subtitle: 'End active session on this device',
-                  onTap: () {
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        duration: Duration(seconds: 2),
-                        content: Text('Signed out of MindFeed Edition'),
-                      ),
-                    );
-                  },
+                  onTap: _handleSignOut,
                 ),
               ],
             ),

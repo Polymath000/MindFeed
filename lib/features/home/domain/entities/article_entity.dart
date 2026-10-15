@@ -84,6 +84,9 @@ class ArticleEntity extends Equatable {
       excerpt: excerpt,
       color: _parseHexColor(cardColor, defaultColor: AppColors.cream),
       isLive: isLive,
+      categoryId: categoryId,
+      categorySlug: categorySlug,
+      tags: tags,
       isLiked: isLiked,
       isSaved: isSaved,
     );
