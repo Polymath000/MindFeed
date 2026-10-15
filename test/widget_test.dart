@@ -80,6 +80,10 @@ void main() {
 
     expect(mastheadPos.dy, lessThan(200));
     expect(navPos.dy, greaterThan(700));
+
+    final homeRect = tester.getRect(find.byType(HomeView));
+    expect(homeRect.bottom, equals(844.0));
+    expect(homeRect.bottom, greaterThan(navPos.dy));
   });
 
   testWidgets('settings renders paper aesthetic sections and preferences', (
