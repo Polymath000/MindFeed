@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
-import 'package:mind_feed/config/themes/app_text_style.dart';
-import 'package:mind_feed/core/utls/app_images.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
+import 'package:mind_feed/core/constants/app_text_styles.dart';
+import 'package:mind_feed/core/constants/app_images.dart';
 
 class AuthorCard extends StatelessWidget {
   const AuthorCard({super.key});
@@ -10,12 +10,12 @@ class AuthorCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        AppRoutes.authorView(context);
+        Navigator.pushNamed(context, AppRoutes.author);
       },
       child: Row(
         children: [
           CircleAvatar(
-            backgroundImage: AssetImage(Assets.assetsImagesMeJustForTest),
+            backgroundImage: AssetImage(Assets.assetsImagesWadeAvatar),
           ),
           SizedBox(width: 8),
           Text('Abdelrahman Khaled', style: AppTextStyles.bodyLarge),

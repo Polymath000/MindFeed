@@ -1,60 +1,67 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/config/themes/app_text_style.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/auth_background.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/change_password_form.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/security_tip_text.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class ChangePasswordViewBody extends StatelessWidget {
-  ChangePasswordViewBody({super.key, required this.email});
+  const ChangePasswordViewBody({super.key, required this.email});
   final String email;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         authBackground(),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          AppRoutes.pop(context);
-                        },
-                        icon: Icon(
-                          Icons.arrow_back_ios,
-                          color: AppColors.lightGrey,
+        SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 440),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 16.0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        EditorialIconButton(
+                          icon: AppIcons.arrowBackRounded,
+                          label: 'Back',
+                          onPressed: () => Navigator.pop(context),
                         ),
-                      ),
-                      Text(
-                        'Change Password',
-                        style: AppTextStyles.headlineSmall!.copyWith(
-                          color: AppColors.lightGray,
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Text(
+                            'Change Password',
+                            style: TextStyle(
+                              color: AppColors.softCream,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 60.0),
-                    child: Center(
-                      child: Text(
-                        'Keep your account secure by updating your password regularly',
-                        style: AppTextStyles.bodyLarge!.copyWith(
-                          color: AppColors.white,
-                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 32),
+                    const Text(
+                      'Keep your MindFeed account secure by choosing a resilient, unique password.',
+                      style: TextStyle(
+                        color: AppColors.greyText,
+                        fontSize: 15,
+                        height: 1.4,
                       ),
                     ),
-                  ),
-                  ChangePasswordForm(email: email),
-                  SizedBox(height: 32),
-                  Align(alignment: Alignment.center, child: SecurityTipText()),
-                ],
+                    const SizedBox(height: 28),
+                    ChangePasswordForm(email: email),
+                    const SizedBox(height: 24),
+                    const SecurityTipText(),
+                  ],
+                ),
               ),
             ),
           ),

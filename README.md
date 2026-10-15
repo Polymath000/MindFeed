@@ -65,7 +65,6 @@ lib/
 | dio | HTTP client |
 | hive | Local NoSQL database |
 | shared_preferences | Key-value storage |
-| firebase_core | Firebase integration |
 | flutter_localization | Internationalization |
 
 ## Getting Started
@@ -117,7 +116,7 @@ The following changes were made in the latest updates:
 - **Signup Logic**: Completed the domain and data layers for signup functionality with state management using Cubit
 - **Dependency Injection**: Configured GetIt to create and manage instances of `AuthRepoImpl`
 - **Security Improvements**: Enhanced failure handling and made error messages more meaningful; removed password variable from user model and entity for better security
-- **Firebase Auth Integration**: Updated login flow and API endpoints to handle Firebase authentication
+- **Firebase Removal**: Completely removed Firebase dependencies, configurations, and plugins, switching to client-side simulated local authentication
 
 ## Screenshots
 

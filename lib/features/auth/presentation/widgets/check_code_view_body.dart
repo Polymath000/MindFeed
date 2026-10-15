@@ -1,95 +1,344 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/config/themes/app_text_style.dart';
+
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'package:mind_feed/config/routes/app_routes.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
+import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
 import 'package:mind_feed/core/widgets/custom_text_field.dart';
+import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
+import 'package:mind_feed/features/auth/domain/usecases/resend_otp_use_case.dart';
+import 'package:mind_feed/features/auth/domain/usecases/verify_otp_use_case.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/auth_background.dart';
 
-class CheckCodeViewBody extends StatelessWidget {
-  CheckCodeViewBody({super.key, required this.email});
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
+class CheckCodeViewBody extends StatefulWidget {
+  const CheckCodeViewBody({
+    super.key,
+    required this.email,
+    this.isPasswordReset = false,
+  });
+
   final String email;
+  final bool isPasswordReset;
+
+  @override
+  State<CheckCodeViewBody> createState() => _CheckCodeViewBodyState();
+}
+
+class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final TextEditingController _codeController = TextEditingController();
+  final ValueNotifier<AutovalidateMode> _autovalidateMode =
+      ValueNotifier<AutovalidateMode>(AutovalidateMode.disabled);
+
+  final ValueNotifier<bool> _isLoading = ValueNotifier<bool>(false);
+  final ValueNotifier<String?> _errorMessage = ValueNotifier<String?>(null);
+  final ValueNotifier<int> _resendCooldown = ValueNotifier<int>(0);
+  Timer? _cooldownTimer;
+  StreamSubscription<AuthState>? _authSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _startListeningToAuthChanges();
+  }
+
+  void _startListeningToAuthChanges() {
+    _authSubscription =
+        Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
+      if (data.event == AuthChangeEvent.signedIn && data.session != null) {
+        final session = data.session!;
+        if (session.accessToken.isNotEmpty) {
+          if (widget.isPasswordReset) {
+            if (mounted) {
+              Navigator.pushReplacementNamed(
+                context,
+                AppRoutes.changePassword,
+                arguments: widget.email,
+              );
+            }
+          } else {
+            await _onSuccessfulAuthentication(session.accessToken);
+          }
+        }
+      } else if (data.event == AuthChangeEvent.passwordRecovery) {
+        if (mounted) {
+          Navigator.pushReplacementNamed(
+            context,
+            AppRoutes.changePassword,
+            arguments: widget.email,
+          );
+        }
+      }
+    });
+  }
+
+  void _startCooldown() {
+    _resendCooldown.value = 60;
+    _cooldownTimer?.cancel();
+    _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_resendCooldown.value <= 1) {
+        timer.cancel();
+        _resendCooldown.value = 0;
+      } else {
+        _resendCooldown.value--;
+      }
+    });
+  }
+
+  Future<void> _onSuccessfulAuthentication(String accessToken) async {
+    final user = Supabase.instance.client.auth.currentUser;
+    final userEntity = UserEntity(
+      userName: user?.userMetadata?['display_name'] as String? ?? '',
+      email: user?.email ?? widget.email,
+      favoriteCategories: const [],
+      token: accessToken,
+    );
+    if (mounted) {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.categories,
+        (route) => false,
+        arguments: userEntity,
+      );
+    }
+  }
+
+  Future<void> _handleVerify() async {
+    if (!(formKey.currentState?.validate() ?? false)) {
+      _autovalidateMode.value = AutovalidateMode.always;
+      return;
+    }
+
+    FocusScope.of(context).unfocus();
+    _isLoading.value = true;
+    _errorMessage.value = null;
+
+    final result = await getIt<VerifyOtpUseCase>().call(
+      email: widget.email,
+      token: _codeController.text.trim(),
+      isPasswordReset: widget.isPasswordReset,
+    );
+
+    result.when(
+      success: (accessToken) async {
+        if (widget.isPasswordReset) {
+          if (mounted) {
+            Navigator.pushReplacementNamed(
+              context,
+              AppRoutes.changePassword,
+              arguments: widget.email,
+            );
+          }
+        } else {
+          await _onSuccessfulAuthentication(accessToken);
+        }
+      },
+      failure: (failure) {
+        _isLoading.value = false;
+        _errorMessage.value = failure.message;
+      },
+    );
+  }
+
+  Future<void> _handleResend() async {
+    if (_resendCooldown.value > 0 || _isLoading.value) return;
+
+    _isLoading.value = true;
+    _errorMessage.value = null;
+
+    final result = await getIt<ResendOtpUseCase>().call(
+      email: widget.email,
+      isPasswordReset: widget.isPasswordReset,
+    );
+
+    _isLoading.value = false;
+    result.when(
+      success: (_) {
+        _startCooldown();
+        customShowSnackBar(
+          message: 'A new verification code has been dispatched to your email',
+          context: context,
+        );
+      },
+      failure: (failure) {
+        _errorMessage.value = failure.message;
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _authSubscription?.cancel();
+    _cooldownTimer?.cancel();
+    _codeController.dispose();
+    _isLoading.dispose();
+    _errorMessage.dispose();
+    _resendCooldown.dispose();
+    _autovalidateMode.dispose();
+    super.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         authBackground(),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: SafeArea(
-            child: SingleChildScrollView(
-              child: Form(
-                key: formKey,
-                autovalidateMode: autovalidateMode,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            AppRoutes.pop(context);
-                          },
-                          icon: Icon(
-                            Icons.arrow_back_ios,
-                            color: AppColors.lightGrey,
+        SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 440),
+              child: SingleChildScrollView(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+                child: ValueListenableBuilder<AutovalidateMode>(
+                  valueListenable: _autovalidateMode,
+                  builder: (context, autovalidateMode, _) {
+                    return Form(
+                      key: formKey,
+                      autovalidateMode: autovalidateMode,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              EditorialIconButton(
+                                icon: AppIcons.arrowBackRounded,
+                                label: 'Back',
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                              const SizedBox(width: 12),
+                              const Text(
+                                'Verify Email',
+                                style: TextStyle(
+                                  color: AppColors.softCream,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        Text(
-                          'Check Code',
-                          style: AppTextStyles.headlineSmall!.copyWith(
-                            color: AppColors.lightGray,
+                          const SizedBox(height: 36),
+                          Text(
+                            'We dispatched a 6-digit confirmation code to\n${widget.email}',
+                            style: const TextStyle(
+                              color: AppColors.greyText,
+                              fontSize: 15,
+                              height: 1.4,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 60.0),
-                      child: Center(
-                        child: Text(
-                          'We have sent a password recover instructions to your email',
-                          style: AppTextStyles.bodyLarge!.copyWith(
-                            color: AppColors.white,
+                          ValueListenableBuilder<String?>(
+                            valueListenable: _errorMessage,
+                            builder: (context, errorMessage, _) {
+                              if (errorMessage == null) {
+                                return const SizedBox.shrink();
+                              }
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 20),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 12),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.blush.withValues(alpha: 0.15),
+                                    border: Border.all(color: AppColors.redHighlight),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.error_outline,
+                                          color: AppColors.redHighlight, size: 20),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: Text(
+                                          errorMessage,
+                                          style: const TextStyle(
+                                            color: AppColors.redHighlight,
+                                            fontSize: 13,
+                                            height: 1.3,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        ),
+                          const SizedBox(height: 28),
+                          const Text(
+                            'Verification Code',
+                            style: TextStyle(
+                              color: AppColors.softCream,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          CustomTextField(
+                            textEditingController: _codeController,
+                            hintText: 'Enter 6-digit code',
+                            keyboardType: TextInputType.number,
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return 'Please enter the verification code';
+                              }
+                              if (value.trim().length < 6) {
+                                return 'Verification code must be 6 digits';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 28),
+                          ValueListenableBuilder<bool>(
+                            valueListenable: _isLoading,
+                            builder: (context, isLoading, _) {
+                              return CustomButton(
+                                buttonText: 'Verify Code',
+                                isLoading: isLoading,
+                                onTap: isLoading ? null : _handleVerify,
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          ValueListenableBuilder<int>(
+                            valueListenable: _resendCooldown,
+                            builder: (context, cooldown, _) {
+                              return ValueListenableBuilder<bool>(
+                                valueListenable: _isLoading,
+                                builder: (context, isLoading, _) {
+                                  final canResend = cooldown == 0 && !isLoading;
+                                  return Center(
+                                    child: TextButton(
+                                      onPressed: canResend ? _handleResend : null,
+                                      child: Text(
+                                        cooldown > 0
+                                            ? 'Resend code in ${cooldown}s'
+                                            : 'Resend confirmation code',
+                                        style: TextStyle(
+                                          color: canResend
+                                              ? AppColors.cream
+                                              : AppColors.greyText,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ],
                       ),
-                    ),
-                    Text(
-                      'Enter the Verified Code',
-                      style: AppTextStyles.bodyLarge!.copyWith(
-                        color: AppColors.white,
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    CustomTextField(
-                      hintText: 'Enter the Verified Code',
-                      onChanged: (String value) {},
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Type the Code please!';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 32),
-                    CustomButton(
-                      buttonText: 'Verify Code',
-                      onTap: () {
-                        if (formKey.currentState?.validate() ?? false) {
-                          FocusScope.of(context).unfocus();
-                          // TODO: Handle login logic here
-                          AppRoutes.changepasswordView(context, email: email);
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(SnackBar(content: Text('Success')));
-                        } else {
-                          autovalidateMode = AutovalidateMode.always;
-                        }
-                      },
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
             ),
@@ -99,3 +348,4 @@ class CheckCodeViewBody extends StatelessWidget {
     );
   }
 }
+

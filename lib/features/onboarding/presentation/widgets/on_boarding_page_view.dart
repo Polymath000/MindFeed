@@ -15,12 +15,12 @@ class OnBoardingPageView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: MediaQuery.sizeOf(context).height * 0.52),
+        SizedBox(height: MediaQuery.sizeOf(context).height * 0.48),
         Expanded(
           child: PageView(
             controller: pageController,
             onPageChanged: onPageChanged,
-            children: [
+            children: const [
               PageViewItem(
                 title: 'Discover Stories That Matter',
                 description:
@@ -39,6 +39,7 @@ class OnBoardingPageView extends StatelessWidget {
             ],
           ),
         ),
+        const SizedBox(height: 76),
       ],
     );
   }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate_on_scroll/flutter_animate_on_scroll.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/config/themes/app_text_style.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_text_styles.dart';
 import 'package:mind_feed/core/constants/borders.dart';
-import 'package:mind_feed/core/utls/app_images.dart';
+import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/features/collections/presentation/widgets/custom_popup_menu_button_for_saved_articles_view.dart';
 
 class ListCard extends StatelessWidget {
@@ -26,7 +26,7 @@ class ListCard extends StatelessWidget {
       delay: Duration(microseconds: 50),
       child: GestureDetector(
         onTap: () {
-          AppRoutes.listSavedArticles(context);
+          Navigator.pushNamed(context, AppRoutes.listSavedArticles);
         },
         child: Container(
           width: double.infinity,

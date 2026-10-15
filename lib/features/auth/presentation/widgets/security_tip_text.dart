@@ -1,64 +1,56 @@
-import 'package:flutter/material.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:flutter/material.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class SecurityTipText extends StatelessWidget {
   const SecurityTipText({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 342,
-          height: 134,
-          decoration: BoxDecoration(
-            color: AppColors.gunmetal,
-            border: Border.all(color: AppColors.white),
-            borderRadius: AppBorders.xxxs,
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: AppColors.charcoal,
+        border: Border.all(color: AppColors.borderDark),
+        borderRadius: AppBorders.card,
+      ),
+      padding: const EdgeInsets.all(16),
+      child: const Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            AppIcons.shieldOutlined,
+            color: AppColors.cream,
+            size: 20,
           ),
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 16,
-                height: 16,
-                child: const Icon(
-                  Icons.security,
-                  color: AppColors.white,
-                  size: 16,
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Security Recommendation',
+                  style: TextStyle(
+                    color: AppColors.softCream,
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Security Tip',
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    const Text(
-                      'Use a unique password that you don\'t use for other accounts. Consider using a password manager to generate and store strong passwords.',
-                      style: TextStyle(
-                        color: AppColors.grey,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
+                SizedBox(height: 4),
+                Text(
+                  'Use a unique, resilient passphrase. A dedicated password manager ensures strong protection across your reading devices.',
+                  style: TextStyle(
+                    color: AppColors.greyText,
+                    fontSize: 12,
+                    height: 1.4,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

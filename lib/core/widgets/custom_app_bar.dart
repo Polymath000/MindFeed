@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/config/themes/app_text_style.dart';
-import 'package:mind_feed/core/utls/app_icons.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_text_styles.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 
 class CustomAppBar extends StatelessWidget {
@@ -13,7 +13,7 @@ class CustomAppBar extends StatelessWidget {
     return SliverAppBar(
       pinned: true,
       backgroundColor: Theme.of(context).brightness == Brightness.dark
-          ? Color(0xff1F1F2E)
+          ? AppColors.darkBg
           : AppColors.lightGray,
       actionsPadding: EdgeInsets.symmetric(horizontal: 32),
       leading: IconButton(

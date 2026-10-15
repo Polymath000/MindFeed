@@ -1,24 +1,35 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/widgets/custom_text_field.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class EmailTextField extends StatelessWidget {
-  EmailTextField({Key? key, this.onChanged, this.controller}) : super(key: key);
+  const EmailTextField({
+    super.key,
+    this.onChanged,
+    this.controller,
+  });
+
   final ValueChanged<String>? onChanged;
-  TextEditingController? controller;
+  final TextEditingController? controller;
+
   @override
   Widget build(BuildContext context) {
     return CustomTextField(
-      hintText: 'Email',
+      hintText: 'Email address',
+      keyboardType: TextInputType.emailAddress,
+      prefixIcon: const Icon(
+        AppIcons.mailOutlineRounded,
+        color: AppColors.greyText,
+        size: 20,
+      ),
       validator: (value) {
-        if (value == null || value.isEmpty) {
+        if (value == null || value.trim().isEmpty) {
           return 'Please enter your email';
-        } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+        } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value.trim())) {
           return 'Please enter a valid email';
-        } else {
-          return null;
         }
+        return null;
       },
       onChanged: onChanged,
       textEditingController: controller,

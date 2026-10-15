@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate_on_scroll/flutter_animate_on_scroll.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/config/themes/app_text_style.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_text_styles.dart';
 import 'package:mind_feed/core/constants/borders.dart';
-import 'package:mind_feed/features/auth/presentation/widgets/categories_view_body.dart';
+import 'package:mind_feed/core/constants/category_items.dart';
 
 class AriclesByCategories extends StatelessWidget {
-  const AriclesByCategories({Key? key}) : super(key: key);
+  const AriclesByCategories({super.key});
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -32,7 +32,7 @@ class AriclesByCategories extends StatelessWidget {
                 child: InkWell(
                   borderRadius: AppBorders.xxs,
                   onTap: () {
-                    AppRoutes.articlesCategoryView(context);
+                    Navigator.pushNamed(context, AppRoutes.articlesCategory);
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -53,7 +53,7 @@ class AriclesByCategories extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(
-                        categories[index][0],
+                        categories[index].name,
                         style: AppTextStyles.bodyLarge?.copyWith(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,

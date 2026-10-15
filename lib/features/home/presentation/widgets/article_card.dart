@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate_on_scroll/flutter_animate_on_scroll.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/borders.dart';
 import 'package:mind_feed/features/home/presentation/widgets/add_to_favorite_article_card.dart';
 import 'package:mind_feed/features/home/presentation/widgets/article_card_image.dart';
@@ -9,7 +9,7 @@ import 'package:mind_feed/features/home/presentation/widgets/article_card_inform
 import 'package:mind_feed/features/home/presentation/widgets/custom_popup_menu_button_for_home.dart';
 
 class ArticleCard extends StatelessWidget {
-  ArticleCard({
+  const ArticleCard({
     super.key,
     required this.title,
     required this.author,
@@ -33,7 +33,7 @@ class ArticleCard extends StatelessWidget {
         delay: Duration(microseconds: 320),
         child: GestureDetector(
           onTap: () {
-            AppRoutes.articleView(context);
+            Navigator.pushNamed(context, AppRoutes.article);
           },
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
@@ -42,7 +42,7 @@ class ArticleCard extends StatelessWidget {
               borderRadius: AppBorders.xxxs,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
+                  color: Colors.black.withValues(alpha: 0.15),
                   blurRadius: 6,
                   offset: const Offset(0, 3),
                 ),

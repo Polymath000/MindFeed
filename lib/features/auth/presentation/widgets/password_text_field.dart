@@ -1,79 +1,119 @@
-import 'package:flutter/material.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
 import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:flutter/material.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class PasswordTextField extends StatefulWidget {
-  PasswordTextField({
+  const PasswordTextField({
     super.key,
     required this.hintText,
     this.onChanged,
     this.controller,
   });
+
   final String hintText;
   final ValueChanged<String>? onChanged;
-  TextEditingController? controller;
+  final TextEditingController? controller;
+
   @override
   State<PasswordTextField> createState() => _PasswordTextFieldState();
 }
 
 class _PasswordTextFieldState extends State<PasswordTextField> {
-  bool isObscured = true;
+  final ValueNotifier<bool> _isObscured = ValueNotifier<bool>(true);
   final FocusNode _passwordFocusNode = FocusNode();
+
   @override
   void dispose() {
     _passwordFocusNode.dispose();
+    _isObscured.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: widget.controller,
-      onChanged: widget.onChanged,
-      keyboardType: TextInputType.visiblePassword,
-      autofocus: false,
-      obscureText: isObscured,
-      obscuringCharacter: '*',
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter your password';
-        } else if (value.length < 8) {
-          return 'Password must be at least 8 characters long';
-        } else if (!RegExp(r'[A-Z]').hasMatch(value)) {
-          return 'Password must contain at least one uppercase letter';
-        } else if (!RegExp(r'[0-9]').hasMatch(value)) {
-          return 'Password must contain at least one number';
-        } else if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
-          return 'Password must contain at least one special character';
-        } else {
-          return null;
-        }
-      },
-      style: TextStyle(color: AppColors.white),
-      focusNode: _passwordFocusNode,
-      decoration: InputDecoration(
-        labelStyle: TextStyle(color: AppColors.white),
-        labelText: widget.hintText,
-        suffixIcon: IconButton(
-          onPressed: () {
-            setState(() {
-              isObscured = !isObscured;
-            });
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isObscured,
+      builder: (context, isObscured, _) {
+        return TextFormField(
+          controller: widget.controller,
+          onChanged: widget.onChanged,
+          keyboardType: TextInputType.visiblePassword,
+          autofocus: false,
+          obscureText: isObscured,
+          obscuringCharacter: '•',
+          focusNode: _passwordFocusNode,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter your password';
+            } else if (value.length < 8) {
+              return 'Password must be at least 8 characters long';
+            } else if (!RegExp(r'[A-Z]').hasMatch(value)) {
+              return 'Password must contain at least one uppercase letter';
+            } else if (!RegExp(r'[0-9]').hasMatch(value)) {
+              return 'Password must contain at least one number';
+            } else if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+              return 'Password must contain at least one special character';
+            }
+            return null;
           },
-          icon: Icon(
-            isObscured ? Icons.visibility_off : Icons.visibility,
-            color: AppColors.white,
+          style: const TextStyle(
+            color: AppColors.softCream,
+            fontSize: 15,
           ),
+          decoration: InputDecoration(
+            hintText: widget.hintText,
+            hintStyle: const TextStyle(
+              color: AppColors.greyText,
+              fontSize: 14,
+            ),
+            prefixIcon: const Icon(
+              AppIcons.lock,
+              color: AppColors.greyText,
+              size: 20,
+            ),
+            suffixIcon: IconButton(
+              onPressed: () {
+                _isObscured.value = !_isObscured.value;
+              },
+              icon: Icon(
+                isObscured
+                    ? AppIcons.visibilityOffOutlined
+                    : AppIcons.visibilityOutlined,
+                color: AppColors.greyText,
+                size: 20,
+              ),
+            ),
+            filled: true,
+        fillColor: AppColors.charcoal,
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 16,
+          horizontal: 20,
         ),
-        border: OutlineInputBorder(
-          borderRadius: AppBorders.xxxs,
-          borderSide: BorderSide(color: AppColors.white, width: 2.0),
+        border: const OutlineInputBorder(
+          borderRadius: AppBorders.control,
+          borderSide: BorderSide(color: AppColors.borderDark, width: 1.0),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: AppBorders.xxxs,
-          borderSide: BorderSide(color: AppColors.white, width: 2.0),
+        enabledBorder: const OutlineInputBorder(
+          borderRadius: AppBorders.control,
+          borderSide: BorderSide(color: AppColors.borderDark, width: 1.0),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: AppBorders.control,
+          borderSide: BorderSide(color: AppColors.cream, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: AppBorders.control,
+          borderSide: BorderSide(color: Colors.red.shade400, width: 1.0),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: AppBorders.control,
+          borderSide: BorderSide(color: Colors.red.shade400, width: 1.5),
         ),
       ),
     );
+  },
+);
   }
 }
+

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mind_feed/core/utls/app_icons.dart';
 import 'package:mind_feed/features/settings/presentation/controllers/theme_mode_cubit/theme_mode_cubit.dart';
-import 'package:mind_feed/features/settings/presentation/widgets/settings_menu.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class ThemeWidget extends StatelessWidget {
   const ThemeWidget({super.key});
@@ -19,23 +19,157 @@ class ThemeWidget extends StatelessWidget {
         } else {
           currentTheme = ThemeMode.system;
         }
-        return buildSettingsMenuItemWithDropdown<ThemeMode>(
-          icon: AppIcons.theme,
-          title: "Theme",
-          value: currentTheme,
-          items: const [
-            DropdownMenuItem(value: ThemeMode.light, child: Text('Light')),
-            DropdownMenuItem(value: ThemeMode.dark, child: Text('Dark')),
-            DropdownMenuItem(value: ThemeMode.system, child: Text('System')),
-          ],
-          onChanged: (themeMode) {
-            if (themeMode != null) {
-              context.read<ThemeModeCubit>().changeThemeMode(themeMode);
-            }
-          },
-          context: context,
+
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Reading Surface Contrast',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.ink,
+                  letterSpacing: -0.2,
+                ),
+              ),
+              const SizedBox(height: 2),
+              const Text(
+                'Select your preferred journal contrast and paper tone.',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.mutedInk,
+                ),
+              ),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildThemeCard(
+                      context,
+                      mode: ThemeMode.light,
+                      current: currentTheme,
+                      title: 'Warm Paper',
+                      subtitle: 'Daylight Print',
+                      icon: AppIcons.menuBookRounded,
+                      cardColor: AppColors.softCream,
+                      textColor: AppColors.ink,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _buildThemeCard(
+                      context,
+                      mode: ThemeMode.dark,
+                      current: currentTheme,
+                      title: 'Midnight Ink',
+                      subtitle: 'Dimmed Study',
+                      icon: AppIcons.nightlightRound,
+                      cardColor: AppColors.charcoalDarker,
+                      textColor: AppColors.softCream,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _buildThemeCard(
+                      context,
+                      mode: ThemeMode.system,
+                      current: currentTheme,
+                      title: 'Auto Cadence',
+                      subtitle: 'Solar Sync',
+                      icon: AppIcons.brightnessAutoRounded,
+                      cardColor: AppColors.sandDark,
+                      textColor: AppColors.ink,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         );
       },
+    );
+  }
+
+  Widget _buildThemeCard(
+    BuildContext context, {
+    required ThemeMode mode,
+    required ThemeMode current,
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color cardColor,
+    required Color textColor,
+  }) {
+    final isSelected = mode == current;
+
+    return InkWell(
+      onTap: () {
+        context.read<ThemeModeCubit>().changeThemeMode(mode);
+      },
+      borderRadius: BorderRadius.circular(16),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+        decoration: BoxDecoration(
+          color: cardColor,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected ? AppColors.ink : AppColors.creamDark,
+            width: isSelected ? 2 : 1,
+          ),
+          boxShadow: isSelected
+              ? const [
+                  BoxShadow(
+                    color: AppColors.transparentBlack,
+                    blurRadius: 8,
+                    offset: Offset(0, 3),
+                  ),
+                ]
+              : null,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(icon, size: 18, color: textColor),
+                if (isSelected)
+                  const Icon(
+                    AppIcons.checkCircleRounded,
+                    size: 15,
+                    color: AppColors.ink,
+                  ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                color: textColor,
+                letterSpacing: -0.2,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 2),
+            Text(
+              subtitle,
+              style: TextStyle(
+                fontSize: 9.5,
+                color: textColor.withAlpha(160),
+                fontWeight: FontWeight.w500,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

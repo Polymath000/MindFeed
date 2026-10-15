@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mind_feed/config/routes/on_generate_routes.dart';
-import 'package:mind_feed/config/themes/app_colors.dart';
-import 'package:mind_feed/core/utls/app_icons.dart';
-import 'package:mind_feed/core/utls/app_images.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/features/collections/presentation/views/downloaded_articles_view.dart';
 import 'package:mind_feed/features/collections/presentation/views/favorite_movies_view.dart';
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
@@ -32,7 +31,10 @@ class CustomDrawer extends StatelessWidget {
                 color: AppColors.black,
                 shape: BoxShape.circle,
               ),
-              child: SvgPicture.asset(Assets.assetsImagesLogo),
+              child: Image.asset(
+                Assets.assetsImagesMindFeedLogo,
+                fit: BoxFit.cover,
+              ),
             ),
             ListTile(
               iconColor: currentRoute == HomeView.routeName
@@ -43,7 +45,7 @@ class CustomDrawer extends StatelessWidget {
                   : AppColors.white,
               onTap: () {
                 final bool isHome = currentRoute == HomeView.routeName;
-                if (!isHome) AppRoutes.main(context);
+                if (!isHome) Navigator.pushNamedAndRemoveUntil(context, AppRoutes.main, (route) => false);
                 advancedDrawerController.hideDrawer();
               },
               leading: Icon(AppIcons.home),
@@ -59,7 +61,7 @@ class CustomDrawer extends StatelessWidget {
               onTap: () {
                 final bool isDownload =
                     currentRoute == DownloadedArticlesView.routeName;
-                if (!isDownload) AppRoutes.downloadedArticlesView(context);
+                if (!isDownload) Navigator.pushNamed(context, AppRoutes.downloadedArticles);
                 advancedDrawerController.hideDrawer();
               },
               leading: Icon(AppIcons.download),
@@ -74,7 +76,7 @@ class CustomDrawer extends StatelessWidget {
                   : AppColors.white,
               onTap: () {
                 final bool isFav = currentRoute == FavoriteMoviesView.routeName;
-                if (!isFav) AppRoutes.favoriteMoviesView(context);
+                if (!isFav) Navigator.pushNamed(context, AppRoutes.favoriteMovies);
                 advancedDrawerController.hideDrawer();
               },
               leading: Icon(AppIcons.favorite),
@@ -89,7 +91,7 @@ class CustomDrawer extends StatelessWidget {
                   : AppColors.white,
               onTap: () {
                 final bool isFav = currentRoute == SettingsView.routeName;
-                if (!isFav) AppRoutes.settingsView(context);
+                if (!isFav) Navigator.pushNamed(context, AppRoutes.settings);
                 advancedDrawerController.hideDrawer();
               },
               leading: Icon(AppIcons.settings),

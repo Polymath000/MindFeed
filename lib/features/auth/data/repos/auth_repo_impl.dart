@@ -1,73 +1,162 @@
-import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
-import 'package:mind_feed/core/constants/constants.dart' show tokenKey;
+import 'package:hive/hive.dart';
+import 'package:mind_feed/core/constants/constants.dart' show AppConstants;
 import 'package:mind_feed/core/database/cache/cache_helper.dart';
-import 'package:mind_feed/core/errors/expentions.dart';
-import 'package:mind_feed/core/errors/failure.dart';
-import 'package:mind_feed/core/network/network_info.dart';
+import 'package:mind_feed/core/errors/failures.dart';
+import 'package:mind_feed/core/networking/api_error_handler.dart';
+import 'package:mind_feed/core/networking/network_info.dart';
+import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/params/login_params.dart';
+import 'package:mind_feed/core/params/signup_params.dart';
 import 'package:mind_feed/features/auth/data/datasources/auth_api_source.dart';
 import 'package:mind_feed/features/auth/data/datasources/user_cache_source.dart';
+import 'package:mind_feed/features/auth/domain/entities/auth_result_entity.dart';
+import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/domain/repos/auth_repo.dart';
-
-import '../../../../core/params/signup_params.dart';
-import '../../../../core/services/shared_preferences_singleton.dart';
+import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
 
 class AuthRepoImpl extends AuthRepository {
   NetworkInfo networkInfo;
   final AuthApiSource authApiSource;
   final UserCacheDataSource userCacheDataSource;
   late CacheHelper cacheHelper;
+
   AuthRepoImpl({
     required this.authApiSource,
     required this.networkInfo,
     required this.userCacheDataSource,
   });
+
   @override
-  Future<Either<Failure, void>> forgetPassword(String email) {
-    // TODO: implement forgetPassword
-    throw UnimplementedError();
+  Future<ApiResult<void>> forgetPassword(String email) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await authApiSource.resetPassword(email: email);
+        return const Success(null);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
   }
 
   @override
-  Future<Either<Failure, String>> login(LoginParams params) async {
-    if (await networkInfo.isConnected!) {
+  Future<ApiResult<String>> login(LoginParams params) async {
+    if (await networkInfo.isConnected) {
       try {
         final remote = await authApiSource.login(params: params);
         if (remote.isEmpty) {
-          return Left(Failure(message: 'No User Found'));
+          return const FailureResult(ServerFailure('No User Found'));
         }
-        await SharedPreferencesSingleton.setString(tokenKey, remote);
-        return Right(remote);
-      } on ServerException catch (e) {
-        return Left(ServerFailure(message: e.errorModel.errorMessage));
+        return Success(remote);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
       }
     } else {
-      return Left(Failure(message: 'You are Offline'));
+      return const FailureResult(ServerFailure('You are Offline'));
     }
   }
 
   @override
-  Future<Either<Failure, Response>> signup(SignupParams params) async {
-    if (await networkInfo.isConnected!) {
+  Future<ApiResult<AuthResultEntity>> signup(SignupParams params) async {
+    if (await networkInfo.isConnected) {
       try {
-        final remote = await authApiSource.signUp(params: params);
-
-        final responseData = remote.data;
-        if (responseData is Map) {
-          final responseMap = Map<String, dynamic>.from(responseData as Map);
-          final token = responseMap['idToken'] as String?;
-          if (token != null && token.isNotEmpty) {
-            await SharedPreferencesSingleton.setString(tokenKey, token);
-          }
-        }
-
-        return Right(remote);
-      } on ServerException catch (e) {
-        return Left(ServerFailure(message: e.errorModel.errorMessage));
+        final result = await authApiSource.signUp(params: params);
+        return Success(result);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
       }
     } else {
-      return Left(Failure(message: 'You are Offline'));
+      return const FailureResult(ServerFailure('You are Offline'));
     }
+  }
+
+  @override
+  Future<ApiResult<String>> verifyOtp({
+    required String email,
+    required String token,
+    bool isPasswordReset = false,
+  }) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final accessToken = await authApiSource.verifyOtp(
+          email: email,
+          token: token,
+          isPasswordReset: isPasswordReset,
+        );
+        return Success(accessToken);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> resendOtp({
+    required String email,
+    bool isPasswordReset = false,
+  }) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await authApiSource.resendOtp(
+          email: email,
+          isPasswordReset: isPasswordReset,
+        );
+        return const Success(null);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> updatePassword({required String newPassword}) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await authApiSource.updatePassword(newPassword: newPassword);
+        return const Success(null);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> logout() async {
+    try {
+      await authApiSource.signOut();
+    } catch (_) {
+    } finally {
+      try {
+        if (Hive.isBoxOpen(AppConstants.userKey)) {
+          try {
+            final box = Hive.box<UserEntity>(AppConstants.userKey);
+            await box.clear();
+          } catch (_) {
+            final box = Hive.box(AppConstants.userKey);
+            await box.clear();
+          }
+        }
+      } catch (_) {}
+      try {
+        await SharedPreferencesSingleton.remove(AppConstants.tokenKey);
+        await SharedPreferencesSingleton.remove(AppConstants.hasCompletedCategoriesKey);
+      } catch (_) {}
+      try {
+        final allKeys = SharedPreferencesSingleton.getKeys();
+        for (final k in allKeys) {
+          if (k.startsWith('pending_category_sync')) {
+            await SharedPreferencesSingleton.remove(k);
+          }
+        }
+      } catch (_) {}
+    }
+    return const Success(null);
   }
 }

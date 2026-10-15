@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/features/onboarding/presentation/widgets/dots_widget.dart';
 import 'package:mind_feed/features/onboarding/presentation/widgets/next_button.dart';
 import 'package:mind_feed/features/onboarding/presentation/widgets/on_boarding_background.dart';
 import 'package:mind_feed/features/onboarding/presentation/widgets/on_boarding_page_view.dart';
@@ -33,7 +32,7 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
     return Stack(
       children: [
         OnBoardingBackground(pageController: _pageController),
-        SkipButton(),
+        const SkipButton(),
         OnBoardingPageView(
           pageController: _pageController,
           onPageChanged: (index) {
@@ -42,8 +41,18 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
             });
           },
         ),
-        DotsWidget(currentPage: _currentPage),
-        NextButton(pageController: _pageController),
+        Positioned(
+          bottom: 24,
+          left: 28,
+          right: 28,
+          child: SafeArea(
+            top: false,
+            child: NextButton(
+              pageController: _pageController,
+              currentPage: _currentPage,
+            ),
+          ),
+        ),
       ],
     );
   }

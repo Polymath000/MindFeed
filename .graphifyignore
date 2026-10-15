@@ -1,0 +1,8 @@
+lib/l10n/generated/
+*.g.dart
+linux/
+windows/
+android/
+ios/
+macos/
+web/

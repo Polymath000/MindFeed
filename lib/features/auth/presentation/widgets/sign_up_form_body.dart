@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mind_feed/config/themes/app_text_style.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/core/params/signup_params.dart';
+import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
 import 'package:mind_feed/core/widgets/custom_text_field.dart';
 import 'package:mind_feed/features/auth/presentation/controllers/signup_cubit/signup_cubit.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/email_text_field.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/password_requirements.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/password_text_field.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 class SignUpFormBody extends StatefulWidget {
   const SignUpFormBody({super.key});
@@ -24,22 +26,17 @@ class _SignUpFormBodyState extends State<SignUpFormBody> {
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
   late final TextEditingController _confirmPasswordController;
+  late final ValueNotifier<AutovalidateMode> _autovalidateMode;
 
-  AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
-  SignupParams params = SignupParams(email: '', password: '', displayName: '');
-  String _password = '';
   @override
   void initState() {
+    super.initState();
     _usernameController = TextEditingController();
     _passwordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
     _emailController = TextEditingController();
-    _passwordController.addListener(() {
-      setState(() {
-        _password = _passwordController.text;
-      });
-    });
-    super.initState();
+    _autovalidateMode =
+        ValueNotifier<AutovalidateMode>(AutovalidateMode.disabled);
   }
 
   @override
@@ -48,90 +45,134 @@ class _SignUpFormBodyState extends State<SignUpFormBody> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _autovalidateMode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      autovalidateMode: autovalidateMode,
-      child: Center(
-        child: Column(
-          children: [
-            SizedBox(height: 85.0),
-            Text(
-              'Create Account',
-              style: AppTextStyles.displaySmall!.copyWith(
-                fontWeight: FontWeight.w200,
-                color: Colors.white,
-              ),
+    return BlocBuilder<SignupCubit, SignupState>(
+      buildWhen: (previous, current) =>
+          (previous is SignupLoading) != (current is SignupLoading),
+      builder: (context, state) {
+        final bool isLoading = state is SignupLoading;
+        return ValueListenableBuilder<AutovalidateMode>(
+          valueListenable: _autovalidateMode,
+          builder: (context, autovalidateMode, child) {
+            return Form(
+              key: formKey,
+              autovalidateMode: autovalidateMode,
+          child: Center(
+            child: Column(
+              children: [
+                const SizedBox(height: 32.0),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: AppColors.charcoal,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.borderDark, width: 1.5),
+                  ),
+                  child: Image.asset(
+                    Assets.assetsImagesMindFeedLogo,
+                    height: 44,
+                    width: 44,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Join MindFeed',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.8,
+                    color: AppColors.softCream,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Start your journey with curated insights',
+                  style: TextStyle(
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.greyText,
+                  ),
+                ),
+                const SizedBox(height: 32.0),
+                CustomTextField(
+                  hintText: 'Full name or username',
+                  prefixIcon: const Icon(
+                    AppIcons.personOutline,
+                    color: AppColors.greyText,
+                    size: 20,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Please enter your username';
+                    }
+                    return null;
+                  },
+                  textEditingController: _usernameController,
+                ),
+                const SizedBox(height: 14.0),
+                EmailTextField(controller: _emailController),
+                const SizedBox(height: 14.0),
+                PasswordTextField(
+                  hintText: 'Create password',
+                  controller: _passwordController,
+                ),
+                const SizedBox(height: 14.0),
+                PasswordTextField(
+                  hintText: 'Confirm password',
+                  controller: _confirmPasswordController,
+                ),
+                const SizedBox(height: 18.0),
+                ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: _passwordController,
+                  builder: (context, value, child) {
+                    return PasswordRequirements(password: value.text);
+                  },
+                ),
+                const SizedBox(height: 22.0),
+                CustomButton(
+                  buttonText: 'Create Account',
+                  isLoading: isLoading,
+                  onTap: isLoading
+                      ? null
+                      : () {
+                          if (formKey.currentState?.validate() ?? false) {
+                            final password = _passwordController.text;
+                            final confirmPassword = _confirmPasswordController.text;
+                            if (password != confirmPassword &&
+                                password.isNotEmpty &&
+                                confirmPassword.isNotEmpty) {
+                              customShowSnackBar(
+                                message: 'Passwords do not match',
+                                context: context,
+                              );
+                            } else {
+                              FocusScope.of(context).unfocus();
+                              context.read<SignupCubit>().eitherFailureOrSignup(
+                                params: SignupParams(
+                                  displayName: _usernameController.text.trim(),
+                                  email: _emailController.text.trim(),
+                                  password: password,
+                                ),
+                              );
+                            }
+                          } else {
+                            _autovalidateMode.value = AutovalidateMode.always;
+                          }
+                        },
+                ),
+              ],
             ),
-            const SizedBox(height: 5),
-            Text(
-              'Join thousands of readers worldwide',
-              style: AppTextStyles.bodyMedium!.copyWith(
-                fontWeight: FontWeight.w300,
-                color: Colors.grey,
-              ),
-            ),
-            SizedBox(height: 50.0),
-            CustomTextField(
-              hintText: 'Username',
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your username';
-                }
-                return null;
-              },
-              textEditingController: _usernameController,
-            ),
-            SizedBox(height: 16.0),
-            EmailTextField(controller: _emailController),
-            SizedBox(height: 16.0),
-            PasswordTextField(
-              hintText: 'Password',
-              controller: _passwordController,
-            ),
-            SizedBox(height: 16.0),
-            PasswordTextField(
-              hintText: 'Confirm Password',
-              controller: _confirmPasswordController,
-            ),
-            SizedBox(height: 22.0),
-            PasswordRequirements(password: _password),
-            SizedBox(height: 22.0),
-            CustomButton(
-              buttonText: 'Sign Up',
-              onTap: () {
-                if (formKey.currentState?.validate() ?? false) {
-                  final password = _passwordController.text;
-                  final confirmPassword = _confirmPasswordController.text;
-                  if (password != confirmPassword &&
-                      password.isNotEmpty &&
-                      confirmPassword.isNotEmpty) {
-                    customShowSnackBar(
-                      message: 'Passwords do not match',
-                      context: context,
-                    );
-                  } else {
-                    FocusScope.of(context).unfocus();
-                    context.read<SignupCubit>().eitherFailureOrSignup(
-                      params: SignupParams(
-                        displayName: _usernameController.text,
-                        email: _emailController.text,
-                        password: password,
-                      ),
-                    );
-                  }
-                } else {
-                  autovalidateMode = AutovalidateMode.always;
-                }
-              },
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
+  },
+);
   }
 }

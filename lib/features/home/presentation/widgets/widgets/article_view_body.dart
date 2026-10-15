@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/config/themes/app_text_style.dart';
-import 'package:mind_feed/core/utls/app_images.dart';
+import 'package:mind_feed/core/constants/app_text_styles.dart';
+import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/features/home/presentation/widgets/widgets/author_card.dart';
 import 'package:mind_feed/features/home/presentation/widgets/widgets/custom_popup_menu_button_for_article_view.dart';
 
