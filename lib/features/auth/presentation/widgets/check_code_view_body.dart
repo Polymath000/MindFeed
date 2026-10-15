@@ -11,7 +11,6 @@ import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
-import 'package:mind_feed/core/widgets/custom_loading_indecator.dart';
 import 'package:mind_feed/core/widgets/custom_text_field.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/domain/usecases/resend_otp_use_case.dart';
@@ -300,13 +299,10 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
                           ValueListenableBuilder<bool>(
                             valueListenable: _isLoading,
                             builder: (context, isLoading, _) {
-                              if (isLoading) {
-                                return const Center(
-                                    child: CustomLoadingIndecator());
-                              }
                               return CustomButton(
                                 buttonText: 'Verify Code',
-                                onTap: _handleVerify,
+                                isLoading: isLoading,
+                                onTap: isLoading ? null : _handleVerify,
                               );
                             },
                           ),

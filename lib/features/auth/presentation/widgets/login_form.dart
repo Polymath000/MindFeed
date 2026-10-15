@@ -38,44 +38,54 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
+  void _onSignInPressed() {
+    if (formKey.currentState?.validate() ?? false) {
+      FocusScope.of(context).unfocus();
+      context.read<LoginCubit>().eitherFailureOrLogin(
+            email: _emailController.text.trim(),
+            password: _passwordController.text,
+          );
+    } else {
+      _autovalidateMode.value = AutovalidateMode.always;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<AutovalidateMode>(
-      valueListenable: _autovalidateMode,
-      builder: (context, autovalidateMode, child) {
-        return Form(
-          autovalidateMode: autovalidateMode,
-          key: formKey,
-          child: Column(
-            children: [
-              const Logo(),
-              EmailTextField(
-                controller: _emailController,
+    return BlocBuilder<LoginCubit, LoginState>(
+      buildWhen: (previous, current) =>
+          (previous is LoginLoading) != (current is LoginLoading),
+      builder: (context, state) {
+        final bool isLoading = state is LoginLoading;
+        return ValueListenableBuilder<AutovalidateMode>(
+          valueListenable: _autovalidateMode,
+          builder: (context, autovalidateMode, child) {
+            return Form(
+              autovalidateMode: autovalidateMode,
+              key: formKey,
+              child: Column(
+                children: [
+                  const Logo(),
+                  EmailTextField(
+                    controller: _emailController,
+                  ),
+                  const SizedBox(height: 16.0),
+                  PasswordTextField(
+                    hintText: 'Password',
+                    controller: _passwordController,
+                  ),
+                  const SizedBox(height: 8.0),
+                  const ForgetPasswordText(),
+                  const SizedBox(height: 20.0),
+                  CustomButton(
+                    buttonText: 'Sign In',
+                    isLoading: isLoading,
+                    onTap: isLoading ? null : _onSignInPressed,
+                  ),
+                ],
               ),
-              const SizedBox(height: 16.0),
-              PasswordTextField(
-                hintText: 'Password',
-                controller: _passwordController,
-              ),
-              const SizedBox(height: 8.0),
-              const ForgetPasswordText(),
-              const SizedBox(height: 20.0),
-              CustomButton(
-                buttonText: 'Sign In',
-                onTap: () {
-                  if (formKey.currentState?.validate() ?? false) {
-                    FocusScope.of(context).unfocus();
-                    context.read<LoginCubit>().eitherFailureOrLogin(
-                      email: _emailController.text.trim(),
-                      password: _passwordController.text,
-                    );
-                  } else {
-                    _autovalidateMode.value = AutovalidateMode.always;
-                  }
-                },
-              ),
-            ],
-          ),
+            );
+          },
         );
       },
     );

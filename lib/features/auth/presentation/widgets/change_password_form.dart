@@ -89,8 +89,8 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
                   _buildRequirements(),
                   const SizedBox(height: 24),
                   CustomButton(
-                    buttonText:
-                        isLoading ? 'Updating...' : 'Update Password',
+                    buttonText: 'Update Password',
+                    isLoading: isLoading,
                     onTap: isLoading ? null : () => _onSubmit(context),
                   ),
                 ],

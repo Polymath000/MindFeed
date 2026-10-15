@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
-import 'package:mind_feed/core/widgets/custom_loading_indecator.dart';
 import 'package:mind_feed/features/auth/presentation/controllers/signup_cubit/signup_cubit.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/auth_background.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/security_tip_text.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/sign_up_form.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/there_is_an_account_text.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class SignUpViewBody extends StatelessWidget {
   const SignUpViewBody({super.key});
@@ -50,37 +48,33 @@ class SignUpViewBody extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        return ModalProgressHUD(
-          progressIndicator: CustomLoadingIndecator(),
-          inAsyncCall: state is SignupLoading,
-          child: Stack(
-            children: [
-              authBackground(),
-              SafeArea(
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 440),
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24.0,
-                        vertical: 16.0,
-                      ),
-                      child: const Column(
-                        children: [
-                          SignUpForm(),
-                          SizedBox(height: 24.0),
-                          SecurityTipText(),
-                          SizedBox(height: 20.0),
-                          ThereIsAnAccountText(),
-                          SizedBox(height: 24.0),
-                        ],
-                      ),
+        return Stack(
+          children: [
+            authBackground(),
+            SafeArea(
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 440),
+                  child: const SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                      vertical: 16.0,
+                    ),
+                    child: Column(
+                      children: [
+                        SignUpForm(),
+                        SizedBox(height: 24.0),
+                        SecurityTipText(),
+                        SizedBox(height: 20.0),
+                        ThereIsAnAccountText(),
+                        SizedBox(height: 24.0),
+                      ],
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );

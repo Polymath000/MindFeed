@@ -94,7 +94,8 @@ class _SendCodeViewBodyState extends State<SendCodeViewBody> {
                               _buildEmailField(),
                               const SizedBox(height: 28),
                               CustomButton(
-                                buttonText: isLoading ? 'Sending...' : 'Send Instructions',
+                                buttonText: 'Send Instructions',
+                                isLoading: isLoading,
                                 onTap: isLoading ? null : _onSendPressed,
                               ),
                             ],

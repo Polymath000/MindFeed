@@ -98,7 +98,8 @@ class CategoriesViewBody extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16.0, vertical: 12.0),
                     child: CustomButton(
-                      buttonText: isLoading ? 'Saving...' : 'Continue',
+                      buttonText: 'Continue',
+                      isLoading: isLoading,
                       onTap: isLoading
                           ? null
                           : () {

@@ -97,6 +97,9 @@ The codebase follows **Feature-First Clean Architecture**:
   - Connected `CheckCodeView` and `CheckCodeViewBody`: inspected `isPasswordReset` flag; upon successful OTP verification, navigated to `AppRoutes.changePassword` with the recovery email.
   - Connected `ChangePasswordView` and `ChangePasswordForm`: wrapped with `BlocConsumer<ChangePasswordCubit, ChangePasswordState>`, used `ValueNotifier` for password inputs and form validation, enforced password match checking, called `updatePassword`, and routed back to `AppRoutes.login` with success confirmation.
   - Wrapped titles in `SendCodeViewBody` and `ChangePasswordViewBody` with `Expanded` to guarantee responsive rendering across varying display densities.
-  - Added comprehensive test suite in `test/features/auth/forget_password_flow_test.dart` (12 unit and widget tests) and updated test mock implementations.
   - Entire test suite passes (89/89 tests) with zero static analyzer issues.
+- **Button Loading UX & Custom Loading Indicator**:
+  - Eliminated full-screen `ModalProgressHUD` veils and button-hiding conditional replacements across all authentication screens (`LoginForm`, `LoginViewBody`, `SignUpFormBody`, `SignUpViewBody`, `CheckCodeViewBody`, `SendCodeViewBody`, `ChangePasswordForm`, `CategoriesViewBody`).
+  - Redesigned `CustomLoadingIndicator` with custom smooth rotation animation, customizable size, stroke width, and editorial palette defaults (`AppColors.ink` on cream backgrounds).
+  - Enhanced `CustomButton` with an `isLoading` property: when active, the button stays in place without layout shifts or height collapse, disables double submissions, and renders the `CustomLoadingIndicator` centered directly inside the button.
 
