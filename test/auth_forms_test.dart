@@ -34,15 +34,25 @@ class _FakeAuthRepo implements AuthRepository {
   Future<ApiResult<String>> verifyOtp({
     required String email,
     required String token,
+    bool isPasswordReset = false,
   }) async =>
       const Success('token');
 
   @override
-  Future<ApiResult<void>> resendOtp({required String email}) async =>
+  Future<ApiResult<void>> resendOtp({
+    required String email,
+    bool isPasswordReset = false,
+  }) async =>
       const Success(null);
 
   @override
   Future<ApiResult<void>> forgetPassword(String email) async =>
+      const Success(null);
+
+  @override
+  Future<ApiResult<void>> updatePassword({
+    required String newPassword,
+  }) async =>
       const Success(null);
 
   @override

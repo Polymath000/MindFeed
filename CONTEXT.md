@@ -84,9 +84,19 @@ The codebase follows **Feature-First Clean Architecture**:
   - In `CheckAppStartupUseCase`, verified `hasCompletedCategories`. If a user starts sign-up or verification but leaves/kills the app before saving categories, the incomplete session/token and Hive user are purged and the app opens to `StartupLogin()` (the user remains signed out).
   - Cleaned up `hasCompletedCategoriesKey` on logout in `AuthRepoImpl.logout()`.
   - Added full test coverage in `test/features/auth/category_onboarding_gate_test.dart` and updated `splash_test.dart`, `categories_view_test.dart`, and `email_confirmation_and_auth_flow_test.dart` (all 87 tests passing with zero analyze warnings).
-- **Clean Architecture State Isolation & Auth Local DB Elimination**:
-  - Enforced strict Clean Architecture: Cubits (`CategoriesCubit`, `LoginCubit`, `SignupCubit`) manage and emit states only.
-  - Eliminated local database access (`Hive`, `SharedPreferencesSingleton`) and direct client calls from `features/auth` presentation layer.
-  - Encapsulated category persistence in the data layer (`ProfileRepoImpl.syncFavoriteCategories`).
-  - Refactored `CheckUserHasCategoriesUseCase` and `CheckAppStartupUseCase` into pure domain use cases.
+- **Forgot Password & Change Password Architecture (Supabase Auth)**:
+  - Implemented end-to-end password recovery flow using Supabase Auth and native Dart 3 sealed `ApiResult<T>`.
+  - Added `isPasswordReset` support to `AuthApiSource.verifyOtp`, `AuthApiSource.resendOtp`, `AuthRepository.verifyOtp`, `AuthRepository.resendOtp`, `VerifyOtpUseCase`, and `ResendOtpUseCase` to cleanly switch between `OtpType.signup` and `OtpType.recovery`.
+  - Added `updatePassword({required String newPassword})` to `AuthApiSource`, `AuthRepository`, and `AuthRepoImpl`, securely updating the authenticated user's password via Supabase `auth.updateUser(UserAttributes(password: newPassword))`.
+  - Created domain use cases `ForgetPasswordUseCase` and `UpdatePasswordUseCase` in `lib/features/auth/domain/usecases/`.
+  - Created `CheckCodeArgs` entity with `email` and `isPasswordReset` in `lib/features/auth/domain/entities/check_code_args.dart`, and updated `AppRoutes.checkCode` in `lib/config/routes/app_routes.dart` to support both `CheckCodeArgs` and legacy arguments backwards-compatibly.
+  - Implemented `ForgetPasswordCubit` and `ForgetPasswordState` (sealed class: `ForgetPasswordInitial`, `ForgetPasswordLoading`, `ForgetPasswordSuccess`, `ForgetPasswordFailure`) in `lib/features/auth/presentation/controllers/forget_password_cubit/`.
+  - Implemented `ChangePasswordCubit` and `ChangePasswordState` (sealed class: `ChangePasswordInitial`, `ChangePasswordLoading`, `ChangePasswordSuccess`, `ChangePasswordFailure`) in `lib/features/auth/presentation/controllers/change_password_cubit/`.
+  - Registered use cases and cubits in `setup_service_locator.dart`.
+  - Connected `SendCodeView` and `SendCodeViewBody`: wrapped with `BlocConsumer<ForgetPasswordCubit, ForgetPasswordState>`, validated email, triggered `sendResetInstructions`, and navigated to `AppRoutes.checkCode` with `CheckCodeArgs(email: email, isPasswordReset: true)`.
+  - Connected `CheckCodeView` and `CheckCodeViewBody`: inspected `isPasswordReset` flag; upon successful OTP verification, navigated to `AppRoutes.changePassword` with the recovery email.
+  - Connected `ChangePasswordView` and `ChangePasswordForm`: wrapped with `BlocConsumer<ChangePasswordCubit, ChangePasswordState>`, used `ValueNotifier` for password inputs and form validation, enforced password match checking, called `updatePassword`, and routed back to `AppRoutes.login` with success confirmation.
+  - Wrapped titles in `SendCodeViewBody` and `ChangePasswordViewBody` with `Expanded` to guarantee responsive rendering across varying display densities.
+  - Added comprehensive test suite in `test/features/auth/forget_password_flow_test.dart` (12 unit and widget tests) and updated test mock implementations.
+  - Entire test suite passes (89/89 tests) with zero static analyzer issues.
 
