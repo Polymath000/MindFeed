@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mind_feed/core/params/signup_params.dart';
+import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/domain/usecases/signup_use_case.dart';
 
 part 'signup_state.dart';
@@ -18,20 +19,29 @@ class SignupCubit extends Cubit<SignupState> {
       result.when(
         success: (authResult) {
           if (authResult.hasActiveSession) {
-            emit(SignupSuccess());
+            final userEntity = UserEntity(
+              userName: params.displayName,
+              email: params.email,
+              favoriteCategories: const [],
+              token: authResult.accessToken,
+            );
+            emit(SignupSuccess(userEntity: userEntity));
           } else {
             emit(SignupRequiresConfirmation(email: authResult.email));
           }
         },
         failure: (failure) {
           final msg = failure.message.toLowerCase();
-          final isRegistered = msg.contains('already exists') ||
+          final isRegistered =
+              msg.contains('already exists') ||
               msg.contains('already registered') ||
               msg.contains('user_already_exists');
-          emit(SignupFailure(
-            errorMessage: failure.message,
-            isUserAlreadyRegistered: isRegistered,
-          ));
+          emit(
+            SignupFailure(
+              errorMessage: failure.message,
+              isUserAlreadyRegistered: isRegistered,
+            ),
+          );
         },
       );
     }

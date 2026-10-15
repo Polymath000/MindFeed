@@ -124,6 +124,10 @@ class ProfileRepoImpl implements ProfileRepository {
       try {
         await SharedPreferencesSingleton.setBool(syncKey, value: false);
         await SharedPreferencesSingleton.setBool('pending_category_sync', value: false);
+        await SharedPreferencesSingleton.setBool(
+          AppConstants.hasCompletedCategoriesKey,
+          value: matchingIds.isNotEmpty,
+        );
       } catch (_) {}
 
       return const Success(null);

@@ -39,6 +39,17 @@ class LoginViewBody extends StatelessWidget {
           } else {
             customShowSnackBar(message: state.errorMessage, context: context);
           }
+        } else if (state is LoginRequiresCategories) {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.categories,
+            (route) => false,
+            arguments: state.userEntity,
+          );
+          customShowSnackBar(
+            message: 'Please select your favorite categories to continue.',
+            context: context,
+          );
         } else if (state is LoginSuccess) {
           Navigator.pushNamedAndRemoveUntil(context, AppRoutes.main, (route) => false);
           customShowSnackBar(message: 'Login Success', context: context);

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_text_styles.dart';
@@ -103,13 +102,7 @@ class CategoriesViewBody extends StatelessWidget {
                       onTap: isLoading
                           ? null
                           : () {
-                              String? userId;
-                              try {
-                                userId = Supabase
-                                    .instance.client.auth.currentUser?.id;
-                              } catch (_) {}
                               cubit.saveCategories(
-                                userId: userId,
                                 currentUser: userEntity,
                               );
                             },

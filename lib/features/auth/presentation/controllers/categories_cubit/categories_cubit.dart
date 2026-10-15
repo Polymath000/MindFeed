@@ -7,11 +7,13 @@ part 'categories_state.dart';
 class CategoriesCubit extends Cubit<CategoriesState> {
   final SaveFavoriteCategoriesUseCase saveFavoriteCategoriesUseCase;
   final Set<String> _selectedCategories = <String>{};
+  final bool _requireSelection;
 
   CategoriesCubit({
     required this.saveFavoriteCategoriesUseCase,
     List<String>? initialCategories,
-  }) : super(CategoriesInitial(initialCategories ?? const [])) {
+  })  : _requireSelection = (initialCategories == null || initialCategories.isEmpty),
+        super(CategoriesInitial(initialCategories ?? const [])) {
     if (initialCategories != null) {
       _selectedCategories.addAll(initialCategories);
     }
@@ -29,12 +31,19 @@ class CategoriesCubit extends Cubit<CategoriesState> {
   }
 
   Future<void> saveCategories({
-    required String? userId,
+    String? userId,
     UserEntity? currentUser,
   }) async {
     if (state is CategoriesLoading) return;
-    emit(CategoriesLoading(_selectedCategories.toList()));
+    if (_requireSelection && _selectedCategories.isEmpty) {
+      emit(const CategoriesFailure(
+        errorMessage: 'Please select at least one category to continue',
+        selectedCategories: [],
+      ));
+      return;
+    }
 
+    emit(CategoriesLoading(_selectedCategories.toList()));
     final list = _selectedCategories.toList();
     final effectiveUserId = userId ?? currentUser?.email ?? 'anonymous';
 
@@ -44,23 +53,18 @@ class CategoriesCubit extends Cubit<CategoriesState> {
       currentUser: currentUser,
     );
 
-    if (!outcome.isLocalSaved) {
-      emit(
-        CategoriesFailure(
-          errorMessage:
-              outcome.errorMessage ?? 'Failed to save categories locally',
-          selectedCategories: list,
-        ),
-      );
+    if (!outcome.isLocalSaved && !outcome.isRemoteSynced) {
+      emit(CategoriesFailure(
+        errorMessage: outcome.errorMessage ?? 'Failed to save categories',
+        selectedCategories: list,
+      ));
       return;
     }
 
-    emit(
-      CategoriesSuccess(
-        list,
-        isPendingSync: outcome.isPendingSync,
-        isRemoteSynced: outcome.isRemoteSynced,
-      ),
-    );
+    emit(CategoriesSuccess(
+      list,
+      isPendingSync: outcome.isPendingSync,
+      isRemoteSynced: outcome.isRemoteSynced,
+    ));
   }
 }

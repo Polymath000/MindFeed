@@ -48,7 +48,6 @@ class AuthRepoImpl extends AuthRepository {
         if (remote.isEmpty) {
           return const FailureResult(ServerFailure('No User Found'));
         }
-        await SharedPreferencesSingleton.setString(AppConstants.tokenKey, remote);
         return Success(remote);
       } catch (e) {
         return FailureResult(ApiErrorHandler.handle(e).toFailure());
@@ -63,9 +62,6 @@ class AuthRepoImpl extends AuthRepository {
     if (await networkInfo.isConnected) {
       try {
         final result = await authApiSource.signUp(params: params);
-        if (result.hasActiveSession && result.accessToken != null && result.accessToken!.isNotEmpty) {
-          await SharedPreferencesSingleton.setString(AppConstants.tokenKey, result.accessToken!);
-        }
         return Success(result);
       } catch (e) {
         return FailureResult(ApiErrorHandler.handle(e).toFailure());
@@ -83,7 +79,6 @@ class AuthRepoImpl extends AuthRepository {
     if (await networkInfo.isConnected) {
       try {
         final accessToken = await authApiSource.verifyOtp(email: email, token: token);
-        await SharedPreferencesSingleton.setString(AppConstants.tokenKey, accessToken);
         return Success(accessToken);
       } catch (e) {
         return FailureResult(ApiErrorHandler.handle(e).toFailure());
@@ -126,6 +121,7 @@ class AuthRepoImpl extends AuthRepository {
       } catch (_) {}
       try {
         await SharedPreferencesSingleton.remove(AppConstants.tokenKey);
+        await SharedPreferencesSingleton.remove(AppConstants.hasCompletedCategoriesKey);
       } catch (_) {}
       try {
         final allKeys = SharedPreferencesSingleton.getKeys();

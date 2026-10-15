@@ -1,14 +1,14 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
-import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
-import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
 import 'package:mind_feed/core/widgets/custom_loading_indecator.dart';
@@ -70,33 +70,20 @@ class _CheckCodeViewBodyState extends State<CheckCodeViewBody> {
   }
 
   Future<void> _onSuccessfulAuthentication(String accessToken) async {
-    await SharedPreferencesSingleton.setString(AppConstants.tokenKey, accessToken);
     final user = Supabase.instance.client.auth.currentUser;
-    if (user != null && Hive.isBoxOpen(AppConstants.userKey)) {
-      final userBox = Hive.box<UserEntity>(AppConstants.userKey);
-      final userEntity = UserEntity(
-        userName: user.userMetadata?['display_name'] as String? ?? '',
-        email: user.email ?? widget.email,
-        favoriteCategories: const [],
-        token: accessToken,
+    final userEntity = UserEntity(
+      userName: user?.userMetadata?['display_name'] as String? ?? '',
+      email: user?.email ?? widget.email,
+      favoriteCategories: const [],
+      token: accessToken,
+    );
+    if (mounted) {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.categories,
+        (route) => false,
+        arguments: userEntity,
       );
-      await userBox.put(AppConstants.userKey, userEntity);
-      if (mounted) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          AppRoutes.categories,
-          (route) => false,
-          arguments: userEntity,
-        );
-      }
-    } else {
-      if (mounted) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          AppRoutes.main,
-          (route) => false,
-        );
-      }
     }
   }
 

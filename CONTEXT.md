@@ -73,4 +73,20 @@ The codebase follows **Feature-First Clean Architecture**:
 - **ValueNotifier State Management Optimization in Auth Forms**:
   - Replaced multiple unnecessary `setState` calls in `CheckCodeViewBody`, `SendCodeViewBody`, and `PasswordTextField` with `ValueNotifier` and `ValueListenableBuilder`.
   - Eliminated full widget tree rebuilds during cooldown countdown timer ticks, text entry, obscured password toggles, and form validation updates.
+- **Mandatory Category Onboarding Gate & Deferred Sign-In Persistence**:
+  - Enforced mandatory category selection prior to finalizing sign-in or navigating to the home page (`AppRoutes.main`).
+  - Added `AppConstants.hasCompletedCategoriesKey` (`hasCompletedCategories`) flag in `lib/core/constants/constants.dart`.
+  - Created `CheckUserHasCategoriesUseCase` in `lib/features/profile/domain/usecases/check_user_has_categories_use_case.dart` (registered in `setup_service_locator.dart`), checking local SharedPreferences, Hive cache, and remote profile favorites.
+  - Deferred session and token persistence: `AuthRepoImpl.signup`, `AuthRepoImpl.verifyOtp`, `AuthRepoImpl.login`, and `CheckCodeViewBody` no longer prematurely persist `tokenKey` into `SharedPreferences`.
+  - In `LoginCubit`, verified whether the authenticated user already completed category onboarding. If categories exist, persists session and emits `LoginSuccess()`. If not, emits `LoginRequiresCategories(userEntity)` and routes to `AppRoutes.categories`.
+  - In `SignUpViewBody` and `CheckCodeViewBody`, routed authenticated users directly to `AppRoutes.categories` with `userEntity`.
+  - In `CategoriesCubit.saveCategories`, validated that at least one category is selected for initial onboarding, saved categories locally and synced remotely, and finalized sign-in persistence by setting `hasCompletedCategoriesKey = true`, storing `tokenKey`, and updating cached `UserEntity` in Hive.
+  - In `CheckAppStartupUseCase`, verified `hasCompletedCategories`. If a user starts sign-up or verification but leaves/kills the app before saving categories, the incomplete session/token and Hive user are purged and the app opens to `StartupLogin()` (the user remains signed out).
+  - Cleaned up `hasCompletedCategoriesKey` on logout in `AuthRepoImpl.logout()`.
+  - Added full test coverage in `test/features/auth/category_onboarding_gate_test.dart` and updated `splash_test.dart`, `categories_view_test.dart`, and `email_confirmation_and_auth_flow_test.dart` (all 87 tests passing with zero analyze warnings).
+- **Clean Architecture State Isolation & Auth Local DB Elimination**:
+  - Enforced strict Clean Architecture: Cubits (`CategoriesCubit`, `LoginCubit`, `SignupCubit`) manage and emit states only.
+  - Eliminated local database access (`Hive`, `SharedPreferencesSingleton`) and direct client calls from `features/auth` presentation layer.
+  - Encapsulated category persistence in the data layer (`ProfileRepoImpl.syncFavoriteCategories`).
+  - Refactored `CheckUserHasCategoriesUseCase` and `CheckAppStartupUseCase` into pure domain use cases.
 

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart';
-import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/presentation/controllers/categories_cubit/categories_cubit.dart';
@@ -42,14 +40,7 @@ class CategoriesView extends StatelessWidget {
   }
 
   CategoriesCubit _buildCubit() {
-    List<String>? initial;
-    if (userEntity?.favoriteCategories != null) {
-      initial = userEntity!.favoriteCategories;
-    } else if (Hive.isBoxOpen(AppConstants.userKey)) {
-      final cached =
-          Hive.box<UserEntity>(AppConstants.userKey).get(AppConstants.userKey);
-      initial = cached?.favoriteCategories;
-    }
+    final initial = userEntity?.favoriteCategories;
 
     if (profileRemoteDataSource != null) {
       final repo = ProfileRepoImpl(remoteDataSource: profileRemoteDataSource!);

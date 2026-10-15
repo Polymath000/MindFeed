@@ -12,24 +12,46 @@ class CheckAppStartupUseCase {
   Future<StartupDestination> call() async {
     final bool isOnboardingSeen =
         SharedPreferencesSingleton.getBool(isOnboardingSeenKey) ?? false;
-    if (!isOnboardingSeen) {
-      return const StartupOnboarding();
-    }
+    if (!isOnboardingSeen) return const StartupOnboarding();
 
     final token = SharedPreferencesSingleton.getString(AppConstants.tokenKey);
     final bool hasToken = token != null && token.isNotEmpty;
+    final bool hasSession = _hasActiveSession();
 
-    bool hasSupabaseSession = false;
-    try {
-      hasSupabaseSession = _authApiSource?.currentUser != null;
-    } catch (_) {
-      hasSupabaseSession = false;
-    }
+    if (!hasToken && !hasSession) return const StartupLogin();
 
-    if (!hasToken && !hasSupabaseSession) {
+    if (!_hasCompletedCategories()) {
+      await _cleanupIncompleteSession();
       return const StartupLogin();
     }
 
     return const StartupMain();
+  }
+
+  bool _hasActiveSession() {
+    try {
+      return _authApiSource?.currentUser != null;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  bool _hasCompletedCategories() {
+    return SharedPreferencesSingleton.getBool(
+          AppConstants.hasCompletedCategoriesKey,
+        ) ??
+        false;
+  }
+
+  Future<void> _cleanupIncompleteSession() async {
+    try {
+      await _authApiSource?.signOut();
+    } catch (_) {}
+    try {
+      await SharedPreferencesSingleton.remove(AppConstants.tokenKey);
+      await SharedPreferencesSingleton.remove(
+        AppConstants.hasCompletedCategoriesKey,
+      );
+    } catch (_) {}
   }
 }

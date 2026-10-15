@@ -21,8 +21,16 @@ class SignUpViewBody extends StatelessWidget {
           Navigator.pushNamed(context, AppRoutes.checkCode, arguments: state.email);
           customShowSnackBar(message: 'Check your email for your confirmation code', context: context);
         } else if (state is SignupSuccess) {
-          Navigator.pushNamedAndRemoveUntil(context, AppRoutes.main, (route) => false);
-          customShowSnackBar(message: 'Sign Up Success', context: context);
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.categories,
+            (route) => false,
+            arguments: state.userEntity,
+          );
+          customShowSnackBar(
+            message: 'Sign Up Success! Please select your favorite categories.',
+            context: context,
+          );
         } else if (state is SignupFailure) {
           if (state.isUserAlreadyRegistered) {
             customShowSnackBar(
