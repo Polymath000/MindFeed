@@ -28,7 +28,7 @@ void setupServiceLocator() {
     () => NetworkInfoImpl(Connectivity()),
   );
   getIt.registerLazySingleton<CheckAppStartupUseCase>(
-    () => const CheckAppStartupUseCase(),
+    () => CheckAppStartupUseCase(authApiSource: getIt<AuthApiSource>()),
   );
   getIt.registerFactory<SplashCubit>(
     () => SplashCubit(checkAppStartupUseCase: getIt<CheckAppStartupUseCase>()),

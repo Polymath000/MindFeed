@@ -23,9 +23,22 @@ void main() {
       expect(destination, isA<StartupOnboarding>());
     });
 
-    test('returns StartupMain when onboarding seen', () async {
+    test('returns StartupLogin when onboarding seen but user not logged in', () async {
       SharedPreferences.setMockInitialValues({
         isOnboardingSeenKey: true,
+      });
+      await SharedPreferencesSingleton.init();
+
+      const useCase = CheckAppStartupUseCase();
+      final destination = await useCase();
+
+      expect(destination, isA<StartupLogin>());
+    });
+
+    test('returns StartupMain when onboarding seen and user has token', () async {
+      SharedPreferences.setMockInitialValues({
+        isOnboardingSeenKey: true,
+        AppConstants.tokenKey: 'valid_access_token',
       });
       await SharedPreferencesSingleton.init();
 
@@ -55,9 +68,30 @@ void main() {
       await cubit.close();
     });
 
-    test('emits SplashNavigateToMain when onboarding has been seen', () async {
+    test('emits SplashNavigateToLogin when onboarding seen but not logged in', () async {
       SharedPreferences.setMockInitialValues({
         isOnboardingSeenKey: true,
+      });
+      await SharedPreferencesSingleton.init();
+
+      final cubit = SplashCubit(
+        checkAppStartupUseCase: const CheckAppStartupUseCase(),
+        minDisplayDuration: Duration.zero,
+      );
+
+      expectLater(
+        cubit.stream,
+        emits(isA<SplashNavigateToLogin>()),
+      );
+
+      await cubit.initApp();
+      await cubit.close();
+    });
+
+    test('emits SplashNavigateToMain when onboarding seen and user has token', () async {
+      SharedPreferences.setMockInitialValues({
+        isOnboardingSeenKey: true,
+        AppConstants.tokenKey: 'valid_access_token',
       });
       await SharedPreferencesSingleton.init();
 

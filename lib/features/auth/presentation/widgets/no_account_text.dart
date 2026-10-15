@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/features/auth/presentation/views/signup_view.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 
 class NoAccountText extends StatelessWidget {
@@ -14,10 +14,7 @@ class NoAccountText extends StatelessWidget {
         children: [
           const Text(
             "Don't have an account?",
-            style: TextStyle(
-              color: AppColors.greyText,
-              fontSize: 14,
-            ),
+            style: TextStyle(color: AppColors.greyText, fontSize: 14),
           ),
           TextButton(
             style: TextButton.styleFrom(
@@ -26,7 +23,7 @@ class NoAccountText extends StatelessWidget {
             ),
             onPressed: () {
               FocusScope.of(context).unfocus();
-              Navigator.pushNamed(context, SignUpView.routeName);
+              Navigator.pushNamed(context, AppRoutes.signup);
             },
             child: const Text(
               'Sign Up',
