@@ -9,6 +9,8 @@ import 'package:mind_feed/core/design/editorial_mock_data.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/utls/setup_service_locator.dart';
+import 'package:mind_feed/features/home/domain/usecases/get_home_feed_use_case.dart';
 
 class HomeViewBody extends StatefulWidget {
   const HomeViewBody({super.key});
@@ -22,6 +24,7 @@ class _HomeViewBodyState extends State<HomeViewBody>
   String _selectedTopic = 'All';
   late final AnimationController _breathingController;
   late final Animation<double> _breathingAnimation;
+  List<EditorialNewsItem>? _remoteStories;
 
   final List<String> _topics = const [
     'All',
@@ -35,6 +38,7 @@ class _HomeViewBodyState extends State<HomeViewBody>
   @override
   void initState() {
     super.initState();
+    _fetchRealStories();
     _breathingController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 5000),
@@ -45,6 +49,24 @@ class _HomeViewBodyState extends State<HomeViewBody>
     );
   }
 
+  Future<void> _fetchRealStories() async {
+    if (getIt.isRegistered<GetHomeFeedUseCase>()) {
+      final result = await getIt<GetHomeFeedUseCase>().call();
+      if (!mounted) return;
+      result.when(
+        success: (articles) {
+          if (articles.isNotEmpty) {
+            setState(() {
+              _remoteStories =
+                  articles.map((a) => a.toEditorialNewsItem()).toList();
+            });
+          }
+        },
+        failure: (_) {},
+      );
+    }
+  }
+
   @override
   void dispose() {
     _breathingController.dispose();
@@ -52,7 +74,7 @@ class _HomeViewBodyState extends State<HomeViewBody>
   }
 
   List<EditorialNewsItem> get _filteredStories {
-    final all = EditorialMockData.stories;
+    final all = _remoteStories ?? EditorialMockData.stories;
     if (_selectedTopic == 'All') return all;
     if (_selectedTopic == 'Trending') {
       return all

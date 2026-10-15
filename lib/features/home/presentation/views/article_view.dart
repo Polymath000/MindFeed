@@ -1,10 +1,15 @@
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_mock_data.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
+import 'package:mind_feed/core/utls/setup_service_locator.dart';
+import 'package:mind_feed/features/home/domain/usecases/get_home_feed_use_case.dart';
+import 'package:mind_feed/features/home/domain/usecases/toggle_star_use_case.dart';
+import 'package:mind_feed/features/home/domain/usecases/toggle_bookmark_use_case.dart';
 
 class ArticleView extends StatefulWidget {
   const ArticleView({super.key, this.item});
@@ -27,6 +32,28 @@ class _ArticleViewState extends State<ArticleView> {
     _article = widget.item ?? EditorialMockData.stories.first;
     _isLiked = _article.isLiked;
     _isSaved = _article.isSaved;
+    if (widget.item == null) {
+      _loadInitialArticle();
+    }
+  }
+
+  Future<void> _loadInitialArticle() async {
+    if (getIt.isRegistered<GetHomeFeedUseCase>()) {
+      final result = await getIt<GetHomeFeedUseCase>().call();
+      if (!mounted) return;
+      result.when(
+        success: (articles) {
+          if (articles.isNotEmpty && widget.item == null) {
+            setState(() {
+              _article = articles.first.toEditorialNewsItem();
+              _isLiked = _article.isLiked;
+              _isSaved = _article.isSaved;
+            });
+          }
+        },
+        failure: (_) {},
+      );
+    }
   }
 
   @override
@@ -246,15 +273,29 @@ class _ArticleViewState extends State<ArticleView> {
                                   : AppIcons.thumbUpOutlined,
                               label: 'Like article',
                               onPressed: () {
+                                final wasLiked = _isLiked;
                                 setState(() {
                                   _isLiked = !_isLiked;
                                 });
+                                if (getIt.isRegistered<ToggleStarUseCase>()) {
+                                  final user =
+                                      Supabase.instance.client.auth.currentUser;
+                                  if (user != null) {
+                                    getIt<ToggleStarUseCase>().call(
+                                      articleId: _article.id,
+                                      userId: user.id,
+                                      isCurrentlyStarred: wasLiked,
+                                    );
+                                  }
+                                }
                                 ScaffoldMessenger.of(context).clearSnackBars();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     duration: const Duration(seconds: 2),
                                     content: Text(
-                                      _isLiked ? 'Article liked' : 'Article unliked',
+                                      _isLiked
+                                          ? 'Article liked'
+                                          : 'Article unliked',
                                     ),
                                   ),
                                 );
@@ -267,9 +308,21 @@ class _ArticleViewState extends State<ArticleView> {
                                   : AppIcons.bookmarkBorderRounded,
                               label: 'Save article',
                               onPressed: () {
+                                final wasSaved = _isSaved;
                                 setState(() {
                                   _isSaved = !_isSaved;
                                 });
+                                if (getIt.isRegistered<ToggleBookmarkUseCase>()) {
+                                  final user =
+                                      Supabase.instance.client.auth.currentUser;
+                                  if (user != null) {
+                                    getIt<ToggleBookmarkUseCase>().call(
+                                      articleId: _article.id,
+                                      userId: user.id,
+                                      isCurrentlySaved: wasSaved,
+                                    );
+                                  }
+                                }
                                 ScaffoldMessenger.of(context).clearSnackBars();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(

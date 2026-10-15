@@ -1,42 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/features/auth/presentation/widgets/auth_prompt_link.dart';
 
 class ThereIsAnAccountText extends StatelessWidget {
-  const ThereIsAnAccountText({super.key});
+  const ThereIsAnAccountText({super.key, this.onTap});
+
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            'Already have an account?',
-            style: TextStyle(
-              color: AppColors.greyText,
-              fontSize: 14,
-            ),
-          ),
-          TextButton(
-            style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              foregroundColor: AppColors.cream,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text(
-              'Sign In',
-              style: TextStyle(
-                color: AppColors.cream,
-                fontWeight: FontWeight.w800,
-                fontSize: 14,
-              ),
-            ),
-          ),
-        ],
-      ),
+    return AuthPromptLink(
+      promptText: 'Already have an account?',
+      actionText: 'Sign In',
+      onTap: onTap ?? () => Navigator.pop(context),
     );
   }
 }

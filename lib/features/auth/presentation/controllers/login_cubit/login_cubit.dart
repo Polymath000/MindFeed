@@ -8,7 +8,7 @@ part 'login_state.dart';
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit({required this.loginUseCase}) : super(LoginInitial());
   final LoginUseCase loginUseCase;
-  
+
   Future<void> eitherFailureOrLogin({
     required String email,
     required String password,
@@ -17,11 +17,14 @@ class LoginCubit extends Cubit<LoginState> {
     emit(LoginLoading());
     LoginParams params = LoginParams(email: email, password: password);
     final result = await loginUseCase.call(params: params);
-    
+
     if (!isClosed) {
       result.when(
         success: (user) => emit(LoginSuccess()),
-        failure: (failure) => emit(LoginFailure(errorMessage: failure.message)),
+        failure: (failure) => emit(LoginFailure(
+          errorMessage: failure.message,
+          email: email,
+        )),
       );
     }
   }

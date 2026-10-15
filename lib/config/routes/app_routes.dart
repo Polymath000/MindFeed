@@ -95,7 +95,7 @@ sealed class AppRoutes {
         final email = settings.arguments as String;
         return MaterialPageRoute(builder: (_) => ChangePasswordView(email: email), settings: settings);
       case AppRoutes.categories:
-        final user = settings.arguments as UserEntity;
+        final user = settings.arguments as UserEntity?;
         return MaterialPageRoute(builder: (_) => CategoriesView(userEntity: user), settings: settings);
       default:
         return MaterialPageRoute(builder: (_) => const Scaffold(body: Center(child: Text('Page not found'))), settings: settings);

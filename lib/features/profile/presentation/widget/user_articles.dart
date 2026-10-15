@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mind_feed/core/design/editorial_mock_data.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/utls/setup_service_locator.dart';
+import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
 import 'package:mind_feed/features/profile/presentation/widget/custom_article_card_of_profile.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 
@@ -18,6 +21,29 @@ class _UserArticlesState extends State<UserArticles> {
   void initState() {
     super.initState();
     _articles = List.from(EditorialMockData.userArticles);
+    _loadUserArticles();
+  }
+
+  Future<void> _loadUserArticles() async {
+    if (getIt.isRegistered<ArticlesRepository>()) {
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user != null) {
+        final result =
+            await getIt<ArticlesRepository>().getArticlesByAuthor(user.id);
+        if (!mounted) return;
+        result.when(
+          success: (articles) {
+            if (articles.isNotEmpty) {
+              setState(() {
+                _articles =
+                    articles.map((a) => a.toEditorialNewsItem()).toList();
+              });
+            }
+          },
+          failure: (_) {},
+        );
+      }
+    }
   }
 
   @override

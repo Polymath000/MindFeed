@@ -40,3 +40,4 @@ app.*.map.json
 .env
 .env.*
 *.env
+supabase/.temp/
