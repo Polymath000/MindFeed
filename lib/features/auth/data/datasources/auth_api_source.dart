@@ -1,11 +1,12 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/params/login_params.dart';
 import 'package:mind_feed/core/params/signup_params.dart';
 import 'package:mind_feed/features/auth/domain/entities/auth_result_entity.dart';
 
 class AuthApiSource {
   static const String authConfirmRedirectUrl =
-      'https://tsqruoqiajkbrdhprfxa.supabase.co/functions/v1/auth-confirm';
+      AppConstants.authConfirmRedirectUrl;
 
   final SupabaseClient? _supabaseClient;
 

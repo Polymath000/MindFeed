@@ -267,7 +267,7 @@ void main() {
   });
 
   group('Acceptance Criterion 7: Edge Function Callback Verification', () {
-    const baseUrl = 'https://tsqruoqiajkbrdhprfxa.supabase.co/functions/v1/auth-confirm';
+    const baseUrl = AppConstants.authConfirmRedirectUrl;
 
     String extractContent(String body) {
       final startIndex = body.indexOf('<div id="content">');
