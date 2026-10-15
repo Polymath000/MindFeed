@@ -97,6 +97,30 @@ class AuthApiSource {
     );
   }
 
+  Future<void> updatePassword({required String newPassword}) async {
+    await _client.auth.updateUser(
+      UserAttributes(password: newPassword),
+    );
+  }
+
+  Future<String> verifyRecoveryOtp({
+    required String email,
+    required String token,
+  }) async {
+    final response = await _client.auth.verifyOTP(
+      email: email,
+      token: token,
+      type: OtpType.recovery,
+    );
+
+    final accessToken = response.session?.accessToken;
+    if (accessToken == null || accessToken.isEmpty) {
+      throw const AuthException('Recovery verification succeeded but no session was established');
+    }
+
+    return accessToken;
+  }
+
   User? get currentUser => _client.auth.currentUser;
 
   Stream<AuthState> get onAuthStateChange => _client.auth.onAuthStateChange;
