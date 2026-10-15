@@ -17,7 +17,28 @@ class LoginViewBody extends StatelessWidget {
     return BlocConsumer<LoginCubit, LoginState>(
       listener: (context, state) {
         if (state is LoginFailure) {
-          customShowSnackBar(message: state.errorMessage, context: context);
+          if (state.errorMessage.toLowerCase().contains('email not confirmed')) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: const Text('Email not confirmed. Please enter your code.'),
+                action: SnackBarAction(
+                  label: 'Verify',
+                  textColor: const Color(0xFFFFF1C6),
+                  onPressed: () {
+                    if (state.email != null && state.email!.isNotEmpty) {
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.checkCode,
+                        arguments: state.email!,
+                      );
+                    }
+                  },
+                ),
+              ),
+            );
+          } else {
+            customShowSnackBar(message: state.errorMessage, context: context);
+          }
         } else if (state is LoginSuccess) {
           Navigator.pushNamedAndRemoveUntil(context, AppRoutes.main, (route) => false);
           customShowSnackBar(message: 'Login Success', context: context);

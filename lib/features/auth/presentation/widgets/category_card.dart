@@ -4,23 +4,22 @@ import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_text_styles.dart';
 import 'package:mind_feed/core/constants/borders.dart';
 
-class CategoryCard extends StatefulWidget {
-  const CategoryCard({super.key, required this.category});
-  final List<String> category;
-  @override
-  State<CategoryCard> createState() => _CategoryCardState();
-}
+class CategoryCard extends StatelessWidget {
+  const CategoryCard({
+    super.key,
+    required this.category,
+    required this.isSelected,
+    required this.onTap,
+  });
 
-class _CategoryCardState extends State<CategoryCard> {
-  bool isSelected = false;
+  final List<String> category;
+  final bool isSelected;
+  final VoidCallback onTap;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          isSelected = !isSelected;
-        });
-      },
+      onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
           color: isSelected ? AppColors.white : AppColors.black,
@@ -32,7 +31,7 @@ class _CategoryCardState extends State<CategoryCard> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SvgPicture.asset(
-                widget.category[1],
+                category[1],
                 width: 40,
                 height: 40,
                 colorFilter: ColorFilter.mode(
@@ -40,15 +39,15 @@ class _CategoryCardState extends State<CategoryCard> {
                   BlendMode.srcIn,
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
-                widget.category[0],
+                category[0],
                 style: AppTextStyles.bodyMedium!.copyWith(
                   color: isSelected ? AppColors.black : AppColors.white,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-            ], 
+            ],
           ),
         ),
       ),
