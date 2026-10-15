@@ -43,22 +43,20 @@ import 'package:mind_feed/features/profile/domain/usecases/save_favorite_categor
 final getIt = GetIt.instance;
 
 void setupServiceLocator() {
-  getIt.registerLazySingleton<SupabaseClient>(
-    () => Supabase.instance.client,
-  );
+  getIt.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
   getIt.registerLazySingleton<NetworkInfoImpl>(
     () => NetworkInfoImpl(Connectivity()),
   );
-  getIt.registerLazySingleton<NetworkInfo>(
-    () => getIt<NetworkInfoImpl>(),
-  );
+  getIt.registerLazySingleton<NetworkInfo>(() => getIt<NetworkInfoImpl>());
   getIt.registerLazySingleton<AuthApiSource>(
     () => AuthApiSource(supabaseClient: getIt<SupabaseClient>()),
   );
   getIt.registerLazySingleton<UserCacheDataSource>(
     () => UserCacheDataSource(
       cacheHelper: CacheHelper(
-        kBoxName: Hive.isBoxOpen(AppConstants.userKey) ? AppConstants.userKey : '',
+        kBoxName: Hive.isBoxOpen(AppConstants.userKey)
+            ? AppConstants.userKey
+            : '',
       ),
     ),
   );
@@ -69,9 +67,7 @@ void setupServiceLocator() {
       userCacheDataSource: getIt<UserCacheDataSource>(),
     ),
   );
-  getIt.registerLazySingleton<AuthRepository>(
-    () => getIt<AuthRepoImpl>(),
-  );
+  getIt.registerLazySingleton<AuthRepository>(() => getIt<AuthRepoImpl>());
   getIt.registerLazySingleton<LoginUseCase>(
     () => LoginUseCase(repo: getIt<AuthRepository>()),
   );

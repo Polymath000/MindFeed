@@ -55,7 +55,7 @@ This document outlines the complete editorial design implementation for MindFeed
 ## 3. Screen Implementations
 
 1. **MindFeed Home Feed (`lib/features/home/presentation/widgets/home_view_body.dart`)**:
-   * Masthead with official MindFeed SVG emblem (`assets/images/logo.svg`) and typography.
+   * Masthead with official MindFeed emblem (`assets/images/MindFeedLogo.png`) and typography.
    * Interactive topic filters: All, Trending, Tech, Science, Health, Sports.
    * `EditorialCardStack` deck cycling through 14+ test articles.
 
