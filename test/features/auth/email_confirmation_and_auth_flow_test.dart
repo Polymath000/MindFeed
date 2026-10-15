@@ -269,56 +269,37 @@ void main() {
   group('Acceptance Criterion 7: Edge Function Callback Verification', () {
     const baseUrl = AppConstants.authConfirmRedirectUrl;
 
-    String extractContent(String body) {
-      final startIndex = body.indexOf('<div id="content">');
-      final endIndex = body.indexOf('<script>');
-      if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
-        return body.substring(startIndex, endIndex);
-      }
-      return body;
+    Future<http.StreamedResponse> getWithoutRedirect(String url) async {
+      final request = http.Request('GET', Uri.parse(url))..followRedirects = false;
+      final client = http.Client();
+      return await client.send(request);
     }
 
-    test('bare endpoint URL displays neutral fallback state without false success', () async {
-      final response = await http.get(Uri.parse(baseUrl));
-      expect(response.statusCode, equals(200));
-      final content = extractContent(response.body);
-      expect(content, contains('<div class="badge standby">&#9679;</div>'));
-      expect(content, contains('<h1>MindFeed Verification</h1>'));
-      expect(content, isNot(contains('<div class="badge error">')));
-      expect(content, isNot(contains('<div class="badge">&#10003;</div>')));
+    test('bare endpoint URL redirects to login-callback', () async {
+      final response = await getWithoutRedirect(baseUrl);
+      expect(response.statusCode, equals(302));
+      expect(response.headers['location'], equals('mindfeed://login-callback'));
     });
 
-    test('valid-shaped callback displays success state and preserves callback code', () async {
-      final response = await http.get(Uri.parse('$baseUrl?code=test-code-1234'));
-      expect(response.statusCode, equals(200));
-      final content = extractContent(response.body);
-      expect(content, contains('<div class="badge">&#10003;</div>'));
-      expect(content, contains('<h1>Email Confirmed</h1>'));
-      expect(content, contains('mindfeed://login-callback?code=test-code-1234'));
-      expect(content, isNot(contains('<div class="badge standby">')));
-      expect(content, isNot(contains('<div class="badge error">')));
+    test('valid-shaped callback redirects and preserves callback code', () async {
+      final response = await getWithoutRedirect('$baseUrl?code=test-code-1234');
+      expect(response.statusCode, equals(302));
+      expect(response.headers['location'], equals('mindfeed://login-callback?code=test-code-1234'));
     });
 
-    test('error-only callback displays error state', () async {
-      final response = await http.get(Uri.parse('$baseUrl?error=access_denied&error_description=Link+expired'));
-      expect(response.statusCode, equals(200));
-      final content = extractContent(response.body);
-      expect(content, contains('<div class="badge error">&times;</div>'));
-      expect(content, contains('<h1>Confirmation Failed</h1>'));
-      expect(content, contains('<p id="error-desc">Link expired</p>'));
-      expect(content, isNot(contains('<div class="badge standby">')));
-      expect(content, isNot(contains('<div class="badge">&#10003;</div>')));
+    test('error-only callback redirects and preserves error state', () async {
+      final response = await getWithoutRedirect('$baseUrl?error=access_denied&error_description=Link+expired');
+      expect(response.statusCode, equals(302));
+      expect(response.headers['location'], contains('mindfeed://login-callback'));
+      expect(response.headers['location'], contains('error=access_denied'));
+      expect(response.headers['location'], contains('Link+expired'));
     });
 
-    test('callback containing error_code without error displays error state', () async {
-      final response = await http.get(Uri.parse('$baseUrl?error_code=otp_expired&error_description=Code+expired'));
-      expect(response.statusCode, equals(200));
-      final content = extractContent(response.body);
-      expect(content, contains('<div class="badge error">&times;</div>'));
-      expect(content, contains('<h1>Confirmation Failed</h1>'));
-      expect(content, contains('<p id="error-desc">Code expired</p>'));
-      expect(content, isNot(contains('<div class="badge standby">')));
-      expect(content, isNot(contains('<div class="badge">&#10003;</div>')));
+    test('callback containing error_code redirects and preserves error description', () async {
+      final response = await getWithoutRedirect('$baseUrl?error_code=otp_expired&error_description=Code+expired');
+      expect(response.statusCode, equals(302));
+      expect(response.headers['location'], contains('mindfeed://login-callback'));
+      expect(response.headers['location'], contains('error_code=otp_expired'));
     });
   });
 }
