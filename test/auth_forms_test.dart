@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,18 +14,39 @@ import 'package:mind_feed/features/auth/presentation/widgets/login_form.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/password_text_field.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/sign_up_form_body.dart';
 
+import 'package:mind_feed/features/auth/domain/entities/auth_result_entity.dart';
+
 class _FakeAuthRepo implements AuthRepository {
   @override
   Future<ApiResult<String>> login(LoginParams params) async =>
       const Success('token');
 
   @override
-  Future<ApiResult<Response>> signup(SignupParams params) async =>
-      Success(Response(requestOptions: RequestOptions(path: '')));
+  Future<ApiResult<AuthResultEntity>> signup(SignupParams params) async =>
+      const Success(
+        AuthResultEntity(
+          hasActiveSession: false,
+          email: 'test@example.com',
+        ),
+      );
+
+  @override
+  Future<ApiResult<String>> verifyOtp({
+    required String email,
+    required String token,
+  }) async =>
+      const Success('token');
+
+  @override
+  Future<ApiResult<void>> resendOtp({required String email}) async =>
+      const Success(null);
 
   @override
   Future<ApiResult<void>> forgetPassword(String email) async =>
       const Success(null);
+
+  @override
+  Future<ApiResult<void>> logout() async => const Success(null);
 }
 
 void main() {

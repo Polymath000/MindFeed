@@ -60,3 +60,10 @@ The codebase follows **Feature-First Clean Architecture**:
   - Registered `CheckAppStartupUseCase` and `SplashCubit` in `setupServiceLocator`.
   - Persisted onboarding completion in `NextButton` and `SkipButton` via `SharedPreferencesSingleton`.
   - Added full test suite in `test/splash_test.dart` (15 passing tests total).
+- **Dev Branch Integration & Reconciliation**:
+  - Pulled and fast-forwarded all latest updates from `dev` (`af38768`).
+  - Integrated Supabase schema migrations, security-invoker RPC (`save_user_favorite_categories`), and Edge Function auth-confirmation flows.
+  - Integrated Clean Architecture data & domain layers for Home, Articles, Categories, Bookmarks, and Offline storage.
+  - Reconciled Service Locator (`setup_service_locator.dart`) registration syntax for `CheckAppStartupUseCase` and `SplashCubit`.
+  - Synchronized `_FakeAuthRepo` in `test/auth_forms_test.dart` to adhere to `AuthRepository` interface; verified all 77 test cases pass cleanly.
+
