@@ -282,9 +282,9 @@
     "semantic_hash": "a5b89e553514949829a134bd24d62934"
   },
   "lib/features/auth/presentation/widgets/categories_view_body.dart": {
-    "mtime": 1792036390.9793384,
-    "seen": 1792037064.6113365,
-    "ast_hash": "c3b306b301a518fe7daf9f479f2981db",
+    "mtime": 1792037723.502596,
+    "seen": 1792037922.0507917,
+    "ast_hash": "91897288e2b1c085bf0eca53cc50039a",
     "semantic_hash": ""
   },
   "lib/features/auth/presentation/widgets/category_card.dart": {
@@ -1518,15 +1518,15 @@
     "semantic_hash": ""
   },
   "lib/features/auth/presentation/controllers/categories_cubit/categories_cubit.dart": {
-    "mtime": 1792036377.5850575,
-    "seen": 1792037064.6100273,
-    "ast_hash": "4a8e576f457d1f34b70f52935092a6e1",
+    "mtime": 1792037700.865526,
+    "seen": 1792037922.0479841,
+    "ast_hash": "3e3d89b753818d80a52ec06b2a770d8a",
     "semantic_hash": ""
   },
   "lib/features/auth/presentation/controllers/categories_cubit/categories_state.dart": {
-    "mtime": 1792036370.0846193,
-    "seen": 1792037064.6100292,
-    "ast_hash": "7c541d88309cc90056d673faeb38554c",
+    "mtime": 1792037688.606315,
+    "seen": 1792037922.0479882,
+    "ast_hash": "008ce9bd3eb586902741ccf8d1bc4732",
     "semantic_hash": ""
   },
   "lib/features/auth/presentation/widgets/auth_prompt_link.dart": {
@@ -1542,9 +1542,9 @@
     "semantic_hash": ""
   },
   "lib/features/profile/data/repos/profile_repo_impl.dart": {
-    "mtime": 1792036977.3135319,
-    "seen": 1792037064.6238344,
-    "ast_hash": "4d095ca436f50109f0f18f2b48fbedcb",
+    "mtime": 1792037746.5237718,
+    "seen": 1792037922.0682886,
+    "ast_hash": "e3bf19060adb28cafc30d5ee892a863c",
     "semantic_hash": ""
   },
   "lib/features/profile/domain/repos/profile_repo.dart": {
@@ -1554,15 +1554,21 @@
     "semantic_hash": ""
   },
   "lib/features/profile/domain/usecases/save_favorite_categories_use_case.dart": {
-    "mtime": 1792036357.1819694,
-    "seen": 1792037064.6238408,
-    "ast_hash": "6363db98e3b7c9d9b8284da27d70369a",
+    "mtime": 1792037881.8401363,
+    "seen": 1792037922.0686235,
+    "ast_hash": "ecb081f0fac14d2b0014e34963d1bd44",
     "semantic_hash": ""
   },
   "test/features/auth/category_onboarding_clean_architecture_test.dart": {
-    "mtime": 1792037037.1695397,
-    "seen": 1792037064.6280358,
-    "ast_hash": "aab314d236423388af4f88dfd2a22713",
+    "mtime": 1792037786.142286,
+    "seen": 1792037922.0728345,
+    "ast_hash": "ecec101776f6cf3895b086baf6f2058d",
+    "semantic_hash": ""
+  },
+  "supabase/.temp/linked-project.json": {
+    "mtime": 1792052815.8522408,
+    "seen": 1792053466.554417,
+    "ast_hash": "0e90ac4ae9f5e4c21fc0887861d74a47",
     "semantic_hash": ""
   }
 }

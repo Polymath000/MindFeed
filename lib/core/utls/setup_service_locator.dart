@@ -39,6 +39,8 @@ import 'package:mind_feed/features/profile/data/repos/profile_repo_impl.dart';
 import 'package:mind_feed/features/profile/data/services/category_sync_reconciler.dart';
 import 'package:mind_feed/features/profile/domain/repos/profile_repo.dart';
 import 'package:mind_feed/features/profile/domain/usecases/save_favorite_categories_use_case.dart';
+import 'package:mind_feed/features/splash/domain/usecases/check_app_startup_use_case.dart';
+import 'package:mind_feed/features/splash/presentation/controllers/splash_cubit/splash_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -88,6 +90,10 @@ void setupServiceLocator() {
   );
   getIt.registerLazySingleton<CheckAppStartupUseCase>(
     () => CheckAppStartupUseCase(authApiSource: getIt<AuthApiSource>()),
+  );
+  getIt.registerFactory<SplashCubit>(
+    () => SplashCubit(checkAppStartupUseCase: getIt<CheckAppStartupUseCase>()),
+  );
   getIt.registerLazySingleton<SaveFavoriteCategoriesUseCase>(
     () => SaveFavoriteCategoriesUseCase(getIt<ProfileRepository>()),
   );
