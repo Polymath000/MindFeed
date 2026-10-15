@@ -102,4 +102,13 @@ The codebase follows **Feature-First Clean Architecture**:
   - Eliminated full-screen `ModalProgressHUD` veils and button-hiding conditional replacements across all authentication screens (`LoginForm`, `LoginViewBody`, `SignUpFormBody`, `SignUpViewBody`, `CheckCodeViewBody`, `SendCodeViewBody`, `ChangePasswordForm`, `CategoriesViewBody`).
   - Redesigned `CustomLoadingIndicator` with custom smooth rotation animation, customizable size, stroke width, and editorial palette defaults (`AppColors.ink` on cream backgrounds).
   - Enhanced `CustomButton` with an `isLoading` property: when active, the button stays in place without layout shifts or height collapse, disables double submissions, and renders the `CustomLoadingIndicator` centered directly inside the button.
+- **Profile Favorite Categories Resolution & Post-Login Flow**:
+  - Aligned category storage with the Supabase schema: user favorite categories are persisted and read directly from the `profiles` table under the `favorite_categories` column (`text[] DEFAULT '{}'::text[]`).
+  - Updated `ProfileRemoteDataSource.getFavoriteCategories` to resolve the authenticated user UUID (`_client.auth.currentUser?.id`) and query `profiles.favorite_categories` as the single source of truth. When the profile exists and `favorite_categories` is empty (`[]`) or null, it returns `[]` immediately without false-positive fallbacks.
+  - Added `ProfileRemoteDataSource.saveFavoriteCategoriesToProfile` and updated `ProfileRepoImpl.syncFavoriteCategories` to write selections directly to `profiles.favorite_categories`.
+  - In `ProfileRepoImpl.getFavoriteCategories`, set `AppConstants.hasCompletedCategoriesKey = favorites.isNotEmpty` in `SharedPreferencesSingleton`, ensuring any stale local cache is cleared when the remote profile is empty.
+  - In `LoginCubit`, verified category completion using `CheckUserHasCategoriesUseCase`. When `profiles.favorite_categories` is empty (`[]`), `LoginCubit` emits `LoginRequiresCategories` and routes the user to `AppRoutes.categories`. When categories already exist, `LoginCubit` emits `LoginSuccess` directly and navigates to `AppRoutes.main`.
+  - Added unit test suite in `test/features/auth/login_category_check_test.dart` (95/95 tests passing with zero static analyzer issues).
+
+
 

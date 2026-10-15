@@ -7,11 +7,7 @@ class CheckUserHasCategoriesUseCase {
   const CheckUserHasCategoriesUseCase(this.profileRepository);
 
   Future<ApiResult<bool>> call({String? userId}) async {
-    if (userId == null || userId.isEmpty) {
-      return const Success(false);
-    }
-
-    final result = await profileRepository.getFavoriteCategories(userId);
+    final result = await profileRepository.getFavoriteCategories(userId ?? '');
     return switch (result) {
       Success(:final data) => Success(data.isNotEmpty),
       FailureResult(:final failure) => FailureResult(failure),

@@ -105,6 +105,16 @@ class FakeProfileRemoteDataSource extends Fake implements ProfileRemoteDataSourc
     current.addAll(missingIds);
     userFavorites[userId] = current;
   }
+
+  @override
+  Future<void> saveFavoriteCategoriesToProfile({
+    required String userId,
+    required List<String> categories,
+  }) async {
+    if (shouldThrow) {
+      throw Exception('Network offline');
+    }
+  }
 }
 
 Widget testHarness(Widget child) {

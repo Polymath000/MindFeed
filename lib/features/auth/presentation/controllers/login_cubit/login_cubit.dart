@@ -65,7 +65,7 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   Future<bool> _checkHasCategories(String email) async {
-    if (checkUserHasCategoriesUseCase == null) return true;
+    if (checkUserHasCategoriesUseCase == null) return false;
     final res = await checkUserHasCategoriesUseCase!(userId: email);
     return res is Success<bool> ? res.data : false;
   }

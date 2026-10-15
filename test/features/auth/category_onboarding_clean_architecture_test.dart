@@ -40,6 +40,19 @@ class MockProfileRemoteDataSource extends Fake implements ProfileRemoteDataSourc
     }
     lastSyncedCategoryIds = List.from(categoryIds);
   }
+
+  @override
+  Future<void> saveFavoriteCategoriesToProfile({
+    required String userId,
+    required List<String> categories,
+  }) async {
+    if (shouldThrow) {
+      throw const PostgrestException(message: 'Remote profile save failure');
+    }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getFavoriteCategories(String userId) async => [];
 }
 
 class FakePostgrestFilterBuilder<T> extends Fake implements PostgrestFilterBuilder<T> {
