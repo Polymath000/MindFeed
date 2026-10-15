@@ -86,6 +86,8 @@ void setupServiceLocator() {
   getIt.registerLazySingleton<ProfileRepository>(
     () => ProfileRepoImpl(remoteDataSource: getIt<ProfileRemoteDataSource>()),
   );
+  getIt.registerLazySingleton<CheckAppStartupUseCase>(
+    () => CheckAppStartupUseCase(authApiSource: getIt<AuthApiSource>()),
   getIt.registerLazySingleton<SaveFavoriteCategoriesUseCase>(
     () => SaveFavoriteCategoriesUseCase(getIt<ProfileRepository>()),
   );

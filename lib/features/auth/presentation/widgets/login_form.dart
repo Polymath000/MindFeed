@@ -17,55 +17,67 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
-  String password = '';
-  String email = '';
+  late final TextEditingController _emailController;
+  late final TextEditingController _passwordController;
+  late final ValueNotifier<AutovalidateMode> _autovalidateMode;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+    _autovalidateMode =
+        ValueNotifier<AutovalidateMode>(AutovalidateMode.disabled);
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _autovalidateMode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      autovalidateMode: autovalidateMode,
-      key: formKey,
-      child: Column(
-        children: [
-          const Logo(),
-          EmailTextField(
-            onChanged: (String value) {
-              setState(() {
-                email = value;
-              });
-            },
+    return ValueListenableBuilder<AutovalidateMode>(
+      valueListenable: _autovalidateMode,
+      builder: (context, autovalidateMode, child) {
+        return Form(
+          autovalidateMode: autovalidateMode,
+          key: formKey,
+          child: Column(
+            children: [
+              const Logo(),
+              EmailTextField(
+                controller: _emailController,
+              ),
+              const SizedBox(height: 16.0),
+              PasswordTextField(
+                hintText: 'Password',
+                controller: _passwordController,
+              ),
+              const SizedBox(height: 8.0),
+              const ForgetPasswordText(),
+              const SizedBox(height: 20.0),
+              CustomButton(
+                buttonText: 'Sign In',
+                onTap: () {
+                  if (formKey.currentState?.validate() ?? false) {
+                    FocusScope.of(context).unfocus();
+                    context.read<LoginCubit>().eitherFailureOrLogin(
+                      email: _emailController.text.trim(),
+                      password: _passwordController.text,
+                    );
+                  } else {
+                    _autovalidateMode.value = AutovalidateMode.always;
+                  }
+                },
+              ),
+            ],
           ),
-          const SizedBox(height: 16.0),
-          PasswordTextField(
-            hintText: 'Password',
-            onChanged: (String value) {
-              setState(() {
-                password = value;
-              });
-            },
-          ),
-          const SizedBox(height: 8.0),
-          const ForgetPasswordText(),
-          const SizedBox(height: 20.0),
-          CustomButton(
-            buttonText: 'Sign In',
-            onTap: () {
-              if (formKey.currentState?.validate() ?? false) {
-                FocusScope.of(context).unfocus();
-                context.read<LoginCubit>().eitherFailureOrLogin(
-                  email: email,
-                  password: password,
-                );
-              } else {
-                setState(() {
-                  autovalidateMode = AutovalidateMode.always;
-                });
-              }
-            },
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
