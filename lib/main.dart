@@ -26,14 +26,11 @@ void main() async {
   await globalDevicePreferenceNotifier.loadDevicePreferences();
   await SharedPreferencesSingleton.init();
 
-  if (AppConstants.supabaseUrl.isNotEmpty &&
-      AppConstants.supabaseAnonKey.isNotEmpty) {
-    await Supabase.initialize(
-      url: AppConstants.supabaseUrl,
-      publishableKey: AppConstants.supabaseAnonKey,
-      httpClient: SupabaseInterceptor(),
-    );
-  }
+  await Supabase.initialize(
+    url: AppConstants.supabaseUrl,
+    publishableKey: AppConstants.supabaseAnonKey,
+    httpClient: SupabaseInterceptor(),
+  );
 
   await Hive.initFlutter();
   Hive.registerAdapter(UserEntityAdapter());

@@ -8,9 +8,13 @@ class AppConstants {
   static const String tokenKey = "token";
   static const String userKey = "user";
   static const String isOnboardingSeenKey = "isOnboardingSeen";
-  static const String supabaseUrl = String.fromEnvironment('PROJECT_URL');
+  static const String supabaseUrl = String.fromEnvironment(
+    'PROJECT_URL',
+    defaultValue: String.fromEnvironment('SUPABASE_URL'),
+  );
   static const String supabaseAnonKey = String.fromEnvironment(
     'SUPABASE_PUBLISHABLE_KEY',
+    defaultValue: String.fromEnvironment('SUPABASE_ANON_KEY'),
   );
 }
 

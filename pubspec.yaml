@@ -1,6 +1,5 @@
 name: mind_feed
 description: "A new Flutter project."
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
 
@@ -39,6 +38,7 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.4.13
+  flutter_launcher_icons: ^0.14.4
   flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
@@ -48,6 +48,15 @@ flutter_assets:
   assets_path: assets/images/
   output_path: lib/core/utls/
   filename: app_images.dart
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/images/MindFeedLogo.png"
+  min_sdk_android: 21
+  web:
+    generate: true
+    image_path: "assets/images/MindFeedLogo.png"
 
 flutter:
   generate: true
