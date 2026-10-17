@@ -11,7 +11,7 @@ import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_home_feed_use_case.dart';
 import 'package:mind_feed/features/home/presentation/cubit/home_feed/home_feed_cubit.dart';
 import 'package:mind_feed/features/home/presentation/widgets/home_view_body.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/home_feed_status_views.dart';
+import 'package:mind_feed/features/home/presentation/widgets/widgets/home_feed_loading_views.dart';
 import 'package:mind_feed/features/home/presentation/widgets/widgets/home_lead_story_section.dart';
 import 'package:mind_feed/features/home/presentation/widgets/widgets/home_masthead_header.dart';
 import 'package:mind_feed/features/profile/domain/repos/profile_repo.dart';
@@ -26,8 +26,7 @@ class _DelayedArticlesRepo implements ArticlesRepository {
     List<String>? preferredCategoryIds,
     int limit = 20,
     int offset = 0,
-  }) =>
-      completer.future;
+  }) => completer.future;
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -41,8 +40,7 @@ class _FakeProfileRepo implements ProfileRepository {
   @override
   Future<ApiResult<List<Map<String, dynamic>>>> getFavoriteCategories(
     String userId,
-  ) async =>
-      Success(favorites);
+  ) async => Success(favorites);
 
   @override
   Future<ApiResult<List<Map<String, dynamic>>>> getCategories() async =>
@@ -69,11 +67,7 @@ void main() {
       )..fetchFeed();
       addTearDown(cubit.close);
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: HomeViewBody(cubit: cubit),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(home: HomeViewBody(cubit: cubit)));
       await tester.pump();
 
       final skeletonFinder = find.byWidgetPredicate((w) => w is Skeletonizer);

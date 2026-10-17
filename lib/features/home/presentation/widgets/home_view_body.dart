@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mind_feed/features/home/presentation/widgets/widgets/home_feed_empty_view.dart';
+import 'package:mind_feed/features/home/presentation/widgets/widgets/home_feed_error_view.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:mind_feed/config/routes/app_routes.dart';
@@ -10,7 +12,7 @@ import 'package:mind_feed/core/design/editorial_card_stack.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/features/home/presentation/cubit/home_feed/home_feed_cubit.dart';
 import 'package:mind_feed/features/home/presentation/cubit/home_feed/home_feed_state.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/home_feed_status_views.dart';
+import 'package:mind_feed/features/home/presentation/widgets/widgets/home_feed_loading_views.dart';
 import 'package:mind_feed/features/home/presentation/widgets/widgets/home_lead_story_section.dart';
 import 'package:mind_feed/features/home/presentation/widgets/widgets/home_masthead_header.dart';
 import 'package:mind_feed/features/home/presentation/widgets/widgets/home_write_article_fab.dart';
@@ -46,141 +48,130 @@ class _HomeViewBodyContent extends StatelessWidget {
       child: Stack(
         children: [
           SafeArea(
-          top: true,
-          bottom: false,
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 600),
-              child: BlocBuilder<HomeFeedCubit, HomeFeedState>(
-                builder: (context, state) {
-                  final cubit = context.read<HomeFeedCubit>();
-                  final stories = state.filteredArticles;
-                  final isLoading = state.status == HomeFeedStatus.loading ||
-                      state.status == HomeFeedStatus.initial;
+            top: true,
+            bottom: false,
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: BlocBuilder<HomeFeedCubit, HomeFeedState>(
+                  builder: (context, state) {
+                    final cubit = context.read<HomeFeedCubit>();
+                    final stories = state.filteredArticles;
+                    final isLoading =
+                        state.status == HomeFeedStatus.loading ||
+                        state.status == HomeFeedStatus.initial;
 
-                  return ListView(
-                    padding: EdgeInsets.fromLTRB(
-                      AppConstants.page,
-                      12,
-                      AppConstants.page,
-                      152 + bottomInset,
-                    ),
-                    children: [
-                      const HomeMastheadHeader(),
-                      const SizedBox(height: 20),
-                      Skeletonizer(
-                        enabled: isLoading,
-                        effect: HomeFeedLoadingView.editorialShimmerEffect,
-                        child: HomeTopicTabsBar(
-                          topics: isLoading && state.topics.length <= 1
-                              ? const [
-                                  'All',
-                                  'Category',
-                                  'Category',
-                                  'Category',
-                                ]
-                              : state.topics,
-                          selectedTopic: state.selectedTopic,
-                          onTopicSelected: cubit.selectTopic,
-                        ),
+                    return ListView(
+                      padding: EdgeInsets.fromLTRB(
+                        AppConstants.page,
+                        12,
+                        AppConstants.page,
+                        152 + bottomInset,
                       ),
-                      const SizedBox(height: 18),
-                      if (isLoading)
-                        const HomeFeedLoadingView()
-                      else if (state.status == HomeFeedStatus.error &&
-                          state.errorMessage != null)
-                        HomeFeedErrorView(
-                          errorMessage: state.errorMessage!,
-                          onRetry: cubit.fetchFeed,
-                        )
-                      else if (stories.isEmpty)
-                        HomeFeedEmptyView(onRefresh: cubit.fetchFeed)
-                      else ...[
-                        EditorialCardStack(
-                          key: ValueKey(state.selectedTopic),
-                          items: stories,
-                          height: 570,
-                          onOpenArticle: (item) => Navigator.pushNamed(
-                            context,
-                            AppRoutes.article,
-                            arguments: item,
+                      children: [
+                        const HomeMastheadHeader(),
+                        const SizedBox(height: 20),
+                        Skeletonizer(
+                          enabled: isLoading,
+                          effect: HomeFeedLoadingView.editorialShimmerEffect,
+                          child: HomeTopicTabsBar(
+                            topics: isLoading && state.topics.length <= 1
+                                ? const [
+                                    'All',
+                                    'Category',
+                                    'Category',
+                                    'Category',
+                                  ]
+                                : state.topics,
+                            selectedTopic: state.selectedTopic,
+                            onTopicSelected: cubit.selectTopic,
                           ),
-                          onSwipeRight: (item) async {
-                            final messenger = ScaffoldMessenger.of(context);
-                            final saved = await cubit.saveArticleOnSwipeRight(
-                              item,
-                            );
-                            messenger.clearSnackBars();
-                            final isLogged =
-                                CurrentUserSession.currentUserId != null &&
-                                CurrentUserSession.currentUserId!.isNotEmpty;
-                            messenger.showSnackBar(
-                              SnackBar(
-                                duration: const Duration(seconds: 2),
-                                content: Text(
-                                  saved
-                                      ? 'Saved "${item.title.replaceAll('\n', ' ')}"'
-                                      : (!isLogged
-                                            ? 'Sign in to save articles'
-                                            : 'Failed to save article'),
-                                ),
-                              ),
-                            );
-                          },
-                          onSwipeLeft: (item) {
-                            ScaffoldMessenger.of(context)
-                              ..clearSnackBars()
-                              ..showSnackBar(
+                        ),
+                        const SizedBox(height: 18),
+                        if (isLoading)
+                          const HomeFeedLoadingView()
+                        else if (state.status == HomeFeedStatus.error &&
+                            state.errorMessage != null)
+                          HomeFeedErrorView(
+                            errorMessage: state.errorMessage!,
+                            onRetry: cubit.fetchFeed,
+                          )
+                        else if (stories.isEmpty)
+                          HomeFeedEmptyView(onRefresh: cubit.fetchFeed)
+                        else ...[
+                          EditorialCardStack(
+                            key: ValueKey(state.selectedTopic),
+                            items: stories,
+                            height: 570,
+                            onOpenArticle: (item) => Navigator.pushNamed(
+                              context,
+                              AppRoutes.article,
+                              arguments: item,
+                            ),
+                            onSwipeRight: (item) async {
+                              final messenger = ScaffoldMessenger.of(context);
+                              final saved = await cubit.saveArticleOnSwipeRight(
+                                item,
+                              );
+                              messenger.clearSnackBars();
+                              final isLogged =
+                                  CurrentUserSession.currentUserId != null &&
+                                  CurrentUserSession.currentUserId!.isNotEmpty;
+                              messenger.showSnackBar(
                                 SnackBar(
-                                  duration: const Duration(seconds: 1),
+                                  duration: const Duration(seconds: 2),
                                   content: Text(
-                                    'Skipped: ${item.title.split('\n').first}',
+                                    saved
+                                        ? 'Saved "${item.title.replaceAll('\n', ' ')}"'
+                                        : (!isLogged
+                                              ? 'Sign in to save articles'
+                                              : 'Failed to save article'),
                                   ),
                                 ),
                               );
-                          },
-                          onToggleSave: cubit.toggleBookmark,
-                          onToggleLike: cubit.toggleStar,
-                        ),
-                        if (stories.isNotEmpty) ...[
-                          const SizedBox(height: 24),
-                          const Text(
-                            'More Stories',
-                            style: TextStyle(
-                              color: AppColors.softCream,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: -0.3,
-                            ),
+                            },
+                            onToggleSave: cubit.toggleBookmark,
+                            onToggleLike: cubit.toggleStar,
                           ),
-                          const SizedBox(height: 12),
-                          ...stories.map(
-                            (item) => HomeSecondaryStoryTile(
-                              item: item,
-                              onTap: () => Navigator.pushNamed(
-                                context,
-                                AppRoutes.article,
-                                arguments: item,
+                          if (stories.isNotEmpty) ...[
+                            const SizedBox(height: 24),
+                            const Text(
+                              'More Stories',
+                              style: TextStyle(
+                                color: AppColors.softCream,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: -0.3,
                               ),
-                              onToggleSave: () => cubit.toggleBookmark(item),
                             ),
-                          ),
+                            const SizedBox(height: 12),
+                            ...stories.map(
+                              (item) => HomeSecondaryStoryTile(
+                                item: item,
+                                onTap: () => Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.article,
+                                  arguments: item,
+                                ),
+                                onToggleSave: () => cubit.toggleBookmark(item),
+                              ),
+                            ),
+                          ],
                         ],
                       ],
-                    ],
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ),
-        ),
-        Positioned(
-          right: 16,
-          bottom: 88 + bottomInset,
-          child: const HomeWriteArticleFab(),
-        ),
-      ],
-    ),
-  );
-}
+          Positioned(
+            right: 16,
+            bottom: 88 + bottomInset,
+            child: const HomeWriteArticleFab(),
+          ),
+        ],
+      ),
+    );
+  }
 }
