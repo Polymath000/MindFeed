@@ -39,6 +39,8 @@ class ProfileAvatarAndStats extends StatelessWidget {
                     avatarUrl!,
                     width: 96,
                     height: 96,
+                    cacheWidth: 288,
+                    cacheHeight: 288,
                     fit: BoxFit.cover,
                     errorBuilder: (_, _, _) => const CircleAvatar(
                       radius: 48,
@@ -50,6 +52,8 @@ class ProfileAvatarAndStats extends StatelessWidget {
                     Assets.assetsImagesWadeAvatar,
                     width: 96,
                     height: 96,
+                    cacheWidth: 288,
+                    cacheHeight: 288,
                     fit: BoxFit.cover,
                     errorBuilder: (_, _, _) => const CircleAvatar(
                       radius: 48,

@@ -61,103 +61,137 @@ class _HomeViewBodyContent extends StatelessWidget {
                         state.status == HomeFeedStatus.loading ||
                         state.status == HomeFeedStatus.initial;
 
-                    return ListView(
-                      padding: EdgeInsets.fromLTRB(
-                        AppConstants.page,
-                        12,
-                        AppConstants.page,
-                        152 + bottomInset,
-                      ),
-                      children: [
-                        const HomeMastheadHeader(),
-                        const SizedBox(height: 20),
-                        Skeletonizer(
-                          enabled: isLoading,
-                          effect: HomeFeedLoadingView.editorialShimmerEffect,
-                          child: HomeTopicTabsBar(
-                            topics: isLoading && state.topics.length <= 1
-                                ? const [
-                                    'All',
-                                    'Category',
-                                    'Category',
-                                    'Category',
-                                  ]
-                                : state.topics,
-                            selectedTopic: state.selectedTopic,
-                            onTopicSelected: cubit.selectTopic,
+                    final showLoadedStories =
+                        !isLoading &&
+                        state.status != HomeFeedStatus.error &&
+                        stories.isNotEmpty;
+
+                    return CustomScrollView(
+                      slivers: [
+                        SliverPadding(
+                          padding: EdgeInsets.fromLTRB(
+                            AppConstants.page,
+                            12,
+                            AppConstants.page,
+                            showLoadedStories ? 12 : 152 + bottomInset,
                           ),
-                        ),
-                        const SizedBox(height: 18),
-                        if (isLoading)
-                          const HomeFeedLoadingView()
-                        else if (state.status == HomeFeedStatus.error &&
-                            state.errorMessage != null)
-                          HomeFeedErrorView(
-                            errorMessage: state.errorMessage!,
-                            onRetry: cubit.fetchFeed,
-                          )
-                        else if (stories.isEmpty)
-                          HomeFeedEmptyView(onRefresh: cubit.fetchFeed)
-                        else ...[
-                          EditorialCardStack(
-                            key: ValueKey(state.selectedTopic),
-                            items: stories,
-                            height: 570,
-                            onOpenArticle: (item) => Navigator.pushNamed(
-                              context,
-                              AppRoutes.article,
-                              arguments: item,
-                            ),
-                            onSwipeRight: (item) async {
-                              final messenger = ScaffoldMessenger.of(context);
-                              final saved = await cubit.saveArticleOnSwipeRight(
-                                item,
-                              );
-                              messenger.clearSnackBars();
-                              final isLogged =
-                                  CurrentUserSession.currentUserId != null &&
-                                  CurrentUserSession.currentUserId!.isNotEmpty;
-                              messenger.showSnackBar(
-                                SnackBar(
-                                  duration: const Duration(seconds: 2),
-                                  content: Text(
-                                    saved
-                                        ? 'Saved "${item.title.replaceAll('\n', ' ')}"'
-                                        : (!isLogged
-                                              ? 'Sign in to save articles'
-                                              : 'Failed to save article'),
+                          sliver: SliverToBoxAdapter(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                const HomeMastheadHeader(),
+                                const SizedBox(height: 20),
+                                Skeletonizer(
+                                  enabled: isLoading,
+                                  effect: HomeFeedLoadingView
+                                      .editorialShimmerEffect,
+                                  child: HomeTopicTabsBar(
+                                    topics:
+                                        isLoading && state.topics.length <= 1
+                                        ? const [
+                                            'All',
+                                            'Category',
+                                            'Category',
+                                            'Category',
+                                          ]
+                                        : state.topics,
+                                    selectedTopic: state.selectedTopic,
+                                    onTopicSelected: cubit.selectTopic,
                                   ),
                                 ),
-                              );
-                            },
-                            onToggleSave: cubit.toggleBookmark,
-                            onToggleLike: cubit.toggleStar,
+                                const SizedBox(height: 18),
+                                if (isLoading)
+                                  const HomeFeedLoadingView()
+                                else if (state.status == HomeFeedStatus.error &&
+                                    state.errorMessage != null)
+                                  HomeFeedErrorView(
+                                    errorMessage: state.errorMessage!,
+                                    onRetry: cubit.fetchFeed,
+                                  )
+                                else if (stories.isEmpty)
+                                  HomeFeedEmptyView(onRefresh: cubit.fetchFeed)
+                                else ...[
+                                  EditorialCardStack(
+                                    key: ValueKey(state.selectedTopic),
+                                    items: stories,
+                                    height: 570,
+                                    onOpenArticle: (item) =>
+                                        Navigator.pushNamed(
+                                          context,
+                                          AppRoutes.article,
+                                          arguments: item,
+                                        ),
+                                    onSwipeRight: (item) async {
+                                      final messenger = ScaffoldMessenger.of(
+                                        context,
+                                      );
+                                      final saved = await cubit
+                                          .saveArticleOnSwipeRight(item);
+                                      messenger.clearSnackBars();
+                                      final isLogged =
+                                          CurrentUserSession.currentUserId !=
+                                              null &&
+                                          CurrentUserSession
+                                              .currentUserId!
+                                              .isNotEmpty;
+                                      messenger.showSnackBar(
+                                        SnackBar(
+                                          duration: const Duration(seconds: 2),
+                                          content: Text(
+                                            saved
+                                                ? 'Saved "${item.title.replaceAll('\n', ' ')}"'
+                                                : (!isLogged
+                                                      ? 'Sign in to save articles'
+                                                      : 'Failed to save article'),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    onToggleSave: cubit.toggleBookmark,
+                                    onToggleLike: cubit.toggleStar,
+                                  ),
+                                  const SizedBox(height: 24),
+                                  const Text(
+                                    'More Stories',
+                                    style: TextStyle(
+                                      color: AppColors.softCream,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: -0.3,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
                           ),
-                          if (stories.isNotEmpty) ...[
-                            const SizedBox(height: 24),
-                            const Text(
-                              'More Stories',
-                              style: TextStyle(
-                                color: AppColors.softCream,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: -0.3,
-                              ),
+                        ),
+                        if (showLoadedStories)
+                          SliverPadding(
+                            padding: EdgeInsets.fromLTRB(
+                              AppConstants.page,
+                              0,
+                              AppConstants.page,
+                              152 + bottomInset,
                             ),
-                            const SizedBox(height: 12),
-                            ...stories.map(
-                              (item) => HomeSecondaryStoryTile(
-                                item: item,
-                                onTap: () => Navigator.pushNamed(
-                                  context,
-                                  AppRoutes.article,
-                                  arguments: item,
-                                ),
-                                onToggleSave: () => cubit.toggleBookmark(item),
-                              ),
+                            sliver: SliverList.builder(
+                              itemCount: stories.length,
+                              itemBuilder: (context, index) {
+                                final item = stories[index];
+                                return RepaintBoundary(
+                                  child: HomeSecondaryStoryTile(
+                                    item: item,
+                                    onTap: () => Navigator.pushNamed(
+                                      context,
+                                      AppRoutes.article,
+                                      arguments: item,
+                                    ),
+                                    onToggleSave: () =>
+                                        cubit.toggleBookmark(item),
+                                  ),
+                                );
+                              },
                             ),
-                          ],
-                        ],
+                          ),
                       ],
                     );
                   },

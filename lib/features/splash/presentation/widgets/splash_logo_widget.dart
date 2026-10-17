@@ -61,6 +61,8 @@ class _SplashLogoWidgetState extends State<SplashLogoWidget>
             padding: const EdgeInsets.all(14),
             child: Image.asset(
               Assets.assetsImagesMindFeedLogo,
+              cacheWidth: 168,
+              cacheHeight: 168,
               fit: BoxFit.contain,
             ),
           ),

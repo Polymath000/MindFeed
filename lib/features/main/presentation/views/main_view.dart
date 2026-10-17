@@ -18,6 +18,7 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> {
   var selectedIndex = 0;
   var savedRefreshSeed = 0;
+  final Set<int> _visitedTabs = {0};
 
   @override
   void initState() {
@@ -31,6 +32,16 @@ class _MainViewState extends State<MainView> {
     });
   }
 
+  Widget _buildTab(int index, Widget Function() builder) {
+    if (!_visitedTabs.contains(index)) {
+      return const SizedBox.shrink();
+    }
+    return TickerMode(
+      enabled: selectedIndex == index,
+      child: RepaintBoundary(child: builder()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
     extendBody: true,
@@ -38,10 +49,10 @@ class _MainViewState extends State<MainView> {
     body: IndexedStack(
       index: selectedIndex,
       children: [
-        const HomeView(),
-        const SearchView(),
-        ArticlesSaved(refreshSeed: savedRefreshSeed),
-        const ProfileView(),
+        _buildTab(0, () => const HomeView()),
+        _buildTab(1, () => const SearchView()),
+        _buildTab(2, () => ArticlesSaved(refreshSeed: savedRefreshSeed)),
+        _buildTab(3, () => const ProfileView()),
       ],
     ),
     bottomNavigationBar: MainNavigationBar(
@@ -51,6 +62,7 @@ class _MainViewState extends State<MainView> {
           if (index == 2) {
             savedRefreshSeed++;
           }
+          _visitedTabs.add(index);
           selectedIndex = index;
         });
       },

@@ -22,6 +22,7 @@ class ArticleReaderCoverImage extends StatelessWidget {
                   coverImageUrl!,
                   height: 240,
                   width: double.infinity,
+                  cacheWidth: 1080,
                   fit: BoxFit.cover,
                   errorBuilder: (_, _, _) => _placeholder(),
                 )
@@ -175,9 +176,25 @@ class ArticleReaderAuthorBar extends StatelessWidget {
   Widget _buildAvatar() {
     if (authorAvatar.isEmpty) return _avatarFallback();
     if (authorAvatar.startsWith('http')) {
-      return Image.network(authorAvatar, width: 40, height: 40, fit: BoxFit.cover, errorBuilder: (_, _, _) => _avatarFallback());
+      return Image.network(
+        authorAvatar,
+        width: 40,
+        height: 40,
+        cacheWidth: 120,
+        cacheHeight: 120,
+        fit: BoxFit.cover,
+        errorBuilder: (_, _, _) => _avatarFallback(),
+      );
     }
-    return Image.asset(authorAvatar, width: 40, height: 40, fit: BoxFit.cover, errorBuilder: (_, _, _) => _avatarFallback());
+    return Image.asset(
+      authorAvatar,
+      width: 40,
+      height: 40,
+      cacheWidth: 120,
+      cacheHeight: 120,
+      fit: BoxFit.cover,
+      errorBuilder: (_, _, _) => _avatarFallback(),
+    );
   }
 
   Widget _avatarFallback() => const CircleAvatar(

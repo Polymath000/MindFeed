@@ -17,6 +17,7 @@ class EditorialCard extends StatelessWidget {
     this.onSave,
     this.onShare,
     this.showActions = true,
+    this.backgroundColor,
   });
 
   final EditorialNewsItem item;
@@ -25,6 +26,7 @@ class EditorialCard extends StatelessWidget {
   final VoidCallback? onSave;
   final VoidCallback? onShare;
   final bool showActions;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class EditorialCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
           decoration: BoxDecoration(
-            color: item.color,
+            color: backgroundColor ?? item.color,
             borderRadius: AppBorders.card,
             boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 16, offset: Offset(0, 6))],
           ),
@@ -91,6 +93,8 @@ class EditorialCard extends StatelessWidget {
                       item.authorAvatar,
                       width: 38,
                       height: 38,
+                      cacheWidth: 114,
+                      cacheHeight: 114,
                       fit: BoxFit.cover,
                       errorBuilder: (_, _, _) => const CircleAvatar(
                         radius: 19,

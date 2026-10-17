@@ -36,6 +36,8 @@ class HomeMastheadHeader extends StatelessWidget {
           padding: const EdgeInsets.all(5),
           child: Image.asset(
             Assets.assetsImagesMindFeedLogo,
+            cacheWidth: 96,
+            cacheHeight: 96,
             fit: BoxFit.contain,
           ),
         ),
@@ -63,16 +65,22 @@ class HomeMastheadAnimatedTitle extends StatelessWidget {
       letterSpacing: -0.6,
     );
 
-    return SizedBox(
-      height: 42,
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        alignment: Alignment.centerLeft,
-        child: AnimatedTextKit(
-          repeatForever: true,
-          pause: const Duration(milliseconds: 1000),
-          animatedTexts: words
-              .map(
+    final effectiveWords = words.isEmpty
+        ? const [AppConstants.appName]
+        : words;
+
+    return RepaintBoundary(
+      child: SizedBox(
+        height: 42,
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: AnimatedTextKit(
+            repeatForever: false,
+            totalRepeatCount: 1,
+            pause: const Duration(milliseconds: 1000),
+            animatedTexts: [
+              ...effectiveWords.map(
                 (word) => RotateAnimatedText(
                   word,
                   textStyle: titleStyle,
@@ -80,8 +88,17 @@ class HomeMastheadAnimatedTitle extends StatelessWidget {
                   transitionHeight: 42,
                   duration: const Duration(milliseconds: 2400),
                 ),
-              )
-              .toList(),
+              ),
+              RotateAnimatedText(
+                effectiveWords.first,
+                textStyle: titleStyle,
+                alignment: Alignment.centerLeft,
+                transitionHeight: 42,
+                duration: const Duration(milliseconds: 1600),
+                rotateOut: false,
+              ),
+            ],
+          ),
         ),
       ),
     );

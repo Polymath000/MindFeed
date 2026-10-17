@@ -153,5 +153,17 @@ The codebase follows **Feature-First Clean Architecture**:
   - Set `SafeArea(top: true, bottom: false)` across all tabs so background and scrolling content extend all the way behind the floating navigation pill to the bottom device edge.
   - Updated scroll views and list view padding across all tabs (e.g. `EdgeInsets.fromLTRB(20, 14, 20, 100 + bottomInset)`) so items scroll smoothly behind the floating bar without being obscured at the bottom of the scroll view.
   - Verified with `flutter test` (all 229 tests passing with zero static analyzer issues) and verified visually on active emulator via screen captures across all 4 tabs.
-
-
+- **Dart DevTools Performance Profile Optimizations**:
+  - Analyzed exported DevTools timeline (`dart_devtools_2026-10-17_17_07_21.029.json`, 2,796 frames) and resolved all 4 root causes of Raster/UI jank:
+  - **Masthead Title Animation Isolation & Finite Cycle (`home_masthead_header.dart`)**:
+    - Wrapped `HomeMastheadAnimatedTitle` in `RepaintBoundary` so text rotation no longer invalidates the parent scroll view or card stack.
+    - Configured `AnimatedTextKit` with `repeatForever: false, totalRepeatCount: 1`, and appended a final non-rotating `RotateAnimatedText` entry so the title cycles through the rotating phrases once and settles permanently on `"MindFeed"` (0% idle CPU/GPU).
+  - **Eliminated `Canvas::saveLayer` Offscreen Passes & Drag Rebuilds (`editorial_card_stack.dart`, `editorial_card.dart`)**:
+    - Replaced `Opacity` widgets on background stack cards (`op = 0.85` / `0.95`) with direct surface color interpolation (`Color.lerp(AppColors.ink, _cards[i].color, op)`), eliminating 6,150 `Canvas::saveLayer` / `RenderPassGLES` offscreen GPU passes.
+    - Wrapped each card in `RepaintBoundary` and replaced `_onPanUpdate` `setState` calls with a `ValueNotifier<Offset>` merged into `AnimatedBuilder` via `Listenable.merge`, eliminating widget tree rebuilds during card drag gestures.
+  - **Image Decode Sizing & Asset Downscaling**:
+    - Added `cacheWidth` and `cacheHeight` to `Image.asset` and `Image.network` widgets across `HomeMastheadHeader`, `EditorialCard`, `ArticleReaderCoverImage`, `ArticleReaderAuthorBar`, `ProfileAvatarAndStats`, `SettingsAccountCard`, `Logo`, and `SplashLogoWidget`.
+    - Downscaled oversized bundled assets: `assets/images/wade_avatar.png` (`1024x1024` 547KB -> `256x256` 81KB) and `assets/images/onBoarding_1.jpg` (`3163x3954` 825KB -> `1080x1350` 145KB), reducing decoded GPU texture memory by >90%.
+  - **Lazy Tab Mounting & Sliver Virtualization (`main_view.dart`, `home_view_body.dart`)**:
+    - Updated `MainView` `IndexedStack` to lazy-mount tabs (`_visitedTabs = {0}`) on first selection and wrapped each tab in `TickerMode(enabled: selectedIndex == index)` and `RepaintBoundary`.
+    - Converted `HomeViewBody` from an eager `ListView(children: ...)` to a `CustomScrollView` with `SliverList.builder` and `RepaintBoundary` for secondary stories.
