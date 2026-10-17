@@ -256,6 +256,8 @@ void main() {
     expect(cubit.state.isSuccess, isTrue);
     expect(cubit.state.editingItemId, isNotNull);
     expect(cubit.state.editingItemStatus, 'draft');
+    expect(cubit.state.lastSavedArticle, isNotNull);
+    expect(cubit.state.successMessage, 'Draft saved successfully');
     expect(repo.articles.length, 1);
     expect(repo.articles.values.first.title, 'My New Draft');
   });
@@ -301,6 +303,8 @@ void main() {
     expect(cubit.state.isSuccess, isTrue);
     expect(cubit.state.editingItemStatus, 'published');
     expect(cubit.state.publishedAt, isNotNull);
+    expect(cubit.state.lastSavedArticle, isNotNull);
+    expect(cubit.state.successMessage, 'Article published successfully');
     expect(repo.articles.length, 1);
     expect(repo.articles.values.first.status, 'published');
   });

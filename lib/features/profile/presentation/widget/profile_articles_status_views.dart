@@ -17,16 +17,42 @@ class ProfileArticlesLoadingView extends StatelessWidget {
 }
 
 class ProfileArticlesEmptyView extends StatelessWidget {
-  const ProfileArticlesEmptyView({super.key});
+  final VoidCallback? onCreateArticle;
+
+  const ProfileArticlesEmptyView({super.key, this.onCreateArticle});
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 32.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 32.0),
       child: Center(
-        child: Text(
-          'No published articles yet',
-          style: TextStyle(color: AppColors.greyText, fontSize: 14),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'No published articles yet',
+              style: TextStyle(color: AppColors.greyText, fontSize: 14),
+            ),
+            if (onCreateArticle != null) ...[
+              const SizedBox(height: 14),
+              FilledButton.icon(
+                onPressed: onCreateArticle,
+                icon: const Icon(Icons.edit_outlined, size: 16),
+                label: const Text(
+                  'Write Your First Article',
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                ),
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.cream,
+                  foregroundColor: AppColors.ink,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                ),
+              ),
+            ],
+          ],
         ),
       ),
     );

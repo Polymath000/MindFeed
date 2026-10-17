@@ -1,10 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/features/add_article/domain/helpers/article_payload_builder.dart';
 import 'package:mind_feed/features/add_article/domain/helpers/article_validator.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_state.dart';
+import 'package:mind_feed/features/home/domain/entities/article_entity.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_categories_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_fixed_tags_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/publish_article_use_case.dart';
@@ -28,15 +30,11 @@ class AddArticleCubit extends Cubit<AddArticleState> {
     UpdateArticleUseCase? updateArticleUseCase,
     this.userResolver,
     this.dimensionResolver,
-  })  : getCategoriesUseCase =
-            getCategoriesUseCase ?? getIt<GetCategoriesUseCase>(),
-        getFixedTagsUseCase =
-            getFixedTagsUseCase ?? getIt<GetFixedTagsUseCase>(),
-        saveDraftUseCase = saveDraftUseCase ?? getIt<SaveDraftUseCase>(),
-        publishArticleUseCase =
-            publishArticleUseCase ?? getIt<PublishArticleUseCase>(),
-        updateArticleUseCase =
-            updateArticleUseCase ?? getIt<UpdateArticleUseCase>(),
+  })  : getCategoriesUseCase = getCategoriesUseCase ?? getIt(),
+        getFixedTagsUseCase = getFixedTagsUseCase ?? getIt(),
+        saveDraftUseCase = saveDraftUseCase ?? getIt(),
+        publishArticleUseCase = publishArticleUseCase ?? getIt(),
+        updateArticleUseCase = updateArticleUseCase ?? getIt(),
         super(const AddArticleState());
 
   CurrentUserSnapshot? get _currentUser =>
@@ -44,87 +42,41 @@ class AddArticleCubit extends Cubit<AddArticleState> {
 
   Future<void> initialize({EditorialNewsItem? editingItem}) async {
     emit(state.copyWith(isLoading: true, clearError: true, clearSuccess: true));
-    final categoriesResult = await getCategoriesUseCase.call();
-    final tagsResult = await getFixedTagsUseCase.call();
-    final categories = categoriesResult.when(
-      success: (list) => list,
-      failure: (_) => state.categories,
-    );
-    final tags = tagsResult.when(
-      success: (list) => list,
-      failure: (_) => state.availableTags,
-    );
-    final editError = (editingItem != null &&
-            editingItem.status == 'published' &&
-            !editingItem.isEditableWithinWindow)
-        ? 'Published articles can only be edited within 30 days of publication'
-        : null;
-
+    final catRes = await getCategoriesUseCase.call();
+    final tagRes = await getFixedTagsUseCase.call();
     emit(state.copyWith(
       isLoading: false,
-      categories: categories,
-      availableTags: tags,
+      categories: catRes.when(success: (l) => l, failure: (_) => state.categories),
+      availableTags: tagRes.when(success: (l) => l, failure: (_) => state.availableTags),
       title: editingItem?.title ?? state.title,
       content: editingItem?.content ?? state.content,
       coverImageUrl: editingItem?.coverImageUrl ?? state.coverImageUrl,
       selectedCategoryId: editingItem?.categoryId ?? state.selectedCategoryId,
-      selectedTags: editingItem != null
-          ? List<String>.from(editingItem.tags)
-          : state.selectedTags,
+      selectedTags: editingItem != null ? List<String>.from(editingItem.tags) : state.selectedTags,
       editingItemId: editingItem?.id ?? state.editingItemId,
       editingItemStatus: editingItem?.status ?? state.editingItemStatus,
       publishedAt: editingItem?.publishedAt ?? state.publishedAt,
-      errorMessage: editError,
+      errorMessage: ArticlePayloadBuilder.resolveEditLockoutError(editingItem),
     ));
   }
 
-  void onTitleChanged(String title) {
-    emit(state.copyWith(
-      title: title,
-      formErrors: state.formErrors.copyWith(clearTitle: true),
-      clearError: true,
-      clearSuccess: true,
-    ));
-  }
+  void onTitleChanged(String title) => emit(state.copyWith(
+      title: title, formErrors: state.formErrors.copyWith(clearTitle: true), clearError: true, clearSuccess: true));
 
-  void onContentChanged(String content) {
-    emit(state.copyWith(
-      content: content,
-      formErrors: state.formErrors.copyWith(clearContent: true),
-      clearError: true,
-      clearSuccess: true,
-    ));
-  }
+  void onContentChanged(String content) => emit(state.copyWith(
+      content: content, formErrors: state.formErrors.copyWith(clearContent: true), clearError: true, clearSuccess: true));
 
-  void onCoverImageUrlChanged(String url) {
-    emit(state.copyWith(
-      coverImageUrl: url,
-      formErrors: state.formErrors.copyWith(clearCoverImageUrl: true),
-      clearError: true,
-      clearSuccess: true,
-    ));
-  }
+  void onCoverImageUrlChanged(String url) => emit(state.copyWith(
+      coverImageUrl: url, formErrors: state.formErrors.copyWith(clearCoverImageUrl: true), clearError: true, clearSuccess: true));
 
-  void onCategorySelected(String? categoryId) {
-    emit(state.copyWith(
-      selectedCategoryId: categoryId,
-      formErrors: state.formErrors.copyWith(clearCategory: true),
-      clearError: true,
-      clearSuccess: true,
-    ));
-  }
+  void onCategorySelected(String? categoryId) => emit(state.copyWith(
+      selectedCategoryId: categoryId, formErrors: state.formErrors.copyWith(clearCategory: true), clearError: true, clearSuccess: true));
 
   void onTagToggled(String tagName) {
-    final currentTags = List<String>.from(state.selectedTags);
-    if (currentTags.contains(tagName)) {
-      currentTags.remove(tagName);
-    } else if (currentTags.length < 5) {
-      currentTags.add(tagName);
-    } else {
-      return;
-    }
+    final tags = List<String>.from(state.selectedTags);
+    if (!tags.remove(tagName) && tags.length < 5) tags.add(tagName);
     emit(state.copyWith(
-      selectedTags: currentTags,
+      selectedTags: tags,
       formErrors: state.formErrors.copyWith(clearTags: true),
       clearError: true,
       clearSuccess: true,
@@ -134,15 +86,15 @@ class AddArticleCubit extends Cubit<AddArticleState> {
   Future<void> saveDraft() async {
     if (state.isSavingDraft || state.isPublishing) return;
     final user = _currentUser;
-    if (user == null || user.id == null) {
+    if (user?.id == null) {
       emit(state.copyWith(errorMessage: 'User not authenticated', clearSuccess: true));
       return;
     }
-    final draftTitleError = ArticleValidator.validateDraftTitle(state.title);
-    if (draftTitleError != null) {
+    final titleErr = ArticleValidator.validateDraftTitle(state.title);
+    if (titleErr != null) {
       emit(state.copyWith(
-        formErrors: state.formErrors.copyWith(titleError: draftTitleError),
-        errorMessage: draftTitleError,
+        formErrors: state.formErrors.copyWith(titleError: titleErr),
+        errorMessage: titleErr,
         clearSuccess: true,
       ));
       return;
@@ -152,7 +104,7 @@ class AddArticleCubit extends Cubit<AddArticleState> {
     final isExisting = state.editingItemId != null && state.editingItemId!.isNotEmpty;
     final payload = ArticlePayloadBuilder.buildDraftPayload(
       state: state,
-      user: user,
+      user: user!,
       includeSlug: !isExisting,
     );
 
@@ -170,9 +122,7 @@ class AddArticleCubit extends Cubit<AddArticleState> {
         isSavingDraft: false,
         isSuccess: true,
         editingItemId: article.id,
-        editingItemStatus: state.editingItemStatus.isNotEmpty
-            ? state.editingItemStatus
-            : 'draft',
+        editingItemStatus: state.editingItemStatus.isNotEmpty ? state.editingItemStatus : 'draft',
         lastSavedArticle: article,
         successMessage: 'Draft saved successfully',
       )),
@@ -183,19 +133,13 @@ class AddArticleCubit extends Cubit<AddArticleState> {
   Future<void> publish() async {
     if (state.isSavingDraft || state.isPublishing) return;
     final user = _currentUser;
-    if (user == null || user.id == null) {
+    if (user?.id == null) {
       emit(state.copyWith(errorMessage: 'User not authenticated', clearSuccess: true));
       return;
     }
 
-    final errors = await ArticleValidator.validateForPublish(
-      title: state.title,
-      content: state.content,
-      coverImageUrl: state.coverImageUrl,
-      categoryId: state.selectedCategoryId,
-      availableCategoryIds: state.categories.map((c) => c.id).toList(),
-      tags: state.selectedTags,
-      allowedTagNames: state.availableTags.map((t) => t.name).toList(),
+    final errors = await ArticlePayloadBuilder.validateStateForPublish(
+      state: state,
       dimensionResolver: dimensionResolver,
     );
     if (errors.hasErrors) {
@@ -211,37 +155,25 @@ class AddArticleCubit extends Cubit<AddArticleState> {
     final isNew = state.editingItemId == null || state.editingItemId!.isEmpty;
     final payload = ArticlePayloadBuilder.buildPublishPayload(
       state: state,
-      user: user,
+      user: user!,
       includeSlug: isNew,
     );
 
     if (state.editingItemStatus == 'published') {
-      final updateResult = await updateArticleUseCase.call(
+      final res = await updateArticleUseCase.call(
         articleId: state.editingItemId!,
         updates: payload,
         status: 'published',
         publishedAt: state.publishedAt,
       );
-      updateResult.when(
-        success: (article) => emit(state.copyWith(
-          isPublishing: false,
-          isSuccess: true,
-          lastSavedArticle: article,
-          successMessage: 'Article updated successfully',
-        )),
-        failure: (f) => emit(state.copyWith(isPublishing: false, errorMessage: f.message)),
-      );
+      _handlePublishResult(res, 'Article updated successfully');
       return;
     }
 
     String articleId = state.editingItemId ?? '';
     final prepResult = isNew
         ? await saveDraftUseCase.call(payload)
-        : await updateArticleUseCase.call(
-            articleId: articleId,
-            updates: payload,
-            status: 'draft',
-          );
+        : await updateArticleUseCase.call(articleId: articleId, updates: payload, status: 'draft');
 
     final failed = prepResult.when(
       success: (article) {
@@ -260,7 +192,11 @@ class AddArticleCubit extends Cubit<AddArticleState> {
       title: state.title,
       content: state.content,
     );
-    publishResult.when(
+    _handlePublishResult(publishResult, 'Article published successfully');
+  }
+
+  void _handlePublishResult(ApiResult<ArticleEntity> result, String successMsg) {
+    result.when(
       success: (article) => emit(state.copyWith(
         isPublishing: false,
         isSuccess: true,
@@ -268,7 +204,7 @@ class AddArticleCubit extends Cubit<AddArticleState> {
         editingItemStatus: 'published',
         publishedAt: article.publishedAt ?? DateTime.now(),
         lastSavedArticle: article,
-        successMessage: 'Article published successfully',
+        successMessage: successMsg,
       )),
       failure: (f) => emit(state.copyWith(isPublishing: false, errorMessage: f.message)),
     );

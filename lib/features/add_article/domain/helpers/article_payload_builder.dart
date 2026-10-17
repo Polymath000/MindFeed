@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/features/add_article/domain/helpers/article_validator.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_state.dart';
@@ -8,6 +9,13 @@ sealed class ArticlePayloadBuilder {
       return user.displayName!;
     }
     return user.email ?? 'Editorial Staff';
+  }
+
+  static String? resolveEditLockoutError(EditorialNewsItem? item) {
+    if (item != null && item.status == 'published' && !item.isEditableWithinWindow) {
+      return 'Published articles can only be edited within 30 days of publication';
+    }
+    return null;
   }
 
   static Map<String, dynamic> buildDraftPayload({
@@ -34,6 +42,7 @@ sealed class ArticlePayloadBuilder {
     if (category != null) {
       payload['category_id'] = category.id;
       payload['category_slug'] = category.slug;
+      payload['badge'] = category.name.toUpperCase();
     }
     if (state.coverImageUrl.trim().isNotEmpty) {
       payload['cover_image_url'] = state.coverImageUrl.trim();
@@ -62,6 +71,7 @@ sealed class ArticlePayloadBuilder {
       'author_name': resolveAuthorName(user),
       'category_id': category.id,
       'category_slug': category.slug,
+      'badge': category.name.toUpperCase(),
       'cover_image_url': state.coverImageUrl.trim(),
       'tags': state.selectedTags,
       'reading_time_minutes': readingTime,
@@ -70,5 +80,21 @@ sealed class ArticlePayloadBuilder {
       payload['slug'] = ArticleValidator.generateSlug(state.title);
     }
     return payload;
+  }
+
+  static Future<ArticleFormErrors> validateStateForPublish({
+    required AddArticleState state,
+    ImageDimensionResolver? dimensionResolver,
+  }) {
+    return ArticleValidator.validateForPublish(
+      title: state.title,
+      content: state.content,
+      coverImageUrl: state.coverImageUrl,
+      categoryId: state.selectedCategoryId,
+      availableCategoryIds: state.categories.map((c) => c.id).toList(),
+      tags: state.selectedTags,
+      allowedTagNames: state.availableTags.map((t) => t.name).toList(),
+      dimensionResolver: dimensionResolver,
+    );
   }
 }

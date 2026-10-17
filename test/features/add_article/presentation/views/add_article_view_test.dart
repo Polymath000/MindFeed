@@ -112,4 +112,40 @@ void main() {
 
     expect(find.text('Title cannot be empty to save a draft'), findsWidgets);
   });
+
+  testWidgets('tapping preset cover chip populates cover URL and updates state',
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1200, 2400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await cubit.initialize();
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BlocProvider<AddArticleCubit>.value(
+          value: cubit,
+          child: const AddArticleView(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final techChip = find.byKey(const Key('preset_cover_Tech Cover'));
+    expect(techChip, findsOneWidget);
+
+    await tester.ensureVisible(techChip);
+    await tester.tap(techChip);
+    await tester.pumpAndSettle();
+
+    const expectedUrl =
+        'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=800&fit=crop';
+    expect(cubit.state.coverImageUrl, expectedUrl);
+
+    final textField = tester.widget<TextField>(find.byKey(const Key('article_cover_field')));
+    expect(textField.controller?.text, expectedUrl);
+  });
 }
