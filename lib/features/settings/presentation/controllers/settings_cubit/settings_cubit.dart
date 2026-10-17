@@ -7,7 +7,6 @@ class SettingsCubit extends Cubit<SettingsState> {
   SettingsCubit() : super(SettingsInitial());
 
   void loadSettings() {
-    // Mock loading from SharedPreferences or similar
     emit(const SettingsLoaded(
       cachedMegabytes: 18.4,
       dataPreservation: false,
