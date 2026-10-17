@@ -6,7 +6,8 @@ import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/design/editorial_card_stack.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/home_lead_story_section.dart';
+
+import 'home_lead_story_section.dart';
 
 class HomeFeedLoadingView extends StatelessWidget {
   const HomeFeedLoadingView({super.key});

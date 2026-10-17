@@ -11,9 +11,9 @@ import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_home_feed_use_case.dart';
 import 'package:mind_feed/features/home/presentation/cubit/home_feed/home_feed_cubit.dart';
 import 'package:mind_feed/features/home/presentation/widgets/home_view_body.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/home_feed_loading_views.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/home_lead_story_section.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/home_masthead_header.dart';
+import 'package:mind_feed/features/home/presentation/widgets/home_feed_loading_views.dart';
+import 'package:mind_feed/features/home/presentation/widgets/home_lead_story_section.dart';
+import 'package:mind_feed/features/home/presentation/widgets/home_masthead_header.dart';
 import 'package:mind_feed/features/profile/domain/repos/profile_repo.dart';
 
 class _DelayedArticlesRepo implements ArticlesRepository {

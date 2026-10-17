@@ -6,7 +6,7 @@ import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
 import 'package:mind_feed/features/home/domain/usecases/rate_author_use_case.dart';
 import 'package:mind_feed/features/home/presentation/cubit/article_reader/article_reader_cubit.dart';
 import 'package:mind_feed/features/home/presentation/views/article_view.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/article_slow_scroll_bar.dart';
+import 'package:mind_feed/features/home/presentation/widgets/article_slow_scroll_bar.dart';
 
 class _WidgetFakeEngagementRepository implements ArticleEngagementRepository {
   @override

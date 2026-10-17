@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/home_feed_empty_view.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/home_feed_error_view.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:mind_feed/config/routes/app_routes.dart';
@@ -10,12 +8,15 @@ import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/design/editorial_card_stack.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
-import 'package:mind_feed/features/home/presentation/cubit/home_feed/home_feed_cubit.dart';
-import 'package:mind_feed/features/home/presentation/cubit/home_feed/home_feed_state.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/home_feed_loading_views.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/home_lead_story_section.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/home_masthead_header.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/home_write_article_fab.dart';
+
+import '../cubit/home_feed/home_feed_cubit.dart';
+import '../cubit/home_feed/home_feed_state.dart';
+import 'home_feed_empty_view.dart';
+import 'home_feed_error_view.dart';
+import 'home_feed_loading_views.dart';
+import 'home_lead_story_section.dart';
+import 'home_masthead_header.dart';
+import 'home_write_article_fab.dart';
 
 class HomeViewBody extends StatelessWidget {
   const HomeViewBody({super.key, this.cubit});

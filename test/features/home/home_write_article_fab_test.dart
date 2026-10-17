@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/home_write_article_fab.dart';
+import 'package:mind_feed/features/home/presentation/widgets/home_write_article_fab.dart';
 
 void main() {
   testWidgets('HomeWriteArticleFab renders tooltip and triggers navigation to addArticle',

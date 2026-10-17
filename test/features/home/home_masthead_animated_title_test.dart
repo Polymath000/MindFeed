@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mind_feed/core/constants/constants.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/home_masthead_header.dart';
+import 'package:mind_feed/features/home/presentation/widgets/home_masthead_header.dart';
 
 void main() {
   testWidgets('HomeMastheadAnimatedTitle renders default appName and rotates through words',

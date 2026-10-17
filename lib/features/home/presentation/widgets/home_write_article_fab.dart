@@ -6,7 +6,8 @@ import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/borders.dart';
-import 'package:mind_feed/features/home/presentation/cubit/home_feed/home_feed_cubit.dart';
+
+import '../cubit/home_feed/home_feed_cubit.dart';
 
 class HomeWriteArticleFab extends StatelessWidget {
   const HomeWriteArticleFab({super.key});

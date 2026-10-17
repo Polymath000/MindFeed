@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
+
 import 'package:mind_feed/core/constants/app_colors.dart';
-import 'package:mind_feed/core/constants/app_text_styles.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
-import 'package:mind_feed/features/home/presentation/views/home_view.dart';
+import 'package:mind_feed/core/constants/app_text_styles.dart';
+import 'package:mind_feed/features/home/presentation/widgets/custom_drawer.dart';
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key, required this.title});

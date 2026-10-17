@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+
+import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
+
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/features/collections/presentation/views/articles_saved.dart';
 import 'package:mind_feed/features/collections/presentation/views/downloaded_articles_view.dart';
-import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 import 'package:mind_feed/features/settings/presentation/views/settings_view.dart';
+
+import '../views/home_view.dart';
+
+final AdvancedDrawerController advancedDrawerController =
+    AdvancedDrawerController();
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key, required this.routeName});

@@ -1,15 +1,19 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
-import 'package:mind_feed/features/home/presentation/cubit/article_reader/article_reader_cubit.dart';
-import 'package:mind_feed/features/home/presentation/cubit/article_reader/article_reader_state.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/article_reader_action_bar.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/article_reader_header.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/article_reader_markdown_body.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/article_reader_top_bar.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/article_slow_scroll_bar.dart';
+
+import '../cubit/article_reader/article_reader_cubit.dart';
+import '../cubit/article_reader/article_reader_state.dart';
+import '../widgets/article_reader_action_bar.dart';
+import '../widgets/article_reader_header.dart';
+import '../widgets/article_reader_markdown_body.dart';
+import '../widgets/article_reader_top_bar.dart';
+import '../widgets/article_slow_scroll_bar.dart';
 
 export 'package:mind_feed/core/design/editorial_models.dart';
 
