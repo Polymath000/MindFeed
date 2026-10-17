@@ -47,6 +47,11 @@ class DownloadedArticleEntity {
       excerpt: excerpt.isNotEmpty
           ? excerpt
           : (content.length > 150 ? '${content.substring(0, 150)}...' : content),
+      content: content,
+      tags: tags,
+      publishedAt: publishedAt,
+      readingTimeMinutes: readingTimeMinutes,
+      status: 'published',
       color: AppColors.cream,
       isLive: false,
       isLiked: false,
