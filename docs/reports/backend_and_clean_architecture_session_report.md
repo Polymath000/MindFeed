@@ -1,36 +1,45 @@
 # MindFeed — End-to-End Supabase Backend, Feature Implementation, Clean Architecture Refactoring & Security Audit Report
 
 Date: 2026-10-17
-Database: Supabase (Project ID: `tsqruoqiajkbrdhprfxa`, Name: `MindFeed`, Region: `eu-west-1`)
+Database: Supabase (Project ID: `tsqruoqiajkbrdhprfxa`, URL: `https://tsqruoqiajkbrdhprfxa.supabase.co`, Name: `MindFeed`, Region: `eu-west-1`)
 Repository Path: `C:/Users/Hp/OneDrive/Documents/Projects/MindFeed/MindFeed-main`
-Git Branch: `feature/supabase-implementation` (Uncommitted working tree changes on top of merged `origin/main` `8398e2c`)
+Git Branch: `feature/supabase-implementation`
 
 ---
 
 ## 1. Executive Summary
 
-This report documents everything accomplished during this engineering session, the architectural and mechanical rationale behind every decision ("why certain things were done"), the complete file-by-file and migration-by-migration diff inventory, and the empirical verification evidence across both the Flutter application and the live hosted Supabase PostgreSQL database.
+This report documents everything accomplished across the entire engineering session, the architectural and mechanical rationale behind every decision ("why certain things were done"), the complete file-by-file and migration-by-migration diff inventory, and the empirical verification evidence across both the Flutter application and the live hosted Supabase PostgreSQL database (`tsqruoqiajkbrdhprfxa`).
 
 ### Summary of Outcomes
 1. **Branch Synchronization with `origin/main`**: Merged the 9 upstream commits from `origin/main` into `feature/supabase-implementation`, resolving conflicts in core DI, routing, auth, onboarding categories, and profile layers without losing upstream Clean Architecture use cases or local editorial UI styling.
 2. **End-to-End Feature & Backend Wiring (4 Parallel Subagents A–D)**:
    - Implemented full Markdown article authoring, field-level validation (1–12 title words, >=300 body words, landscape cover image dimension validation via `ImageStream`, 1 category, 1–5 fixed tags), draft saving, live preview, and publishing.
-   - Implemented the live Markdown article reader (`ArticleView`), optimistic star endorsement (`ToggleStarUseCase`) and bookmarking (`ToggleBookmarkUseCase`) with rollback on failure, and text-only offline article downloads (`DownloadArticleTextUseCase` / `DownloadsCubit`).
+   - Implemented the live Markdown article reader (`ArticleView`), optimistic endorsements and bookmarking (`ToggleBookmarkUseCase`) with rollback on failure, and text-only offline article downloads (`DownloadArticleTextUseCase` / `DownloadsCubit`).
    - Implemented debounced (350ms) live keyword search (`SearchArticlesUseCase`), live category filtering (`GetArticlesByCategoryUseCase`), and tag filtering (`SearchCubit`), and purged all mock fallbacks (`EditorialMockData`) in compliance with Business Rule BR-12.
    - Implemented profile article management (`ProfileArticlesCubit`) enforcing the 30-day edit/delete immutability window (`isEditableWithinWindow`) and updated navigation (`CustomDrawer`, `SettingsViewBody`).
 3. **Clean Architecture & Single Responsibility Principle (SRP) Refactoring (4 Parallel Subagents R1–R4)**:
    - Decoupled **100% of presentation-layer views and cubits** from `supabase_flutter` and `hive` by introducing `CurrentUserSession` (`lib/core/services/current_user_session.dart`).
-   - Decomposed **12 monolithic presentation files** (previously up to 667 lines) into focused, single-responsibility widgets, bringing all main view files to **60–159 lines** and all extracted widget files under **200 lines**.
-4. **Live Supabase Backend Completion & Security Hardening (`20261017004329`, `20261017011850`, `20261017012309`)**:
-   - Populated all 14 live published articles in `public.articles` with 393–409 word structured Markdown bodies and landscape cover image URLs (`1200x675`).
-   - Added missing composite and GIN indexes (`articles_status_published_at_idx`, `articles_tags_gin_idx`) and hardened RLS policies (`profiles_update_own`, `articles_update_author`, `articles_delete_author`).
-   - Revoked `CREATE ON SCHEMA public` from `PUBLIC, anon, authenticated` and configured `SET search_path = ''` on all 7 functions in `public` with schema-qualified references.
-   - Executed a **22-case live adversarial database test suite** under `SET LOCAL ROLE authenticated` proving server-side enforcement of every publishing, tagging, immutability, deletion, and `star_count` rule (**22/22 passed**).
-5. **Verification & Build Readiness**:
+   - Decomposed **12 monolithic presentation files** (previously up to 667 lines) into focused, single-responsibility widgets, bringing all main view files under **160 lines** and all extracted widget files under **215 lines**.
+4. **Emulator Deployment, Environment Injection & Auth OTP Verification**:
+   - Diagnosed and resolved the emulator `Create Account` error (`Supabase libraries not initialized`): `String.fromEnvironment` requires compile-time `--dart-define-from-file=.env` when building/running on the Android emulator (`emulator-5554`), keeping zero fallback credentials in source code.
+   - Documented and verified the end-to-end Supabase Forgot Password / Email OTP recovery flow (`resetPasswordForEmail` -> `verifyOTP(type: OtpType.recovery)` -> `UserAttributes(password: newPassword)` -> `signOut(scope: SignOutScope.others)`).
+5. **Home Feed Gestures (Swipe-Right Save, Swipe-Left Next & Vertical Scroll Passthrough) + Article Creation**:
+   - Enhanced `EditorialCardStack` so **swiping right** saves the top article (`ToggleBookmarkUseCase` with idempotent `.upsert(..., onConflict: 'user_id,article_id')` and live `saves_count` trigger), **swiping left** advances to the card behind it without saving, and **swiping down/up** forwards vertical drag deltas directly to the parent `HomeViewBody` `ListView` to scroll smoothly through the `More Stories` section below.
+   - Hardened backend article creation (`handle_article_lifecycle` auto-provisioning `public.profiles`, generating unique slugs, category badges, excerpts, and reading times) and added preset landscape cover chips and Profile/Home write entry points.
+6. **Floating & Retractable Slow-Scroll Reader, Under-Author 5-Star Ratings & Article Likes**:
+   - Built `ArticleSlowScrollBar` with selectable paces (`0.5x`, `1.0x`, `1.5x`, `2.0x`) and a **far-right retractable bar handle** (`Key('slow_scroll_retract_button')`), anchored in a `Stack` at the **bottom-right** of `ArticleView` (`Positioned(bottom: 16, left: 20, right: 20)`) so it stays floating across the entire article scroll depth without creating any blank space above the Back button or Category badge.
+   - Separated **5-Star Author Ratings** (rendered directly beneath the author name in `ArticleReaderAuthorBar`, backed by `public.author_ratings` and RPCs `public.rate_author` / `public.get_author_rating_summary`) from **Article Likes** (`public.article_likes`, rendered in `ArticleReaderActionBar` and on `EditorialCard`).
+7. **Live Supabase Security Hardening & Adversarial Verification (`14` Applied Migrations)**:
+   - Revoked `CREATE ON SCHEMA public` from `PUBLIC, anon, authenticated` and configured `SET search_path = ''` on all functions in `public` with schema-qualified references.
+   - Protected `public.profiles` rating aggregates (`rating_avg`, `rating_count`) via `public.handle_profile_rating_protection()` (`SECURITY INVOKER SET search_path = ''`, gating on `pg_catalog.pg_trigger_depth() <= 1`, `uses_current_user: false`).
+   - Protected `public.articles` counter columns (`star_count`, `likes_count`, `saves_count`, `author_rating_avg`, `author_rating_count`) on both `INSERT` and `UPDATE` in `public.handle_article_lifecycle()` (`SECURITY INVOKER SET search_path = ''`, gating on `pg_catalog.pg_trigger_depth() <= 1`).
+   - Hardened `public.rate_author` and `public.validate_and_normalize_author_rating()` to derive and validate canonical `(author_key, author_id, author_name)` server-side against `public.articles` and `public.profiles`, and revoked `EXECUTE` on `public.rate_author` from `PUBLIC` and `anon`.
+8. **Verification & Build Readiness**:
    - `flutter analyze`: **0 issues found**.
-   - `flutter test`: **194/194 tests passed**.
-   - `flutter build apk --debug`: **Built `build\app\outputs\flutter-apk\app-debug.apk`**.
-   - Repository token hygiene scan: **0 matches** for `sbp_` in the working tree, untracked source files, git commit history, or shell environment variables.
+   - `flutter test`: **225/225 tests passed** (`194 -> 206 -> 223 -> 225` fully reconciled).
+   - `flutter build apk --debug --dart-define-from-file=.env`: **Built and installed on `emulator-5554`**.
+   - Repository token and screenshot hygiene scan: **0 matches** for `sbp_` in the repository or git history, and **0 temporary screenshots** left on disk.
 
 ---
 
@@ -42,81 +51,70 @@ This report documents everything accomplished during this engineering session, t
   - For **architecture, DI (`setup_service_locator.dart`), routing (`app_routes.dart`), and tests**, we took `origin/main`'s Clean Architecture use-case registrations so all downstream features could consume real Supabase repositories via `getIt`.
   - For **visual presentation (`categories_view.dart`, `profile_view.dart`, `personal_infromation.dart`)**, we combined `origin/main`'s live cubit state management with `feature/supabase-implementation`'s responsive constraints (`ConstrainedBox(maxWidth: 500)`) and editorial typography.
 
-### 2.2 Why the Shared Foundation Was Laid By the Orchestrator First
-- **Problem**: Spawning 4 subagents concurrently on a single working tree risks write collisions if multiple agents need to extend shared models (`EditorialNewsItem`, `ArticleEntity`, `DownloadedArticleEntity`) or route constants (`AppRoutes`).
-- **Decision**: Before launching Subagents A–D, the orchestrator updated `lib/core/design/editorial_models.dart`, `lib/features/home/domain/entities/article_entity.dart`, `lib/features/home/domain/entities/downloaded_article_entity.dart`, and `lib/config/routes/app_routes.dart` in a single atomic pass, establishing `isEditableWithinWindow`, `content`, `coverImageUrl`, `authorId`, `publishedAt`, `readingTimeMinutes`, `status`, `starCount`, and `isStarred`. Each subagent was then given strict, non-overlapping file ownership boundaries.
+### 2.2 Why `CurrentUserSession` Was Created (`lib/core/services/current_user_session.dart`)
+- **Problem**: Presentation-layer views and cubits (`AddArticleCubit`, `DraftsCubit`, `HomeViewBody`, `ArticleReaderCubit`, `CollectionsCubit`, `ProfileArticlesCubit`, `PersonalInformation`, `SettingsViewBody`) were importing `package:supabase_flutter/supabase_flutter.dart` and `package:hive/hive.dart` directly.
+- **Solution**: Extracted `CurrentUserSession` and `CurrentUserSnapshot` in `lib/core/services/current_user_session.dart`. It encapsulates session resolution, display-name fallback chains (Hive cached `UserEntity` -> Supabase user metadata -> email prefix -> `'Anonymous'`), and category cache persistence, while allowing deterministic injection (`userResolver` / `userIdResolver`) in unit and widget tests. **Zero files under `lib/features/**/presentation/` import `supabase_flutter` or `hive`.**
 
-### 2.3 Why `CurrentUserSession` Was Created (`lib/core/services/current_user_session.dart`)
-- **Problem**: Presentation-layer views and cubits (`AddArticleCubit`, `DraftsCubit`, `HomeViewBody`, `ArticleReaderCubit`, `CollectionsCubit`, `ProfileArticlesCubit`, `PersonalInformation`, `SettingsViewBody`) were importing `package:supabase_flutter/supabase_flutter.dart` and `package:hive/hive.dart` directly to read `Supabase.instance.client.auth.currentUser` or `Hive.box<UserEntity>(kUserBox)`.
-- **Why This Violated Clean Architecture**:
-  1. Presentation code depended directly on infrastructure SDKs (`supabase_flutter`, `hive`).
-  2. Widget and cubit tests crashed whenever `Supabase.instance` or Hive boxes were not initialized, forcing brittle `try/catch` blocks inside UI files.
-- **Solution**: Extracted `CurrentUserSession` and `CurrentUserSnapshot` in `lib/core/services/current_user_session.dart`. It encapsulates session resolution, display-name fallback chains (Hive cached `UserEntity` -> Supabase user metadata -> email prefix -> `'Anonymous'`), and category cache persistence, while allowing deterministic injection (`userResolver` / `userIdResolver`) in unit and widget tests. **Zero files under `lib/features/**/presentation/` now import `supabase_flutter` or `hive`.**
-
-### 2.4 Why Monolithic Views Were Decomposed (<150 Lines per View)
-- **Problem**: Twelve presentation files had grown between 242 and 667 lines (`settings_view_body.dart` at 667 lines, `home_view_body.dart` at 628 lines, `add_article.dart` at 611 lines, `article_view.dart` at 529 lines), mixing state initialization, business flag computation, complex conditional banners, dialogs, and deeply nested inline `BoxDecoration` trees inside a single `build()` method.
+### 2.3 Why Monolithic Views Were Decomposed (<150 Lines per View)
+- **Problem**: Twelve presentation files had grown between 242 and 667 lines (`settings_view_body.dart` at 667 lines, `home_view_body.dart` at 628 lines, `add_article.dart` at 611 lines, `article_view.dart` at 529 lines), mixing state initialization, business flag computation, conditional banners, dialogs, and nested `BoxDecoration` trees inside a single `build()` method.
 - **Solution**: Applied the Single Responsibility Principle (SRP):
-  - Extracted pure payload/filter logic into domain helpers (`ArticlePayloadBuilder` in `lib/features/add_article/domain/helpers/article_payload_builder.dart` and `SearchFilterHelper` in `lib/features/search/domain/helpers/search_filter_helper.dart`).
-  - Extracted feed orchestration out of `StatefulWidget` (`HomeViewBody`) into a dedicated `HomeFeedCubit` (`lib/features/home/presentation/cubit/home_feed/home_feed_cubit.dart`).
-  - Extracted every cohesive visual section (warning banners, title/content/cover/category/tag form fields, action bars, masthead headers, lead/secondary story cards, status views, OTP boxes, settings sections, and dialogs) into standalone widget files under 200 lines.
-  - Replaced inline boolean expressions with named getters on state classes (e.g., `AddArticleState.hasLockoutError`, `AddArticleState.isReadOnly`, `AddArticleState.titleWordCount`, `AddArticleState.contentWordCount`).
+  - Extracted pure payload/filter logic into domain helpers (`ArticlePayloadBuilder` and `SearchFilterHelper`).
+  - Extracted feed orchestration out of `StatefulWidget` (`HomeViewBody`) into `HomeFeedCubit`.
+  - Extracted every cohesive visual section into standalone widget files under 220 lines.
 
-### 2.5 Why All Mock Fallbacks (`EditorialMockData`) Were Deleted
-- **Problem**: Previously, when offline or when a repository call failed, `HomeViewBody`, `CollectionsCubit`, `ArticleView`, and `UserArticles` silently fell back to hardcoded mock stories from `EditorialMockData`.
-- **Why It Was Removed**: Business Rule **BR-12** mandates that the application never display fake/mock stories in production; network or backend failures must surface an honest offline/error state with retry capability, while offline reading is served exclusively from the user's explicit local downloads (`DownloadedArticleEntity` in Hive). Consequently, `lib/core/design/editorial_mock_data.dart` and obsolete placeholder views (`favorite_movies_view.dart`, `home_of_add_article_view.dart`) were deleted completely.
+### 2.4 Why `--dart-define-from-file=.env` Is Used Instead of Hardcoded Fallbacks
+- **Problem**: When building the APK on `emulator-5554` without `--dart-define-from-file=.env`, `String.fromEnvironment('SUPABASE_URL')` and `String.fromEnvironment('SUPABASE_ANON_KEY')` evaluated to empty strings at compile time (`const`), causing `Supabase.initialize` to be skipped in `main.dart` and throwing `Supabase libraries not initialized` when pressing `Create Account`.
+- **Why We Refused Hardcoded Fallbacks**: Embedding fallback URLs or API keys in Dart source files violates repository credential hygiene. Passing `--dart-define-from-file=.env` at compile time (`flutter build apk --debug --dart-define-from-file=.env` / `flutter run --dart-define-from-file=.env`) injects the credentials into the binary without committing secrets to source control.
 
-### 2.6 Why the Supabase Database Functions & Triggers Were Hardened (`SET search_path = ''`)
-- **Problem 1 — Schema Privilege & Search Path Hijacking Risk**:
-  - Initially, functions were configured with `SET search_path = public, pg_temp`. If any untrusted role holds `CREATE` privilege on `public`, a `SECURITY DEFINER` function (`handle_article_star_change`, `handle_new_user`, `rls_auto_enable`) could be tricked into executing a malicious function or operator placed in `public`.
-  - **Why We Used `SET search_path = ''` AND Revoked `CREATE ON SCHEMA public`**:
-    - Following Supabase and PostgreSQL security guidance, we executed `REVOKE CREATE ON SCHEMA public FROM PUBLIC, anon, authenticated;` (defense in depth so no API role can create objects in `public`) AND set `SET search_path = ''` on all 7 functions in `public`, explicitly qualifying every table (`public.articles`, `public.fixed_tags`, `public.profiles`, `public.categories`, `public.user_favorite_categories`) and catalog function (`pg_catalog.*`).
-- **Problem 2 — Why `coalesce`, `nullif`, and `greatest` Must Not Be Prefixed with `pg_catalog.`**:
-  - During live adversarial testing of `SET search_path = ''`, calling `pg_catalog.coalesce(...)` threw `ERROR: 42883: function pg_catalog.coalesce(integer, integer) does not exist`.
-  - **Mechanical Reason**: In PostgreSQL's SQL parser (`gram.y`), `COALESCE`, `NULLIF`, `GREATEST`, and `LEAST` are **built-in grammar constructs** (`CoalesceExpr`, `NullIfExpr`, `MinMaxExpr`), not entries in `pg_proc`. Prefixing them with `pg_catalog.` forces PostgreSQL to bypass the grammar keyword and search `pg_proc` for a regular function that does not exist. Writing them as unqualified SQL keywords (`coalesce(...)`, `nullif(...)`, `greatest(...)`) resolves at parse time regardless of `search_path = ''`.
-- **Problem 3 — Why Client-Side Validation Alone Is Insufficient**:
-  - Any authenticated user can call the Supabase REST/PostgREST API directly using the public `anon` key and their user JWT, bypassing the Flutter UI.
-  - Therefore, `public.handle_article_lifecycle()`, `public.check_article_tags()`, and `public.handle_article_delete()` were hardened to enforce all constraints at the database trigger layer:
-    - **Title word count (1..12 words)** and **Content word count (>=300 words)** on published articles using `pg_catalog.regexp_split_to_array(nullif(pg_catalog.btrim(coalesce(...)), ''), '\s+')`.
-    - **Non-null `category_id`** on published articles.
-    - **Explicit `NULL` and `{}` empty tag array rejection**: Because `pg_catalog.array_length('{}'::text[], 1)` returns `NULL` in PostgreSQL, `check_article_tags()` explicitly rejects `NEW.tags IS NULL` when `NEW.status = 'published'` and wraps `array_length` in `coalesce(pg_catalog.array_length(NEW.tags, 1), 0)` so empty arrays (`0`) and `> 5` tags are deterministically rejected.
-    - **30-Day Cutoff Precision**: Used `OLD.published_at <= (pg_catalog.now() - interval '30 days')` on both `UPDATE` and `DELETE` triggers so articles at or past the exact 30-day mark are immutable and non-deletable.
-    - **`star_count` Integrity via `pg_trigger_depth()`**: Direct client `INSERT` (with non-zero `star_count`) or `UPDATE` of `star_count` executes at `pg_catalog.pg_trigger_depth() = 1` and is rejected (`Direct modification of star_count is not allowed`). Legitimate `INSERT`/`DELETE` on `public.article_stars` fires `public.handle_article_star_change()` (`SECURITY DEFINER`), which updates `public.articles.star_count` at `pg_catalog.pg_trigger_depth() = 2` and succeeds.
+### 2.5 Why `EditorialCardStack` Forwards Vertical Drag Deltas to the Parent `Scrollable`
+- **Problem**: `EditorialCardStack` sits at the top of `HomeViewBody`'s `ListView` and registers an `onPanUpdate` gesture recognizer on the card stack. Without vertical scroll forwarding, vertical swipe gestures on the card stack were consumed by the card's pan recognizer rather than scrolling the page down to the `More Stories` list.
+- **Solution**: Inside `EditorialCardStack._onPanUpdate`, when `_dragOffset.dx.abs() < 24` and `details.delta.dy.abs() > details.delta.dx.abs()` and an ancestor `Scrollable` with `maxScrollExtent > 0` exists, the vertical delta is forwarded directly via `scrollable.position.jumpTo(...)`. When rendered standalone without a scrollable parent (as in isolated widget tests), it preserves the standalone vertical drag and swipe-up-to-open gesture.
+
+### 2.6 Why the Floating Retractable Slow-Scroll Bar Is Anchored at Bottom-Right in a `Stack`
+- **Problem 1 — Scrolling Off-Screen**: When `ArticleSlowScrollBar` was placed inside `ListView.children`, starting slow scroll immediately scrolled the control bar off the top of the viewport, leaving the user unable to pause or stop scrolling once the header left the screen.
+- **Problem 2 — Top Header Blank Space**: Placing the floating bar at `top: 10` required `68px` of top padding on the `ListView` to avoid overlapping the `←` Back button and Category badge; when the bar was retracted into a compact handle on the top-right, the left/center of that `68px` band appeared as wasted empty space above the Back button and Category badge.
+- **Solution**: Wrapped the `ListView` (`padding: EdgeInsets.fromLTRB(20, 16, 20, 80)`) inside a `Stack` in `ArticleView` and anchored `ArticleSlowScrollBar` at `Positioned(bottom: 16, left: 20, right: 20, child: Align(alignment: Alignment.bottomRight, ...))`:
+  - The `←` Back button and Category badge sit cleanly at `16px` from the top with zero wasted space.
+  - The slow-scroll bar floats within easy thumb reach at the bottom-right throughout the entire article.
+  - Tapping the far-right vertical bar handle (`Key('slow_scroll_retract_button')`) collapses the bar into a compact floating edge pill (`< |`, with an amber play indicator when active) and re-extends it on tap at any point in the article.
+
+### 2.7 Why Author 5-Star Ratings and Article Likes Use Separate Tables, Triggers, and RPC Validation
+- **Domain Separation**:
+  - **5-Star Rating (`1..5`)** evaluates the **Author** (`public.author_ratings`, keyed by `(user_id, author_key)`), displayed directly beneath the author's name in `ArticleReaderAuthorBar`. Trigger `on_author_rating_changed` (`public.handle_author_rating_change()`, `SECURITY DEFINER SET search_path = ''`) automatically recalculates and updates `author_rating_avg` and `author_rating_count` on `public.articles` and `rating_avg` and `rating_count` on `public.profiles`.
+  - **Likes** endorse the **Article** (`public.article_likes`, keyed by `(user_id, article_id)`), displayed in `ArticleReaderActionBar` inside `ArticleView` and on `EditorialCard` in the Home feed. Trigger `on_article_like_changed` (`public.handle_article_like_change()`, `SECURITY DEFINER SET search_path = ''`) maintains `public.articles.likes_count`.
+- **Why Counter & Aggregate Protection Triggers Use `SECURITY INVOKER` + `pg_catalog.pg_trigger_depth() <= 1` (Without `current_user` Allowlists)**:
+  - In PostgreSQL, if a trigger function is declared `SECURITY DEFINER`, `current_user` inside the function body switches to the function owner (`postgres`). Any guard condition that exempts `current_user IN ('postgres', ...)` inside a `SECURITY DEFINER` function would inadvertently exempt all callers!
+  - Therefore, both `public.handle_profile_rating_protection()` (on `public.profiles`) and `public.handle_article_lifecycle()` (on `public.articles`) are configured as **`SECURITY INVOKER` (`is_security_definer = false`) with `SET search_path = ''`** and **do not check `current_user` at all (`uses_current_user = false`)**. They gate exclusively on `pg_catalog.pg_trigger_depth() <= 1`:
+    - Direct client `INSERT` or `UPDATE` statements via PostgREST execute at `pg_trigger_depth() == 1` and are deterministically rejected if they supply non-zero counters or modify `rating_avg`, `rating_count`, `likes_count`, `saves_count`, `star_count`, `author_rating_avg`, or `author_rating_count`.
+    - Trusted cascading updates from `on_author_rating_changed`, `on_article_like_changed`, `on_article_save_changed`, and `on_article_star_changed` execute at `pg_trigger_depth() == 2` (`> 1`) and succeed.
 
 ---
 
-## 3. Clean Architecture & SRP Refactoring Inventory
+## 3. Clean Architecture & SRP File Inventory
 
-### 3.1 Monolithic View Line-Count Reduction Summary
-| File Path | Lines Before | Lines After | Reduction | Extracted Single-Responsibility Components |
+### 3.1 Main View & New Feature File Line Counts
+| File Path | Lines | Limit | Comments | Responsibility |
 | :--- | :---: | :---: | :---: | :--- |
-| `lib/features/settings/presentation/widgets/settings_view_body.dart` | 667 | **159** | -76.2% | `settings_account_card.dart`, `settings_reading_section.dart`, `settings_archive_section.dart`, `settings_dialogs.dart`, `settings_tile_primitives.dart` |
-| `lib/features/home/presentation/widgets/home_view_body.dart` | 628 | **110** | -82.5% | `home_feed_cubit.dart`, `home_feed_state.dart`, `home_masthead_header.dart`, `home_lead_story_section.dart`, `home_feed_status_views.dart` |
-| `lib/features/add_article/presentation/views/add_article.dart` | 611 | **126** | -79.4% | `article_edit_warning_banner.dart`, `article_title_field.dart`, `article_cover_image_field.dart`, `article_category_selector.dart`, `article_tag_selector.dart`, `article_content_field.dart`, `article_editor_action_bar.dart` |
-| `lib/features/home/presentation/views/article_view.dart` | 529 | **136** | -74.3% | `article_reader_top_bar.dart`, `article_reader_header.dart`, `article_reader_markdown_body.dart`, `article_reader_action_bar.dart` |
-| `lib/features/settings/presentation/widgets/settings_menu.dart` | 463 | **115** | -75.2% | Reuses `settings_tile_primitives.dart` |
-| `lib/features/add_article/presentation/views/drafts_view.dart` | 378 | **97** | -74.3% | `draft_item_card.dart`, `drafts_status_views.dart` |
-| `lib/features/auth/presentation/widgets/check_code_view_body.dart` | 351 | **83** | -76.4% | `check_code_otp_boxes.dart`, `check_code_actions_section.dart` |
-| `lib/features/collections/presentation/widgets/downloaded_articles_view_body.dart` | 327 | **81** | -75.2% | `downloaded_article_card_tile.dart`, `downloaded_articles_empty_state.dart` |
-| `lib/features/search/presentation/views/search_view.dart` | 281 | **100** | -64.4% | `search_filter_chips_bar.dart`, `search_results_view.dart`, `search_filter_helper.dart` |
-| `lib/features/profile/presentation/widget/user_articles.dart` | 254 | **155** | -39.0% | `profile_articles_status_views.dart` |
-| `lib/features/profile/presentation/widget/personal_infromation.dart` | 252 | **120** | -52.4% | `profile_avatar_and_stats.dart` |
-| `lib/features/add_article/presentation/views/article_preview_view.dart` | 242 | **60** | -75.2% | `article_preview_header.dart` |
-
-### 3.2 Deleted Obsolete / Mock Files
-- `lib/core/design/editorial_mock_data.dart` (purged all hardcoded mock stories)
-- `lib/features/add_article/presentation/views/home_of_add_article_view.dart` (legacy local file-picker markdown screen)
-- `lib/features/add_article/presentation/widget/format_markdown.dart` (legacy unused toolbar)
-- `lib/features/add_article/presentation/widget/markdown_text_input.dart` (legacy unused input widget)
-- `lib/features/collections/presentation/views/favorite_movies_view.dart` (obsolete movie template screen)
-- `lib/features/collections/presentation/widgets/favorite_movies_view_body.dart` (obsolete movie template widget)
-- `lib/features/home/presentation/widgets/subtitle_listTile_of_article_card.dart` (unused legacy widget)
+| `lib/features/home/presentation/views/article_view.dart` | **145** | < 150 | 0 | Reader scaffold, `ScrollController` timer, and bottom-right floating `ArticleSlowScrollBar` `Stack` |
+| `lib/features/home/presentation/widgets/widgets/article_slow_scroll_bar.dart` | **200** | < 220 | 0 | Retractable slow-scroll control bar with `0.5x–2.0x` pace chips and far-right retract handle |
+| `lib/features/home/presentation/widgets/widgets/article_reader_header.dart` | **214** | < 220 | 0 | Cover image, metadata header, author byline, and under-author 5-star interactive rating row |
+| `lib/features/home/presentation/widgets/widgets/article_reader_action_bar.dart` | **138** | < 220 | 0 | Article like button + count, bookmark, offline download, and share actions |
+| `lib/features/home/presentation/cubit/article_reader/article_reader_cubit.dart` | **211** | < 220 | 0 | Reader state management: slow scroll, retraction, author 5-star rating, article like, bookmark, download |
+| `lib/features/home/presentation/cubit/article_reader/article_reader_state.dart` | **102** | < 220 | 0 | Immutable Equatable state for `ArticleReaderCubit` |
+| `lib/features/home/presentation/widgets/home_view_body.dart` | **118** | < 150 | 0 | Home feed `ListView` with `EditorialCardStack` swipe handlers and `More Stories` vertical list |
+| `lib/core/design/editorial_card_stack.dart` | **206** | < 220 | 0 | Swipe-right save, swipe-left next, `SAVE`/`NEXT` badges, and vertical scroll passthrough |
+| `lib/features/add_article/presentation/views/add_article.dart` | **126** | < 150 | 0 | Declarative article editor view |
+| `lib/features/add_article/presentation/views/drafts_view.dart` | **97** | < 150 | 0 | User drafts management view |
+| `lib/features/add_article/presentation/views/article_preview_view.dart` | **60** | < 150 | 0 | Read-only Markdown preview view |
+| `lib/features/search/presentation/views/search_view.dart` | **100** | < 150 | 0 | Debounced live search & category/tag filter view |
+| `lib/features/profile/presentation/widget/user_articles.dart` | **138** | < 150 | 0 | Author articles list with `Write` button and 30-day immutability badges |
 
 ---
 
-## 4. Supabase Backend Migrations & Database Verification
+## 4. Supabase Backend Migrations & Live Security Verification (`tsqruoqiajkbrdhprfxa`)
 
-### 4.1 Migration Inventory (`supabase/migrations/`)
-All 8 migrations are synchronized 1-to-1 between `supabase/migrations/` locally and `supabase_migrations.schema_migrations` on the remote hosted database (`tsqruoqiajkbrdhprfxa`):
+### 4.1 Complete 14-Migration Inventory (`supabase/migrations/`)
+All 14 migrations are synchronized 1-to-1 between `supabase/migrations/` in the repository and `supabase_migrations.schema_migrations` on live Supabase project `tsqruoqiajkbrdhprfxa`:
 1. `20261015000000_baseline_schema.sql`
 2. `20261015000001_seed_catalog.sql`
 3. `20261015000002_atomic_favorite_categories.sql`
@@ -125,81 +123,81 @@ All 8 migrations are synchronized 1-to-1 between `supabase/migrations/` locally 
 6. `20261017004329_complete_supabase_backend_and_seed_content.sql`
 7. `20261017011850_harden_search_paths_and_strict_constraints.sql`
 8. `20261017012309_fix_sql_keywords_in_empty_search_path_functions.sql`
+9. `20261017021143_create_article_and_save_counter_hardening.sql`
+10. `20261017021318_fix_greatest_keyword_in_article_triggers.sql`
+11. `20261017024001_author_star_ratings_and_article_likes_triggers.sql`
+12. `20261017033059_harden_profile_ratings_likes_and_author_rpc.sql`
+13. `20261017033315_fix_handle_article_lifecycle_counter_columns.sql`
+14. `20261017035848_set_profile_rating_protection_security_invoker.sql`
 
-### 4.2 Schema Privilege & `search_path` Audit Evidence (Check A)
-Live catalog query executed on `tsqruoqiajkbrdhprfxa`:
-```sql
-SELECT
-    has_schema_privilege('anon', 'public', 'CREATE') AS anon_can_create,
-    has_schema_privilege('authenticated', 'public', 'CREATE') AS authenticated_can_create,
-    has_schema_privilege('service_role', 'public', 'CREATE') AS service_role_can_create,
-    has_schema_privilege('public', 'public', 'CREATE') AS public_role_can_create;
-```
-Result:
-- `anon_can_create`: `false`
-- `authenticated_can_create`: `false`
-- `service_role_can_create`: `false`
-- `public_role_can_create`: `false`
+### 4.2 Live `pg_proc` Function Security & Ownership Inventory (`tsqruoqiajkbrdhprfxa`)
+| Function Name | Owner | `is_security_definer` | `uses_current_user` | `proconfig` (`search_path`) |
+| :--- | :---: | :---: | :---: | :---: |
+| `public.check_article_tags` | `postgres` | `false` (`INVOKER`) | `false` | `["search_path=\"\""]` |
+| `public.handle_article_delete` | `postgres` | `false` (`INVOKER`) | `false` | `["search_path=\"\""]` |
+| `public.handle_article_lifecycle` | `postgres` | `false` (`INVOKER`) | `false` | `["search_path=\"\""]` |
+| `public.handle_profile_rating_protection` | `postgres` | `false` (`INVOKER`) | `false` | `["search_path=\"\""]` |
+| `public.rate_author` | `postgres` | `false` (`INVOKER`) | `false` | `["search_path=\"\""]` |
+| `public.get_author_rating_summary` | `postgres` | `false` (`INVOKER`) | `false` | `["search_path=\"\""]` |
+| `public.set_user_favorite_categories` | `postgres` | `false` (`INVOKER`) | `false` | `["search_path=\"\""]` |
+| `public.validate_and_normalize_author_rating` | `postgres` | `true` (`DEFINER`) | `false` | `["search_path=\"\""]` |
+| `public.handle_author_rating_change` | `postgres` | `true` (`DEFINER`) | `false` | `["search_path=\"\""]` |
+| `public.handle_article_like_change` | `postgres` | `true` (`DEFINER`) | `false` | `["search_path=\"\""]` |
+| `public.handle_article_save_change` | `postgres` | `true` (`DEFINER`) | `false` | `["search_path=\"\""]` |
+| `public.handle_article_star_change` | `postgres` | `true` (`DEFINER`) | `false` | `["search_path=\"\""]` |
+| `public.ensure_user_profile_exists` | `postgres` | `true` (`DEFINER`) | `false` | `["search_path=\"\""]` |
+| `public.handle_new_user` | `postgres` | `true` (`DEFINER`) | `false` | `["search_path=\"\""]` |
+| `public.rls_auto_enable` | `postgres` | `true` (`DEFINER`) | `false` | `["search_path=\"\""]` |
 
-Live `pg_proc` configuration check for all functions in `public`:
-| Function Name | `SECURITY DEFINER` | `proconfig` (`search_path`) |
-| :--- | :---: | :---: |
-| `public.check_article_tags` | `false` | `["search_path=\"\""]` |
-| `public.handle_article_delete` | `false` | `["search_path=\"\""]` |
-| `public.handle_article_lifecycle` | `false` | `["search_path=\"\""]` |
-| `public.handle_article_star_change` | `true` | `["search_path=\"\""]` |
-| `public.handle_new_user` | `true` | `["search_path=\"\""]` |
-| `public.rls_auto_enable` | `true` | `["search_path=\"\""]` |
-| `public.set_user_favorite_categories` | `false` | `["search_path=\"\""]` |
-
-### 4.3 Live Adversarial Database Test Suite Evidence (Check B)
-Executed inside a transactional rollback block on the live Supabase database under `SET LOCAL ROLE authenticated` (`request.jwt.claim.sub = '00000000-0000-4000-8000-000000000099'`):
-
-| # | Test Case ID | Scenario Tested | Expected | Live Database Result | Verdict |
-| :--- | :--- | :--- | :--- | :--- | :---: |
-| 0 | `00_handle_new_user_trigger_empty_search_path` | `INSERT INTO auth.users` fires `handle_new_user()` under `search_path = ''` | Accepted (`profile_count=1`) | `Accepted (profile_count=1)` | **PASS** |
-| 1 | `01_valid_published_article` | Valid published article (6w title, 305w body, category, 2 valid tags) | Accepted | `Accepted` | **PASS** |
-| 2 | `02a_published_title_0_words` | Published article with whitespace-only title (0 words) | Rejected | `Rejected: Published article title must be between 1 and 12 words` | **PASS** |
-| 3 | `02b_published_title_13_words` | Published article with 13 title words | Rejected | `Rejected: Published article title must be between 1 and 12 words` | **PASS** |
-| 4 | `03_published_body_under_300_words` | Published article with 120 body words (< 300 words) | Rejected | `Rejected: Published article content must be at least 300 words` | **PASS** |
-| 5 | `04_published_without_category` | Published article with `category_id = NULL` | Rejected | `Rejected: Published articles must specify a valid category_id` | **PASS** |
-| 6 | `05a_published_null_tags_array` | Published article with `tags = NULL` | Rejected | `Rejected: Published articles must have between 1 and 5 tags` | **PASS** |
-| 7 | `05b_published_empty_tags_array` | Published article with `tags = '{}'::text[]` (0 tags) | Rejected | `Rejected: Published articles must have between 1 and 5 tags` | **PASS** |
-| 8 | `05c_published_6_tags_over_limit` | Published article with 6 valid tags (> 5 tags) | Rejected | `Rejected: Published articles must have between 1 and 5 tags` | **PASS** |
-| 9 | `06a_published_duplicate_tags` | Published article with duplicate tags (`['Deep Work', 'Deep Work']`) | Rejected | `Rejected: Article tags must be unique` | **PASS** |
-| 10 | `06b_published_unknown_tag` | Published article with unknown tag (`['Deep Work', 'NonExistentBogusTag']`) | Rejected | `Rejected: All article tags must belong to the fixed_tags catalog` | **PASS** |
-| 11 | `07_reversion_published_to_draft` | `UPDATE public.articles SET status = 'draft'` on published article | Rejected | `Rejected: Published articles cannot be reverted to draft` | **PASS** |
-| 12 | `08a_edit_before_30d_cutoff_29d23h` | `UPDATE` published article at `now() - interval '29 days 23 hours'` | Accepted | `Accepted` | **PASS** |
-| 13 | `08b_edit_at_exact_30d_boundary` | `UPDATE` published article at exact `now() - interval '30 days'` boundary | Rejected | `Rejected: Articles cannot be modified after 30 days of publication` | **PASS** |
-| 14 | `08c_edit_after_30d_cutoff_31d` | `UPDATE` published article at `now() - interval '31 days'` | Rejected | `Rejected: Articles cannot be modified after 30 days of publication` | **PASS** |
-| 15 | `08d_delete_before_30d_cutoff_29d23h` | `DELETE` published article at `now() - interval '29 days 23 hours'` | Accepted | `Accepted` | **PASS** |
-| 16 | `08e_delete_at_exact_30d_boundary` | `DELETE` published article at exact `now() - interval '30 days'` boundary | Rejected | `Rejected: Articles cannot be deleted after 30 days of publication` | **PASS** |
-| 17 | `08f_delete_after_30d_cutoff_31d` | `DELETE` published article at `now() - interval '31 days'` | Rejected | `Rejected: Articles cannot be deleted after 30 days of publication` | **PASS** |
-| 18 | `09a_direct_insert_forged_star_count` | Direct client `INSERT` into `public.articles` with `star_count = 50` | Rejected | `Rejected: Direct modification of star_count is not allowed` | **PASS** |
-| 19 | `09b_direct_update_star_count_by_client` | Direct client `UPDATE public.articles SET star_count = 999` | Rejected | `Rejected: Direct modification of star_count is not allowed` | **PASS** |
-| 20 | `10a_legitimate_star_insert_increments_counter` | `INSERT INTO public.article_stars` by `authenticated` user | `star_count = 1` | `star_count = 1` | **PASS** |
-| 21 | `10b_legitimate_star_delete_decrements_counter` | `DELETE FROM public.article_stars` by `authenticated` user | `star_count = 0` | `star_count = 0` | **PASS** |
+### 4.3 Live Adversarial Security Verification Suite (`SET LOCAL ROLE authenticated`)
+| # | Adversarial / Functional Test Case | Expected | Live Database Result (`tsqruoqiajkbrdhprfxa`) | Verdict |
+| :--- | :--- | :--- | :--- | :---: |
+| 1 | `handle_new_user` trigger under `search_path = ''` | Accepted | `Accepted (profile_count=1)` | **PASS** |
+| 2 | Published article with valid title (1..12w), body (>=300w), category, and 1..5 fixed tags | Accepted | `Accepted` | **PASS** |
+| 3 | Published article with 0 or 13 title words | Rejected | `Rejected: Published article title must be between 1 and 12 words` | **PASS** |
+| 4 | Published article with < 300 body words | Rejected | `Rejected: Published article content must be at least 300 words` | **PASS** |
+| 5 | Published article without `category_id` | Rejected | `Rejected: Published articles must specify a valid category_id` | **PASS** |
+| 6 | Published article with `NULL`, `{}` (0), or 6 tags | Rejected | `Rejected: Published articles must have between 1 and 5 tags` | **PASS** |
+| 7 | Published article with duplicate or unknown tags | Rejected | `Rejected: Article tags must be unique` / `must belong to the fixed_tags catalog` | **PASS** |
+| 8 | Reversion from `published` to `draft` | Rejected | `Rejected: Published articles cannot be reverted to draft` | **PASS** |
+| 9 | Edit or delete before 30-day cutoff (`29d 23h`) | Accepted | `Accepted` | **PASS** |
+| 10 | Edit or delete at exact 30-day boundary (`30d`) or after (`31d`) | Rejected | `Rejected: Articles cannot be modified/deleted after 30 days of publication` | **PASS** |
+| 11 | Client `INSERT` into `public.articles` with forged `star_count`, `likes_count`, `saves_count`, or `author_rating_avg/count` | Rejected | `Rejected: Direct modification of star_count / likes_count / saves_count / author rating aggregates is not allowed` | **PASS** |
+| 12 | Client `UPDATE` on `public.articles` modifying `star_count`, `likes_count`, `saves_count`, or `author_rating_avg/count` | Rejected | `Rejected: Direct modification of ... is not allowed` | **PASS** |
+| 13 | Client `UPDATE` on own `public.profiles` modifying `rating_avg` or `rating_count` | Rejected | `Rejected: Direct modification of profile rating aggregates is not allowed` | **PASS** |
+| 14 | `has_function_privilege('anon', 'public.rate_author(...)', 'EXECUTE')` | `false` | `false` (`anon` and `PUBLIC` cannot execute `rate_author`) | **PASS** |
+| 15 | `rate_author` called with spoofed `p_author_name`, mismatched `p_author_id`, or unknown `p_author_key` | Rejected | `Rejected: Inconsistent author_key and author_name/id supplied` / `Cannot rate unknown author` | **PASS** |
+| 16 | Legitimate `rate_author`, `article_likes`, `saved_articles`, and `article_stars` operations | Accepted | All counters and rating averages updated accurately via trusted triggers | **PASS** |
 
 ---
 
-## 5. Security, Static Analysis, Test Suite & Build Verification (Check C)
+## 5. Complete Test Suite Progression & Reconciliation (`194 -> 206 -> 223 -> 225`)
+
+Zero tests were deleted or lost during the session. Every increase in the test count corresponds to newly added or expanded test files:
+
+| Milestone | Test Files Added / Expanded | Net Delta | Cumulative Total |
+| :--- | :--- | :---: | :---: |
+| **1. Clean Architecture Refactor Baseline** | 21 test files (`article_reader_cubit_test.dart`: 9 tests; `article_view_widget_test.dart`: 4 tests; `editorial_stack_test.dart`: 3 tests) | — | **194** |
+| **2. Home Feed Swipe & Article Creation** | • `test/editorial_stack_test.dart`: `3 -> 4` (**+1**)<br>• `test/features/reader/home_feed_cubit_test.dart`: new file (**+9**)<br>• `test/features/add_article/domain/helpers/article_payload_builder_test.dart`: new file (**+1**)<br>• `test/features/add_article/presentation/views/add_article_view_test.dart`: `2 -> 3` (**+1**) | **+12** | **206** |
+| **3. Slow Scroll, Author 5-Star Ratings & Article Likes** | • `test/features/reader/author_rating_and_like_data_test.dart`: new file (**+13**)<br>• `test/features/reader/article_reader_cubit_test.dart`: `9 -> 11` (**+2**)<br>• `test/features/reader/article_view_widget_test.dart`: `4 -> 6` (**+2**) | **+17** | **223** |
+| **4. Floating Retractable Slow-Scroll Bar** | • `test/features/reader/article_reader_cubit_test.dart`: `11 -> 12` (**+1**)<br>• `test/features/reader/article_view_widget_test.dart`: `6 -> 7` (**+1**) | **+2** | **225** |
+
+---
+
+## 6. Final Verification Gates & Remaining Manual Actions
 
 | Gate | Command Executed | Empirical Output | Status |
 | :--- | :--- | :--- | :---: |
 | **Working Tree Token Scan** | `git grep -i "sbp_"` | `0 matches` | **PASS** |
 | **Git History Token Scan** | `git log --all -S "sbp_" --oneline` | `0 matches` | **PASS** |
-| **All Files Token Scan** | `Get-ChildItem -Recurse -File \| Select-String -Pattern "sbp_"` | `0 matches` in source/config/docs/migrations | **PASS** |
-| **Env Token Check** | `npx supabase db diff --linked` | `AccessTokenRequiredError` (confirms `SUPABASE_ACCESS_TOKEN` is not set in shell env) | **PASS** |
-| **Static Analysis** | `flutter analyze` | `No issues found! (ran in 4.0s)` | **PASS** |
-| **Automated Tests** | `flutter test` | `00:11 +194: All tests passed!` (194/194 tests passed) | **PASS** |
-| **Android APK Build** | `flutter build apk --debug` | `✓ Built build\app\outputs\flutter-apk\app-debug.apk` (89.0s) | **PASS** |
-| **Knowledge Graph** | `graphify update .` | Updated (`3221 nodes, 5043 edges, 178 communities`) | **PASS** |
+| **Temporary Screenshots Removed** | `Test-Path .../article_screen.png` | `False` | **PASS** |
+| **Static Analysis** | `flutter analyze` | `No issues found!` | **PASS** |
+| **Automated Tests** | `flutter test` | `00:12 +225: All tests passed!` (225/225 tests passed) | **PASS** |
+| **Android Emulator Build & Install** | `flutter build apk --debug --dart-define-from-file=.env && flutter install -d emulator-5554` | `✓ Built app-debug.apk` & installed on `sdk gphone16k x86 64` | **PASS** |
+| **Knowledge Graph** | `graphify update .` | Code graph updated (`0 topology warnings`) | **PASS** |
 
----
-
-## 6. Remaining Manual Release Actions for Project Owner
-
-1. **Revoke Previously Exposed PAT in Supabase Dashboard**:
-   - Although no `sbp_...` token exists anywhere in the repository, git history, or environment variables, a token was pasted in an earlier conversation turn. Revoke and rotate it in **[https://supabase.com/dashboard/account/tokens](https://supabase.com/dashboard/account/tokens)**.
+### Manual Account/Dashboard Actions for Project Owner
+1. **Revoke Previously Exposed PAT in Supabase Account Dashboard**:
+   - Rotate the personal access token pasted in an earlier turn at **[https://supabase.com/dashboard/account/tokens](https://supabase.com/dashboard/account/tokens)**.
 2. **Supabase Auth Leaked Password Protection (`auth_leaked_password_protection`)**:
-   - Enable HaveIBeenPwned password checking under **Supabase Dashboard -> Authentication -> Providers -> Email -> Password Security** (requires Supabase Pro plan if currently on the Free tier).
+   - Enable HaveIBeenPwned password checking under **Supabase Dashboard -> Authentication -> Providers -> Email -> Password Security** (available on Supabase Pro and above).
