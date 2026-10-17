@@ -22,14 +22,26 @@ class _FakeAuthRepo implements AuthRepository {
 
   @override
   Future<ApiResult<AuthResultEntity>> signup(SignupParams params) async =>
-      const Success(AuthResultEntity(hasActiveSession: false, email: 'test@example.com'));
+      const Success(
+        AuthResultEntity(
+          hasActiveSession: false,
+          email: 'test@example.com',
+        ),
+      );
 
   @override
-  Future<ApiResult<String>> verifyOtp({required String email, required String token}) async =>
+  Future<ApiResult<String>> verifyOtp({
+    required String email,
+    required String token,
+    bool isPasswordReset = false,
+  }) async =>
       const Success('token');
 
   @override
-  Future<ApiResult<void>> resendOtp({required String email}) async =>
+  Future<ApiResult<void>> resendOtp({
+    required String email,
+    bool isPasswordReset = false,
+  }) async =>
       const Success(null);
 
   @override
@@ -37,7 +49,9 @@ class _FakeAuthRepo implements AuthRepository {
       const Success(null);
 
   @override
-  Future<ApiResult<void>> updatePassword({required String newPassword}) async =>
+  Future<ApiResult<void>> updatePassword({
+    required String newPassword,
+  }) async =>
       const Success(null);
 
   @override
@@ -48,8 +62,7 @@ class _FakeAuthRepo implements AuthRepository {
       const Success('test-recovery-token');
 
   @override
-  Future<ApiResult<void>> logout() async =>
-      const Success(null);
+  Future<ApiResult<void>> logout() async => const Success(null);
 }
 
 void main() {

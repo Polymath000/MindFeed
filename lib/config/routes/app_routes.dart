@@ -2,6 +2,7 @@ import 'package:mind_feed/features/settings/presentation/controllers/settings_cu
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:mind_feed/features/auth/domain/entities/check_code_args.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/presentation/views/categories_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/change_password_view.dart';
@@ -89,8 +90,26 @@ sealed class AppRoutes {
       case AppRoutes.articlesCategory:
         return MaterialPageRoute(builder: (_) => ArticlesCategoryView(), settings: settings);
       case AppRoutes.checkCode:
-        final email = settings.arguments as String;
-        return MaterialPageRoute(builder: (_) => CheckCodeView(email: email), settings: settings);
+        final args = settings.arguments;
+        final String email;
+        final bool isPasswordReset;
+        if (args is CheckCodeArgs) {
+          email = args.email;
+          isPasswordReset = args.isPasswordReset;
+        } else if (args is Map<String, dynamic>) {
+          email = args['email'] as String? ?? '';
+          isPasswordReset = args['isPasswordReset'] as bool? ?? false;
+        } else {
+          email = args as String;
+          isPasswordReset = false;
+        }
+        return MaterialPageRoute(
+          builder: (_) => CheckCodeView(
+            email: email,
+            isPasswordReset: isPasswordReset,
+          ),
+          settings: settings,
+        );
       case AppRoutes.changePassword:
         final email = settings.arguments as String;
         return MaterialPageRoute(builder: (_) => ChangePasswordView(email: email), settings: settings);

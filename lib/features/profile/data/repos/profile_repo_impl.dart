@@ -58,6 +58,12 @@ class ProfileRepoImpl implements ProfileRepository {
   Future<ApiResult<List<Map<String, dynamic>>>> getFavoriteCategories(String userId) async {
     try {
       final favorites = await remoteDataSource.getFavoriteCategories(userId);
+      try {
+        await SharedPreferencesSingleton.setBool(
+          AppConstants.hasCompletedCategoriesKey,
+          value: favorites.isNotEmpty,
+        );
+      } catch (_) {}
       return Success(favorites);
     } catch (e) {
       return FailureResult(ServerFailure(e.toString()));
@@ -102,6 +108,15 @@ class ProfileRepoImpl implements ProfileRepository {
     } catch (_) {}
 
     try {
+      // 1. Primary: Save directly to profiles.favorite_categories
+      try {
+        await remoteDataSource.saveFavoriteCategoriesToProfile(
+          userId: userId,
+          categories: categoryNames,
+        );
+      } catch (_) {}
+
+      // 2. Also sync to junction table via RPC if available
       final categoryRows = await remoteDataSource.getCategories();
       final matchingIds = <String>[];
       for (final name in categoryNames) {
@@ -124,6 +139,10 @@ class ProfileRepoImpl implements ProfileRepository {
       try {
         await SharedPreferencesSingleton.setBool(syncKey, value: false);
         await SharedPreferencesSingleton.setBool('pending_category_sync', value: false);
+        await SharedPreferencesSingleton.setBool(
+          AppConstants.hasCompletedCategoriesKey,
+          value: categoryNames.isNotEmpty,
+        );
       } catch (_) {}
 
       return const Success(null);

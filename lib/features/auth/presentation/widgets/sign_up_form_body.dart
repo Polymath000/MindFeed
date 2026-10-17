@@ -51,12 +51,17 @@ class _SignUpFormBodyState extends State<SignUpFormBody> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<AutovalidateMode>(
-      valueListenable: _autovalidateMode,
-      builder: (context, autovalidateMode, child) {
-        return Form(
-          key: formKey,
-          autovalidateMode: autovalidateMode,
+    return BlocBuilder<SignupCubit, SignupState>(
+      buildWhen: (previous, current) =>
+          (previous is SignupLoading) != (current is SignupLoading),
+      builder: (context, state) {
+        final bool isLoading = state is SignupLoading;
+        return ValueListenableBuilder<AutovalidateMode>(
+          valueListenable: _autovalidateMode,
+          builder: (context, autovalidateMode, child) {
+            return Form(
+              key: formKey,
+              autovalidateMode: autovalidateMode,
           child: Center(
             child: Column(
               children: [
@@ -132,31 +137,34 @@ class _SignUpFormBodyState extends State<SignUpFormBody> {
                 const SizedBox(height: 22.0),
                 CustomButton(
                   buttonText: 'Create Account',
-                  onTap: () {
-                    if (formKey.currentState?.validate() ?? false) {
-                      final password = _passwordController.text;
-                      final confirmPassword = _confirmPasswordController.text;
-                      if (password != confirmPassword &&
-                          password.isNotEmpty &&
-                          confirmPassword.isNotEmpty) {
-                        customShowSnackBar(
-                          message: 'Passwords do not match',
-                          context: context,
-                        );
-                      } else {
-                        FocusScope.of(context).unfocus();
-                        context.read<SignupCubit>().eitherFailureOrSignup(
-                          params: SignupParams(
-                            displayName: _usernameController.text.trim(),
-                            email: _emailController.text.trim(),
-                            password: password,
-                          ),
-                        );
-                      }
-                    } else {
-                      _autovalidateMode.value = AutovalidateMode.always;
-                    }
-                  },
+                  isLoading: isLoading,
+                  onTap: isLoading
+                      ? null
+                      : () {
+                          if (formKey.currentState?.validate() ?? false) {
+                            final password = _passwordController.text;
+                            final confirmPassword = _confirmPasswordController.text;
+                            if (password != confirmPassword &&
+                                password.isNotEmpty &&
+                                confirmPassword.isNotEmpty) {
+                              customShowSnackBar(
+                                message: 'Passwords do not match',
+                                context: context,
+                              );
+                            } else {
+                              FocusScope.of(context).unfocus();
+                              context.read<SignupCubit>().eitherFailureOrSignup(
+                                params: SignupParams(
+                                  displayName: _usernameController.text.trim(),
+                                  email: _emailController.text.trim(),
+                                  password: password,
+                                ),
+                              );
+                            }
+                          } else {
+                            _autovalidateMode.value = AutovalidateMode.always;
+                          }
+                        },
                 ),
               ],
             ),
@@ -164,5 +172,7 @@ class _SignUpFormBodyState extends State<SignUpFormBody> {
         );
       },
     );
+  },
+);
   }
 }

@@ -6,7 +6,7 @@ class ForgetPasswordUseCase {
 
   const ForgetPasswordUseCase({required this.repo});
 
-  Future<ApiResult<void>> call(String email) {
+  Future<ApiResult<void>> call({required String email}) {
     return repo.forgetPassword(email);
   }
 }

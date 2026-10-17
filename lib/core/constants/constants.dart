@@ -6,6 +6,7 @@ class AppConstants {
   static const double roomy = 24.0;
   static const String themeModeKey = 'themeMode';
   static const String tokenKey = "token";
+  static const String hasCompletedCategoriesKey = "hasCompletedCategories";
   static const String userKey = "user";
   static const String isOnboardingSeenKey = "isOnboardingSeen";
   static const String supabaseUrl = String.fromEnvironment(

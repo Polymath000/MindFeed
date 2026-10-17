@@ -54,13 +54,20 @@ class FakeAuthApiSource extends Fake implements AuthApiSource {
   }
 
   @override
-  Future<String> verifyOtp({required String email, required String token}) async {
+  Future<String> verifyOtp({
+    required String email,
+    required String token,
+    bool isPasswordReset = false,
+  }) async {
     if (verifyOtpException != null) throw verifyOtpException!;
     return verifyOtpResult!;
   }
 
   @override
-  Future<void> resendOtp({required String email}) async {
+  Future<void> resendOtp({
+    required String email,
+    bool isPasswordReset = false,
+  }) async {
     resendOtpCalled = true;
     lastResentEmail = email;
   }
@@ -141,7 +148,7 @@ void main() {
       expect(savedToken, isNull);
     });
 
-    test('signup with active session saves real access token', () async {
+    test('signup with active session returns entity without storing token prior to category onboarding', () async {
       const params = SignupParams(
         displayName: 'OAuth User',
         email: 'oauth@example.com',
@@ -159,7 +166,7 @@ void main() {
 
       expect(result, isA<Success<AuthResultEntity>>());
       final savedToken = SharedPreferencesSingleton.getString(AppConstants.tokenKey);
-      expect(savedToken, equals('real_jwt_access_token_999'));
+      expect(savedToken, isNull);
     });
 
     test('SignupCubit emits SignupRequiresConfirmation when hasActiveSession is false', () async {
@@ -198,7 +205,7 @@ void main() {
   });
 
   group('Acceptance Criteria 3 & 4: OTP Verification & Error Handling', () {
-    test('valid OTP creates and persists genuine session token', () async {
+    test('valid OTP creates genuine session without storing token prior to category onboarding', () async {
       fakeApiSource.verifyOtpResult = 'genuine_session_token_abc';
 
       final verifyUseCase = VerifyOtpUseCase(repo: authRepo);
@@ -213,7 +220,7 @@ void main() {
       );
 
       final savedToken = SharedPreferencesSingleton.getString(AppConstants.tokenKey);
-      expect(savedToken, equals('genuine_session_token_abc'));
+      expect(savedToken, isNull);
     });
 
     test('invalid or expired OTP returns failure without storing token', () async {
@@ -300,6 +307,7 @@ void main() {
       expect(response.statusCode, equals(302));
       expect(response.headers['location'], contains('mindfeed://login-callback'));
       expect(response.headers['location'], contains('error_code=otp_expired'));
+    });
     });
   });
 }

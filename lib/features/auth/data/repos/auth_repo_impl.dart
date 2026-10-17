@@ -48,7 +48,6 @@ class AuthRepoImpl extends AuthRepository {
         if (remote.isEmpty) {
           return const FailureResult(ServerFailure('No User Found'));
         }
-        await SharedPreferencesSingleton.setString(AppConstants.tokenKey, remote);
         return Success(remote);
       } catch (e) {
         return FailureResult(ApiErrorHandler.handle(e).toFailure());
@@ -63,9 +62,6 @@ class AuthRepoImpl extends AuthRepository {
     if (await networkInfo.isConnected) {
       try {
         final result = await authApiSource.signUp(params: params);
-        if (result.hasActiveSession && result.accessToken != null && result.accessToken!.isNotEmpty) {
-          await SharedPreferencesSingleton.setString(AppConstants.tokenKey, result.accessToken!);
-        }
         return Success(result);
       } catch (e) {
         return FailureResult(ApiErrorHandler.handle(e).toFailure());
@@ -79,11 +75,15 @@ class AuthRepoImpl extends AuthRepository {
   Future<ApiResult<String>> verifyOtp({
     required String email,
     required String token,
+    bool isPasswordReset = false,
   }) async {
     if (await networkInfo.isConnected) {
       try {
-        final accessToken = await authApiSource.verifyOtp(email: email, token: token);
-        await SharedPreferencesSingleton.setString(AppConstants.tokenKey, accessToken);
+        final accessToken = await authApiSource.verifyOtp(
+          email: email,
+          token: token,
+          isPasswordReset: isPasswordReset,
+        );
         return Success(accessToken);
       } catch (e) {
         return FailureResult(ApiErrorHandler.handle(e).toFailure());
@@ -94,10 +94,30 @@ class AuthRepoImpl extends AuthRepository {
   }
 
   @override
-  Future<ApiResult<void>> resendOtp({required String email}) async {
+  Future<ApiResult<void>> resendOtp({
+    required String email,
+    bool isPasswordReset = false,
+  }) async {
     if (await networkInfo.isConnected) {
       try {
-        await authApiSource.resendOtp(email: email);
+        await authApiSource.resendOtp(
+          email: email,
+          isPasswordReset: isPasswordReset,
+        );
+        return const Success(null);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> updatePassword({required String newPassword}) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await authApiSource.updatePassword(newPassword: newPassword);
         return const Success(null);
       } catch (e) {
         return FailureResult(ApiErrorHandler.handle(e).toFailure());
@@ -158,6 +178,7 @@ class AuthRepoImpl extends AuthRepository {
       } catch (_) {}
       try {
         await SharedPreferencesSingleton.remove(AppConstants.tokenKey);
+        await SharedPreferencesSingleton.remove(AppConstants.hasCompletedCategoriesKey);
       } catch (_) {}
       try {
         final allKeys = SharedPreferencesSingleton.getKeys();

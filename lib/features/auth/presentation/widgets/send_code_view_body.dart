@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
-import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
-import 'package:mind_feed/core/widgets/custom_loading_indecator.dart';
-import 'package:mind_feed/features/auth/domain/usecases/forget_password_use_case.dart';
+import 'package:mind_feed/features/auth/domain/entities/check_code_args.dart';
+import 'package:mind_feed/features/auth/presentation/controllers/forget_password_cubit/forget_password_cubit.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/auth_background.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/email_text_field.dart';
 
@@ -21,132 +20,152 @@ class SendCodeViewBody extends StatefulWidget {
 
 class _SendCodeViewBodyState extends State<SendCodeViewBody> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final ValueNotifier<AutovalidateMode> _autovalidateMode =
+      ValueNotifier<AutovalidateMode>(AutovalidateMode.disabled);
+  String _email = '';
 
-  AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
-  String email = '';
-  bool _isLoading = false;
+  @override
+  void dispose() {
+    _autovalidateMode.dispose();
+    super.dispose();
+  }
 
-  Future<void> _handleSendResetInstructions() async {
+  void _onSendPressed() {
     if (formKey.currentState?.validate() ?? false) {
       FocusScope.of(context).unfocus();
-      setState(() {
-        _isLoading = true;
-      });
-
-      final result = await getIt<ForgetPasswordUseCase>().call(email.trim());
-
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-      });
-
-      result.when(
-        success: (_) {
-          customShowSnackBar(
-            message: 'Password recovery instructions sent to your email',
-            context: context,
+      context.read<ForgetPasswordCubit>().sendResetInstructions(
+            email: _email.trim(),
           );
-          Navigator.pushNamed(
-            context,
-            AppRoutes.changePassword,
-            arguments: email.trim(),
-          );
-        },
-        failure: (failure) {
-          customShowSnackBar(
-            message: failure.message,
-            context: context,
-          );
-        },
-      );
     } else {
-      setState(() {
-        autovalidateMode = AutovalidateMode.always;
-      });
+      _autovalidateMode.value = AutovalidateMode.always;
+    }
+  }
+
+  void _handleState(BuildContext context, ForgetPasswordState state) {
+    if (state is ForgetPasswordSuccess) {
+      customShowSnackBar(
+        message: 'Password reset instructions sent to your email.',
+        context: context,
+      );
+      Navigator.pushNamed(
+        context,
+        AppRoutes.checkCode,
+        arguments: CheckCodeArgs(
+          email: state.email,
+          isPasswordReset: true,
+        ),
+      );
+    } else if (state is ForgetPasswordFailure) {
+      customShowSnackBar(
+        message: state.errorMessage,
+        context: context,
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ModalProgressHUD(
-      inAsyncCall: _isLoading,
-      progressIndicator: const CustomLoadingIndecator(),
-      child: Stack(
-        children: [
-          authBackground(),
-          SafeArea(
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 440),
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20.0,
-                    vertical: 16.0,
-                  ),
-                  child: Form(
-                    key: formKey,
-                    autovalidateMode: autovalidateMode,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            EditorialIconButton(
-                              icon: AppIcons.arrowBackRounded,
-                              label: 'Back',
-                              onPressed: () => Navigator.pop(context),
-                            ),
-                            const SizedBox(width: 12),
-                            const Text(
-                              'Reset Password',
-                              style: TextStyle(
-                                color: AppColors.softCream,
-                                fontSize: 22,
-                                fontWeight: FontWeight.w800,
+    return Stack(
+      children: [
+        authBackground(),
+        SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 440),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+                child: BlocConsumer<ForgetPasswordCubit, ForgetPasswordState>(
+                  listener: _handleState,
+                  builder: (context, state) {
+                    final bool isLoading = state is ForgetPasswordLoading;
+                    return ValueListenableBuilder<AutovalidateMode>(
+                      valueListenable: _autovalidateMode,
+                      builder: (context, autovalidateMode, _) {
+                        return Form(
+                          key: formKey,
+                          autovalidateMode: autovalidateMode,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildHeader(context),
+                              const SizedBox(height: 40),
+                              _buildInstructions(),
+                              const SizedBox(height: 28),
+                              _buildEmailField(),
+                              const SizedBox(height: 28),
+                              CustomButton(
+                                buttonText: 'Send Instructions',
+                                isLoading: isLoading,
+                                onTap: isLoading ? null : _onSendPressed,
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 40),
-                        const Text(
-                          'Enter your registered email address to receive password recovery instructions.',
-                          style: TextStyle(
-                            color: AppColors.greyText,
-                            fontSize: 15,
-                            height: 1.4,
+                            ],
                           ),
-                        ),
-                        const SizedBox(height: 28),
-                        const Text(
-                          'Email',
-                          style: TextStyle(
-                            color: AppColors.softCream,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        EmailTextField(
-                          onChanged: (String value) {
-                            setState(() {
-                              email = value;
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 28),
-                        CustomButton(
-                          buttonText: 'Send Instructions',
-                          onTap: _handleSendResetInstructions,
-                        ),
-                      ],
-                    ),
-                  ),
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
             ),
           ),
-        ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Row(
+      children: [
+        EditorialIconButton(
+          icon: AppIcons.arrowBackRounded,
+          label: 'Back',
+          onPressed: () => Navigator.pop(context),
+        ),
+        const SizedBox(width: 12),
+        const Expanded(
+          child: Text(
+            'Reset Password',
+            style: TextStyle(
+              color: AppColors.softCream,
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInstructions() {
+    return const Text(
+      'Enter your registered email address to receive password recovery instructions.',
+      style: TextStyle(
+        color: AppColors.greyText,
+        fontSize: 15,
+        height: 1.4,
       ),
+    );
+  }
+
+  Widget _buildEmailField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Email',
+          style: TextStyle(
+            color: AppColors.softCream,
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 12),
+        EmailTextField(
+          onChanged: (String value) {
+            _email = value;
+          },
+        ),
+      ],
     );
   }
 }

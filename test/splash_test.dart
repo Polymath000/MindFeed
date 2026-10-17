@@ -39,6 +39,7 @@ void main() {
       SharedPreferences.setMockInitialValues({
         isOnboardingSeenKey: true,
         AppConstants.tokenKey: 'valid_access_token',
+        AppConstants.hasCompletedCategoriesKey: true,
       });
       await SharedPreferencesSingleton.init();
 
@@ -92,6 +93,7 @@ void main() {
       SharedPreferences.setMockInitialValues({
         isOnboardingSeenKey: true,
         AppConstants.tokenKey: 'valid_access_token',
+        AppConstants.hasCompletedCategoriesKey: true,
       });
       await SharedPreferencesSingleton.init();
 
