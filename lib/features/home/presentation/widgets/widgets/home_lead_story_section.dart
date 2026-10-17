@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_card.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 
@@ -36,10 +37,12 @@ class HomeSecondaryStoryTile extends StatelessWidget {
     super.key,
     required this.item,
     required this.onTap,
+    this.onToggleSave,
   });
 
   final EditorialNewsItem item;
   final VoidCallback onTap;
+  final VoidCallback? onToggleSave;
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +63,26 @@ class HomeSecondaryStoryTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    item.badge,
-                    style: TextStyle(
-                      color: item.badgeColor,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        item.badge,
+                        style: TextStyle(
+                          color: item.badgeColor,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        '${item.readingTimeMinutes} min read',
+                        style: const TextStyle(
+                          color: AppColors.greyText,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -82,6 +98,21 @@ class HomeSecondaryStoryTile extends StatelessWidget {
                 ],
               ),
             ),
+            if (onToggleSave != null)
+              StatefulBuilder(
+                builder: (context, setTileState) => IconButton(
+                  icon: Icon(
+                    item.isSaved ? AppIcons.bookmark : AppIcons.bookmarkBorderRounded,
+                    color: item.isSaved ? AppColors.yellowHighlight : AppColors.softCream.withAlpha(180),
+                    size: 20,
+                  ),
+                  tooltip: item.isSaved ? 'Remove bookmark' : 'Bookmark story',
+                  onPressed: () {
+                    onToggleSave!();
+                    setTileState(() {});
+                  },
+                ),
+              ),
           ],
         ),
       ),

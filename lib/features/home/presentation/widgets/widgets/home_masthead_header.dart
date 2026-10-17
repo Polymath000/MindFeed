@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/features/home/presentation/cubit/home_feed/home_feed_cubit.dart';
 
 class HomeMastheadHeader extends StatelessWidget {
   const HomeMastheadHeader({super.key});
@@ -60,6 +62,19 @@ class HomeMastheadHeader extends StatelessWidget {
             ],
           ),
         ),
+        EditorialIconButton(
+          icon: AppIcons.edit,
+          label: 'Write article',
+          onPressed: () async {
+            await Navigator.pushNamed(context, AppRoutes.addArticle);
+            if (context.mounted) {
+              try {
+                context.read<HomeFeedCubit>().fetchFeed();
+              } catch (_) {}
+            }
+          },
+        ),
+        const SizedBox(width: 8),
         EditorialIconButton(
           icon: AppIcons.gridViewRounded,
           label: 'Open profile',

@@ -16,6 +16,7 @@ class MainView extends StatefulWidget {
 
 class _MainViewState extends State<MainView> {
   var selectedIndex = 0;
+  var savedRefreshSeed = 0;
 
   @override
   void initState() {
@@ -35,11 +36,22 @@ class _MainViewState extends State<MainView> {
     backgroundColor: AppColors.ink,
     body: IndexedStack(
       index: selectedIndex,
-      children: const [HomeView(), SearchView(), ArticlesSaved()],
+      children: [
+        const HomeView(),
+        const SearchView(),
+        ArticlesSaved(refreshSeed: savedRefreshSeed),
+      ],
     ),
     bottomNavigationBar: MainNavigationBar(
       selectedIndex: selectedIndex,
-      onDestinationSelected: (index) => setState(() => selectedIndex = index),
+      onDestinationSelected: (index) {
+        setState(() {
+          if (index == 2) {
+            savedRefreshSeed++;
+          }
+          selectedIndex = index;
+        });
+      },
     ),
   );
 }
