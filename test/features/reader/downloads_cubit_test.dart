@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/features/collections/presentation/cubit/downloads/downloads_cubit.dart';
 import 'package:mind_feed/features/collections/presentation/cubit/downloads/downloads_state.dart';
 import 'package:mind_feed/features/home/domain/entities/downloaded_article_entity.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_local_data_source.dart';
+import 'package:mind_feed/features/home/data/datasources/articles_local_data_source.dart';
 import 'package:mind_feed/features/home/domain/usecases/delete_downloaded_article_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_downloaded_articles_use_case.dart';
 

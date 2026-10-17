@@ -8,7 +8,7 @@ import 'package:mind_feed/features/home/domain/entities/category_entity.dart';
 import 'package:mind_feed/features/home/domain/entities/tag_entity.dart';
 import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
 
-import 'package:mind_feed/features/home/domain/repos/articles_local_data_source.dart';
+import 'package:mind_feed/features/home/data/datasources/articles_local_data_source.dart';
 
 class ArticlesRepositoryImpl implements ArticlesRepository, ArticleEngagementRepository {
   final ArticlesRemoteDataSource remoteDataSource;

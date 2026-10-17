@@ -1,9 +1,20 @@
 import 'package:hive/hive.dart';
 import 'package:mind_feed/core/errors/exceptions.dart';
 import 'package:mind_feed/features/home/domain/entities/downloaded_article_entity.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_local_data_source.dart';
+import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
 
-export 'package:mind_feed/features/home/domain/repos/articles_local_data_source.dart';
+abstract class ArticlesLocalDataSource implements OfflineArticlesRepository {
+  @override
+  Future<void> saveDownloadedArticle(DownloadedArticleEntity article);
+  @override
+  Future<List<DownloadedArticleEntity>> getDownloadedArticles();
+  @override
+  Future<DownloadedArticleEntity?> getDownloadedArticleById(String id);
+  @override
+  Future<void> deleteDownloadedArticle(String id);
+  @override
+  Future<void> clearAllDownloadedArticles();
+}
 
 class ArticlesLocalDataSourceImpl implements ArticlesLocalDataSource {
   static const String boxName = 'downloaded_articles';
