@@ -39,6 +39,8 @@ import 'package:mind_feed/features/home/domain/usecases/save_draft_use_case.dart
 import 'package:mind_feed/features/home/domain/usecases/search_articles_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/toggle_bookmark_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/toggle_star_use_case.dart';
+import 'package:mind_feed/features/home/domain/usecases/rate_author_use_case.dart';
+import 'package:mind_feed/features/home/domain/usecases/toggle_article_like_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_fixed_tags_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/update_article_use_case.dart';
 import 'package:mind_feed/features/profile/data/datasources/profile_remote_data_source.dart';
@@ -193,5 +195,17 @@ void setupServiceLocator() {
   );
   getIt.registerLazySingleton<UpdateArticleUseCase>(
     () => UpdateArticleUseCase(getIt<ArticlesRepository>()),
+  );
+  getIt.registerLazySingleton<ArticleEngagementRepository>(
+    () => getIt<ArticlesRepository>() as ArticleEngagementRepository,
+  );
+  getIt.registerLazySingleton<ToggleArticleLikeUseCase>(
+    () => ToggleArticleLikeUseCase(getIt<ArticleEngagementRepository>()),
+  );
+  getIt.registerLazySingleton<RateAuthorUseCase>(
+    () => RateAuthorUseCase(getIt<ArticleEngagementRepository>()),
+  );
+  getIt.registerLazySingleton<GetAuthorRatingUseCase>(
+    () => GetAuthorRatingUseCase(getIt<ArticleEngagementRepository>()),
   );
 }

@@ -43,3 +43,43 @@ abstract class ArticlesRepository {
   Future<ApiResult<void>> deleteArticle(String articleId);
   Future<void> clearDownloadedArticles();
 }
+
+class AuthorRatingSummary {
+  final String authorKey;
+  final int userStars;
+  final double ratingAvg;
+  final int ratingCount;
+
+  const AuthorRatingSummary({
+    required this.authorKey,
+    required this.userStars,
+    required this.ratingAvg,
+    required this.ratingCount,
+  });
+
+  factory AuthorRatingSummary.fromJson(Map<String, dynamic> json) {
+    return AuthorRatingSummary(
+      authorKey: json['author_key'] as String? ?? '',
+      userStars: (json['user_stars'] as num?)?.toInt() ?? 0,
+      ratingAvg: (json['rating_avg'] as num?)?.toDouble() ?? 0.0,
+      ratingCount: (json['rating_count'] as num?)?.toInt() ?? 0,
+    );
+  }
+}
+
+abstract class ArticleEngagementRepository {
+  Future<ApiResult<void>> likeArticle(String articleId, String userId);
+  Future<ApiResult<void>> unlikeArticle(String articleId, String userId);
+  Future<ApiResult<bool>> isArticleLiked(String articleId, String userId);
+  Future<ApiResult<AuthorRatingSummary>> rateAuthor({
+    required String authorKey,
+    required int stars,
+    String? authorId,
+    String authorName = 'Editorial Staff',
+  });
+  Future<ApiResult<AuthorRatingSummary>> getAuthorRatingSummary({
+    required String authorKey,
+    String? authorId,
+    String authorName = 'Editorial Staff',
+  });
+}

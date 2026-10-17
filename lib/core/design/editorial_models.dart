@@ -25,6 +25,10 @@ class EditorialNewsItem {
   bool isStarred;
   bool isLiked;
   bool isSaved;
+  int likesCount;
+  double authorRatingAvg;
+  int authorRatingCount;
+  int userAuthorStars;
 
   EditorialNewsItem({
     required this.id,
@@ -51,7 +55,15 @@ class EditorialNewsItem {
     this.isStarred = false,
     this.isLiked = false,
     this.isSaved = false,
+    this.likesCount = 0,
+    this.authorRatingAvg = 0.0,
+    this.authorRatingCount = 0,
+    this.userAuthorStars = 0,
   });
+
+  String get authorKey => (authorId != null && authorId!.trim().isNotEmpty)
+      ? authorId!.trim()
+      : authorName.trim().toLowerCase();
 
   bool get isEditableWithinWindow {
     if (status != 'published') return true;
