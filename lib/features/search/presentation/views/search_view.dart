@@ -23,16 +23,20 @@ class _SearchViewContent extends StatelessWidget {
   const _SearchViewContent();
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppColors.ink,
-    body: SafeArea(
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 600),
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(20, 14, 20, 132),
-            children: [
-              const Text(
+  Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
+    return Material(
+      color: Colors.transparent,
+      child: SafeArea(
+        top: true,
+        bottom: false,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 600),
+            child: ListView(
+              padding: EdgeInsets.fromLTRB(20, 14, 20, 100 + bottomInset),
+              children: [
+                const Text(
                 'Search',
                 style: TextStyle(
                   color: AppColors.softCream,
@@ -96,5 +100,6 @@ class _SearchViewContent extends StatelessWidget {
         ),
       ),
     ),
-  );
+    );
+  }
 }

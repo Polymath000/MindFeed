@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_local_data_source.dart';
+import 'package:mind_feed/features/home/data/datasources/articles_local_data_source.dart';
 import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
 import 'package:mind_feed/features/home/domain/usecases/download_article_text_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_article_details_use_case.dart';

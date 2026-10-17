@@ -91,6 +91,8 @@ class SettingsAccountCard extends StatelessWidget {
                       avatarUrl!,
                       width: 44,
                       height: 44,
+                      cacheWidth: 132,
+                      cacheHeight: 132,
                       fit: BoxFit.cover,
                       errorBuilder: (_, _, _) => const CircleAvatar(
                         radius: 22,
@@ -102,6 +104,8 @@ class SettingsAccountCard extends StatelessWidget {
                       Assets.assetsImagesWadeAvatar,
                       width: 44,
                       height: 44,
+                      cacheWidth: 132,
+                      cacheHeight: 132,
                       fit: BoxFit.cover,
                       errorBuilder: (_, _, _) => const CircleAvatar(
                         radius: 22,

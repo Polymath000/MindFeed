@@ -109,6 +109,72 @@ The codebase follows **Feature-First Clean Architecture**:
   - In `ProfileRepoImpl.getFavoriteCategories`, set `AppConstants.hasCompletedCategoriesKey = favorites.isNotEmpty` in `SharedPreferencesSingleton`, ensuring any stale local cache is cleared when the remote profile is empty.
   - In `LoginCubit`, verified category completion using `CheckUserHasCategoriesUseCase`. When `profiles.favorite_categories` is empty (`[]`), `LoginCubit` emits `LoginRequiresCategories` and routes the user to `AppRoutes.categories`. When categories already exist, `LoginCubit` emits `LoginSuccess` directly and navigates to `AppRoutes.main`.
   - Added unit test suite in `test/features/auth/login_category_check_test.dart` (95/95 tests passing with zero static analyzer issues).
-
-
+- **Home Masthead Animated Title (`animated_text_kit`)**:
+  - Replaced static app name in `HomeMastheadHeader` with an editorial rotating text animation using `RotateAnimatedText` from `animated_text_kit`.
+  - Created modular `HomeMastheadAnimatedTitle` component in `lib/features/home/presentation/widgets/widgets/home_masthead_header.dart`.
+  - Added centralized rotating phrases `AppConstants.mastheadRotatingWords` in `lib/core/constants/constants.dart`: includes `AppConstants.appName` ("MindFeed"), "Daily Reads", "Deep Insights", and "Feed Your Mind".
+  - Configured left-aligned vertical slide transitions (`Alignment.centerLeft`) styled with `GoogleFonts.playfairDisplay` and `AppColors.softCream`.
+  - Fitted inside `FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.centerLeft)` and `Expanded` to prevent layout shifts or overflow on compact screens.
+  - Added test suite in `test/features/home/home_masthead_animated_title_test.dart` (all tests passing).
+- **Home Write Article Floating Action Button**:
+  - Moved the `EditorialIconButton` ("Write article") from `HomeMastheadHeader` to an editorial `FloatingActionButton` (`HomeWriteArticleFab`) positioned at the bottom-right.
+  - Styled with editorial theme tokens (`AppColors.cream`, `AppColors.ink`, and `AppBorders.control`).
+  - Elevated with a 64px bottom margin to clear the floating `MainNavigationBar` on mobile screens.
+  - Wrapped `HomeViewBody` in `_HomeViewScaffold` under `BlocProvider<HomeFeedCubit>` to guarantee clean access to `HomeFeedCubit` on post-creation refresh.
+  - Added dedicated widget test in `test/features/home/home_write_article_fab_test.dart` (all 228 tests passing).
+- **Navigation Bar Profile Action Integration**:
+  - Moved the `EditorialIconButton` ("Open profile", `AppIcons.gridViewRounded`) from `HomeMastheadHeader` into the floating `MainNavigationBar`.
+  - Expanded `MainNavigationBar` container width from `174` to `228` with four balanced icons (`Home`, `Search`, `Saved news`, and `Open profile`).
+  - Added optional `onProfilePressed` callback in `MainNavigationBar` with fallback default to `Navigator.pushNamed(context, AppRoutes.profile)`.
+  - Fully decluttered `HomeMastheadHeader` down to the brand logo and the expanding `HomeMastheadAnimatedTitle`, removing all top action buttons and unused imports.
+  - Updated widget tests in `test/widget_test.dart` to verify `Open profile` in navigation bar and write article FAB in home view (all 228 tests passing).
+- **Home Page Skeletonizer Loading State (`skeletonizer`)**:
+  - Added `skeletonizer` (`^3.0.0`) to `pubspec.yaml`.
+  - Replaced `CircularProgressIndicator` in `HomeFeedLoadingView` with `Skeletonizer` wrapping placeholder `EditorialCardStack` and `HomeSecondaryStoryTile` items styled with warm editorial shimmer (`ShimmerEffect(baseColor: AppColors.greyBrown, highlightColor: AppColors.creamDark)`).
+  - Wrapped `HomeTopicTabsBar` in `HomeViewBody` with `Skeletonizer(enabled: isLoading)` so topic filter pills also shimmer during initial/loading states.
+- **Navigation Bar Profile Tab Integration & In-Stack View**:
+  - Integrated `ProfileView` directly into `MainView`'s `IndexedStack` at destination tab index 3 alongside Home (0), Search (1), and Saved News (2).
+  - Configured `MainNavigationBar` with 4 destination tabs (`Home`, `Search`, `Saved news`, and `Profile`) with active pill indicator styling and instant switching without pushing new routes.
+  - Made the back button in `ProfileAppBar` conditional on `Navigator.canPop(context)` so it automatically hides when viewed within the bottom navigation bar and displays when pushed standalone.
+  - Resolved `RenderFlex` horizontal overflow issues on compact mobile screens:
+    - In `lib/features/profile/presentation/widget/user_articles.dart`, replaced rigid `Spacer()` with `Expanded` title truncation and balanced spacing.
+    - In `lib/features/profile/presentation/widget/profile_avatar_and_stats.dart`, reduced stats divider horizontal margins from 24px to 16px to prevent 1.3px overflow.
+    - In `lib/features/home/presentation/widgets/widgets/home_lead_story_section.dart`, replaced `Row` with `Wrap` in `HomeSecondaryStoryTile` badge and reading time row to prevent 4.5px overflow on compact devices.
+  - Updated test suite (`test/widget_test.dart`) to test 4-destination navigation and verified all 229 tests pass.
+- **HomeTopicTabsBar User-Selected Categories**:
+  - Updated `HomeFeedState` default `topics` to `const ['All']` and enhanced `filteredArticles` matching to support multi-word user-selected category names (e.g. `Artificial Intelligence`, `Health & Wellness`) as well as keyword/tag matching.
+  - Updated `HomeFeedCubit` to initialize `topics` from cached `CurrentUserSession.resolveCachedUserEntity()?.favoriteCategories` (`['All', ...cachedCategories]`) and fetch the user's selected categories via `ProfileRepository.getFavoriteCategories` (supporting both `profiles.favorite_categories` `{'name': ..., 'category_name': ...}` maps and junction `{'categories': {'name': ...}}` maps).
+  - Updated `HomeTopicTabsBar` in `lib/features/home/presentation/widgets/widgets/home_masthead_header.dart` so `'All'` is always guaranteed to be the first tab followed by the user's selected categories (`['All', ...selectedCategories]`).
+- **Floating Navigation Bar & High-Performance Static Background**:
+  - Eliminated the continuous background animation (`HomeBreathingBackground`) which ran 60fps tickers and multiple full-screen radial gradient repaints on every frame, eliminating CPU/GPU overhead and battery drain.
+  - Replaced it with a high-performance static editorial dark background (`AppColors.ink`) across `MainView` and all tabs.
+  - Eliminated the solid dark rectangular background that previously obscured the bottom of the screen behind the floating `MainNavigationBar`.
+  - Replaced nested `Scaffold` implementations in `SearchView`, `ArticlesSaved`, and `ProfileView` with transparent `Material(color: Colors.transparent)` shells.
+  - Set `SafeArea(top: true, bottom: false)` across all tabs so background and scrolling content extend all the way behind the floating navigation pill to the bottom device edge.
+  - Updated scroll views and list view padding across all tabs (e.g. `EdgeInsets.fromLTRB(20, 14, 20, 100 + bottomInset)`) so items scroll smoothly behind the floating bar without being obscured at the bottom of the scroll view.
+  - Verified with `flutter test` (all 229 tests passing with zero static analyzer issues) and verified visually on active emulator via screen captures across all 4 tabs.
+- **Dart DevTools Performance Profile Optimizations**:
+  - Analyzed exported DevTools timeline (`dart_devtools_2026-10-17_17_07_21.029.json`, 2,796 frames) and resolved all 4 root causes of Raster/UI jank:
+  - **Masthead Title Animation Isolation & Finite Cycle (`home_masthead_header.dart`)**:
+    - Wrapped `HomeMastheadAnimatedTitle` in `RepaintBoundary` so text rotation no longer invalidates the parent scroll view or card stack.
+    - Configured `AnimatedTextKit` with `repeatForever: false, totalRepeatCount: 1`, and appended a final non-rotating `RotateAnimatedText` entry so the title cycles through the rotating phrases once and settles permanently on `"MindFeed"` (0% idle CPU/GPU).
+  - **Eliminated `Canvas::saveLayer` Offscreen Passes & Drag Rebuilds (`editorial_card_stack.dart`, `editorial_card.dart`)**:
+    - Replaced `Opacity` widgets on background stack cards (`op = 0.85` / `0.95`) with direct surface color interpolation (`Color.lerp(AppColors.ink, _cards[i].color, op)`), eliminating 6,150 `Canvas::saveLayer` / `RenderPassGLES` offscreen GPU passes.
+    - Wrapped each card in `RepaintBoundary` and replaced `_onPanUpdate` `setState` calls with a `ValueNotifier<Offset>` merged into `AnimatedBuilder` via `Listenable.merge`, eliminating widget tree rebuilds during card drag gestures.
+  - **Image Decode Sizing & Asset Downscaling**:
+    - Added `cacheWidth` and `cacheHeight` to `Image.asset` and `Image.network` widgets across `HomeMastheadHeader`, `EditorialCard`, `ArticleReaderCoverImage`, `ArticleReaderAuthorBar`, `ProfileAvatarAndStats`, `SettingsAccountCard`, `Logo`, and `SplashLogoWidget`.
+    - Downscaled oversized bundled assets: `assets/images/wade_avatar.png` (`1024x1024` 547KB -> `256x256` 81KB) and `assets/images/onBoarding_1.jpg` (`3163x3954` 825KB -> `1080x1350` 145KB), reducing decoded GPU texture memory by >90%.
+  - **Lazy Tab Mounting & Sliver Virtualization (`main_view.dart`, `home_view_body.dart`)**:
+    - Updated `MainView` `IndexedStack` to lazy-mount tabs (`_visitedTabs = {0}`) on first selection and wrapped each tab in `TickerMode(enabled: selectedIndex == index)` and `RepaintBoundary`.
+    - Converted `HomeViewBody` from an eager `ListView(children: ...)` to a `CustomScrollView` with `SliverList.builder` and `RepaintBoundary` for secondary stories.
+- **Home Feature Clean Architecture & Engineering Rules Refactoring**:
+  - **Dead Code Removal & Flat Widget Structure**: Removed 11 unused legacy widget files from `lib/features/home/presentation/widgets/` and flattened `presentation/widgets/widgets/` into `presentation/widgets/`.
+  - **Centralized Constants, Theming & Reusable Components**: Replaced raw `Icons.*`, `Colors.white.withAlpha(...)`, `BorderRadius.circular(...)`, inline `TextStyle(...)`, and inline `ElevatedButton`/`OutlinedButton` in Home widgets with centralized `AppIcons`, `AppColors`, `AppBorders`, `AppTextStyles`, and `CustomButton`.
+  - **Domain Layer Purification & UseCase Extraction**:
+    - Removed `package:flutter/material.dart`, `AppColors`, `AppImages`, and `EditorialNewsItem` from `ArticleEntity` and `DownloadedArticleEntity`, moving `toEditorialNewsItem()` to extensions (`ArticleEntityEditorialMapper`, `DownloadedArticleEntityEditorialMapper`) in `lib/core/design/editorial_models.dart`.
+    - Moved `ArticlesLocalDataSource` out of `domain/repos/` into `data/datasources/articles_local_data_source.dart` implementing `OfflineArticlesRepository` in `domain/repos/articles_repo.dart`.
+    - Created `GetUserFeedTopicsUseCase` and `FilterArticlesByTopicUseCase` in `lib/features/home/domain/usecases/`.
+  - **Dart 3 Sealed State, Immutable Cubit Updates & DI**:
+    - Migrated `HomeFeedState` to a Dart 3 `sealed class` hierarchy (`HomeFeedInitial`, `HomeFeedLoading`, `HomeFeedLoaded`, `HomeFeedError`) with `SwipeSaveStatus`.
+    - Refactored `HomeFeedCubit` and `HomeViewBody` into small `<20`-line methods, guarded all emissions with `if (!isClosed)`, eliminated `StatefulBuilder` mutation workarounds via immutable list emissions, and registered `GetUserFeedTopicsUseCase`, `FilterArticlesByTopicUseCase`, and `HomeFeedCubit` in `setup_service_locator.dart`.
 

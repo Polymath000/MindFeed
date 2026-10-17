@@ -23,6 +23,8 @@ class Logo extends StatelessWidget {
               Assets.assetsImagesMindFeedLogo,
               height: 52,
               width: 52,
+              cacheWidth: 156,
+              cacheHeight: 156,
               fit: BoxFit.contain,
             ),
           ),

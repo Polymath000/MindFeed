@@ -14,6 +14,7 @@ import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 import 'package:mind_feed/features/main/presentation/views/main_view.dart';
 import 'package:mind_feed/features/main/presentation/widgets/main_navigation_bar.dart';
 import 'package:mind_feed/features/onboarding/presentation/views/onboarding_view.dart';
+import 'package:mind_feed/features/profile/presentation/views/profile_view.dart';
 import 'package:mind_feed/features/settings/presentation/controllers/theme_mode_cubit/theme_mode_cubit.dart';
 import 'package:mind_feed/features/settings/presentation/views/settings_view.dart';
 
@@ -165,7 +166,7 @@ void main() {
 
       expect(find.text('MindFeed'), findsOneWidget);
       expect(find.textContaining('Demand for Indian'), findsOneWidget);
-      expect(find.byTooltip('Open profile'), findsOneWidget);
+      expect(find.byTooltip('Write article'), findsOneWidget);
     },
   );
 
@@ -202,7 +203,7 @@ void main() {
     },
   );
 
-  testWidgets('floating editorial navigation exposes three destinations', (
+  testWidgets('floating editorial navigation exposes navigation and profile destinations', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -214,6 +215,7 @@ void main() {
     expect(find.bySemanticsLabel('Home'), findsOneWidget);
     expect(find.bySemanticsLabel('Search'), findsOneWidget);
     expect(find.bySemanticsLabel('Saved news'), findsOneWidget);
+    expect(find.bySemanticsLabel('Profile'), findsOneWidget);
   });
 
   testWidgets('main shell renders home at top and navigation at bottom', (
@@ -228,9 +230,11 @@ void main() {
 
     final mastheadFinder = find.text('MindFeed');
     final homeNavFinder = find.bySemanticsLabel('Home');
+    final profileNavFinder = find.byTooltip('Profile');
 
     expect(mastheadFinder, findsOneWidget);
     expect(homeNavFinder, findsOneWidget);
+    expect(profileNavFinder, findsOneWidget);
 
     final mastheadPos = tester.getTopLeft(mastheadFinder);
     final navPos = tester.getTopLeft(homeNavFinder);
@@ -241,6 +245,11 @@ void main() {
     final homeRect = tester.getRect(find.byType(HomeView));
     expect(homeRect.bottom, equals(844.0));
     expect(homeRect.bottom, greaterThan(navPos.dy));
+
+    // Tap Profile tab and verify ProfileView is displayed
+    await tester.tap(profileNavFinder);
+    await tester.pump();
+    expect(find.byType(ProfileView), findsOneWidget);
   });
 
   testWidgets('settings renders paper aesthetic sections and preferences', (

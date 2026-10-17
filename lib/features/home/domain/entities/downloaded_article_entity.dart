@@ -1,7 +1,4 @@
 import 'package:hive/hive.dart';
-import 'package:mind_feed/core/constants/app_colors.dart';
-import 'package:mind_feed/core/constants/app_images.dart';
-import 'package:mind_feed/core/design/editorial_models.dart';
 
 class DownloadedArticleEntity {
   final String id;
@@ -33,31 +30,6 @@ class DownloadedArticleEntity {
     required this.readingTimeMinutes,
     required this.downloadedAt,
   });
-
-  EditorialNewsItem toEditorialNewsItem() {
-    return EditorialNewsItem(
-      id: id,
-      badge: categorySlug.isNotEmpty ? categorySlug.toUpperCase() : 'OFFLINE',
-      badgeColor: AppColors.ink,
-      title: title,
-      updated: '$readingTimeMinutes min read',
-      authorName: authorName.isNotEmpty ? authorName : 'Unknown',
-      authorRole: authorRole.isNotEmpty ? authorRole : 'Published by',
-      authorAvatar: authorAvatar.isNotEmpty ? authorAvatar : Assets.assetsImagesWadeAvatar,
-      excerpt: excerpt.isNotEmpty
-          ? excerpt
-          : (content.length > 150 ? '${content.substring(0, 150)}...' : content),
-      content: content,
-      tags: tags,
-      publishedAt: publishedAt,
-      readingTimeMinutes: readingTimeMinutes,
-      status: 'published',
-      color: AppColors.cream,
-      isLive: false,
-      isLiked: false,
-      isSaved: true,
-    );
-  }
 
   DownloadedArticleEntity copyWith({
     String? id,

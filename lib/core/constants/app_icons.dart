@@ -79,6 +79,13 @@ class AppIcons {
   static const IconData textFields = Icons.text_fields;
   static const IconData volumeUpOutlined = Icons.volume_up_outlined;
   static const IconData formatQuoteRounded = Icons.format_quote_rounded;
+  static const IconData wifiOffRounded = Icons.wifi_off_rounded;
+  static const IconData starRounded = Icons.star_rounded;
+  static const IconData starOutlineRounded = Icons.star_outline_rounded;
+  static const IconData chevronLeftRounded = Icons.chevron_left_rounded;
+  static const IconData chevronRightRounded = Icons.chevron_right_rounded;
+  static const IconData playArrowRounded = Icons.play_arrow_rounded;
+  static const IconData pauseRounded = Icons.pause_rounded;
 
   // Category Icons
   static const IconData technology = Icons.memory_rounded;

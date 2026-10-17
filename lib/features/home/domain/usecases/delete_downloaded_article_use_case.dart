@@ -1,7 +1,7 @@
-import 'package:mind_feed/features/home/domain/repos/articles_local_data_source.dart';
+import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
 
 class DeleteDownloadedArticleUseCase {
-  final ArticlesLocalDataSource localDataSource;
+  final OfflineArticlesRepository localDataSource;
 
   const DeleteDownloadedArticleUseCase(this.localDataSource);
 

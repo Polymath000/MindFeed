@@ -16,20 +16,22 @@ class ProfileArticlesCubit extends Cubit<ProfileArticlesState> {
     ArticlesRepository? articlesRepository,
     DeleteArticleUseCase? deleteArticleUseCase,
     String? userId,
-  })  : _articlesRepo = articlesRepository ??
-            (getIt.isRegistered<ArticlesRepository>()
-                ? getIt<ArticlesRepository>()
-                : null),
-        _deleteArticleUseCase = deleteArticleUseCase ??
-            (articlesRepository != null
-                ? DeleteArticleUseCase(articlesRepository)
-                : (getIt.isRegistered<DeleteArticleUseCase>()
-                    ? getIt<DeleteArticleUseCase>()
-                    : (getIt.isRegistered<ArticlesRepository>()
-                        ? DeleteArticleUseCase(getIt<ArticlesRepository>())
-                        : null))),
-        _configuredUserId = userId,
-        super(const ProfileArticlesInitial());
+  }) : _articlesRepo =
+           articlesRepository ??
+           (getIt.isRegistered<ArticlesRepository>()
+               ? getIt<ArticlesRepository>()
+               : null),
+       _deleteArticleUseCase =
+           deleteArticleUseCase ??
+           (articlesRepository != null
+               ? DeleteArticleUseCase(articlesRepository)
+               : (getIt.isRegistered<DeleteArticleUseCase>()
+                     ? getIt<DeleteArticleUseCase>()
+                     : (getIt.isRegistered<ArticlesRepository>()
+                           ? DeleteArticleUseCase(getIt<ArticlesRepository>())
+                           : null))),
+       _configuredUserId = userId,
+       super(const ProfileArticlesInitial());
 
   List<EditorialNewsItem> get articles => List.unmodifiable(_articles);
 
@@ -69,7 +71,8 @@ class ProfileArticlesCubit extends Cubit<ProfileArticlesState> {
   }
 
   Future<bool> deleteArticle(String articleId) async {
-    final useCase = _deleteArticleUseCase ??
+    final useCase =
+        _deleteArticleUseCase ??
         (_articlesRepo != null ? DeleteArticleUseCase(_articlesRepo) : null);
 
     if (useCase == null) {
@@ -78,7 +81,7 @@ class ProfileArticlesCubit extends Cubit<ProfileArticlesState> {
 
     try {
       final result = await useCase.call(articleId);
-      return result.when(
+      final success = result.when<bool>(
         success: (_) {
           _articles.removeWhere((item) => item.id == articleId);
           if (_articles.isEmpty) {
@@ -88,10 +91,9 @@ class ProfileArticlesCubit extends Cubit<ProfileArticlesState> {
           }
           return true;
         },
-        failure: (_) {
-          return false;
-        },
+        failure: (_) => false,
       );
+      return success;
     } catch (_) {
       return false;
     }

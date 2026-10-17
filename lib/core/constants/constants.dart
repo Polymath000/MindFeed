@@ -1,6 +1,12 @@
 class AppConstants {
   AppConstants._();
   static const String appName = "MindFeed";
+  static const List<String> mastheadRotatingWords = [
+    appName,
+    'Daily Reads',
+    'Deep Insights',
+    'Feed Your Mind',
+  ];
   static const double page = 20.0;
   static const double compact = 12.0;
   static const double roomy = 24.0;

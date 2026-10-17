@@ -150,4 +150,19 @@ sealed class AppColors {
   static const Color greenMain = Color(0xFF059669);
   static const Color greenMedium = Color(0xFF047857);
   static const Color transparentBlack = Color(0x18000000);
+  static const Color whiteAlpha15 = Color(0x0FFFFFFF);
+  static const Color whiteAlpha18 = Color(0x12FFFFFF);
+  static const Color whiteAlpha24 = Color(0x18FFFFFF);
+  static const Color whiteAlpha25 = Color(0x19FFFFFF);
+  static const Color whiteAlpha40 = Color(0x28FFFFFF);
+  static const Color whiteAlpha45 = Color(0x2DFFFFFF);
+  static const Color blackAlpha12 = Color(0x0C000000);
+  static const Color blackAlpha15 = Color(0x0F000000);
+  static const Color blackAlpha20 = Color(0x14000000);
+  static const Color blackAlpha66 = Color(0x42000000);
+  static const Color blackAlpha70 = Color(0x46000000);
+  static const Color blackAlpha115 = Color(0x73000000);
+  static const Color creamAlpha65 = Color(0x41FFF1C6);
+  static const Color softCreamAlpha180 = Color(0xB4FFF8E6);
+  static const Color softCreamAlpha185 = Color(0xB9FFF8E6);
 }

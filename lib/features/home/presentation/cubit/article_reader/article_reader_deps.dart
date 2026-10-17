@@ -1,7 +1,7 @@
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/features/home/domain/entities/downloaded_article_entity.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_local_data_source.dart';
+import 'package:mind_feed/features/home/data/datasources/articles_local_data_source.dart';
 import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
 import 'package:mind_feed/features/home/domain/usecases/download_article_text_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_article_details_use_case.dart';

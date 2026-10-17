@@ -1,8 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:mind_feed/core/constants/app_colors.dart';
-import 'package:mind_feed/core/constants/app_images.dart';
-import 'package:mind_feed/core/design/editorial_models.dart';
 
 class ArticleEntity extends Equatable {
   final String id;
@@ -75,41 +71,6 @@ class ArticleEntity extends Equatable {
     this.isStarred = false,
   });
 
-  EditorialNewsItem toEditorialNewsItem() {
-    return EditorialNewsItem(
-      id: id,
-      badge: badge,
-      badgeColor: _parseHexColor(badgeColor, defaultColor: AppColors.redHighlight),
-      title: title,
-      updated: _formatUpdatedTime(publishedAt ?? updatedAt),
-      authorName: authorName,
-      authorRole: authorRole,
-      authorAvatar: (authorAvatar != null && authorAvatar!.trim().isNotEmpty)
-          ? authorAvatar!
-          : Assets.assetsImagesWadeAvatar,
-      excerpt: excerpt,
-      color: _parseHexColor(cardColor, defaultColor: AppColors.cream),
-      isLive: isLive,
-      categoryId: categoryId,
-      categorySlug: categorySlug,
-      tags: tags,
-      content: content,
-      coverImageUrl: coverImageUrl ?? heroImageUrl,
-      authorId: authorId,
-      publishedAt: publishedAt,
-      readingTimeMinutes: readingTimeMinutes,
-      status: status,
-      starCount: starCount,
-      isStarred: isStarred,
-      isLiked: isLiked,
-      isSaved: isSaved,
-      likesCount: likesCount,
-      authorRatingAvg: authorRatingAvg,
-      authorRatingCount: authorRatingCount,
-      userAuthorStars: userAuthorStars,
-    );
-  }
-
   ArticleEntity copyWith({
     String? id,
     String? legacyId,
@@ -180,40 +141,6 @@ class ArticleEntity extends Equatable {
       isSaved: isSaved ?? this.isSaved,
       isStarred: isStarred ?? this.isStarred,
     );
-  }
-
-  static Color _parseHexColor(String? hexString, {required Color defaultColor}) {
-    if (hexString == null || hexString.trim().isEmpty) return defaultColor;
-    final clean = hexString.replaceAll('#', '').trim();
-    if (clean.length == 6) {
-      final val = int.tryParse('FF$clean', radix: 16);
-      return val != null ? Color(val) : defaultColor;
-    } else if (clean.length == 8) {
-      final val = int.tryParse(clean, radix: 16);
-      return val != null ? Color(val) : defaultColor;
-    }
-    return defaultColor;
-  }
-
-  static String _formatUpdatedTime(DateTime? dateTime) {
-    if (dateTime == null) return 'Updated recently.';
-    final diff = DateTime.now().toUtc().difference(dateTime.toUtc());
-    if (diff.isNegative || diff.inMinutes < 2) {
-      return 'Updated just now.';
-    } else if (diff.inMinutes < 60) {
-      return '${diff.inMinutes} minutes ago.';
-    } else if (diff.inHours < 24) {
-      final hours = diff.inHours;
-      return hours == 1 ? '1 hour ago.' : '$hours hours ago.';
-    } else if (diff.inDays < 30) {
-      final days = diff.inDays;
-      return days == 1 ? '1 day ago.' : '$days days ago.';
-    } else {
-      final d = dateTime.toLocal();
-      final month = d.month.toString().padLeft(2, '0');
-      final day = d.day.toString().padLeft(2, '0');
-      return '${d.year}-$month-$day';
-    }
   }
 
   @override

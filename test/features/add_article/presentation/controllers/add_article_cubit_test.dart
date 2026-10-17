@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';

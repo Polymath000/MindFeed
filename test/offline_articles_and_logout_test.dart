@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:mind_feed/core/constants/constants.dart';
+import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';

@@ -1,7 +1,16 @@
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/features/home/domain/entities/article_entity.dart';
 import 'package:mind_feed/features/home/domain/entities/category_entity.dart';
+import 'package:mind_feed/features/home/domain/entities/downloaded_article_entity.dart';
 import 'package:mind_feed/features/home/domain/entities/tag_entity.dart';
+
+abstract class OfflineArticlesRepository {
+  Future<void> saveDownloadedArticle(DownloadedArticleEntity article);
+  Future<List<DownloadedArticleEntity>> getDownloadedArticles();
+  Future<DownloadedArticleEntity?> getDownloadedArticleById(String id);
+  Future<void> deleteDownloadedArticle(String id);
+  Future<void> clearAllDownloadedArticles();
+}
 
 abstract class ArticlesRepository {
   Future<ApiResult<List<ArticleEntity>>> getHomeFeed({

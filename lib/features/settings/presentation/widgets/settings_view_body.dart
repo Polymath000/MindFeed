@@ -6,7 +6,7 @@ import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/domain/usecases/logout_use_case.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_local_data_source.dart';
+import 'package:mind_feed/features/home/data/datasources/articles_local_data_source.dart';
 import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
 import 'package:mind_feed/features/profile/domain/repos/profile_repo.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/settings_account_card.dart';

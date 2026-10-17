@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_images.dart';
+import 'package:mind_feed/features/home/domain/entities/article_entity.dart';
+import 'package:mind_feed/features/home/domain/entities/downloaded_article_entity.dart';
+
 class EditorialNewsItem {
   final String id;
   final String badge;
@@ -71,5 +76,140 @@ class EditorialNewsItem {
     if (published == null) return false;
     return DateTime.now().toUtc().difference(published.toUtc()) <=
         const Duration(days: 30);
+  }
+
+  EditorialNewsItem copyWith({
+    bool? isSaved,
+    bool? isLiked,
+    bool? isStarred,
+    int? likesCount,
+    int? starCount,
+  }) {
+    return EditorialNewsItem(
+      id: id,
+      badge: badge,
+      badgeColor: badgeColor,
+      title: title,
+      updated: updated,
+      authorName: authorName,
+      authorRole: authorRole,
+      authorAvatar: authorAvatar,
+      excerpt: excerpt,
+      color: color,
+      isLive: isLive,
+      categoryId: categoryId,
+      categorySlug: categorySlug,
+      tags: tags,
+      content: content,
+      coverImageUrl: coverImageUrl,
+      authorId: authorId,
+      publishedAt: publishedAt,
+      readingTimeMinutes: readingTimeMinutes,
+      status: status,
+      starCount: starCount ?? this.starCount,
+      isStarred: isStarred ?? this.isStarred,
+      isLiked: isLiked ?? this.isLiked,
+      isSaved: isSaved ?? this.isSaved,
+      likesCount: likesCount ?? this.likesCount,
+      authorRatingAvg: authorRatingAvg,
+      authorRatingCount: authorRatingCount,
+      userAuthorStars: userAuthorStars,
+    );
+  }
+}
+
+extension ArticleEntityEditorialMapper on ArticleEntity {
+  EditorialNewsItem toEditorialNewsItem() {
+    return EditorialNewsItem(
+      id: id,
+      badge: badge,
+      badgeColor: _parseHexColor(badgeColor, defaultColor: AppColors.redHighlight),
+      title: title,
+      updated: _formatUpdatedTime(publishedAt ?? updatedAt),
+      authorName: authorName,
+      authorRole: authorRole,
+      authorAvatar: (authorAvatar != null && authorAvatar!.trim().isNotEmpty)
+          ? authorAvatar!
+          : Assets.assetsImagesWadeAvatar,
+      excerpt: excerpt,
+      color: _parseHexColor(cardColor, defaultColor: AppColors.cream),
+      isLive: isLive,
+      categoryId: categoryId,
+      categorySlug: categorySlug,
+      tags: tags,
+      content: content,
+      coverImageUrl: coverImageUrl ?? heroImageUrl,
+      authorId: authorId,
+      publishedAt: publishedAt,
+      readingTimeMinutes: readingTimeMinutes,
+      status: status,
+      starCount: starCount,
+      isStarred: isStarred,
+      isLiked: isLiked,
+      isSaved: isSaved,
+      likesCount: likesCount,
+      authorRatingAvg: authorRatingAvg,
+      authorRatingCount: authorRatingCount,
+      userAuthorStars: userAuthorStars,
+    );
+  }
+
+  static Color _parseHexColor(String? hexString, {required Color defaultColor}) {
+    if (hexString == null || hexString.trim().isEmpty) return defaultColor;
+    final clean = hexString.replaceAll('#', '').trim();
+    if (clean.length == 6) {
+      final val = int.tryParse('FF$clean', radix: 16);
+      return val != null ? Color(val) : defaultColor;
+    } else if (clean.length == 8) {
+      final val = int.tryParse(clean, radix: 16);
+      return val != null ? Color(val) : defaultColor;
+    }
+    return defaultColor;
+  }
+
+  static String _formatUpdatedTime(DateTime? dateTime) {
+    if (dateTime == null) return 'Updated recently.';
+    final diff = DateTime.now().toUtc().difference(dateTime.toUtc());
+    if (diff.isNegative || diff.inMinutes < 2) return 'Updated just now.';
+    if (diff.inMinutes < 60) return '${diff.inMinutes} minutes ago.';
+    if (diff.inHours < 24) {
+      final hours = diff.inHours;
+      return hours == 1 ? '1 hour ago.' : '$hours hours ago.';
+    }
+    if (diff.inDays < 30) {
+      final days = diff.inDays;
+      return days == 1 ? '1 day ago.' : '$days days ago.';
+    }
+    final d = dateTime.toLocal();
+    final month = d.month.toString().padLeft(2, '0');
+    final day = d.day.toString().padLeft(2, '0');
+    return '${d.year}-$month-$day';
+  }
+}
+
+extension DownloadedArticleEntityEditorialMapper on DownloadedArticleEntity {
+  EditorialNewsItem toEditorialNewsItem() {
+    return EditorialNewsItem(
+      id: id,
+      badge: categorySlug.isNotEmpty ? categorySlug.toUpperCase() : 'OFFLINE',
+      badgeColor: AppColors.ink,
+      title: title,
+      updated: '$readingTimeMinutes min read',
+      authorName: authorName.isNotEmpty ? authorName : 'Unknown',
+      authorRole: authorRole.isNotEmpty ? authorRole : 'Published by',
+      authorAvatar: authorAvatar.isNotEmpty ? authorAvatar : Assets.assetsImagesWadeAvatar,
+      excerpt: excerpt.isNotEmpty
+          ? excerpt
+          : (content.length > 150 ? '${content.substring(0, 150)}...' : content),
+      content: content,
+      tags: tags,
+      publishedAt: publishedAt,
+      readingTimeMinutes: readingTimeMinutes,
+      status: 'published',
+      color: AppColors.cream,
+      isLive: false,
+      isLiked: false,
+      isSaved: true,
+    );
   }
 }

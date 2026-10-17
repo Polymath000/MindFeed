@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/drafts_cubit/drafts_state.dart';
