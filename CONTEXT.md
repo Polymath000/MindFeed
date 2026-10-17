@@ -109,6 +109,20 @@ The codebase follows **Feature-First Clean Architecture**:
   - In `ProfileRepoImpl.getFavoriteCategories`, set `AppConstants.hasCompletedCategoriesKey = favorites.isNotEmpty` in `SharedPreferencesSingleton`, ensuring any stale local cache is cleared when the remote profile is empty.
   - In `LoginCubit`, verified category completion using `CheckUserHasCategoriesUseCase`. When `profiles.favorite_categories` is empty (`[]`), `LoginCubit` emits `LoginRequiresCategories` and routes the user to `AppRoutes.categories`. When categories already exist, `LoginCubit` emits `LoginSuccess` directly and navigates to `AppRoutes.main`.
   - Added unit test suite in `test/features/auth/login_category_check_test.dart` (95/95 tests passing with zero static analyzer issues).
+- **Home Masthead Animated Title (`animated_text_kit`)**:
+  - Replaced static app name in `HomeMastheadHeader` with an editorial rotating text animation using `RotateAnimatedText` from `animated_text_kit`.
+  - Created modular `HomeMastheadAnimatedTitle` component in `lib/features/home/presentation/widgets/widgets/home_masthead_header.dart`.
+  - Added centralized rotating phrases `AppConstants.mastheadRotatingWords` in `lib/core/constants/constants.dart`: includes `AppConstants.appName` ("MindFeed"), "Daily Reads", "Deep Insights", and "Feed Your Mind".
+  - Configured left-aligned vertical slide transitions (`Alignment.centerLeft`) styled with `GoogleFonts.playfairDisplay` and `AppColors.softCream`.
+  - Fitted inside `FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.centerLeft)` and `Expanded` to prevent layout shifts or overflow on compact screens.
+  - Added test suite in `test/features/home/home_masthead_animated_title_test.dart` (all tests passing).
+- **Home Write Article Floating Action Button**:
+  - Moved the `EditorialIconButton` ("Write article") from `HomeMastheadHeader` to an editorial `FloatingActionButton` (`HomeWriteArticleFab`) positioned at the bottom-right.
+  - Styled with editorial theme tokens (`AppColors.cream`, `AppColors.ink`, and `AppBorders.control`).
+  - Elevated with a 64px bottom margin to clear the floating `MainNavigationBar` on mobile screens.
+  - Streamlined `HomeMastheadHeader`, giving full horizontal breathing room to the animated app title and leaving only the profile icon button on the right.
+  - Wrapped `HomeViewBody` in `_HomeViewScaffold` under `BlocProvider<HomeFeedCubit>` to guarantee clean access to `HomeFeedCubit` on post-creation refresh.
+  - Added dedicated widget test in `test/features/home/home_write_article_fab_test.dart` (all 228 tests passing).
 
 
 

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
-import 'package:mind_feed/features/home/presentation/cubit/home_feed/home_feed_cubit.dart';
 
 class HomeMastheadHeader extends StatelessWidget {
   const HomeMastheadHeader({super.key});
@@ -44,35 +46,9 @@ class HomeMastheadHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              Flexible(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'MindFeed',
-                    style: GoogleFonts.playfairDisplay(
-                      color: AppColors.softCream,
-                      fontSize: 29,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.6,
-                    ),
-                  ),
-                ),
-              ),
+              const Expanded(child: HomeMastheadAnimatedTitle()),
             ],
           ),
-        ),
-        EditorialIconButton(
-          icon: AppIcons.edit,
-          label: 'Write article',
-          onPressed: () async {
-            await Navigator.pushNamed(context, AppRoutes.addArticle);
-            if (context.mounted) {
-              try {
-                context.read<HomeFeedCubit>().fetchFeed();
-              } catch (_) {}
-            }
-          },
         ),
         const SizedBox(width: 8),
         EditorialIconButton(
@@ -81,6 +57,48 @@ class HomeMastheadHeader extends StatelessWidget {
           onPressed: () => Navigator.pushNamed(context, AppRoutes.profile),
         ),
       ],
+    );
+  }
+}
+
+class HomeMastheadAnimatedTitle extends StatelessWidget {
+  const HomeMastheadAnimatedTitle({
+    super.key,
+    this.words = AppConstants.mastheadRotatingWords,
+  });
+
+  final List<String> words;
+
+  @override
+  Widget build(BuildContext context) {
+    final titleStyle = GoogleFonts.playfairDisplay(
+      color: AppColors.softCream,
+      fontSize: 27,
+      fontWeight: FontWeight.w800,
+      letterSpacing: -0.6,
+    );
+
+    return SizedBox(
+      height: 42,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.centerLeft,
+        child: AnimatedTextKit(
+          repeatForever: true,
+          pause: const Duration(milliseconds: 1000),
+          animatedTexts: words
+              .map(
+                (word) => RotateAnimatedText(
+                  word,
+                  textStyle: titleStyle,
+                  alignment: Alignment.centerLeft,
+                  transitionHeight: 42,
+                  duration: const Duration(milliseconds: 2400),
+                ),
+              )
+              .toList(),
+        ),
+      ),
     );
   }
 }
@@ -144,9 +162,7 @@ class HomeTopicTabsBar extends StatelessWidget {
                         ? AppColors.ink
                         : AppColors.softCream.withAlpha(185),
                     fontSize: 14.5,
-                    fontWeight: isSelected
-                        ? FontWeight.w800
-                        : FontWeight.w600,
+                    fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                     letterSpacing: -0.2,
                   ),
                 ),

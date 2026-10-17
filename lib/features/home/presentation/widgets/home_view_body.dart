@@ -11,6 +11,7 @@ import 'package:mind_feed/features/home/presentation/widgets/widgets/home_breath
 import 'package:mind_feed/features/home/presentation/widgets/widgets/home_feed_status_views.dart';
 import 'package:mind_feed/features/home/presentation/widgets/widgets/home_lead_story_section.dart';
 import 'package:mind_feed/features/home/presentation/widgets/widgets/home_masthead_header.dart';
+import 'package:mind_feed/features/home/presentation/widgets/widgets/home_write_article_fab.dart';
 
 class HomeViewBody extends StatelessWidget {
   const HomeViewBody({super.key, this.cubit});
@@ -22,12 +23,25 @@ class HomeViewBody extends StatelessWidget {
     if (cubit != null) {
       return BlocProvider<HomeFeedCubit>.value(
         value: cubit!,
-        child: const _HomeViewBodyContent(),
+        child: const _HomeViewScaffold(),
       );
     }
     return BlocProvider<HomeFeedCubit>(
       create: (_) => HomeFeedCubit()..fetchFeed(),
-      child: const _HomeViewBodyContent(),
+      child: const _HomeViewScaffold(),
+    );
+  }
+}
+
+class _HomeViewScaffold extends StatelessWidget {
+  const _HomeViewScaffold();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      backgroundColor: AppColors.ink,
+      body: _HomeViewBodyContent(),
+      floatingActionButton: HomeWriteArticleFab(),
     );
   }
 }
