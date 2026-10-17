@@ -78,6 +78,110 @@ void main() {
     expect(dismissedItem?.id, equals('test_1'));
   });
 
+  testWidgets('EditorialCardStack swipe right marks item saved and fires onSwipeRight', (tester) async {
+    EditorialNewsItem? swipedRightItem;
+    final items = [
+      EditorialNewsItem(
+        id: 'right_1',
+        badge: 'LIVE',
+        badgeColor: Colors.red,
+        title: 'Swipe Right Story',
+        updated: 'Just now',
+        authorName: 'Author',
+        authorRole: 'Writer',
+        authorAvatar: 'assets/images/wade_avatar.png',
+        excerpt: 'Excerpt',
+        color: Colors.amber,
+        isSaved: false,
+      ),
+      EditorialNewsItem(
+        id: 'right_2',
+        badge: 'TECH',
+        badgeColor: Colors.blue,
+        title: 'Behind Story',
+        updated: '1 hour ago',
+        authorName: 'Author 2',
+        authorRole: 'Writer',
+        authorAvatar: 'assets/images/wade_avatar.png',
+        excerpt: 'Excerpt 2',
+        color: Colors.cyan,
+      ),
+    ];
+
+    await tester.pumpWidget(
+      harness(
+        EditorialCardStack(
+          items: items,
+          onOpenArticle: (_) {},
+          onSwipeRight: (item) => swipedRightItem = item,
+        ),
+      ),
+    );
+
+    expect(find.text('Swipe Right Story'), findsOneWidget);
+
+    await tester.drag(find.text('Swipe Right Story'), const Offset(200, 0));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pump();
+
+    expect(swipedRightItem?.id, equals('right_1'));
+    expect(swipedRightItem?.isSaved, isTrue);
+    expect(find.text('Behind Story'), findsOneWidget);
+  });
+
+  testWidgets('EditorialCardStack swipe left moves to card behind without saving and fires onSwipeLeft', (tester) async {
+    EditorialNewsItem? swipedLeftItem;
+    final items = [
+      EditorialNewsItem(
+        id: 'left_1',
+        badge: 'LIVE',
+        badgeColor: Colors.red,
+        title: 'Swipe Left Story',
+        updated: 'Just now',
+        authorName: 'Author',
+        authorRole: 'Writer',
+        authorAvatar: 'assets/images/wade_avatar.png',
+        excerpt: 'Excerpt',
+        color: Colors.amber,
+        isSaved: false,
+      ),
+      EditorialNewsItem(
+        id: 'left_2',
+        badge: 'TECH',
+        badgeColor: Colors.blue,
+        title: 'Behind Left Story',
+        updated: '1 hour ago',
+        authorName: 'Author 2',
+        authorRole: 'Writer',
+        authorAvatar: 'assets/images/wade_avatar.png',
+        excerpt: 'Excerpt 2',
+        color: Colors.cyan,
+      ),
+    ];
+
+    await tester.pumpWidget(
+      harness(
+        EditorialCardStack(
+          items: items,
+          onOpenArticle: (_) {},
+          onSwipeLeft: (item) => swipedLeftItem = item,
+        ),
+      ),
+    );
+
+    expect(find.text('Swipe Left Story'), findsOneWidget);
+
+    await tester.drag(find.text('Swipe Left Story'), const Offset(-200, 0));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pump();
+
+    expect(swipedLeftItem?.id, equals('left_1'));
+    expect(swipedLeftItem?.isSaved, isFalse);
+    expect(find.text('Behind Left Story'), findsOneWidget);
+  });
+
   testWidgets('EditorialSavedStack dismisses an item on swipe', (tester) async {
     EditorialNewsItem? deletedItem;
     final items = List<EditorialNewsItem>.from(testItems);

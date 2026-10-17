@@ -35,12 +35,14 @@ class ChangePasswordViewBody extends StatelessWidget {
                           onPressed: () => Navigator.pop(context),
                         ),
                         const SizedBox(width: 12),
-                        const Text(
-                          'Change Password',
-                          style: TextStyle(
-                            color: AppColors.softCream,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w800,
+                        const Expanded(
+                          child: Text(
+                            'Change Password',
+                            style: TextStyle(
+                              color: AppColors.softCream,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
                         ),
                       ],

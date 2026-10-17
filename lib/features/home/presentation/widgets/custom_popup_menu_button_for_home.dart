@@ -9,15 +9,7 @@ class CustomPopupMenuButtonForHomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupMenuButton(
       icon: MoreVertIcon(),
-      onSelected: (value) {
-        if (value == 'download') {
-          // TODO: handle download action
-        } else if (value == 'save') {
-          // TODO: handle save action
-        } else if (value == 'share') {
-          // TODO: handle share action
-        }
-      },
+      onSelected: (value) {},
       itemBuilder: (context) => [
         isDwonload
             ? PopupMenuItem(

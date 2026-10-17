@@ -103,6 +103,50 @@ class FakeArticlesRemoteDataSource implements ArticlesRemoteDataSource {
   }
 
   @override
+  Future<void> likeArticle(String articleId, String userId) async {
+    starredArticles.add('$userId:$articleId');
+  }
+
+  @override
+  Future<void> unlikeArticle(String articleId, String userId) async {
+    starredArticles.remove('$userId:$articleId');
+  }
+
+  @override
+  Future<bool> isArticleLiked(String articleId, String userId) async {
+    return starredArticles.contains('$userId:$articleId');
+  }
+
+  @override
+  Future<AuthorRatingSummary> rateAuthor({
+    required String authorKey,
+    required int stars,
+    String? authorId,
+    String authorName = 'Editorial Staff',
+  }) async {
+    return AuthorRatingSummary(
+      authorKey: authorKey,
+      userStars: stars,
+      ratingAvg: stars.toDouble(),
+      ratingCount: 1,
+    );
+  }
+
+  @override
+  Future<AuthorRatingSummary> getAuthorRatingSummary({
+    required String authorKey,
+    String? authorId,
+    String authorName = 'Editorial Staff',
+  }) async {
+    return AuthorRatingSummary(
+      authorKey: authorKey,
+      userStars: 0,
+      ratingAvg: 0.0,
+      ratingCount: 0,
+    );
+  }
+
+  @override
   Future<void> saveBookmark(String articleId, String userId) async {
     savedArticles.add('$userId:$articleId');
   }

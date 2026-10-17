@@ -8,7 +8,12 @@ class VerifyOtpUseCase {
   Future<ApiResult<String>> call({
     required String email,
     required String token,
+    bool isPasswordReset = false,
   }) {
-    return repo.verifyOtp(email: email, token: token);
+    return repo.verifyOtp(
+      email: email,
+      token: token,
+      isPasswordReset: isPasswordReset,
+    );
   }
 }

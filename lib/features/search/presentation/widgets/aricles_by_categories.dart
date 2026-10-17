@@ -4,7 +4,7 @@ import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_text_styles.dart';
 import 'package:mind_feed/core/constants/borders.dart';
-import 'package:mind_feed/features/auth/presentation/widgets/categories_view_body.dart';
+import 'package:mind_feed/core/constants/category_items.dart';
 
 class AriclesByCategories extends StatelessWidget {
   const AriclesByCategories({super.key});
@@ -53,7 +53,7 @@ class AriclesByCategories extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(
-                        categories[index][0],
+                        categories[index].name,
                         style: AppTextStyles.bodyLarge?.copyWith(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,

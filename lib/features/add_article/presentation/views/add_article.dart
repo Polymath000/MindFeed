@@ -1,27 +1,125 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/features/add_article/presentation/views/home_of_add_article_view.dart';
-import 'package:mind_feed/features/add_article/presentation/widget/device_preference_notifier.dart';
-import 'package:mind_feed/main.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
+import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_state.dart';
+import 'package:mind_feed/features/add_article/presentation/routes/add_article_routes.dart';
+import 'package:mind_feed/features/add_article/presentation/widget/article_category_selector.dart';
+import 'package:mind_feed/features/add_article/presentation/widget/article_content_field.dart';
+import 'package:mind_feed/features/add_article/presentation/widget/article_cover_image_field.dart';
+import 'package:mind_feed/features/add_article/presentation/widget/article_edit_warning_banner.dart';
+import 'package:mind_feed/features/add_article/presentation/widget/article_editor_action_bar.dart';
+import 'package:mind_feed/features/add_article/presentation/widget/article_tag_selector.dart';
+import 'package:mind_feed/features/add_article/presentation/widget/article_title_field.dart';
 
-class AddArticleView extends StatelessWidget {
-  const AddArticleView({super.key});
-  static const String routeName = 'Add Article';
+class AddArticleView extends StatefulWidget {
+  final EditorialNewsItem? initialItem;
+
+  const AddArticleView({super.key, this.initialItem});
 
   @override
-  Widget build(BuildContext context) {
-    return MarkdownEditorApp();
-  }
+  State<AddArticleView> createState() => _AddArticleViewState();
 }
 
-class MarkdownEditorApp extends StatelessWidget {
-  const MarkdownEditorApp({super.key});
+class _AddArticleViewState extends State<AddArticleView> {
+  late final TextEditingController _titleController;
+  late final TextEditingController _contentController;
+  late final TextEditingController _coverUrlController;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.initialItem?.title ?? '');
+    _contentController = TextEditingController(text: widget.initialItem?.content ?? '');
+    _coverUrlController = TextEditingController(text: widget.initialItem?.coverImageUrl ?? '');
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _contentController.dispose();
+    _coverUrlController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<DevicePreferences>(
-      valueListenable: globalDevicePreferenceNotifier,
-      builder: (context, devicePreference, _) {
-        return Home(devicePreferenceNotifier: globalDevicePreferenceNotifier);
+    return BlocConsumer<AddArticleCubit, AddArticleState>(
+      listener: (context, state) {
+        final message = state.errorMessage ?? state.successMessage;
+        if (message != null) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(message),
+              backgroundColor: state.errorMessage != null ? AppColors.redHighlight : AppColors.ink,
+            ),
+          );
+        }
+      },
+      builder: (context, state) {
+        final isEditing = state.editingItemId != null && state.editingItemId!.isNotEmpty;
+        final titleText = isEditing
+            ? (state.isEditingPublished ? 'Edit Published Story' : 'Edit Draft')
+            : 'Write Story';
+
+        return Scaffold(
+          backgroundColor: AppColors.sandLight,
+          appBar: AppBar(
+            backgroundColor: AppColors.sandLight,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(AppIcons.arrowBackRounded, color: AppColors.ink),
+              onPressed: () => Navigator.maybePop(context),
+            ),
+            title: Text(
+              titleText,
+              style: const TextStyle(
+                color: AppColors.ink,
+                fontWeight: FontWeight.w900,
+                fontSize: 20,
+                letterSpacing: -0.4,
+              ),
+            ),
+            actions: [
+              TextButton.icon(
+                onPressed: () => Navigator.pushNamed(context, AddArticleRoutes.drafts),
+                icon: const Icon(Icons.folder_outlined, size: 18, color: AppColors.ink),
+                label: const Text('Drafts', style: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w700)),
+              ),
+              const SizedBox(width: 8),
+            ],
+          ),
+          body: SafeArea(
+            child: state.isLoading
+                ? const Center(child: CircularProgressIndicator(color: AppColors.ink))
+                : Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 720),
+                      child: ListView(
+                        padding: const EdgeInsets.fromLTRB(20, 12, 20, 48),
+                        children: [
+                          if (state.hasLockoutError && widget.initialItem != null && !widget.initialItem!.isEditableWithinWindow)
+                            ArticleEditWarningBanner(message: state.errorMessage!),
+                          ArticleTitleField(controller: _titleController),
+                          const SizedBox(height: 20),
+                          ArticleCoverImageField(controller: _coverUrlController),
+                          const SizedBox(height: 20),
+                          const ArticleCategorySelector(),
+                          const SizedBox(height: 20),
+                          const ArticleTagSelector(),
+                          const SizedBox(height: 20),
+                          ArticleContentField(controller: _contentController),
+                          const SizedBox(height: 32),
+                          const ArticleEditorActionBar(),
+                        ],
+                      ),
+                    ),
+                  ),
+          ),
+        );
       },
     );
   }

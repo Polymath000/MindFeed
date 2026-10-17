@@ -12,7 +12,10 @@ final class SignupRequiresConfirmation extends SignupState {
   SignupRequiresConfirmation({required this.email});
 }
 
-final class SignupSuccess extends SignupState {}
+final class SignupSuccess extends SignupState {
+  final UserEntity? userEntity;
+  SignupSuccess({this.userEntity});
+}
 
 final class SignupFailure extends SignupState {
   final String errorMessage;

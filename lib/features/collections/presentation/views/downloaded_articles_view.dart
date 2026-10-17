@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/features/collections/presentation/cubit/downloads/downloads_cubit.dart';
 import 'package:mind_feed/features/collections/presentation/widgets/downloaded_articles_view_body.dart';
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 import 'package:mind_feed/features/home/presentation/widgets/custom_drawer.dart';
 import 'package:mind_feed/features/home/presentation/widgets/custombackground_for_the_drawer_in_home_page.dart';
 
 class DownloadedArticlesView extends StatelessWidget {
-  const DownloadedArticlesView({super.key});
+  const DownloadedArticlesView({super.key, this.cubit});
   static const routeName = 'downloadedArticlesView';
+  final DownloadsCubit? cubit;
+
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return AdvancedDrawer(
+    final content = AdvancedDrawer(
       backdrop: CustombackgroundForTheDrawerInHomePage(),
       controller: advancedDrawerController,
       animationCurve: Curves.easeInOut,
@@ -26,9 +30,21 @@ class DownloadedArticlesView extends StatelessWidget {
       ),
       drawer: CustomDrawer(routeName: routeName),
       child: Scaffold(
-        body: DownloadedArticlesViewBody(),
+        body: const DownloadedArticlesViewBody(),
         backgroundColor: isDark ? AppColors.lightBlack : AppColors.white,
       ),
+    );
+
+    if (cubit != null) {
+      return BlocProvider<DownloadsCubit>.value(
+        value: cubit!,
+        child: content,
+      );
+    }
+
+    return BlocProvider<DownloadsCubit>(
+      create: (_) => DownloadsCubit()..loadDownloads(),
+      child: content,
     );
   }
 }

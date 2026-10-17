@@ -20,67 +20,71 @@ class PasswordTextField extends StatefulWidget {
 }
 
 class _PasswordTextFieldState extends State<PasswordTextField> {
-  bool _isObscured = true;
+  final ValueNotifier<bool> _isObscured = ValueNotifier<bool>(true);
   final FocusNode _passwordFocusNode = FocusNode();
 
   @override
   void dispose() {
     _passwordFocusNode.dispose();
+    _isObscured.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: widget.controller,
-      onChanged: widget.onChanged,
-      keyboardType: TextInputType.visiblePassword,
-      autofocus: false,
-      obscureText: _isObscured,
-      obscuringCharacter: '•',
-      focusNode: _passwordFocusNode,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter your password';
-        } else if (value.length < 8) {
-          return 'Password must be at least 8 characters long';
-        } else if (!RegExp(r'[A-Z]').hasMatch(value)) {
-          return 'Password must contain at least one uppercase letter';
-        } else if (!RegExp(r'[0-9]').hasMatch(value)) {
-          return 'Password must contain at least one number';
-        } else if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
-          return 'Password must contain at least one special character';
-        }
-        return null;
-      },
-      style: const TextStyle(
-        color: AppColors.softCream,
-        fontSize: 15,
-      ),
-      decoration: InputDecoration(
-        hintText: widget.hintText,
-        hintStyle: const TextStyle(
-          color: AppColors.greyText,
-          fontSize: 14,
-        ),
-        prefixIcon: const Icon(
-          AppIcons.lock,
-          color: AppColors.greyText,
-          size: 20,
-        ),
-        suffixIcon: IconButton(
-          onPressed: () {
-            setState(() {
-              _isObscured = !_isObscured;
-            });
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isObscured,
+      builder: (context, isObscured, _) {
+        return TextFormField(
+          controller: widget.controller,
+          onChanged: widget.onChanged,
+          keyboardType: TextInputType.visiblePassword,
+          autofocus: false,
+          obscureText: isObscured,
+          obscuringCharacter: '•',
+          focusNode: _passwordFocusNode,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter your password';
+            } else if (value.length < 8) {
+              return 'Password must be at least 8 characters long';
+            } else if (!RegExp(r'[A-Z]').hasMatch(value)) {
+              return 'Password must contain at least one uppercase letter';
+            } else if (!RegExp(r'[0-9]').hasMatch(value)) {
+              return 'Password must contain at least one number';
+            } else if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+              return 'Password must contain at least one special character';
+            }
+            return null;
           },
-          icon: Icon(
-            _isObscured ? AppIcons.visibilityOffOutlined : AppIcons.visibilityOutlined,
-            color: AppColors.greyText,
-            size: 20,
+          style: const TextStyle(
+            color: AppColors.softCream,
+            fontSize: 15,
           ),
-        ),
-        filled: true,
+          decoration: InputDecoration(
+            hintText: widget.hintText,
+            hintStyle: const TextStyle(
+              color: AppColors.greyText,
+              fontSize: 14,
+            ),
+            prefixIcon: const Icon(
+              AppIcons.lock,
+              color: AppColors.greyText,
+              size: 20,
+            ),
+            suffixIcon: IconButton(
+              onPressed: () {
+                _isObscured.value = !_isObscured.value;
+              },
+              icon: Icon(
+                isObscured
+                    ? AppIcons.visibilityOffOutlined
+                    : AppIcons.visibilityOutlined,
+                color: AppColors.greyText,
+                size: 20,
+              ),
+            ),
+            filled: true,
         fillColor: AppColors.charcoal,
         contentPadding: const EdgeInsets.symmetric(
           vertical: 16,
@@ -108,5 +112,8 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
         ),
       ),
     );
+  },
+);
   }
 }
+

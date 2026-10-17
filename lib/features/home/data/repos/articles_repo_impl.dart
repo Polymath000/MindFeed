@@ -10,7 +10,7 @@ import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
 
 import 'package:mind_feed/features/home/domain/repos/articles_local_data_source.dart';
 
-class ArticlesRepositoryImpl implements ArticlesRepository {
+class ArticlesRepositoryImpl implements ArticlesRepository, ArticleEngagementRepository {
   final ArticlesRemoteDataSource remoteDataSource;
   final NetworkInfo networkInfo;
   final ArticlesLocalDataSource? localDataSource;
@@ -312,6 +312,94 @@ class ArticlesRepositoryImpl implements ArticlesRepository {
   Future<void> clearDownloadedArticles() async {
     if (localDataSource != null) {
       await localDataSource!.clearAllDownloadedArticles();
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> likeArticle(String articleId, String userId) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await remoteDataSource.likeArticle(articleId, userId);
+        return const Success(null);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> unlikeArticle(String articleId, String userId) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await remoteDataSource.unlikeArticle(articleId, userId);
+        return const Success(null);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
+  }
+
+  @override
+  Future<ApiResult<bool>> isArticleLiked(String articleId, String userId) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final result = await remoteDataSource.isArticleLiked(articleId, userId);
+        return Success(result);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
+  }
+
+  @override
+  Future<ApiResult<AuthorRatingSummary>> rateAuthor({
+    required String authorKey,
+    required int stars,
+    String? authorId,
+    String authorName = 'Editorial Staff',
+  }) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final result = await remoteDataSource.rateAuthor(
+          authorKey: authorKey,
+          stars: stars,
+          authorId: authorId,
+          authorName: authorName,
+        );
+        return Success(result);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
+  }
+
+  @override
+  Future<ApiResult<AuthorRatingSummary>> getAuthorRatingSummary({
+    required String authorKey,
+    String? authorId,
+    String authorName = 'Editorial Staff',
+  }) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final result = await remoteDataSource.getAuthorRatingSummary(
+          authorKey: authorKey,
+          authorId: authorId,
+          authorName: authorName,
+        );
+        return Success(result);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
     }
   }
 }

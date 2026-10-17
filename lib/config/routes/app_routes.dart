@@ -2,6 +2,7 @@ import 'package:mind_feed/features/settings/presentation/controllers/settings_cu
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:mind_feed/features/auth/domain/entities/check_code_args.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/presentation/views/categories_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/change_password_view.dart';
@@ -11,10 +12,8 @@ import 'package:mind_feed/features/auth/presentation/views/send_code_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/signup_view.dart';
 import 'package:mind_feed/features/author/presentation/views/author_view.dart';
 import 'package:mind_feed/features/collections/presentation/views/downloaded_articles_view.dart';
-import 'package:mind_feed/features/collections/presentation/views/favorite_movies_view.dart';
 import 'package:mind_feed/features/collections/presentation/views/articles_saved.dart';
 import 'package:mind_feed/features/collections/presentation/views/list_saved_articles.dart';
-import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/features/home/presentation/views/article_view.dart';
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 import 'package:mind_feed/features/main/presentation/views/main_view.dart';
@@ -23,6 +22,9 @@ import 'package:mind_feed/features/search/presentation/views/articles_category_v
 import 'package:mind_feed/features/search/presentation/views/search_view.dart';
 import 'package:mind_feed/features/settings/presentation/views/settings_view.dart';
 import 'package:mind_feed/features/add_article/presentation/views/add_article.dart';
+import 'package:mind_feed/features/add_article/presentation/views/article_preview_view.dart';
+import 'package:mind_feed/features/add_article/presentation/views/drafts_view.dart';
+import 'package:mind_feed/features/add_article/presentation/controllers/drafts_cubit/drafts_cubit.dart';
 import 'package:mind_feed/features/profile/presentation/views/profile_view.dart';
 import 'package:mind_feed/features/splash/presentation/views/splash_view.dart';
 
@@ -37,7 +39,6 @@ sealed class AppRoutes {
   static const String home = '/home';
   static const String articlesSaved = '/articles-saved';
   static const String downloadedArticles = '/downloaded-articles';
-  static const String favoriteMovies = '/favorite-movies';
   static const String article = '/article';
   static const String author = '/author';
   static const String settings = '/settings';
@@ -48,6 +49,8 @@ sealed class AppRoutes {
   static const String checkCode = '/check-code';
   static const String changePassword = '/change-password';
   static const String categories = '/categories';
+  static const String drafts = '/drafts';
+  static const String articlePreview = '/article-preview';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -71,8 +74,6 @@ sealed class AppRoutes {
         return MaterialPageRoute(builder: (_) => const ArticlesSaved(), settings: settings);
       case AppRoutes.downloadedArticles:
         return MaterialPageRoute(builder: (_) => const DownloadedArticlesView(), settings: settings);
-      case AppRoutes.favoriteMovies:
-        return MaterialPageRoute(builder: (_) => const FavoriteMoviesView(), settings: settings);
       case AppRoutes.article:
         final args = settings.arguments as EditorialNewsItem?;
         return _createArticleRoute(item: args, settings: settings);
@@ -81,7 +82,28 @@ sealed class AppRoutes {
       case AppRoutes.settings:
         return MaterialPageRoute(builder: (_) => BlocProvider(create: (_) => SettingsCubit()..loadSettings(), child: const SettingsView()), settings: settings);
       case AppRoutes.addArticle:
-        return MaterialPageRoute(builder: (_) => BlocProvider(create: (_) => AddArticleCubit(), child: AddArticleView()), settings: settings);
+        final item = settings.arguments as EditorialNewsItem?;
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => AddArticleCubit()..initialize(editingItem: item),
+            child: AddArticleView(initialItem: item),
+          ),
+          settings: settings,
+        );
+      case AppRoutes.drafts:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => DraftsCubit()..loadDrafts(),
+            child: const DraftsView(),
+          ),
+          settings: settings,
+        );
+      case AppRoutes.articlePreview:
+        final item = settings.arguments as EditorialNewsItem?;
+        return MaterialPageRoute(
+          builder: (_) => ArticlePreviewView(item: item),
+          settings: settings,
+        );
       case AppRoutes.profile:
         return MaterialPageRoute(builder: (_) => ProfileView(), settings: settings);
       case AppRoutes.listSavedArticles:
@@ -89,8 +111,26 @@ sealed class AppRoutes {
       case AppRoutes.articlesCategory:
         return MaterialPageRoute(builder: (_) => ArticlesCategoryView(), settings: settings);
       case AppRoutes.checkCode:
-        final email = settings.arguments as String;
-        return MaterialPageRoute(builder: (_) => CheckCodeView(email: email), settings: settings);
+        final args = settings.arguments;
+        final String email;
+        final bool isPasswordReset;
+        if (args is CheckCodeArgs) {
+          email = args.email;
+          isPasswordReset = args.isPasswordReset;
+        } else if (args is Map<String, dynamic>) {
+          email = args['email'] as String? ?? '';
+          isPasswordReset = args['isPasswordReset'] as bool? ?? false;
+        } else {
+          email = args as String;
+          isPasswordReset = false;
+        }
+        return MaterialPageRoute(
+          builder: (_) => CheckCodeView(
+            email: email,
+            isPasswordReset: isPasswordReset,
+          ),
+          settings: settings,
+        );
       case AppRoutes.changePassword:
         final email = settings.arguments as String;
         return MaterialPageRoute(builder: (_) => ChangePasswordView(email: email), settings: settings);

@@ -6,8 +6,17 @@ import 'package:mind_feed/features/auth/domain/entities/auth_result_entity.dart'
 abstract class AuthRepository {
   Future<ApiResult<String>> login(LoginParams params);
   Future<ApiResult<AuthResultEntity>> signup(SignupParams params);
-  Future<ApiResult<String>> verifyOtp({required String email, required String token});
-  Future<ApiResult<void>> resendOtp({required String email});
+  Future<ApiResult<String>> verifyOtp({
+    required String email,
+    required String token,
+    bool isPasswordReset = false,
+  });
+  Future<ApiResult<void>> resendOtp({
+    required String email,
+    bool isPasswordReset = false,
+  });
   Future<ApiResult<void>> forgetPassword(String email);
+  Future<ApiResult<void>> updatePassword({required String newPassword});
+  Future<ApiResult<String>> verifyRecoveryOtp({required String email, required String token});
   Future<ApiResult<void>> logout();
 }

@@ -4,6 +4,7 @@ import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/features/auth/domain/usecases/login_use_case.dart';
 import 'package:mind_feed/features/auth/presentation/controllers/login_cubit/login_cubit.dart';
+import 'package:mind_feed/features/profile/domain/usecases/check_user_has_categories_use_case.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/login_view_body.dart';
 
 class LoginView extends StatelessWidget {
@@ -27,6 +28,7 @@ class LoginView extends StatelessWidget {
           : BlocProvider(
               create: (context) => LoginCubit(
                 loginUseCase: getIt<LoginUseCase>(),
+                checkUserHasCategoriesUseCase: getIt<CheckUserHasCategoriesUseCase>(),
               ),
               child: const LoginViewBody(),
             ),

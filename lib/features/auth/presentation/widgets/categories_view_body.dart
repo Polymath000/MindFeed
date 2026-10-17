@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_text_styles.dart';
-import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
@@ -12,12 +10,8 @@ import 'package:mind_feed/features/auth/presentation/controllers/categories_cubi
 import 'package:mind_feed/features/auth/presentation/widgets/auth_background.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/category_card.dart';
 
-const List<List<String>> categories = [
-  ["Technology", Assets.assetsImagesTechnologyIcon],
-  ["Business", Assets.assetsImagesBusinessIcon],
-  ["Education", Assets.assetsImagesEducationIcon],
-  ["Science", Assets.assetsImagesScienceIcon],
-];
+import 'package:mind_feed/core/constants/category_items.dart';
+export 'package:mind_feed/core/constants/category_items.dart';
 
 class CategoriesViewBody extends StatelessWidget {
   const CategoriesViewBody({
@@ -51,74 +45,76 @@ class CategoriesViewBody extends StatelessWidget {
         return Stack(
           children: [
             authBackground(),
-            SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
-                child: SafeArea(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Choose Your Favorite Categories',
-                        style: AppTextStyles.headlineMedium!.copyWith(
-                          color: AppColors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Select topics you\'re interested in',
-                        style: AppTextStyles.bodyLarge!.copyWith(
-                          color: AppColors.lightGray,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      GridView.count(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 22,
-                        crossAxisSpacing: 22,
-                        childAspectRatio: 1.8,
-                        children: List.generate(
-                          categories.length,
-                          (index) {
-                            final item = categories[index];
-                            final name = item[0];
-                            final isSelected = cubit.selectedCategories.contains(name);
-                            return CategoryCard(
-                              category: item,
-                              isSelected: isSelected,
-                              onTap: () {
-                                cubit.toggleCategory(name);
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-                      CustomButton(
-                        buttonText: isLoading ? 'Saving...' : 'Continue',
-                        onTap: isLoading
-                            ? null
-                            : () {
-                                String? userId;
-                                try {
-                                  userId = Supabase.instance.client.auth.currentUser?.id;
-                                } catch (_) {}
-                                cubit.saveCategories(
-                                  userId: userId,
-                                  currentUser: userEntity,
+            SafeArea(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Choose Your Favorite Categories',
+                            style: AppTextStyles.headlineMedium!.copyWith(
+                              color: AppColors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Select topics you\'re interested in',
+                            style: AppTextStyles.bodyLarge!.copyWith(
+                              color: AppColors.lightGray,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 10,
+                            children: List.generate(
+                              categories.length,
+                              (index) {
+                                final item = categories[index];
+                                final isSelected =
+                                    state.selectedCategories.contains(item.name);
+                                return CategoryCard(
+                                  title: item.name,
+                                  icon: item.icon,
+                                  isSelected: isSelected,
+                                  onTap: () {
+                                    cubit.toggleCategory(item.name);
+                                  },
                                 );
                               },
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 12.0),
+                    child: CustomButton(
+                      buttonText: 'Continue',
+                      isLoading: isLoading,
+                      onTap: isLoading
+                          ? null
+                          : () {
+                              cubit.saveCategories(
+                                currentUser: userEntity,
+                              );
+                            },
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
         );
+
       },
     );
   }

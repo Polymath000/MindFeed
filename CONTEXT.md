@@ -60,3 +60,55 @@ The codebase follows **Feature-First Clean Architecture**:
   - Registered `CheckAppStartupUseCase` and `SplashCubit` in `setupServiceLocator`.
   - Persisted onboarding completion in `NextButton` and `SkipButton` via `SharedPreferencesSingleton`.
   - Added full test suite in `test/splash_test.dart` (15 passing tests total).
+- **Category Onboarding & Catalog Expansion**:
+  - Expanded onboarding and search categories catalog to the 20 official categories matching Supabase seed: `Technology`, `Science`, `Business & Entrepreneurship`, `Personal Development`, `Health & Wellness`, `Education & Learning`, `News & Current Events`, `Politics`, `Finance & Investing`, `Lifestyle`, `Travel & Culture`, `Food & Cooking`, `Sports`, `Entertainment & Movies`, `Books & Literature`, `Art & Design`, `Programming & Software Development`, `History`, `Psychology`, and `Environment & Sustainability`.
+  - Added individual category icon definitions and `getCategoryIcon()` lookup helper in `lib/core/constants/app_icons.dart`.
+  - Completely migrated `CategoryCard` from `SvgPicture` image assets to vector Material `Icon` widgets sourced through `AppIcons`, strictly fulfilling the zero-image guideline.
+  - Extracted `CategoryItem` and `categories` list into a dedicated shared constants file at `lib/core/constants/category_items.dart`.
+  - Redesigned the category selection interface into compact elliptical pill badges `(icon title)` using `BorderRadius.circular(100)` and `Wrap(spacing: 8, runSpacing: 10)`.
+  - Upgraded `CategoryCard` interaction to use `Material` + `InkWell` directly on the pill shape with animated checkmark indicator badge `(icon title ✓)` upon selection, ensuring unmistakable visual feedback and touch responsiveness.
+  - Fixed `CategoriesView` Cubit lifecycle to use `BlocProvider(create: ...)` preventing Cubit recreation on rebuilds, and bound `CategoryCard.isSelected` directly to `state.selectedCategories`.
+  - Pinned the `CustomButton` ("Continue") into a sticky bottom navigation bar wrapped in `SafeArea` inside `CategoriesViewBody`, ensuring it is always visible, accessible, and clickable without scrolling.
+  - Updated widget test harness in `test/features/auth/categories_view_test.dart` to cover the full catalog, selection toggles, and checkmark display.
+- **ValueNotifier State Management Optimization in Auth Forms**:
+  - Replaced multiple unnecessary `setState` calls in `CheckCodeViewBody`, `SendCodeViewBody`, and `PasswordTextField` with `ValueNotifier` and `ValueListenableBuilder`.
+  - Eliminated full widget tree rebuilds during cooldown countdown timer ticks, text entry, obscured password toggles, and form validation updates.
+- **Mandatory Category Onboarding Gate & Deferred Sign-In Persistence**:
+  - Enforced mandatory category selection prior to finalizing sign-in or navigating to the home page (`AppRoutes.main`).
+  - Added `AppConstants.hasCompletedCategoriesKey` (`hasCompletedCategories`) flag in `lib/core/constants/constants.dart`.
+  - Created `CheckUserHasCategoriesUseCase` in `lib/features/profile/domain/usecases/check_user_has_categories_use_case.dart` (registered in `setup_service_locator.dart`), checking local SharedPreferences, Hive cache, and remote profile favorites.
+  - Deferred session and token persistence: `AuthRepoImpl.signup`, `AuthRepoImpl.verifyOtp`, `AuthRepoImpl.login`, and `CheckCodeViewBody` no longer prematurely persist `tokenKey` into `SharedPreferences`.
+  - In `LoginCubit`, verified whether the authenticated user already completed category onboarding. If categories exist, persists session and emits `LoginSuccess()`. If not, emits `LoginRequiresCategories(userEntity)` and routes to `AppRoutes.categories`.
+  - In `SignUpViewBody` and `CheckCodeViewBody`, routed authenticated users directly to `AppRoutes.categories` with `userEntity`.
+  - In `CategoriesCubit.saveCategories`, validated that at least one category is selected for initial onboarding, saved categories locally and synced remotely, and finalized sign-in persistence by setting `hasCompletedCategoriesKey = true`, storing `tokenKey`, and updating cached `UserEntity` in Hive.
+  - In `CheckAppStartupUseCase`, verified `hasCompletedCategories`. If a user starts sign-up or verification but leaves/kills the app before saving categories, the incomplete session/token and Hive user are purged and the app opens to `StartupLogin()` (the user remains signed out).
+  - Cleaned up `hasCompletedCategoriesKey` on logout in `AuthRepoImpl.logout()`.
+  - Added full test coverage in `test/features/auth/category_onboarding_gate_test.dart` and updated `splash_test.dart`, `categories_view_test.dart`, and `email_confirmation_and_auth_flow_test.dart` (all 87 tests passing with zero analyze warnings).
+- **Forgot Password & Change Password Architecture (Supabase Auth)**:
+  - Implemented end-to-end password recovery flow using Supabase Auth and native Dart 3 sealed `ApiResult<T>`.
+  - Added `isPasswordReset` support to `AuthApiSource.verifyOtp`, `AuthApiSource.resendOtp`, `AuthRepository.verifyOtp`, `AuthRepository.resendOtp`, `VerifyOtpUseCase`, and `ResendOtpUseCase` to cleanly switch between `OtpType.signup` and `OtpType.recovery`.
+  - Added `updatePassword({required String newPassword})` to `AuthApiSource`, `AuthRepository`, and `AuthRepoImpl`, securely updating the authenticated user's password via Supabase `auth.updateUser(UserAttributes(password: newPassword))`.
+  - Created domain use cases `ForgetPasswordUseCase` and `UpdatePasswordUseCase` in `lib/features/auth/domain/usecases/`.
+  - Created `CheckCodeArgs` entity with `email` and `isPasswordReset` in `lib/features/auth/domain/entities/check_code_args.dart`, and updated `AppRoutes.checkCode` in `lib/config/routes/app_routes.dart` to support both `CheckCodeArgs` and legacy arguments backwards-compatibly.
+  - Implemented `ForgetPasswordCubit` and `ForgetPasswordState` (sealed class: `ForgetPasswordInitial`, `ForgetPasswordLoading`, `ForgetPasswordSuccess`, `ForgetPasswordFailure`) in `lib/features/auth/presentation/controllers/forget_password_cubit/`.
+  - Implemented `ChangePasswordCubit` and `ChangePasswordState` (sealed class: `ChangePasswordInitial`, `ChangePasswordLoading`, `ChangePasswordSuccess`, `ChangePasswordFailure`) in `lib/features/auth/presentation/controllers/change_password_cubit/`.
+  - Registered use cases and cubits in `setup_service_locator.dart`.
+  - Connected `SendCodeView` and `SendCodeViewBody`: wrapped with `BlocConsumer<ForgetPasswordCubit, ForgetPasswordState>`, validated email, triggered `sendResetInstructions`, and navigated to `AppRoutes.checkCode` with `CheckCodeArgs(email: email, isPasswordReset: true)`.
+  - Connected `CheckCodeView` and `CheckCodeViewBody`: inspected `isPasswordReset` flag; upon successful OTP verification, navigated to `AppRoutes.changePassword` with the recovery email.
+  - Connected `ChangePasswordView` and `ChangePasswordForm`: wrapped with `BlocConsumer<ChangePasswordCubit, ChangePasswordState>`, used `ValueNotifier` for password inputs and form validation, enforced password match checking, called `updatePassword`, and routed back to `AppRoutes.login` with success confirmation.
+  - Wrapped titles in `SendCodeViewBody` and `ChangePasswordViewBody` with `Expanded` to guarantee responsive rendering across varying display densities.
+  - Entire test suite passes (89/89 tests) with zero static analyzer issues.
+- **Button Loading UX & Custom Loading Indicator**:
+  - Eliminated full-screen `ModalProgressHUD` veils and button-hiding conditional replacements across all authentication screens (`LoginForm`, `LoginViewBody`, `SignUpFormBody`, `SignUpViewBody`, `CheckCodeViewBody`, `SendCodeViewBody`, `ChangePasswordForm`, `CategoriesViewBody`).
+  - Redesigned `CustomLoadingIndicator` with custom smooth rotation animation, customizable size, stroke width, and editorial palette defaults (`AppColors.ink` on cream backgrounds).
+  - Enhanced `CustomButton` with an `isLoading` property: when active, the button stays in place without layout shifts or height collapse, disables double submissions, and renders the `CustomLoadingIndicator` centered directly inside the button.
+- **Profile Favorite Categories Resolution & Post-Login Flow**:
+  - Aligned category storage with the Supabase schema: user favorite categories are persisted and read directly from the `profiles` table under the `favorite_categories` column (`text[] DEFAULT '{}'::text[]`).
+  - Updated `ProfileRemoteDataSource.getFavoriteCategories` to resolve the authenticated user UUID (`_client.auth.currentUser?.id`) and query `profiles.favorite_categories` as the single source of truth. When the profile exists and `favorite_categories` is empty (`[]`) or null, it returns `[]` immediately without false-positive fallbacks.
+  - Added `ProfileRemoteDataSource.saveFavoriteCategoriesToProfile` and updated `ProfileRepoImpl.syncFavoriteCategories` to write selections directly to `profiles.favorite_categories`.
+  - In `ProfileRepoImpl.getFavoriteCategories`, set `AppConstants.hasCompletedCategoriesKey = favorites.isNotEmpty` in `SharedPreferencesSingleton`, ensuring any stale local cache is cleared when the remote profile is empty.
+  - In `LoginCubit`, verified category completion using `CheckUserHasCategoriesUseCase`. When `profiles.favorite_categories` is empty (`[]`), `LoginCubit` emits `LoginRequiresCategories` and routes the user to `AppRoutes.categories`. When categories already exist, `LoginCubit` emits `LoginSuccess` directly and navigates to `AppRoutes.main`.
+  - Added unit test suite in `test/features/auth/login_category_check_test.dart` (95/95 tests passing with zero static analyzer issues).
+
+
+

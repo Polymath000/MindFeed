@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -6,6 +5,7 @@ import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/params/login_params.dart';
 import 'package:mind_feed/core/params/signup_params.dart';
+import 'package:mind_feed/features/auth/domain/entities/auth_result_entity.dart';
 import 'package:mind_feed/features/auth/domain/repos/auth_repo.dart';
 import 'package:mind_feed/features/auth/domain/usecases/login_use_case.dart';
 import 'package:mind_feed/features/auth/domain/usecases/signup_use_case.dart';
@@ -21,12 +21,48 @@ class _FakeAuthRepo implements AuthRepository {
       const Success('token');
 
   @override
-  Future<ApiResult<Response>> signup(SignupParams params) async =>
-      Success(Response(requestOptions: RequestOptions(path: '')));
+  Future<ApiResult<AuthResultEntity>> signup(SignupParams params) async =>
+      const Success(
+        AuthResultEntity(
+          hasActiveSession: false,
+          email: 'test@example.com',
+        ),
+      );
+
+  @override
+  Future<ApiResult<String>> verifyOtp({
+    required String email,
+    required String token,
+    bool isPasswordReset = false,
+  }) async =>
+      const Success('token');
+
+  @override
+  Future<ApiResult<void>> resendOtp({
+    required String email,
+    bool isPasswordReset = false,
+  }) async =>
+      const Success(null);
 
   @override
   Future<ApiResult<void>> forgetPassword(String email) async =>
       const Success(null);
+
+  @override
+  Future<ApiResult<void>> updatePassword({
+    required String newPassword,
+  }) async =>
+      const Success(null);
+
+  @override
+  Future<ApiResult<String>> verifyRecoveryOtp({
+    required String email,
+    required String token,
+  }) async =>
+      const Success('test-recovery-token');
+
+  @override
+  Future<ApiResult<void>> logout() async => const Success(null);
 }
 
 void main() {

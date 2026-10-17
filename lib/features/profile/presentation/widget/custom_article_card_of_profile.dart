@@ -1,8 +1,8 @@
-import 'package:mind_feed/core/constants/borders.dart';
-import 'package:mind_feed/core/constants/app_icons.dart';
-import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/config/routes/app_routes.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/borders.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 
 class CustomArticleCardOfProfile extends StatelessWidget {
@@ -10,10 +10,12 @@ class CustomArticleCardOfProfile extends StatelessWidget {
     super.key,
     required this.item,
     this.onDelete,
+    this.onEdit,
   });
 
   final EditorialNewsItem item;
   final VoidCallback? onDelete;
+  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -41,21 +43,45 @@ class CustomArticleCardOfProfile extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: item.badgeColor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      item.badge,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.5,
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: item.badgeColor,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          item.badge,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: item.status == 'published'
+                              ? AppColors.greenDark
+                              : AppColors.charcoal,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          item.status.toUpperCase(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   Text(
                     item.updated,
@@ -95,16 +121,47 @@ class CustomArticleCardOfProfile extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  IconButton(
-                    icon: const Icon(AppIcons.edit, size: 18, color: AppColors.ink),
-                    tooltip: 'Edit article',
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: const Icon(AppIcons.delete, size: 18, color: AppColors.ink),
-                    tooltip: 'Delete article',
-                    onPressed: onDelete,
-                  ),
+                  if (!item.isEditableWithinWindow)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.charcoal,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.borderDark),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(AppIcons.lock, size: 14, color: AppColors.greyText),
+                          SizedBox(width: 4),
+                          Text(
+                            'Archived · locked',
+                            style: TextStyle(
+                              color: AppColors.greyText,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  else ...[
+                    IconButton(
+                      icon: const Icon(AppIcons.edit, size: 18, color: AppColors.ink),
+                      tooltip: 'Edit article',
+                      onPressed: onEdit ??
+                          () => Navigator.pushNamed(
+                                context,
+                                AppRoutes.addArticle,
+                                arguments: item,
+                              ),
+                    ),
+                    IconButton(
+                      icon: const Icon(AppIcons.delete, size: 18, color: AppColors.ink),
+                      tooltip: 'Delete article',
+                      onPressed: onDelete,
+                    ),
+                  ],
                   IconButton(
                     icon: const Icon(AppIcons.iosShareRounded, size: 18, color: AppColors.ink),
                     tooltip: 'Share article',
