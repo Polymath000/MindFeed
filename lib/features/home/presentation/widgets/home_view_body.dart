@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/constants.dart';
@@ -7,7 +10,6 @@ import 'package:mind_feed/core/design/editorial_card_stack.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/features/home/presentation/cubit/home_feed/home_feed_cubit.dart';
 import 'package:mind_feed/features/home/presentation/cubit/home_feed/home_feed_state.dart';
-import 'package:mind_feed/features/home/presentation/widgets/widgets/home_breathing_background.dart';
 import 'package:mind_feed/features/home/presentation/widgets/widgets/home_feed_status_views.dart';
 import 'package:mind_feed/features/home/presentation/widgets/widgets/home_lead_story_section.dart';
 import 'package:mind_feed/features/home/presentation/widgets/widgets/home_masthead_header.dart';
@@ -23,25 +25,12 @@ class HomeViewBody extends StatelessWidget {
     if (cubit != null) {
       return BlocProvider<HomeFeedCubit>.value(
         value: cubit!,
-        child: const _HomeViewScaffold(),
+        child: const _HomeViewBodyContent(),
       );
     }
     return BlocProvider<HomeFeedCubit>(
       create: (_) => HomeFeedCubit()..fetchFeed(),
-      child: const _HomeViewScaffold(),
-    );
-  }
-}
-
-class _HomeViewScaffold extends StatelessWidget {
-  const _HomeViewScaffold();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: AppColors.ink,
-      body: _HomeViewBodyContent(),
-      floatingActionButton: HomeWriteArticleFab(),
+      child: const _HomeViewBodyContent(),
     );
   }
 }
@@ -51,10 +40,14 @@ class _HomeViewBodyContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        const Positioned.fill(child: HomeBreathingBackground()),
-        SafeArea(
+    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
+    return Material(
+      color: Colors.transparent,
+      child: Stack(
+        children: [
+          SafeArea(
+          top: true,
+          bottom: false,
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 600),
@@ -62,22 +55,44 @@ class _HomeViewBodyContent extends StatelessWidget {
                 builder: (context, state) {
                   final cubit = context.read<HomeFeedCubit>();
                   final stories = state.filteredArticles;
+                  final isLoading = state.status == HomeFeedStatus.loading ||
+                      state.status == HomeFeedStatus.initial;
 
                   return ListView(
-                    padding: const EdgeInsets.fromLTRB(AppConstants.page, 12, AppConstants.page, 96),
+                    padding: EdgeInsets.fromLTRB(
+                      AppConstants.page,
+                      12,
+                      AppConstants.page,
+                      152 + bottomInset,
+                    ),
                     children: [
                       const HomeMastheadHeader(),
                       const SizedBox(height: 20),
-                      HomeTopicTabsBar(
-                        topics: state.topics,
-                        selectedTopic: state.selectedTopic,
-                        onTopicSelected: cubit.selectTopic,
+                      Skeletonizer(
+                        enabled: isLoading,
+                        effect: HomeFeedLoadingView.editorialShimmerEffect,
+                        child: HomeTopicTabsBar(
+                          topics: isLoading && state.topics.length <= 1
+                              ? const [
+                                  'All',
+                                  'Category',
+                                  'Category',
+                                  'Category',
+                                ]
+                              : state.topics,
+                          selectedTopic: state.selectedTopic,
+                          onTopicSelected: cubit.selectTopic,
+                        ),
                       ),
                       const SizedBox(height: 18),
-                      if (state.status == HomeFeedStatus.loading || state.status == HomeFeedStatus.initial)
+                      if (isLoading)
                         const HomeFeedLoadingView()
-                      else if (state.status == HomeFeedStatus.error && state.errorMessage != null)
-                        HomeFeedErrorView(errorMessage: state.errorMessage!, onRetry: cubit.fetchFeed)
+                      else if (state.status == HomeFeedStatus.error &&
+                          state.errorMessage != null)
+                        HomeFeedErrorView(
+                          errorMessage: state.errorMessage!,
+                          onRetry: cubit.fetchFeed,
+                        )
                       else if (stories.isEmpty)
                         HomeFeedEmptyView(onRefresh: cubit.fetchFeed)
                       else ...[
@@ -85,19 +100,29 @@ class _HomeViewBodyContent extends StatelessWidget {
                           key: ValueKey(state.selectedTopic),
                           items: stories,
                           height: 570,
-                          onOpenArticle: (item) => Navigator.pushNamed(context, AppRoutes.article, arguments: item),
+                          onOpenArticle: (item) => Navigator.pushNamed(
+                            context,
+                            AppRoutes.article,
+                            arguments: item,
+                          ),
                           onSwipeRight: (item) async {
                             final messenger = ScaffoldMessenger.of(context);
-                            final saved = await cubit.saveArticleOnSwipeRight(item);
+                            final saved = await cubit.saveArticleOnSwipeRight(
+                              item,
+                            );
                             messenger.clearSnackBars();
-                            final isLogged = CurrentUserSession.currentUserId != null && CurrentUserSession.currentUserId!.isNotEmpty;
+                            final isLogged =
+                                CurrentUserSession.currentUserId != null &&
+                                CurrentUserSession.currentUserId!.isNotEmpty;
                             messenger.showSnackBar(
                               SnackBar(
                                 duration: const Duration(seconds: 2),
                                 content: Text(
                                   saved
                                       ? 'Saved "${item.title.replaceAll('\n', ' ')}"'
-                                      : (!isLogged ? 'Sign in to save articles' : 'Failed to save article'),
+                                      : (!isLogged
+                                            ? 'Sign in to save articles'
+                                            : 'Failed to save article'),
                                 ),
                               ),
                             );
@@ -108,7 +133,9 @@ class _HomeViewBodyContent extends StatelessWidget {
                               ..showSnackBar(
                                 SnackBar(
                                   duration: const Duration(seconds: 1),
-                                  content: Text('Skipped: ${item.title.split('\n').first}'),
+                                  content: Text(
+                                    'Skipped: ${item.title.split('\n').first}',
+                                  ),
                                 ),
                               );
                           },
@@ -130,7 +157,11 @@ class _HomeViewBodyContent extends StatelessWidget {
                           ...stories.map(
                             (item) => HomeSecondaryStoryTile(
                               item: item,
-                              onTap: () => Navigator.pushNamed(context, AppRoutes.article, arguments: item),
+                              onTap: () => Navigator.pushNamed(
+                                context,
+                                AppRoutes.article,
+                                arguments: item,
+                              ),
                               onToggleSave: () => cubit.toggleBookmark(item),
                             ),
                           ),
@@ -143,7 +174,13 @@ class _HomeViewBodyContent extends StatelessWidget {
             ),
           ),
         ),
+        Positioned(
+          right: 16,
+          bottom: 88 + bottomInset,
+          child: const HomeWriteArticleFab(),
+        ),
       ],
-    );
-  }
+    ),
+  );
+}
 }

@@ -108,14 +108,14 @@ class ProfileAvatarAndStats extends StatelessWidget {
               },
             ),
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 24),
+              margin: const EdgeInsets.symmetric(horizontal: 16),
               width: 1,
               height: 32,
               color: AppColors.borderDark,
             ),
             _buildStatItem('$followingCount', 'Topics'),
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 24),
+              margin: const EdgeInsets.symmetric(horizontal: 16),
               width: 1,
               height: 32,
               color: AppColors.borderDark,

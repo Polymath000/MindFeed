@@ -1,7 +1,8 @@
-import 'package:mind_feed/core/constants/borders.dart';
-import 'package:mind_feed/core/constants/app_icons.dart';
-import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/borders.dart';
 
 class MainNavigationBar extends StatelessWidget {
   const MainNavigationBar({
@@ -21,12 +22,12 @@ class MainNavigationBar extends StatelessWidget {
         child: Material(
           color: Colors.transparent,
           child: Container(
-            width: 174,
+            width: 250,
             height: 58,
             margin: const EdgeInsets.only(bottom: 12),
             padding: const EdgeInsets.all(5),
             decoration: const BoxDecoration(
-              color: AppColors.ink,
+              color: AppColors.mutedInk,
               borderRadius: AppBorders.control,
               boxShadow: [
                 BoxShadow(
@@ -56,6 +57,12 @@ class MainNavigationBar extends StatelessWidget {
                   label: 'Saved news',
                   active: selectedIndex == 2,
                   onTap: () => onDestinationSelected(2),
+                ),
+                _Nav(
+                  icon: AppIcons.gridViewRounded,
+                  label: 'Profile',
+                  active: selectedIndex == 3,
+                  onTap: () => onDestinationSelected(3),
                 ),
               ],
             ),

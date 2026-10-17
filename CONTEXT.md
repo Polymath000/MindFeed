@@ -120,9 +120,38 @@ The codebase follows **Feature-First Clean Architecture**:
   - Moved the `EditorialIconButton` ("Write article") from `HomeMastheadHeader` to an editorial `FloatingActionButton` (`HomeWriteArticleFab`) positioned at the bottom-right.
   - Styled with editorial theme tokens (`AppColors.cream`, `AppColors.ink`, and `AppBorders.control`).
   - Elevated with a 64px bottom margin to clear the floating `MainNavigationBar` on mobile screens.
-  - Streamlined `HomeMastheadHeader`, giving full horizontal breathing room to the animated app title and leaving only the profile icon button on the right.
   - Wrapped `HomeViewBody` in `_HomeViewScaffold` under `BlocProvider<HomeFeedCubit>` to guarantee clean access to `HomeFeedCubit` on post-creation refresh.
   - Added dedicated widget test in `test/features/home/home_write_article_fab_test.dart` (all 228 tests passing).
-
+- **Navigation Bar Profile Action Integration**:
+  - Moved the `EditorialIconButton` ("Open profile", `AppIcons.gridViewRounded`) from `HomeMastheadHeader` into the floating `MainNavigationBar`.
+  - Expanded `MainNavigationBar` container width from `174` to `228` with four balanced icons (`Home`, `Search`, `Saved news`, and `Open profile`).
+  - Added optional `onProfilePressed` callback in `MainNavigationBar` with fallback default to `Navigator.pushNamed(context, AppRoutes.profile)`.
+  - Fully decluttered `HomeMastheadHeader` down to the brand logo and the expanding `HomeMastheadAnimatedTitle`, removing all top action buttons and unused imports.
+  - Updated widget tests in `test/widget_test.dart` to verify `Open profile` in navigation bar and write article FAB in home view (all 228 tests passing).
+- **Home Page Skeletonizer Loading State (`skeletonizer`)**:
+  - Added `skeletonizer` (`^3.0.0`) to `pubspec.yaml`.
+  - Replaced `CircularProgressIndicator` in `HomeFeedLoadingView` with `Skeletonizer` wrapping placeholder `EditorialCardStack` and `HomeSecondaryStoryTile` items styled with warm editorial shimmer (`ShimmerEffect(baseColor: AppColors.greyBrown, highlightColor: AppColors.creamDark)`).
+  - Wrapped `HomeTopicTabsBar` in `HomeViewBody` with `Skeletonizer(enabled: isLoading)` so topic filter pills also shimmer during initial/loading states.
+- **Navigation Bar Profile Tab Integration & In-Stack View**:
+  - Integrated `ProfileView` directly into `MainView`'s `IndexedStack` at destination tab index 3 alongside Home (0), Search (1), and Saved News (2).
+  - Configured `MainNavigationBar` with 4 destination tabs (`Home`, `Search`, `Saved news`, and `Profile`) with active pill indicator styling and instant switching without pushing new routes.
+  - Made the back button in `ProfileAppBar` conditional on `Navigator.canPop(context)` so it automatically hides when viewed within the bottom navigation bar and displays when pushed standalone.
+  - Resolved `RenderFlex` horizontal overflow issues on compact mobile screens:
+    - In `lib/features/profile/presentation/widget/user_articles.dart`, replaced rigid `Spacer()` with `Expanded` title truncation and balanced spacing.
+    - In `lib/features/profile/presentation/widget/profile_avatar_and_stats.dart`, reduced stats divider horizontal margins from 24px to 16px to prevent 1.3px overflow.
+    - In `lib/features/home/presentation/widgets/widgets/home_lead_story_section.dart`, replaced `Row` with `Wrap` in `HomeSecondaryStoryTile` badge and reading time row to prevent 4.5px overflow on compact devices.
+  - Updated test suite (`test/widget_test.dart`) to test 4-destination navigation and verified all 229 tests pass.
+- **HomeTopicTabsBar User-Selected Categories**:
+  - Updated `HomeFeedState` default `topics` to `const ['All']` and enhanced `filteredArticles` matching to support multi-word user-selected category names (e.g. `Artificial Intelligence`, `Health & Wellness`) as well as keyword/tag matching.
+  - Updated `HomeFeedCubit` to initialize `topics` from cached `CurrentUserSession.resolveCachedUserEntity()?.favoriteCategories` (`['All', ...cachedCategories]`) and fetch the user's selected categories via `ProfileRepository.getFavoriteCategories` (supporting both `profiles.favorite_categories` `{'name': ..., 'category_name': ...}` maps and junction `{'categories': {'name': ...}}` maps).
+  - Updated `HomeTopicTabsBar` in `lib/features/home/presentation/widgets/widgets/home_masthead_header.dart` so `'All'` is always guaranteed to be the first tab followed by the user's selected categories (`['All', ...selectedCategories]`).
+- **Floating Navigation Bar & High-Performance Static Background**:
+  - Eliminated the continuous background animation (`HomeBreathingBackground`) which ran 60fps tickers and multiple full-screen radial gradient repaints on every frame, eliminating CPU/GPU overhead and battery drain.
+  - Replaced it with a high-performance static editorial dark background (`AppColors.ink`) across `MainView` and all tabs.
+  - Eliminated the solid dark rectangular background that previously obscured the bottom of the screen behind the floating `MainNavigationBar`.
+  - Replaced nested `Scaffold` implementations in `SearchView`, `ArticlesSaved`, and `ProfileView` with transparent `Material(color: Colors.transparent)` shells.
+  - Set `SafeArea(top: true, bottom: false)` across all tabs so background and scrolling content extend all the way behind the floating navigation pill to the bottom device edge.
+  - Updated scroll views and list view padding across all tabs (e.g. `EdgeInsets.fromLTRB(20, 14, 20, 100 + bottomInset)`) so items scroll smoothly behind the floating bar without being obscured at the bottom of the scroll view.
+  - Verified with `flutter test` (all 229 tests passing with zero static analyzer issues) and verified visually on active emulator via screen captures across all 4 tabs.
 
 

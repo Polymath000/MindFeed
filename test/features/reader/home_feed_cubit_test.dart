@@ -173,12 +173,16 @@ void main() {
     cubit.close();
   });
 
-  test('fetchFeed resolves dynamic favorite categories for logged in user', () async {
+  test('fetchFeed resolves dynamic favorite categories for logged in user with All first', () async {
     fakeProfileRepo.favoriteCategories = [
+      {
+        'name': 'Technology',
+        'category_name': 'Technology',
+      },
       {
         'category_id': 'cat_eco',
         'categories': {'name': 'Ecology'},
-      }
+      },
     ];
 
     final cubit = HomeFeedCubit(
@@ -190,7 +194,15 @@ void main() {
     await cubit.fetchFeed();
 
     expect(cubit.state.status, equals(HomeFeedStatus.success));
-    expect(cubit.state.topics, contains('Ecology'));
+    expect(
+      cubit.state.topics,
+      equals(['All', 'Technology', 'Ecology']),
+    );
+    expect(cubit.state.topics.first, equals('All'));
+
+    cubit.selectTopic('Technology');
+    expect(cubit.state.filteredArticles.length, equals(1));
+    expect(cubit.state.filteredArticles.first.id, equals('art_1'));
 
     cubit.close();
   });

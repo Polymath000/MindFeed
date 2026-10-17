@@ -13,25 +13,22 @@ class HomeWriteArticleFab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 64),
-      child: FloatingActionButton(
-        heroTag: 'home_write_article_fab',
-        tooltip: 'Write article',
-        backgroundColor: AppColors.cream,
-        foregroundColor: AppColors.ink,
-        elevation: 4,
-        shape: const RoundedRectangleBorder(borderRadius: AppBorders.control),
-        onPressed: () async {
-          await Navigator.pushNamed(context, AppRoutes.addArticle);
-          if (context.mounted) {
-            try {
-              context.read<HomeFeedCubit>().fetchFeed();
-            } catch (_) {}
-          }
-        },
-        child: const Icon(AppIcons.edit, size: 22),
-      ),
+    return FloatingActionButton(
+      heroTag: 'home_write_article_fab',
+      tooltip: 'Write article',
+      backgroundColor: AppColors.cream,
+      foregroundColor: AppColors.ink,
+      elevation: 4,
+      shape: const RoundedRectangleBorder(borderRadius: AppBorders.control),
+      onPressed: () async {
+        await Navigator.pushNamed(context, AppRoutes.addArticle);
+        if (context.mounted) {
+          try {
+            context.read<HomeFeedCubit>().fetchFeed();
+          } catch (_) {}
+        }
+      },
+      child: const Icon(AppIcons.edit, size: 22),
     );
   }
 }

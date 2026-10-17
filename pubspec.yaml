@@ -35,6 +35,7 @@ dependencies:
   markdown_widget: ^2.3.2+8
   modal_progress_hud_nsn: ^0.5.1
   shared_preferences: ^2.5.3
+  skeletonizer: ^3.0.0
   supabase_flutter: ^2.18.2
 
 dev_dependencies:

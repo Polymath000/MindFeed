@@ -78,19 +78,27 @@ class _UserArticlesBody extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Text(
-                  'My Articles',
-                  style: TextStyle(color: AppColors.softCream, fontSize: 22, fontWeight: FontWeight.w800, letterSpacing: -0.6),
+                const Expanded(
+                  child: Text(
+                    'My Articles',
+                    style: TextStyle(
+                      color: AppColors.softCream,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.6,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-                const Spacer(),
                 if (showBadge) ...[
+                  const SizedBox(width: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(color: AppColors.charcoal, borderRadius: BorderRadius.circular(16), border: Border.all(color: AppColors.borderDark)),
                     child: Text(_buildCountLabel(publishedCount, draftCount), style: const TextStyle(color: AppColors.cream, fontSize: 12, fontWeight: FontWeight.w700)),
                   ),
-                  const SizedBox(width: 8),
                 ],
+                const SizedBox(width: 8),
                 TextButton.icon(
                   onPressed: () => _openAddArticle(context),
                   icon: const Icon(Icons.edit_outlined, size: 16, color: AppColors.cream),
@@ -122,7 +130,7 @@ class _UserArticlesBody extends StatelessWidget {
                   onDelete: () => _handleDelete(context, item),
                 ),
               ),
-            const SizedBox(height: 80),
+            SizedBox(height: 100 + MediaQuery.viewPaddingOf(context).bottom),
           ],
         );
       },

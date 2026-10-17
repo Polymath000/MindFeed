@@ -54,22 +54,40 @@ class _ArticlesSavedContentState extends State<_ArticlesSavedContent> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppColors.ink,
-    body: SafeArea(
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 600),
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 96),
-            children: [
-              Row(
-                children: [
-                  EditorialIconButton(icon: AppIcons.arrowBackRounded, label: 'Back', onPressed: () => Navigator.maybePop(context)),
-                  const SizedBox(width: 12),
-                  const Text('Saved News', style: TextStyle(color: AppColors.softCream, fontSize: 25, fontWeight: FontWeight.w800, letterSpacing: -0.6)),
-                ],
-              ),
+  Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
+    return Material(
+      color: Colors.transparent,
+      child: SafeArea(
+        top: true,
+        bottom: false,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 600),
+            child: ListView(
+              padding: EdgeInsets.fromLTRB(20, 12, 20, 100 + bottomInset),
+              children: [
+                Row(
+                  children: [
+                    if (Navigator.canPop(context)) ...[
+                      EditorialIconButton(
+                        icon: AppIcons.arrowBackRounded,
+                        label: 'Back',
+                        onPressed: () => Navigator.maybePop(context),
+                      ),
+                      const SizedBox(width: 12),
+                    ],
+                    const Text(
+                      'Saved News',
+                      style: TextStyle(
+                        color: AppColors.softCream,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.6,
+                      ),
+                    ),
+                  ],
+                ),
               CustomSearchBar(
                 controller: _searchController,
                 semanticLabel: 'Search saved news',
@@ -134,5 +152,6 @@ class _ArticlesSavedContentState extends State<_ArticlesSavedContent> {
         ),
       ),
     ),
-  );
+    );
+  }
 }

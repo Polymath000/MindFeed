@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import 'package:skeletonizer/skeletonizer.dart';
+
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_card.dart';
@@ -46,8 +49,9 @@ class HomeSecondaryStoryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isSkeleton = Skeletonizer.maybeOf(context)?.enabled ?? false;
     return InkWell(
-      onTap: onTap,
+      onTap: isSkeleton ? null : onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 6),
@@ -63,7 +67,9 @@ class HomeSecondaryStoryTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  Wrap(
+                    spacing: 8,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Text(
                         item.badge,
@@ -73,7 +79,6 @@ class HomeSecondaryStoryTile extends StatelessWidget {
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-                      const SizedBox(width: 8),
                       Text(
                         '${item.readingTimeMinutes} min read',
                         style: const TextStyle(

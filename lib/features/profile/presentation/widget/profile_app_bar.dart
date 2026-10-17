@@ -12,17 +12,19 @@ class ProfileAppBar extends StatelessWidget {
     return SliverAppBar(
       automaticallyImplyLeading: false,
       pinned: true,
-      backgroundColor: AppColors.ink,
+      backgroundColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,
       centerTitle: true,
-      leading: Padding(
-        padding: const EdgeInsets.only(left: 16.0),
-        child: EditorialIconButton(
-          icon: AppIcons.arrowBackRounded,
-          label: 'Back',
-          onPressed: () => Navigator.maybePop(context),
-        ),
-      ),
+      leading: Navigator.canPop(context)
+          ? Padding(
+              padding: const EdgeInsets.only(left: 16.0),
+              child: EditorialIconButton(
+                icon: AppIcons.arrowBackRounded,
+                label: 'Back',
+                onPressed: () => Navigator.maybePop(context),
+              ),
+            )
+          : null,
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 16.0),

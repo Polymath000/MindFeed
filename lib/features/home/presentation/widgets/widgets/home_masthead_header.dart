@@ -3,12 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
-import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/constants/constants.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
 
 class HomeMastheadHeader extends StatelessWidget {
   const HomeMastheadHeader({super.key});
@@ -17,45 +14,33 @@ class HomeMastheadHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: Row(
-            children: [
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.white.withAlpha(45),
-                      blurRadius: 12,
-                      spreadRadius: 1,
-                    ),
-                    BoxShadow(
-                      color: Colors.black.withAlpha(70),
-                      blurRadius: 8,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                padding: const EdgeInsets.all(5),
-                child: Image.asset(
-                  Assets.assetsImagesMindFeedLogo,
-                  fit: BoxFit.contain,
-                ),
+        Container(
+          width: 42,
+          height: 42,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withAlpha(45),
+                blurRadius: 12,
+                spreadRadius: 1,
               ),
-              const SizedBox(width: 12),
-              const Expanded(child: HomeMastheadAnimatedTitle()),
+              BoxShadow(
+                color: Colors.black.withAlpha(70),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
+              ),
             ],
           ),
+          padding: const EdgeInsets.all(5),
+          child: Image.asset(
+            Assets.assetsImagesMindFeedLogo,
+            fit: BoxFit.contain,
+          ),
         ),
-        const SizedBox(width: 8),
-        EditorialIconButton(
-          icon: AppIcons.gridViewRounded,
-          label: 'Open profile',
-          onPressed: () => Navigator.pushNamed(context, AppRoutes.profile),
-        ),
+        const SizedBox(width: 12),
+        const Expanded(child: HomeMastheadAnimatedTitle()),
       ],
     );
   }
@@ -117,11 +102,18 @@ class HomeTopicTabsBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final displayTopics = <String>[
+      'All',
+      ...topics
+          .map((t) => t.trim())
+          .where((t) => t.isNotEmpty && t.toLowerCase() != 'all'),
+    ];
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       physics: const BouncingScrollPhysics(),
       child: Row(
-        children: topics.map((topic) {
+        children: displayTopics.map((topic) {
           final isSelected = topic == selectedTopic;
           return Padding(
             padding: const EdgeInsets.only(right: 10),

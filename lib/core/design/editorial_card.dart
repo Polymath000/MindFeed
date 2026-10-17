@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import 'package:skeletonizer/skeletonizer.dart';
+
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/borders.dart';
@@ -24,76 +27,78 @@ class EditorialCard extends StatelessWidget {
   final bool showActions;
 
   @override
-  Widget build(BuildContext context) => Semantics(
-    button: true,
-    label: 'Read ${item.title.replaceAll('\n', ' ')}',
-    child: InkWell(
-      onTap: onOpen,
-      borderRadius: AppBorders.card,
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
-        decoration: BoxDecoration(
-          color: item.color,
-          borderRadius: AppBorders.card,
-          boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 16, offset: Offset(0, 6))],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Wrap(
-              spacing: 8,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(color: item.badgeColor, borderRadius: BorderRadius.circular(16)),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (item.isLive) ...[
-                        Container(
-                          width: 6,
-                          height: 6,
-                          margin: const EdgeInsets.only(right: 6),
-                          decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                        ),
+  Widget build(BuildContext context) {
+    final isSkeleton = Skeletonizer.maybeOf(context)?.enabled ?? false;
+    return Semantics(
+      button: !isSkeleton,
+      label: 'Read ${item.title.replaceAll('\n', ' ')}',
+      child: InkWell(
+        onTap: isSkeleton ? null : onOpen,
+        borderRadius: AppBorders.card,
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
+          decoration: BoxDecoration(
+            color: item.color,
+            borderRadius: AppBorders.card,
+            boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 16, offset: Offset(0, 6))],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Wrap(
+                spacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(color: item.badgeColor, borderRadius: BorderRadius.circular(16)),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (item.isLive) ...[
+                          Container(
+                            width: 6,
+                            height: 6,
+                            margin: const EdgeInsets.only(right: 6),
+                            decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                          ),
+                        ],
+                        Text(item.badge, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 0.6)),
                       ],
-                      Text(item.badge, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 0.6)),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(12)),
-                  child: Text('${item.readingTimeMinutes} MIN READ', style: const TextStyle(color: AppColors.ink, fontSize: 9.5, fontWeight: FontWeight.w700, letterSpacing: 0.4)),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              item.title,
-              style: const TextStyle(fontSize: 26, height: 1.15, fontWeight: FontWeight.w800, letterSpacing: -0.9, color: AppColors.ink),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 8),
-            Text(item.updated, style: const TextStyle(color: AppColors.mutedInk, fontSize: 12, fontWeight: FontWeight.w500)),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                ClipOval(
-                  child: Image.asset(
-                    item.authorAvatar,
-                    width: 38,
-                    height: 38,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) => const CircleAvatar(
-                      radius: 19,
-                      backgroundColor: AppColors.blush,
-                      child: Icon(AppIcons.personAlt, color: AppColors.ink),
                     ),
                   ),
-                ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(12)),
+                    child: Text('${item.readingTimeMinutes} MIN READ', style: const TextStyle(color: AppColors.ink, fontSize: 9.5, fontWeight: FontWeight.w700, letterSpacing: 0.4)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                item.title,
+                style: const TextStyle(fontSize: 26, height: 1.15, fontWeight: FontWeight.w800, letterSpacing: -0.9, color: AppColors.ink),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 8),
+              Text(item.updated, style: const TextStyle(color: AppColors.mutedInk, fontSize: 12, fontWeight: FontWeight.w500)),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  ClipOval(
+                    child: Image.asset(
+                      item.authorAvatar,
+                      width: 38,
+                      height: 38,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => const CircleAvatar(
+                        radius: 19,
+                        backgroundColor: AppColors.blush,
+                        child: Icon(AppIcons.personAlt, color: AppColors.ink),
+                      ),
+                    ),
+                  ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Column(
@@ -153,4 +158,5 @@ class EditorialCard extends StatelessWidget {
       ),
     ),
   );
+  }
 }
