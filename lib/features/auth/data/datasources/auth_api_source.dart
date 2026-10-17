@@ -1,11 +1,12 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/params/login_params.dart';
 import 'package:mind_feed/core/params/signup_params.dart';
 import 'package:mind_feed/features/auth/domain/entities/auth_result_entity.dart';
 
 class AuthApiSource {
   static const String authConfirmRedirectUrl =
-      'https://tsqruoqiajkbrdhprfxa.supabase.co/functions/v1/auth-confirm';
+      AppConstants.authConfirmRedirectUrl;
 
   final SupabaseClient? _supabaseClient;
 
@@ -108,6 +109,26 @@ class AuthApiSource {
     if (response.user == null) {
       throw const AuthException('Failed to update password');
     }
+  }
+
+  Future<String> verifyRecoveryOtp({
+    required String email,
+    required String token,
+  }) async {
+    final response = await _client.auth.verifyOTP(
+      email: email,
+      token: token,
+      type: OtpType.recovery,
+    );
+
+    final accessToken = response.session?.accessToken;
+    if (accessToken == null || accessToken.isEmpty) {
+      throw const AuthException(
+        'Recovery verification succeeded but no session was established',
+      );
+    }
+
+    return accessToken;
   }
 
   User? get currentUser => _client.auth.currentUser;

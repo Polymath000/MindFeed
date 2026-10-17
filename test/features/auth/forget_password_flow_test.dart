@@ -57,6 +57,13 @@ class _FakeAuthRepository implements AuthRepository {
       const Success(null);
 
   @override
+  Future<ApiResult<String>> verifyRecoveryOtp({
+    required String email,
+    required String token,
+  }) async =>
+      const Success('token');
+
+  @override
   Future<ApiResult<void>> logout() async => const Success(null);
 }
 
@@ -268,7 +275,6 @@ void main() {
       final passwordFields = find.byType(PasswordTextField);
       expect(passwordFields, findsNWidgets(2));
 
-      // Enter mismatched passwords
       await tester.enterText(
         find.descendant(of: passwordFields.at(0), matching: find.byType(EditableText)),
         'Password123!',

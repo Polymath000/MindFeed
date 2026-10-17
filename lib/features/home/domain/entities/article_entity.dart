@@ -26,6 +26,9 @@ class ArticleEntity extends Equatable {
   final int likesCount;
   final int savesCount;
   final int starCount;
+  final double authorRatingAvg;
+  final int authorRatingCount;
+  final int userAuthorStars;
   final int readingTimeMinutes;
   final String status;
   final List<String> tags;
@@ -58,6 +61,9 @@ class ArticleEntity extends Equatable {
     this.likesCount = 0,
     this.savesCount = 0,
     this.starCount = 0,
+    this.authorRatingAvg = 0.0,
+    this.authorRatingCount = 0,
+    this.userAuthorStars = 0,
     this.readingTimeMinutes = 3,
     this.status = 'draft',
     this.tags = const [],
@@ -84,8 +90,23 @@ class ArticleEntity extends Equatable {
       excerpt: excerpt,
       color: _parseHexColor(cardColor, defaultColor: AppColors.cream),
       isLive: isLive,
+      categoryId: categoryId,
+      categorySlug: categorySlug,
+      tags: tags,
+      content: content,
+      coverImageUrl: coverImageUrl ?? heroImageUrl,
+      authorId: authorId,
+      publishedAt: publishedAt,
+      readingTimeMinutes: readingTimeMinutes,
+      status: status,
+      starCount: starCount,
+      isStarred: isStarred,
       isLiked: isLiked,
       isSaved: isSaved,
+      likesCount: likesCount,
+      authorRatingAvg: authorRatingAvg,
+      authorRatingCount: authorRatingCount,
+      userAuthorStars: userAuthorStars,
     );
   }
 
@@ -111,6 +132,9 @@ class ArticleEntity extends Equatable {
     int? likesCount,
     int? savesCount,
     int? starCount,
+    double? authorRatingAvg,
+    int? authorRatingCount,
+    int? userAuthorStars,
     int? readingTimeMinutes,
     String? status,
     List<String>? tags,
@@ -143,6 +167,9 @@ class ArticleEntity extends Equatable {
       likesCount: likesCount ?? this.likesCount,
       savesCount: savesCount ?? this.savesCount,
       starCount: starCount ?? this.starCount,
+      authorRatingAvg: authorRatingAvg ?? this.authorRatingAvg,
+      authorRatingCount: authorRatingCount ?? this.authorRatingCount,
+      userAuthorStars: userAuthorStars ?? this.userAuthorStars,
       readingTimeMinutes: readingTimeMinutes ?? this.readingTimeMinutes,
       status: status ?? this.status,
       tags: tags ?? this.tags,
@@ -212,6 +239,9 @@ class ArticleEntity extends Equatable {
         likesCount,
         savesCount,
         starCount,
+        authorRatingAvg,
+        authorRatingCount,
+        userAuthorStars,
         readingTimeMinutes,
         status,
         tags,

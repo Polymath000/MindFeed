@@ -274,49 +274,39 @@ void main() {
   });
 
   group('Acceptance Criterion 7: Edge Function Callback Verification', () {
-    const baseUrl = 'https://tsqruoqiajkbrdhprfxa.supabase.co/functions/v1/auth-confirm';
+    const baseUrl = AppConstants.authConfirmRedirectUrl;
 
-    Future<http.Response> getRedirectResponse(String url) async {
+    Future<http.StreamedResponse> getWithoutRedirect(String url) async {
+      final request = http.Request('GET', Uri.parse(url))..followRedirects = false;
       final client = http.Client();
-      try {
-        final request = http.Request('GET', Uri.parse(url))..followRedirects = false;
-        final streamed = await client.send(request);
-        return await http.Response.fromStream(streamed);
-      } finally {
-        client.close();
-      }
+      return await client.send(request);
     }
 
-    test('bare endpoint URL displays neutral fallback state without false success', () async {
-      final response = await getRedirectResponse(baseUrl);
-      expect([200, 302], contains(response.statusCode));
-      if (response.statusCode == 302) {
-        expect(response.headers['location'], contains('mindfeed://login-callback'));
-      }
+    test('bare endpoint URL redirects to login-callback', () async {
+      final response = await getWithoutRedirect(baseUrl);
+      expect(response.statusCode, equals(302));
+      expect(response.headers['location'], equals('mindfeed://login-callback'));
     });
 
-    test('valid-shaped callback displays success state and preserves callback code', () async {
-      final response = await getRedirectResponse('$baseUrl?code=test-code-1234');
-      expect([200, 302], contains(response.statusCode));
-      if (response.statusCode == 302) {
-        expect(response.headers['location'], contains('code=test-code-1234'));
-      }
+    test('valid-shaped callback redirects and preserves callback code', () async {
+      final response = await getWithoutRedirect('$baseUrl?code=test-code-1234');
+      expect(response.statusCode, equals(302));
+      expect(response.headers['location'], equals('mindfeed://login-callback?code=test-code-1234'));
     });
 
-    test('error-only callback displays error state', () async {
-      final response = await getRedirectResponse('$baseUrl?error=access_denied&error_description=Link+expired');
-      expect([200, 302], contains(response.statusCode));
-      if (response.statusCode == 302) {
-        expect(response.headers['location'], contains('error=access_denied'));
-      }
+    test('error-only callback redirects and preserves error state', () async {
+      final response = await getWithoutRedirect('$baseUrl?error=access_denied&error_description=Link+expired');
+      expect(response.statusCode, equals(302));
+      expect(response.headers['location'], contains('mindfeed://login-callback'));
+      expect(response.headers['location'], contains('error=access_denied'));
+      expect(response.headers['location'], contains('Link+expired'));
     });
 
-    test('callback containing error_code without error displays error state', () async {
-      final response = await getRedirectResponse('$baseUrl?error_code=otp_expired&error_description=Code+expired');
-      expect([200, 302], contains(response.statusCode));
-      if (response.statusCode == 302) {
-        expect(response.headers['location'], contains('error_code=otp_expired'));
-      }
+    test('callback containing error_code redirects and preserves error description', () async {
+      final response = await getWithoutRedirect('$baseUrl?error_code=otp_expired&error_description=Code+expired');
+      expect(response.statusCode, equals(302));
+      expect(response.headers['location'], contains('mindfeed://login-callback'));
+      expect(response.headers['location'], contains('error_code=otp_expired'));
     });
   });
 }

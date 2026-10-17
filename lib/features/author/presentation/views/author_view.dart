@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_mock_data.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_home_feed_use_case.dart';
@@ -48,10 +47,7 @@ class _AuthorViewState extends State<AuthorView> {
 
   @override
   Widget build(BuildContext context) {
-    final authorArticles = _authorStories ??
-        EditorialMockData.stories
-            .where((s) => s.authorName == 'Wade Warren')
-            .toList();
+    final authorArticles = _authorStories ?? const <EditorialNewsItem>[];
 
     return Scaffold(
       backgroundColor: AppColors.ink,

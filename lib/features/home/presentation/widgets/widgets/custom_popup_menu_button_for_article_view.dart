@@ -14,15 +14,7 @@ class CustomPopupMenuButtonForArticleView extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupMenuButton(
       icon: MoreVertIcon(),
-      onSelected: (value) {
-        if (value == 'download') {
-          // TODO: handle download action
-        } else if (value == 'save') {
-          // TODO: handle save action
-        } else if (value == 'share') {
-          // TODO: handle share action
-        }
-      },
+      onSelected: (value) {},
       itemBuilder: (context) => [
         PopupMenuItem(
           value: 'Display Settings',
@@ -74,7 +66,7 @@ class CustomPopupMenuButtonForArticleView extends StatelessWidget {
               Icon(
                 AppIcons.save,
                 size: 20,
-              ), //TODO: change to solidBookmark if it is saved
+              ),
               SizedBox(width: 8),
               Text('Save'),
             ],

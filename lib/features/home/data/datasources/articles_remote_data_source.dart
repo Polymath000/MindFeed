@@ -2,6 +2,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mind_feed/features/home/data/models/article_model.dart';
 import 'package:mind_feed/features/home/data/models/category_model.dart';
 import 'package:mind_feed/features/home/data/models/tag_model.dart';
+import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
 
 abstract class ArticlesRemoteDataSource {
   Future<List<ArticleModel>> getHomeFeed({
@@ -30,6 +31,20 @@ abstract class ArticlesRemoteDataSource {
   Future<void> starArticle(String articleId, String userId);
   Future<void> unstarArticle(String articleId, String userId);
   Future<bool> isArticleStarred(String articleId, String userId);
+  Future<void> likeArticle(String articleId, String userId);
+  Future<void> unlikeArticle(String articleId, String userId);
+  Future<bool> isArticleLiked(String articleId, String userId);
+  Future<AuthorRatingSummary> rateAuthor({
+    required String authorKey,
+    required int stars,
+    String? authorId,
+    String authorName = 'Editorial Staff',
+  });
+  Future<AuthorRatingSummary> getAuthorRatingSummary({
+    required String authorKey,
+    String? authorId,
+    String authorName = 'Editorial Staff',
+  });
   Future<void> saveBookmark(String articleId, String userId);
   Future<void> removeBookmark(String articleId, String userId);
   Future<List<ArticleModel>> getSavedArticles(String userId);
@@ -44,6 +59,7 @@ abstract class ArticlesRemoteDataSource {
 }
 
 class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
+  static const String _articleSelectQuery = '*';
   final SupabaseClient? _supabaseClient;
 
   ArticlesRemoteDataSourceImpl({SupabaseClient? supabaseClient})
@@ -221,11 +237,85 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
   }
 
   @override
+  Future<void> likeArticle(String articleId, String userId) async {
+    await _client.from('article_likes').upsert(
+      {
+        'user_id': userId,
+        'article_id': articleId,
+      },
+      onConflict: 'user_id,article_id',
+    );
+  }
+
+  @override
+  Future<void> unlikeArticle(String articleId, String userId) async {
+    await _client
+        .from('article_likes')
+        .delete()
+        .match({'user_id': userId, 'article_id': articleId});
+  }
+
+  @override
+  Future<bool> isArticleLiked(String articleId, String userId) async {
+    final response = await _client
+        .from('article_likes')
+        .select('article_id')
+        .eq('user_id', userId)
+        .eq('article_id', articleId)
+        .maybeSingle();
+
+    return response != null;
+  }
+
+  @override
+  Future<AuthorRatingSummary> rateAuthor({
+    required String authorKey,
+    required int stars,
+    String? authorId,
+    String authorName = 'Editorial Staff',
+  }) async {
+    final res = await _client.rpc(
+      'rate_author',
+      params: {
+        'p_author_key': authorKey,
+        'p_stars': stars,
+        'p_author_id': (authorId != null && authorId.trim().isNotEmpty)
+            ? authorId.trim()
+            : null,
+        'p_author_name': authorName,
+      },
+    );
+    return AuthorRatingSummary.fromJson(Map<String, dynamic>.from(res as Map));
+  }
+
+  @override
+  Future<AuthorRatingSummary> getAuthorRatingSummary({
+    required String authorKey,
+    String? authorId,
+    String authorName = 'Editorial Staff',
+  }) async {
+    final res = await _client.rpc(
+      'get_author_rating_summary',
+      params: {
+        'p_author_key': authorKey,
+        'p_author_id': (authorId != null && authorId.trim().isNotEmpty)
+            ? authorId.trim()
+            : null,
+        'p_author_name': authorName,
+      },
+    );
+    return AuthorRatingSummary.fromJson(Map<String, dynamic>.from(res as Map));
+  }
+
+  @override
   Future<void> saveBookmark(String articleId, String userId) async {
-    await _client.from('saved_articles').insert({
-      'user_id': userId,
-      'article_id': articleId,
-    });
+    await _client.from('saved_articles').upsert(
+      {
+        'user_id': userId,
+        'article_id': articleId,
+      },
+      onConflict: 'user_id,article_id',
+    );
   }
 
   @override
@@ -274,14 +364,27 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
     payload['status'] = 'draft';
     payload.remove('published_at');
     payload.remove('star_count');
+    payload.remove('likes_count');
+    payload.remove('author_rating_avg');
+    payload.remove('author_rating_count');
 
-    final response = await _client
-        .from('articles')
-        .insert(payload)
-        .select()
-        .single();
+    try {
+      final response = await _client
+          .from('articles')
+          .insert(payload)
+          .select(_articleSelectQuery)
+          .single();
 
-    return ArticleModel.fromJson(Map<String, dynamic>.from(response));
+      return ArticleModel.fromJson(Map<String, dynamic>.from(response));
+    } catch (_) {
+      final response = await _client
+          .from('articles')
+          .insert(payload)
+          .select()
+          .single();
+
+      return ArticleModel.fromJson(Map<String, dynamic>.from(response));
+    }
   }
 
   @override
@@ -304,6 +407,9 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
     final payload = Map<String, dynamic>.from(updates);
     payload.remove('published_at');
     payload.remove('star_count');
+    payload.remove('likes_count');
+    payload.remove('author_rating_avg');
+    payload.remove('author_rating_count');
 
     final response = await _client
         .from('articles')

@@ -5,6 +5,7 @@ import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/params/login_params.dart';
 import 'package:mind_feed/core/params/signup_params.dart';
+import 'package:mind_feed/features/auth/domain/entities/auth_result_entity.dart';
 import 'package:mind_feed/features/auth/domain/repos/auth_repo.dart';
 import 'package:mind_feed/features/auth/domain/usecases/login_use_case.dart';
 import 'package:mind_feed/features/auth/domain/usecases/signup_use_case.dart';
@@ -13,8 +14,6 @@ import 'package:mind_feed/features/auth/presentation/controllers/signup_cubit/si
 import 'package:mind_feed/features/auth/presentation/widgets/login_form.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/password_text_field.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/sign_up_form_body.dart';
-
-import 'package:mind_feed/features/auth/domain/entities/auth_result_entity.dart';
 
 class _FakeAuthRepo implements AuthRepository {
   @override
@@ -54,6 +53,13 @@ class _FakeAuthRepo implements AuthRepository {
     required String newPassword,
   }) async =>
       const Success(null);
+
+  @override
+  Future<ApiResult<String>> verifyRecoveryOtp({
+    required String email,
+    required String token,
+  }) async =>
+      const Success('test-recovery-token');
 
   @override
   Future<ApiResult<void>> logout() async => const Success(null);

@@ -18,6 +18,7 @@ import 'package:mind_feed/features/auth/domain/usecases/resend_otp_use_case.dart
 import 'package:mind_feed/features/auth/domain/usecases/signup_use_case.dart';
 import 'package:mind_feed/features/auth/domain/usecases/update_password_use_case.dart';
 import 'package:mind_feed/features/auth/domain/usecases/verify_otp_use_case.dart';
+import 'package:mind_feed/features/auth/domain/usecases/verify_recovery_otp_use_case.dart';
 import 'package:mind_feed/features/auth/presentation/controllers/change_password_cubit/change_password_cubit.dart';
 import 'package:mind_feed/features/auth/presentation/controllers/forget_password_cubit/forget_password_cubit.dart';
 import 'package:mind_feed/features/home/data/datasources/articles_local_data_source.dart';
@@ -38,6 +39,10 @@ import 'package:mind_feed/features/home/domain/usecases/save_draft_use_case.dart
 import 'package:mind_feed/features/home/domain/usecases/search_articles_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/toggle_bookmark_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/toggle_star_use_case.dart';
+import 'package:mind_feed/features/home/domain/usecases/rate_author_use_case.dart';
+import 'package:mind_feed/features/home/domain/usecases/toggle_article_like_use_case.dart';
+import 'package:mind_feed/features/home/domain/usecases/get_fixed_tags_use_case.dart';
+import 'package:mind_feed/features/home/domain/usecases/update_article_use_case.dart';
 import 'package:mind_feed/features/profile/data/datasources/profile_remote_data_source.dart';
 import 'package:mind_feed/features/profile/data/repos/profile_repo_impl.dart';
 import 'package:mind_feed/features/profile/data/services/category_sync_reconciler.dart';
@@ -92,6 +97,9 @@ void setupServiceLocator() {
   );
   getIt.registerLazySingleton<UpdatePasswordUseCase>(
     () => UpdatePasswordUseCase(repo: getIt<AuthRepository>()),
+  );
+  getIt.registerLazySingleton<VerifyRecoveryOtpUseCase>(
+    () => VerifyRecoveryOtpUseCase(repo: getIt<AuthRepository>()),
   );
   getIt.registerFactory<ForgetPasswordCubit>(
     () => ForgetPasswordCubit(forgetPasswordUseCase: getIt<ForgetPasswordUseCase>()),
@@ -181,5 +189,23 @@ void setupServiceLocator() {
   );
   getIt.registerLazySingleton<DeleteArticleUseCase>(
     () => DeleteArticleUseCase(getIt<ArticlesRepository>()),
+  );
+  getIt.registerLazySingleton<GetFixedTagsUseCase>(
+    () => GetFixedTagsUseCase(getIt<ArticlesRepository>()),
+  );
+  getIt.registerLazySingleton<UpdateArticleUseCase>(
+    () => UpdateArticleUseCase(getIt<ArticlesRepository>()),
+  );
+  getIt.registerLazySingleton<ArticleEngagementRepository>(
+    () => getIt<ArticlesRepository>() as ArticleEngagementRepository,
+  );
+  getIt.registerLazySingleton<ToggleArticleLikeUseCase>(
+    () => ToggleArticleLikeUseCase(getIt<ArticleEngagementRepository>()),
+  );
+  getIt.registerLazySingleton<RateAuthorUseCase>(
+    () => RateAuthorUseCase(getIt<ArticleEngagementRepository>()),
+  );
+  getIt.registerLazySingleton<GetAuthorRatingUseCase>(
+    () => GetAuthorRatingUseCase(getIt<ArticleEngagementRepository>()),
   );
 }

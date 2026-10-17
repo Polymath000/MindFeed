@@ -23,6 +23,9 @@ class ArticleModel extends ArticleEntity {
     super.likesCount = 0,
     super.savesCount = 0,
     super.starCount = 0,
+    super.authorRatingAvg = 0.0,
+    super.authorRatingCount = 0,
+    super.userAuthorStars = 0,
     super.readingTimeMinutes = 3,
     super.status = 'draft',
     super.tags = const [],
@@ -57,6 +60,9 @@ class ArticleModel extends ArticleEntity {
       likesCount: (json['likes_count'] as num?)?.toInt() ?? 0,
       savesCount: (json['saves_count'] as num?)?.toInt() ?? 0,
       starCount: (json['star_count'] as num?)?.toInt() ?? 0,
+      authorRatingAvg: (json['author_rating_avg'] as num?)?.toDouble() ?? 0.0,
+      authorRatingCount: (json['author_rating_count'] as num?)?.toInt() ?? 0,
+      userAuthorStars: (json['user_author_stars'] as num?)?.toInt() ?? 0,
       readingTimeMinutes: (json['reading_time_minutes'] as num?)?.toInt() ?? 3,
       status: json['status'] as String? ?? 'draft',
       tags: _parseTags(json['tags']),
@@ -92,6 +98,9 @@ class ArticleModel extends ArticleEntity {
       likesCount: entity.likesCount,
       savesCount: entity.savesCount,
       starCount: entity.starCount,
+      authorRatingAvg: entity.authorRatingAvg,
+      authorRatingCount: entity.authorRatingCount,
+      userAuthorStars: entity.userAuthorStars,
       readingTimeMinutes: entity.readingTimeMinutes,
       status: entity.status,
       tags: entity.tags,
@@ -134,6 +143,8 @@ class ArticleModel extends ArticleEntity {
       map['likes_count'] = likesCount;
       map['saves_count'] = savesCount;
       map['star_count'] = starCount;
+      map['author_rating_avg'] = authorRatingAvg;
+      map['author_rating_count'] = authorRatingCount;
       if (publishedAt != null) map['published_at'] = publishedAt!.toIso8601String();
       if (createdAt != null) map['created_at'] = createdAt!.toIso8601String();
       if (updatedAt != null) map['updated_at'] = updatedAt!.toIso8601String();
@@ -165,6 +176,9 @@ class ArticleModel extends ArticleEntity {
     int? likesCount,
     int? savesCount,
     int? starCount,
+    double? authorRatingAvg,
+    int? authorRatingCount,
+    int? userAuthorStars,
     int? readingTimeMinutes,
     String? status,
     List<String>? tags,
@@ -197,6 +211,9 @@ class ArticleModel extends ArticleEntity {
       likesCount: likesCount ?? this.likesCount,
       savesCount: savesCount ?? this.savesCount,
       starCount: starCount ?? this.starCount,
+      authorRatingAvg: authorRatingAvg ?? this.authorRatingAvg,
+      authorRatingCount: authorRatingCount ?? this.authorRatingCount,
+      userAuthorStars: userAuthorStars ?? this.userAuthorStars,
       readingTimeMinutes: readingTimeMinutes ?? this.readingTimeMinutes,
       status: status ?? this.status,
       tags: tags ?? this.tags,

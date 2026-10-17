@@ -17,6 +17,11 @@ class AppConstants {
     'SUPABASE_PUBLISHABLE_KEY',
     defaultValue: String.fromEnvironment('SUPABASE_ANON_KEY'),
   );
+  static const String authConfirmRedirectUrl = String.fromEnvironment(
+    'AUTH_CONFIRM_REDIRECT_URL',
+    defaultValue:
+        'https://tsqruoqiajkbrdhprfxa.supabase.co/functions/v1/auth-confirm',
+  );
 }
 
 const String isOnboardingSeenKey = AppConstants.isOnboardingSeenKey;

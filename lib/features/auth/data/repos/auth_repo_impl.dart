@@ -127,6 +127,25 @@ class AuthRepoImpl extends AuthRepository {
     }
   }
 
+
+  @override
+  Future<ApiResult<String>> verifyRecoveryOtp({
+    required String email,
+    required String token,
+  }) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final accessToken = await authApiSource.verifyRecoveryOtp(email: email, token: token);
+        await SharedPreferencesSingleton.setString(AppConstants.tokenKey, accessToken);
+        return Success(accessToken);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
+  }
+
   @override
   Future<ApiResult<void>> logout() async {
     try {
