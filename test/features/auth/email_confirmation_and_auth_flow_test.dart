@@ -308,6 +308,5 @@ void main() {
       expect(response.headers['location'], contains('mindfeed://login-callback'));
       expect(response.headers['location'], contains('error_code=otp_expired'));
     });
-    });
   });
 }

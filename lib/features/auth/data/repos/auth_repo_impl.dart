@@ -127,19 +127,6 @@ class AuthRepoImpl extends AuthRepository {
     }
   }
 
-  @override
-  Future<ApiResult<void>> updatePassword({required String newPassword}) async {
-    if (await networkInfo.isConnected) {
-      try {
-        await authApiSource.updatePassword(newPassword: newPassword);
-        return const Success(null);
-      } catch (e) {
-        return FailureResult(ApiErrorHandler.handle(e).toFailure());
-      }
-    } else {
-      return const FailureResult(ServerFailure('You are Offline'));
-    }
-  }
 
   @override
   Future<ApiResult<String>> verifyRecoveryOtp({
