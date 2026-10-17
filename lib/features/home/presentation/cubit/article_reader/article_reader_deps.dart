@@ -5,6 +5,8 @@ import 'package:mind_feed/features/home/domain/repos/articles_local_data_source.
 import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
 import 'package:mind_feed/features/home/domain/usecases/download_article_text_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_article_details_use_case.dart';
+import 'package:mind_feed/features/home/domain/usecases/rate_author_use_case.dart';
+import 'package:mind_feed/features/home/domain/usecases/toggle_article_like_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/toggle_bookmark_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/toggle_star_use_case.dart';
 
@@ -15,6 +17,9 @@ class ArticleReaderDependencies {
   final GetArticleDetailsUseCase? getArticleDetailsUseCase;
   final DownloadArticleTextUseCase? downloadArticleTextUseCase;
   final ArticlesLocalDataSource? localDataSource;
+  final ToggleArticleLikeUseCase? toggleArticleLikeUseCase;
+  final RateAuthorUseCase? rateAuthorUseCase;
+  final GetAuthorRatingUseCase? getAuthorRatingUseCase;
 
   const ArticleReaderDependencies({
     this.articlesRepository,
@@ -23,6 +28,9 @@ class ArticleReaderDependencies {
     this.getArticleDetailsUseCase,
     this.downloadArticleTextUseCase,
     this.localDataSource,
+    this.toggleArticleLikeUseCase,
+    this.rateAuthorUseCase,
+    this.getAuthorRatingUseCase,
   });
 
   ArticlesRepository? resolveArticlesRepo() {
@@ -44,6 +52,48 @@ class ArticleReaderDependencies {
     } catch (_) {}
     final repo = resolveArticlesRepo();
     return repo != null ? ToggleStarUseCase(repo) : null;
+  }
+
+  ArticleEngagementRepository? resolveEngagementRepo() {
+    final repo = resolveArticlesRepo();
+    if (repo is ArticleEngagementRepository) return repo as ArticleEngagementRepository;
+    try {
+      if (getIt.isRegistered<ArticleEngagementRepository>()) {
+        return getIt<ArticleEngagementRepository>();
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  ToggleArticleLikeUseCase? resolveToggleArticleLikeUseCase() {
+    if (toggleArticleLikeUseCase != null) return toggleArticleLikeUseCase;
+    try {
+      if (getIt.isRegistered<ToggleArticleLikeUseCase>()) {
+        return getIt<ToggleArticleLikeUseCase>();
+      }
+    } catch (_) {}
+    final repo = resolveEngagementRepo();
+    return repo != null ? ToggleArticleLikeUseCase(repo) : null;
+  }
+
+  RateAuthorUseCase? resolveRateAuthorUseCase() {
+    if (rateAuthorUseCase != null) return rateAuthorUseCase;
+    try {
+      if (getIt.isRegistered<RateAuthorUseCase>()) {
+        return getIt<RateAuthorUseCase>();
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  GetAuthorRatingUseCase? resolveGetAuthorRatingUseCase() {
+    if (getAuthorRatingUseCase != null) return getAuthorRatingUseCase;
+    try {
+      if (getIt.isRegistered<GetAuthorRatingUseCase>()) {
+        return getIt<GetAuthorRatingUseCase>();
+      }
+    } catch (_) {}
+    return null;
   }
 
   ToggleBookmarkUseCase? resolveToggleBookmarkUseCase() {

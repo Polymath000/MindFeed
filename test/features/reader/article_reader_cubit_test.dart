@@ -11,17 +11,25 @@ import 'package:mind_feed/features/home/domain/repos/articles_local_data_source.
 import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
 import 'package:mind_feed/features/home/domain/usecases/download_article_text_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_article_details_use_case.dart';
+import 'package:mind_feed/features/home/domain/usecases/rate_author_use_case.dart';
+import 'package:mind_feed/features/home/domain/usecases/toggle_article_like_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/toggle_bookmark_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/toggle_star_use_case.dart';
 import 'package:mind_feed/features/home/presentation/cubit/article_reader/article_reader_cubit.dart';
 import 'package:mind_feed/features/home/presentation/cubit/article_reader/article_reader_state.dart';
 
-class FakeArticlesRepository implements ArticlesRepository {
+class FakeArticlesRepository implements ArticlesRepository, ArticleEngagementRepository {
   bool shouldFailStar = false;
   bool shouldFailUnstar = false;
+  bool shouldFailLike = false;
+  bool shouldFailRateAuthor = false;
   bool shouldFailBookmark = false;
   bool isStarredValue = false;
+  bool isLikedValue = false;
   bool isSavedValue = false;
+  int authorUserStars = 0;
+  double authorRatingAvg = 0.0;
+  int authorRatingCount = 0;
   ArticleEntity? articleDetailsEntity;
 
   @override
@@ -46,6 +54,71 @@ class FakeArticlesRepository implements ArticlesRepository {
   Future<ApiResult<bool>> isArticleStarred(
       String articleId, String userId) async {
     return Success(isStarredValue);
+  }
+
+  @override
+  Future<ApiResult<void>> likeArticle(String articleId, String userId) async {
+    if (shouldFailLike || shouldFailStar) {
+      return const FailureResult(ServerFailure('Failed to star article'));
+    }
+    isLikedValue = true;
+    isStarredValue = true;
+    return const Success(null);
+  }
+
+  @override
+  Future<ApiResult<void>> unlikeArticle(String articleId, String userId) async {
+    if (shouldFailLike || shouldFailUnstar) {
+      return const FailureResult(ServerFailure('Failed to unstar article'));
+    }
+    isLikedValue = false;
+    isStarredValue = false;
+    return const Success(null);
+  }
+
+  @override
+  Future<ApiResult<bool>> isArticleLiked(
+      String articleId, String userId) async {
+    return Success(isLikedValue || isStarredValue);
+  }
+
+  @override
+  Future<ApiResult<AuthorRatingSummary>> rateAuthor({
+    required String authorKey,
+    required int stars,
+    String? authorId,
+    String authorName = 'Editorial Staff',
+  }) async {
+    if (shouldFailRateAuthor) {
+      return const FailureResult(ServerFailure('Failed to rate author'));
+    }
+    authorUserStars = stars;
+    authorRatingCount = authorRatingCount == 0 ? 1 : authorRatingCount;
+    authorRatingAvg = stars.toDouble();
+    return Success(
+      AuthorRatingSummary(
+        authorKey: authorKey,
+        userStars: authorUserStars,
+        ratingAvg: authorRatingAvg,
+        ratingCount: authorRatingCount,
+      ),
+    );
+  }
+
+  @override
+  Future<ApiResult<AuthorRatingSummary>> getAuthorRatingSummary({
+    required String authorKey,
+    String? authorId,
+    String authorName = 'Editorial Staff',
+  }) async {
+    return Success(
+      AuthorRatingSummary(
+        authorKey: authorKey,
+        userStars: authorUserStars,
+        ratingAvg: authorRatingAvg,
+        ratingCount: authorRatingCount,
+      ),
+    );
   }
 
   @override
@@ -204,6 +277,9 @@ void main() {
   late FakeArticlesRepository fakeRepo;
   late FakeArticlesLocalDataSource fakeLocalDs;
   late ToggleStarUseCase toggleStarUseCase;
+  late ToggleArticleLikeUseCase toggleArticleLikeUseCase;
+  late RateAuthorUseCase rateAuthorUseCase;
+  late GetAuthorRatingUseCase getAuthorRatingUseCase;
   late ToggleBookmarkUseCase toggleBookmarkUseCase;
   late GetArticleDetailsUseCase getArticleDetailsUseCase;
   late DownloadArticleTextUseCase downloadArticleTextUseCase;
@@ -213,6 +289,9 @@ void main() {
     fakeRepo = FakeArticlesRepository();
     fakeLocalDs = FakeArticlesLocalDataSource();
     toggleStarUseCase = ToggleStarUseCase(fakeRepo);
+    toggleArticleLikeUseCase = ToggleArticleLikeUseCase(fakeRepo);
+    rateAuthorUseCase = RateAuthorUseCase(fakeRepo);
+    getAuthorRatingUseCase = GetAuthorRatingUseCase(fakeRepo);
     toggleBookmarkUseCase = ToggleBookmarkUseCase(fakeRepo);
     getArticleDetailsUseCase = GetArticleDetailsUseCase(fakeRepo);
     downloadArticleTextUseCase = DownloadArticleTextUseCase(fakeLocalDs);
@@ -220,6 +299,9 @@ void main() {
     cubit = ArticleReaderCubit(
       articlesRepository: fakeRepo,
       toggleStarUseCase: toggleStarUseCase,
+      toggleArticleLikeUseCase: toggleArticleLikeUseCase,
+      rateAuthorUseCase: rateAuthorUseCase,
+      getAuthorRatingUseCase: getAuthorRatingUseCase,
       toggleBookmarkUseCase: toggleBookmarkUseCase,
       getArticleDetailsUseCase: getArticleDetailsUseCase,
       downloadArticleTextUseCase: downloadArticleTextUseCase,
@@ -239,7 +321,7 @@ void main() {
     expect(cubit.state.errorMessage, equals('Article not found'));
   });
 
-  test('initArticle resolves initial state and checks remote star/saved',
+  test('initArticle resolves initial state and checks remote like/saved',
       () async {
     fakeRepo.isStarredValue = true;
     fakeRepo.isSavedValue = true;
@@ -249,9 +331,9 @@ void main() {
 
     expect(cubit.state.status, equals(ArticleReaderStatus.ready));
     expect(cubit.state.item?.id, equals(item.id));
-    expect(cubit.state.isStarred, isTrue);
+    expect(cubit.state.isLiked, isTrue);
     expect(cubit.state.isSaved, isTrue);
-    expect(cubit.state.starCount, equals(5));
+    expect(cubit.state.likeCount, equals(5));
   });
 
   test('initArticle fetches details when content is null', () async {
@@ -271,19 +353,19 @@ void main() {
     expect(cubit.state.starCount, equals(12));
   });
 
-  test('star toggle performs optimistic update and increments count',
+  test('like toggle performs optimistic update and increments count',
       () async {
     final item = createSampleItem(starCount: 3, isStarred: false);
     await cubit.initArticle(item);
 
-    await cubit.toggleStar();
+    await cubit.toggleLike();
 
-    expect(cubit.state.isStarred, isTrue);
-    expect(cubit.state.starCount, equals(4));
-    expect(fakeRepo.isStarredValue, isTrue);
+    expect(cubit.state.isLiked, isTrue);
+    expect(cubit.state.likeCount, equals(4));
+    expect(fakeRepo.isLikedValue, isTrue);
   });
 
-  test('star toggle reverts on failure and restores count and emits feedback',
+  test('like toggle reverts on failure and restores count and emits feedback',
       () async {
     final item = createSampleItem(starCount: 7, isStarred: false);
     await cubit.initArticle(item);
@@ -296,7 +378,7 @@ void main() {
     expect(cubit.state.userFeedback, contains('Failed to star article'));
   });
 
-  test('unstar toggle reverts on failure and restores count', () async {
+  test('unlike toggle reverts on failure and restores count', () async {
     final item = createSampleItem(starCount: 10, isStarred: true);
     fakeRepo.isStarredValue = true;
     await cubit.initArticle(item);
@@ -307,6 +389,48 @@ void main() {
     expect(cubit.state.isStarred, isTrue);
     expect(cubit.state.starCount, equals(10));
     expect(cubit.state.userFeedback, contains('Failed to unstar article'));
+  });
+
+  test('rateAuthor updates 1..5 star rating for author and rolls back on error',
+      () async {
+    final item = createSampleItem(content: 'Body');
+    await cubit.initArticle(item);
+
+    await cubit.rateAuthor(5);
+    expect(cubit.state.userAuthorStars, equals(5));
+    expect(cubit.state.authorRatingAvg, equals(5.0));
+    expect(cubit.state.authorRatingCount, equals(1));
+    expect(cubit.state.userFeedback, contains('Rated Alex Smith 5/5 stars'));
+
+    fakeRepo.shouldFailRateAuthor = true;
+    await cubit.rateAuthor(2);
+    expect(cubit.state.userAuthorStars, equals(5));
+    expect(cubit.state.userFeedback, contains('Failed to rate author'));
+  });
+
+  test('slow scroll toggle, stop, and pace selection update state', () async {
+    final item = createSampleItem(content: 'Body');
+    await cubit.initArticle(item);
+
+    expect(cubit.state.isSlowScrolling, isFalse);
+    expect(cubit.state.scrollPace, equals(1.0));
+
+    cubit.setScrollPace(1.5);
+    expect(cubit.state.scrollPace, equals(1.5));
+
+    cubit.toggleSlowScroll();
+    expect(cubit.state.isSlowScrolling, isTrue);
+
+    cubit.stopSlowScroll();
+    expect(cubit.state.isSlowScrolling, isFalse);
+  });
+
+  test('toggleScrollBarRetracted toggles isScrollBarRetracted between false and true', () async {
+    expect(cubit.state.isScrollBarRetracted, isFalse);
+    cubit.toggleScrollBarRetracted();
+    expect(cubit.state.isScrollBarRetracted, isTrue);
+    cubit.toggleScrollBarRetracted();
+    expect(cubit.state.isScrollBarRetracted, isFalse);
   });
 
   test('bookmark toggle optimistic update and revert on failure', () async {
