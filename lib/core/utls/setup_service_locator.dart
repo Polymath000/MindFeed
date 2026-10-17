@@ -42,7 +42,10 @@ import 'package:mind_feed/features/home/domain/usecases/toggle_star_use_case.dar
 import 'package:mind_feed/features/home/domain/usecases/rate_author_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/toggle_article_like_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_fixed_tags_use_case.dart';
+import 'package:mind_feed/features/home/domain/usecases/filter_articles_by_topic_use_case.dart';
+import 'package:mind_feed/features/home/domain/usecases/get_user_feed_topics_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/update_article_use_case.dart';
+import 'package:mind_feed/features/home/presentation/cubit/home_feed/home_feed_cubit.dart';
 import 'package:mind_feed/features/profile/data/datasources/profile_remote_data_source.dart';
 import 'package:mind_feed/features/profile/data/repos/profile_repo_impl.dart';
 import 'package:mind_feed/features/profile/data/services/category_sync_reconciler.dart';
@@ -207,5 +210,21 @@ void setupServiceLocator() {
   );
   getIt.registerLazySingleton<GetAuthorRatingUseCase>(
     () => GetAuthorRatingUseCase(getIt<ArticleEngagementRepository>()),
+  );
+  getIt.registerLazySingleton<GetUserFeedTopicsUseCase>(
+    () => GetUserFeedTopicsUseCase(profileRepository: getIt<ProfileRepository>()),
+  );
+  getIt.registerLazySingleton<FilterArticlesByTopicUseCase>(
+    () => const FilterArticlesByTopicUseCase(),
+  );
+  getIt.registerFactory<HomeFeedCubit>(
+    () => HomeFeedCubit(
+      getHomeFeedUseCase: getIt<GetHomeFeedUseCase>(),
+      getUserFeedTopicsUseCase: getIt<GetUserFeedTopicsUseCase>(),
+      getSavedArticlesUseCase: getIt<GetSavedArticlesUseCase>(),
+      toggleBookmarkUseCase: getIt<ToggleBookmarkUseCase>(),
+      toggleStarUseCase: getIt<ToggleStarUseCase>(),
+      toggleArticleLikeUseCase: getIt<ToggleArticleLikeUseCase>(),
+    ),
   );
 }

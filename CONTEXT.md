@@ -167,3 +167,14 @@ The codebase follows **Feature-First Clean Architecture**:
   - **Lazy Tab Mounting & Sliver Virtualization (`main_view.dart`, `home_view_body.dart`)**:
     - Updated `MainView` `IndexedStack` to lazy-mount tabs (`_visitedTabs = {0}`) on first selection and wrapped each tab in `TickerMode(enabled: selectedIndex == index)` and `RepaintBoundary`.
     - Converted `HomeViewBody` from an eager `ListView(children: ...)` to a `CustomScrollView` with `SliverList.builder` and `RepaintBoundary` for secondary stories.
+- **Home Feature Clean Architecture & Engineering Rules Refactoring**:
+  - **Dead Code Removal & Flat Widget Structure**: Removed 11 unused legacy widget files from `lib/features/home/presentation/widgets/` and flattened `presentation/widgets/widgets/` into `presentation/widgets/`.
+  - **Centralized Constants, Theming & Reusable Components**: Replaced raw `Icons.*`, `Colors.white.withAlpha(...)`, `BorderRadius.circular(...)`, inline `TextStyle(...)`, and inline `ElevatedButton`/`OutlinedButton` in Home widgets with centralized `AppIcons`, `AppColors`, `AppBorders`, `AppTextStyles`, and `CustomButton`.
+  - **Domain Layer Purification & UseCase Extraction**:
+    - Removed `package:flutter/material.dart`, `AppColors`, `AppImages`, and `EditorialNewsItem` from `ArticleEntity` and `DownloadedArticleEntity`, moving `toEditorialNewsItem()` to extensions (`ArticleEntityEditorialMapper`, `DownloadedArticleEntityEditorialMapper`) in `lib/core/design/editorial_models.dart`.
+    - Moved `ArticlesLocalDataSource` out of `domain/repos/` into `data/datasources/articles_local_data_source.dart` implementing `OfflineArticlesRepository` in `domain/repos/articles_repo.dart`.
+    - Created `GetUserFeedTopicsUseCase` and `FilterArticlesByTopicUseCase` in `lib/features/home/domain/usecases/`.
+  - **Dart 3 Sealed State, Immutable Cubit Updates & DI**:
+    - Migrated `HomeFeedState` to a Dart 3 `sealed class` hierarchy (`HomeFeedInitial`, `HomeFeedLoading`, `HomeFeedLoaded`, `HomeFeedError`) with `SwipeSaveStatus`.
+    - Refactored `HomeFeedCubit` and `HomeViewBody` into small `<20`-line methods, guarded all emissions with `if (!isClosed)`, eliminated `StatefulBuilder` mutation workarounds via immutable list emissions, and registered `GetUserFeedTopicsUseCase`, `FilterArticlesByTopicUseCase`, and `HomeFeedCubit` in `setup_service_locator.dart`.
+
