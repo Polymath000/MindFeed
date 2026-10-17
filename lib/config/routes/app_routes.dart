@@ -49,6 +49,8 @@ sealed class AppRoutes {
   static const String checkCode = '/check-code';
   static const String changePassword = '/change-password';
   static const String categories = '/categories';
+  static const String drafts = '/drafts';
+  static const String articlePreview = '/article-preview';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {

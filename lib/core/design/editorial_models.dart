@@ -15,6 +15,14 @@ class EditorialNewsItem {
   final String? categoryId;
   final String? categorySlug;
   final List<String> tags;
+  final String? content;
+  final String? coverImageUrl;
+  final String? authorId;
+  final DateTime? publishedAt;
+  final int readingTimeMinutes;
+  final String status;
+  int starCount;
+  bool isStarred;
   bool isLiked;
   bool isSaved;
 
@@ -33,7 +41,23 @@ class EditorialNewsItem {
     this.categoryId,
     this.categorySlug,
     this.tags = const [],
+    this.content,
+    this.coverImageUrl,
+    this.authorId,
+    this.publishedAt,
+    this.readingTimeMinutes = 3,
+    this.status = 'published',
+    this.starCount = 0,
+    this.isStarred = false,
     this.isLiked = false,
     this.isSaved = false,
   });
+
+  bool get isEditableWithinWindow {
+    if (status != 'published') return true;
+    final published = publishedAt;
+    if (published == null) return false;
+    return DateTime.now().toUtc().difference(published.toUtc()) <=
+        const Duration(days: 30);
+  }
 }
