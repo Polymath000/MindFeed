@@ -1,5 +1,17 @@
 import 'package:flutter/material.dart'
-    show BuildContext, TextStyle, TextTheme, Theme, ThemeData, immutable;
+    show
+        BuildContext,
+        Color,
+        FontWeight,
+        TextStyle,
+        TextTheme,
+        Theme,
+        ThemeData,
+        immutable;
+
+import 'package:google_fonts/google_fonts.dart';
+
+import 'package:mind_feed/core/constants/app_colors.dart';
 
 @immutable
 sealed class AppTextStyles {
@@ -37,4 +49,63 @@ sealed class AppTextStyles {
   static TextStyle? get displayLarge => _textTheme.displayLarge;
   static TextStyle? get displayMedium => _textTheme.displayMedium;
   static TextStyle? get displaySmall => _textTheme.displaySmall;
+
+  // Editorial Home & Reader Styles
+  static TextStyle get homeMastheadTitle => GoogleFonts.playfairDisplay(
+        color: AppColors.softCream,
+        fontSize: 27,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.6,
+      );
+
+  static const TextStyle homeSectionTitle = TextStyle(
+    color: AppColors.softCream,
+    fontSize: 18,
+    fontWeight: FontWeight.w800,
+    letterSpacing: -0.3,
+  );
+
+  static const TextStyle homeTopicSelected = TextStyle(
+    color: AppColors.ink,
+    fontSize: 14.5,
+    fontWeight: FontWeight.w800,
+    letterSpacing: -0.2,
+  );
+
+  static const TextStyle homeTopicUnselected = TextStyle(
+    color: AppColors.softCreamAlpha185,
+    fontSize: 14.5,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.2,
+  );
+
+  static const TextStyle homeStoryTitle = TextStyle(
+    color: AppColors.softCream,
+    fontSize: 14,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const TextStyle homeStoryReadTime = TextStyle(
+    color: AppColors.greyText,
+    fontSize: 11,
+    fontWeight: FontWeight.w500,
+  );
+
+  static TextStyle homeStoryBadge(Color color) => TextStyle(
+        color: color,
+        fontSize: 11,
+        fontWeight: FontWeight.w800,
+      );
+
+  static const TextStyle homeEmptyMessage = TextStyle(
+    color: AppColors.greyText,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+  );
+
+  static const TextStyle homeErrorMessage = TextStyle(
+    color: AppColors.softCream,
+    fontSize: 15,
+    fontWeight: FontWeight.w600,
+  );
 }

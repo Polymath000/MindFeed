@@ -9,19 +9,21 @@ class CustomButton extends StatelessWidget {
     required this.buttonText,
     required this.onTap,
     this.height = 54,
+    this.width = double.infinity,
     this.isLoading = false,
   });
 
   final String buttonText;
   final void Function()? onTap;
   final double height;
+  final double? width;
   final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: height,
-      width: double.infinity,
+      width: width,
       child: ElevatedButton(
         onPressed: isLoading ? null : onTap,
         style: ElevatedButton.styleFrom(

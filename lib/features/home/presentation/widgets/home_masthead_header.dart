@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
+import 'package:mind_feed/core/constants/app_text_styles.dart';
+import 'package:mind_feed/core/constants/borders.dart';
 import 'package:mind_feed/core/constants/constants.dart';
 
 class HomeMastheadHeader extends StatelessWidget {
@@ -12,38 +13,47 @@ class HomeMastheadHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       children: [
-        Container(
-          width: 42,
-          height: 42,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white.withAlpha(45),
-                blurRadius: 12,
-                spreadRadius: 1,
-              ),
-              BoxShadow(
-                color: Colors.black.withAlpha(70),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          padding: const EdgeInsets.all(5),
-          child: Image.asset(
-            Assets.assetsImagesMindFeedLogo,
-            cacheWidth: 96,
-            cacheHeight: 96,
-            fit: BoxFit.contain,
-          ),
-        ),
-        const SizedBox(width: 12),
-        const Expanded(child: HomeMastheadAnimatedTitle()),
+        _MastheadBrandLogo(),
+        SizedBox(width: 12),
+        Expanded(child: HomeMastheadAnimatedTitle()),
       ],
+    );
+  }
+}
+
+class _MastheadBrandLogo extends StatelessWidget {
+  const _MastheadBrandLogo();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 42,
+      height: 42,
+      decoration: const BoxDecoration(
+        color: AppColors.white,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.whiteAlpha45,
+            blurRadius: 12,
+            spreadRadius: 1,
+          ),
+          BoxShadow(
+            color: AppColors.blackAlpha70,
+            blurRadius: 8,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(5),
+      child: Image.asset(
+        Assets.assetsImagesMindFeedLogo,
+        cacheWidth: 96,
+        cacheHeight: 96,
+        fit: BoxFit.contain,
+      ),
     );
   }
 }
@@ -56,19 +66,32 @@ class HomeMastheadAnimatedTitle extends StatelessWidget {
 
   final List<String> words;
 
+  List<AnimatedText> _buildAnimatedTexts() {
+    final effectiveWords =
+        words.isEmpty ? const [AppConstants.appName] : words;
+    final style = AppTextStyles.homeMastheadTitle;
+    return [
+      for (final word in effectiveWords)
+        RotateAnimatedText(
+          word,
+          textStyle: style,
+          alignment: Alignment.centerLeft,
+          transitionHeight: 42,
+          duration: const Duration(milliseconds: 2400),
+        ),
+      RotateAnimatedText(
+        effectiveWords.first,
+        textStyle: style,
+        alignment: Alignment.centerLeft,
+        transitionHeight: 42,
+        duration: const Duration(milliseconds: 1600),
+        rotateOut: false,
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
-    final titleStyle = GoogleFonts.playfairDisplay(
-      color: AppColors.softCream,
-      fontSize: 27,
-      fontWeight: FontWeight.w800,
-      letterSpacing: -0.6,
-    );
-
-    final effectiveWords = words.isEmpty
-        ? const [AppConstants.appName]
-        : words;
-
     return RepaintBoundary(
       child: SizedBox(
         height: 42,
@@ -79,25 +102,7 @@ class HomeMastheadAnimatedTitle extends StatelessWidget {
             repeatForever: false,
             totalRepeatCount: 1,
             pause: const Duration(milliseconds: 1000),
-            animatedTexts: [
-              ...effectiveWords.map(
-                (word) => RotateAnimatedText(
-                  word,
-                  textStyle: titleStyle,
-                  alignment: Alignment.centerLeft,
-                  transitionHeight: 42,
-                  duration: const Duration(milliseconds: 2400),
-                ),
-              ),
-              RotateAnimatedText(
-                effectiveWords.first,
-                textStyle: titleStyle,
-                alignment: Alignment.centerLeft,
-                transitionHeight: 42,
-                duration: const Duration(milliseconds: 1600),
-                rotateOut: false,
-              ),
-            ],
+            animatedTexts: _buildAnimatedTexts(),
           ),
         ),
       ),
@@ -117,68 +122,81 @@ class HomeTopicTabsBar extends StatelessWidget {
   final String selectedTopic;
   final ValueChanged<String> onTopicSelected;
 
+  List<String> get _displayTopics => <String>[
+        'All',
+        ...topics
+            .map((t) => t.trim())
+            .where((t) => t.isNotEmpty && t.toLowerCase() != 'all'),
+      ];
+
   @override
   Widget build(BuildContext context) {
-    final displayTopics = <String>[
-      'All',
-      ...topics
-          .map((t) => t.trim())
-          .where((t) => t.isNotEmpty && t.toLowerCase() != 'all'),
-    ];
-
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       physics: const BouncingScrollPhysics(),
       child: Row(
-        children: displayTopics.map((topic) {
-          final isSelected = topic == selectedTopic;
-          return Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: GestureDetector(
-              onTap: () => onTopicSelected(topic),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 240),
-                curve: Curves.easeOutCubic,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 9,
-                ),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? AppColors.cream
-                      : Colors.white.withAlpha(15),
-                  borderRadius: BorderRadius.circular(22),
-                  border: Border.all(
-                    color: isSelected
-                        ? AppColors.yellowHighlight
-                        : Colors.white.withAlpha(24),
-                    width: isSelected ? 1.2 : 1.0,
-                  ),
-                  boxShadow: isSelected
-                      ? [
-                          BoxShadow(
-                            color: AppColors.cream.withAlpha(65),
-                            blurRadius: 12,
-                            offset: const Offset(0, 3),
-                          ),
-                        ]
-                      : null,
-                ),
-                child: Text(
-                  topic,
-                  style: TextStyle(
-                    color: isSelected
-                        ? AppColors.ink
-                        : AppColors.softCream.withAlpha(185),
-                    fontSize: 14.5,
-                    fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                    letterSpacing: -0.2,
-                  ),
-                ),
+        children: [
+          for (final topic in _displayTopics)
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: _TopicTabPill(
+                topic: topic,
+                isSelected: topic == selectedTopic,
+                onTap: () => onTopicSelected(topic),
               ),
             ),
-          );
-        }).toList(),
+        ],
+      ),
+    );
+  }
+}
+
+class _TopicTabPill extends StatelessWidget {
+  const _TopicTabPill({
+    required this.topic,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String topic;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  BoxDecoration _buildDecoration() => BoxDecoration(
+        color: isSelected ? AppColors.cream : AppColors.whiteAlpha15,
+        borderRadius: AppBorders.pill,
+        border: Border.all(
+          color: isSelected
+              ? AppColors.yellowHighlight
+              : AppColors.whiteAlpha24,
+          width: isSelected ? 1.2 : 1.0,
+        ),
+        boxShadow: isSelected
+            ? const [
+                BoxShadow(
+                  color: AppColors.creamAlpha65,
+                  blurRadius: 12,
+                  offset: Offset(0, 3),
+                ),
+              ]
+            : null,
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 240),
+        curve: Curves.easeOutCubic,
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
+        decoration: _buildDecoration(),
+        child: Text(
+          topic,
+          style: isSelected
+              ? AppTextStyles.homeTopicSelected
+              : AppTextStyles.homeTopicUnselected,
+        ),
       ),
     );
   }

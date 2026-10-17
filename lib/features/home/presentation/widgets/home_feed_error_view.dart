@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/app_text_styles.dart';
+import 'package:mind_feed/core/widgets/custom_button.dart';
 
 class HomeFeedErrorView extends StatelessWidget {
   const HomeFeedErrorView({
@@ -22,7 +26,7 @@ class HomeFeedErrorView extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(
-                Icons.wifi_off_rounded,
+                AppIcons.wifiOffRounded,
                 color: AppColors.softCream,
                 size: 48,
               ),
@@ -30,30 +34,14 @@ class HomeFeedErrorView extends StatelessWidget {
               Text(
                 errorMessage,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: AppColors.softCream,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppTextStyles.homeErrorMessage,
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.cream,
-                  foregroundColor: AppColors.ink,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                ),
-                onPressed: onRetry,
-                child: const Text(
-                  'Retry',
-                  style: TextStyle(fontWeight: FontWeight.w700),
-                ),
+              CustomButton(
+                buttonText: 'Retry',
+                onTap: onRetry,
+                width: 140,
+                height: 44,
               ),
             ],
           ),

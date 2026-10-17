@@ -4,6 +4,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
+import 'package:mind_feed/core/constants/app_text_styles.dart';
 import 'package:mind_feed/core/design/editorial_card_stack.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 
@@ -78,12 +79,7 @@ class HomeFeedLoadingView extends StatelessWidget {
           const SizedBox(height: 24),
           const Text(
             'More Stories',
-            style: TextStyle(
-              color: AppColors.softCream,
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.3,
-            ),
+            style: AppTextStyles.homeSectionTitle,
           ),
           const SizedBox(height: 12),
           ..._placeholderStories.map(

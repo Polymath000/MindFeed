@@ -4,6 +4,8 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/app_text_styles.dart';
+import 'package:mind_feed/core/constants/borders.dart';
 import 'package:mind_feed/core/design/editorial_card.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 
@@ -52,75 +54,79 @@ class HomeSecondaryStoryTile extends StatelessWidget {
     final isSkeleton = Skeletonizer.maybeOf(context)?.enabled ?? false;
     return InkWell(
       onTap: isSkeleton ? null : onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: AppBorders.xxs,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 6),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white.withAlpha(18),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withAlpha(24)),
+          color: AppColors.whiteAlpha18,
+          borderRadius: AppBorders.xxs,
+          border: Border.all(color: AppColors.whiteAlpha24),
         ),
         child: Row(
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Wrap(
-                    spacing: 8,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      Text(
-                        item.badge,
-                        style: TextStyle(
-                          color: item.badgeColor,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      Text(
-                        '${item.readingTimeMinutes} min read',
-                        style: const TextStyle(
-                          color: AppColors.greyText,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    item.title.replaceAll('\n', ' '),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: AppColors.softCream,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            Expanded(child: _StoryTileTextContent(item: item)),
             if (onToggleSave != null)
-              StatefulBuilder(
-                builder: (context, setTileState) => IconButton(
-                  icon: Icon(
-                    item.isSaved ? AppIcons.bookmark : AppIcons.bookmarkBorderRounded,
-                    color: item.isSaved ? AppColors.yellowHighlight : AppColors.softCream.withAlpha(180),
-                    size: 20,
-                  ),
-                  tooltip: item.isSaved ? 'Remove bookmark' : 'Bookmark story',
-                  onPressed: () {
-                    onToggleSave!();
-                    setTileState(() {});
-                  },
-                ),
-              ),
+              _StoryBookmarkButton(isSaved: item.isSaved, onPressed: onToggleSave!),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _StoryTileTextContent extends StatelessWidget {
+  const _StoryTileTextContent({required this.item});
+
+  final EditorialNewsItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Text(
+              item.badge,
+              style: AppTextStyles.homeStoryBadge(item.badgeColor),
+            ),
+            Text(
+              '${item.readingTimeMinutes} min read',
+              style: AppTextStyles.homeStoryReadTime,
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(
+          item.title.replaceAll('\n', ' '),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: AppTextStyles.homeStoryTitle,
+        ),
+      ],
+    );
+  }
+}
+
+class _StoryBookmarkButton extends StatelessWidget {
+  const _StoryBookmarkButton({required this.isSaved, required this.onPressed});
+
+  final bool isSaved;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        isSaved ? AppIcons.bookmark : AppIcons.bookmarkBorderRounded,
+        color: isSaved ? AppColors.yellowHighlight : AppColors.softCreamAlpha180,
+        size: 20,
+      ),
+      tooltip: isSaved ? 'Remove bookmark' : 'Bookmark story',
+      onPressed: onPressed,
     );
   }
 }

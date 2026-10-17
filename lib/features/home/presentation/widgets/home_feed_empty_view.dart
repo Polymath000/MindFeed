@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/constants/app_colors.dart';
+
+import 'package:mind_feed/core/constants/app_text_styles.dart';
+import 'package:mind_feed/core/widgets/custom_button.dart';
 
 class HomeFeedEmptyView extends StatelessWidget {
   const HomeFeedEmptyView({super.key, required this.onRefresh});
@@ -19,30 +21,14 @@ class HomeFeedEmptyView extends StatelessWidget {
               const Text(
                 'No stories available for this topic.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: AppColors.greyText,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppTextStyles.homeEmptyMessage,
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.cream,
-                  foregroundColor: AppColors.ink,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                ),
-                onPressed: onRefresh,
-                child: const Text(
-                  'Refresh',
-                  style: TextStyle(fontWeight: FontWeight.w700),
-                ),
+              CustomButton(
+                buttonText: 'Refresh',
+                onTap: onRefresh,
+                width: 140,
+                height: 44,
               ),
             ],
           ),
