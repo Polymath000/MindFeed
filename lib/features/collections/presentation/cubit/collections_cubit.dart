@@ -1,69 +1,137 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:mind_feed/core/design/editorial_mock_data.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_saved_articles_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/toggle_bookmark_use_case.dart';
+
 part 'collections_state.dart';
 
 class CollectionsCubit extends Cubit<CollectionsState> {
-  CollectionsCubit() : super(CollectionsInitial());
+  final GetSavedArticlesUseCase? _getSavedArticlesUseCase;
+  final ToggleBookmarkUseCase? _toggleBookmarkUseCase;
+
+  CollectionsCubit({
+    GetSavedArticlesUseCase? getSavedArticlesUseCase,
+    ToggleBookmarkUseCase? toggleBookmarkUseCase,
+  })  : _getSavedArticlesUseCase = getSavedArticlesUseCase,
+        _toggleBookmarkUseCase = toggleBookmarkUseCase,
+        super(CollectionsInitial());
 
   List<EditorialNewsItem> _allStories = [];
 
+  List<EditorialNewsItem> get allStories => List.unmodifiable(_allStories);
+
   Future<void> loadSavedStories() async {
     emit(CollectionsLoading());
-    if (getIt.isRegistered<GetSavedArticlesUseCase>()) {
-      final user = Supabase.instance.client.auth.currentUser;
-      if (user != null) {
-        final result =
-            await getIt<GetSavedArticlesUseCase>().call(user.id);
-        result.when(
-          success: (articles) {
-            _allStories = articles.map((a) => a.toEditorialNewsItem()).toList();
-            emit(CollectionsLoaded(_allStories));
-          },
-          failure: (_) {
-            _allStories = List.from(EditorialMockData.savedStories);
-            emit(CollectionsLoaded(_allStories));
-          },
-        );
-        return;
-      }
+
+    final userId = CurrentUserSession.currentUserId;
+    if (userId == null) {
+      emit(const CollectionsError(
+          'Please log in to view your saved articles.'));
+      return;
     }
-    _allStories = List.from(EditorialMockData.savedStories);
-    emit(CollectionsLoaded(_allStories));
+
+    final useCase = _getSavedArticlesUseCase ??
+        (getIt.isRegistered<GetSavedArticlesUseCase>()
+            ? getIt<GetSavedArticlesUseCase>()
+            : null);
+
+    if (useCase == null) {
+      emit(const CollectionsError('Saved articles service unavailable.'));
+      return;
+    }
+
+    final result = await useCase.call(userId);
+    result.when(
+      success: (articles) {
+        _allStories = articles.map((a) => a.toEditorialNewsItem()).toList();
+        if (_allStories.isEmpty) {
+          emit(const CollectionsEmpty());
+        } else {
+          emit(CollectionsLoaded(List.from(_allStories)));
+        }
+      },
+      failure: (failure) {
+        final msg = failure.message.toLowerCase();
+        if (msg.contains('offline') ||
+            msg.contains('network') ||
+            msg.contains('connection') ||
+            msg.contains('socket')) {
+          emit(const CollectionsError(
+              'You are currently offline. Please check your internet connection.'));
+        } else {
+          emit(CollectionsError(failure.message.isNotEmpty
+              ? failure.message
+              : 'Failed to load saved articles.'));
+        }
+      },
+    );
   }
 
   void searchStories(String query) {
     if (query.trim().isEmpty) {
-      emit(CollectionsLoaded(_allStories));
+      if (_allStories.isEmpty) {
+        emit(const CollectionsEmpty());
+      } else {
+        emit(CollectionsLoaded(List.from(_allStories)));
+      }
     } else {
       final filtered = _allStories
           .where((item) =>
               item.title.toLowerCase().contains(query.toLowerCase()) ||
               item.excerpt.toLowerCase().contains(query.toLowerCase()))
           .toList();
-      emit(CollectionsLoaded(filtered));
+      if (filtered.isEmpty) {
+        emit(const CollectionsEmpty());
+      } else {
+        emit(CollectionsLoaded(filtered));
+      }
     }
   }
 
   Future<void> deleteArticle(String id) async {
-    if (getIt.isRegistered<ToggleBookmarkUseCase>()) {
-      final user = Supabase.instance.client.auth.currentUser;
-      if (user != null) {
-        await getIt<ToggleBookmarkUseCase>().call(
-          articleId: id,
-          userId: user.id,
-          isCurrentlySaved: true,
-        );
-      }
+    final userId = CurrentUserSession.currentUserId;
+    if (userId == null) {
+      emit(const CollectionsError(
+          'Please log in to manage saved articles.'));
+      return;
     }
-    _allStories.removeWhere((item) => item.id == id);
-    if (state is CollectionsLoaded) {
-      emit(CollectionsLoaded(List.from(_allStories)));
+
+    final useCase = _toggleBookmarkUseCase ??
+        (getIt.isRegistered<ToggleBookmarkUseCase>()
+            ? getIt<ToggleBookmarkUseCase>()
+            : null);
+
+    if (useCase == null) {
+      emit(const CollectionsError('Bookmark service is unavailable.'));
+      return;
     }
+
+    final result = await useCase.call(
+      articleId: id,
+      userId: userId,
+      isCurrentlySaved: true,
+    );
+
+    result.when(
+      success: (isSaved) {
+        if (!isSaved) {
+          _allStories.removeWhere((item) => item.id == id);
+          if (_allStories.isEmpty) {
+            emit(const CollectionsEmpty());
+          } else {
+            emit(CollectionsLoaded(List.from(_allStories)));
+          }
+        }
+      },
+      failure: (failure) {
+        emit(CollectionsError(failure.message.isNotEmpty
+            ? failure.message
+            : 'Failed to remove saved article.'));
+      },
+    );
   }
 }
