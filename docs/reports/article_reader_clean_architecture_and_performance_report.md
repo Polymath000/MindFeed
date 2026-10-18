@@ -27,7 +27,7 @@ While these functional capabilities provided an exceptional reading experience, 
 7. **Redundant Exception Handling:** Native Dart 3 `ApiResult<T>` union types were unnecessarily wrapped in `try/catch` blocks.
 8. **Monolithic Rebuild Scope:** Root-level `BlocBuilder` structures re-parsed the entire Markdown syntax tree on simple engagement actions (likes, bookmarks, ratings).
 9. **Non-VSYNC Auto-Scroll Timer:** Auto-scrolling relied on a 32ms software timer that drifted relative to hardware display refresh rates, causing stutter and frame drops.
-10. **Repeated Object Re-allocations:** Theme configuration objects were re-instantiated on every build frame inside `ArticleReaderMarkdownBody`.
+10. **Discontinued Markdown Dependency & Repeated Object Re-allocations:** Relying on `markdown_widget` (`MarkdownBlockGeneralFrameworkWidget` from discontinued `general_framework`) created critical supply chain risks, while theme objects were re-instantiated on every build.
 11. **Dual State Conflicts & Monolithic Files:** Conflicting internal widget state in `ArticleSlowScrollBar`, combined with monolithic 270+ line widget files mixing 6 unrelated classes.
 
 All 11 issues were systematically resolved, verified with zero test regressions (241/241 tests passing), and structured into a production-grade architecture.
@@ -50,7 +50,7 @@ flowchart TD
         ARAS --> ARABar["ArticleReaderAuthorBar"]
         ARSV --> ARABS["ArticleActionBarSection\n(BlocSelector: like & bookmark)"]
         ARABS --> ARAB["ArticleReaderActionBar"]
-        ARSV --> ARMB["ArticleReaderMarkdownBody\n(Cached MarkdownConfig)"]
+        ARSV --> ARMB["ArticleReaderMarkdownBody\n(Cached MarkdownStyleSheet)"]
         
         AVC --> ARC["ArticleReaderCubit\n(Dart 3 Sealed State Machine)"]
     end
@@ -362,10 +362,15 @@ void _onTick(Duration elapsed) {
 
 ---
 
-#### Issue 3.3: Repeated Object Allocations Inside `build()`
-- **The Problem:** In `ArticleReaderMarkdownBody`, `MarkdownConfig` and 7 nested style objects were instantiated inside the `build()` method on every render pass.
-- **Why It Is an Issue:** Unnecessary heap allocations trigger frequent garbage collection pauses and increase memory pressure during scrolling.
-- **Solution:** Cached `MarkdownConfig` (`_cachedMarkdownConfig`) as a static singleton instance, eliminating redundant object creations.
+#### Issue 3.3: Discontinued Markdown Dependency & Repeated Object Allocations
+- **The Problem:** 
+  1. The Article Reader utilized `markdown_widget` (`MarkdownBlock` / `MarkdownBlockGeneralFrameworkWidget` from the discontinued `general_framework` ecosystem). Relying on its associated configurations (`ParagraphMarkdownConfig`, `TableConfig`, etc.) presented significant long-term maintenance, security, and Flutter SDK compatibility risks for a production application.
+  2. In `ArticleReaderMarkdownBody`, multiple nested styling objects were previously re-allocated inside the `build()` method on every render pass.
+- **Why It Is an Issue:** Discontinued third-party packages no longer receive bug fixes, security audits, or compatibility updates for modern Flutter and Dart releases. Additionally, creating fresh styling objects on every build cycle triggers heap churn and garbage collection pauses during continuous scrolling.
+- **Solution:** 
+  1. **Migrated to `flutter_markdown`:** Replaced `markdown_widget` with the production-grade `flutter_markdown` package, rendering article content through `MarkdownBody`.
+  2. **Static Style Sheet Caching:** Constructed a static, cached `MarkdownStyleSheet` (`_cachedStyleSheet`) mapped directly to centralized design tokens: [`AppTextStyles.readerBodyParagraph`](file:///media/windows/workspace/My_Apps/Mind_Feed/mind_feed/lib/core/constants/app_text_styles.dart#L163-L168), [`AppTextStyles.readerHeading1`](file:///media/windows/workspace/My_Apps/Mind_Feed/mind_feed/lib/core/constants/app_text_styles.dart#L170-L175), [`AppTextStyles.readerHeading2`](file:///media/windows/workspace/My_Apps/Mind_Feed/mind_feed/lib/core/constants/app_text_styles.dart#L177-L182), [`AppTextStyles.readerHeading3`](file:///media/windows/workspace/My_Apps/Mind_Feed/mind_feed/lib/core/constants/app_text_styles.dart#L184-L189), [`AppTextStyles.readerLink`](file:///media/windows/workspace/My_Apps/Mind_Feed/mind_feed/lib/core/constants/app_text_styles.dart#L191-L194), [`AppTextStyles.readerCode`](file:///media/windows/workspace/My_Apps/Mind_Feed/mind_feed/lib/core/constants/app_text_styles.dart#L196-L200), and [`AppBorders.control`](file:///media/windows/workspace/My_Apps/Mind_Feed/mind_feed/lib/core/constants/borders.dart).
+  3. **Dependency Pruning:** Completely removed `markdown_widget` and its 4 unused transitive packages (`flutter_highlight`, `highlight`, `scroll_to_index`, `visibility_detector`) from `pubspec.yaml`, keeping the dependency graph lightweight and maintainable.
 
 ---
 
@@ -438,6 +443,7 @@ $ flutter test
 | **State Machine** | Unsealed class with mutable properties | Native Dart 3 `sealed class` hierarchy | Compile-time exhaustiveness, 0 invalid states |
 | **State Mutation** | In-place entity property updates | 100% Immutable `.copyWith()` updates | Reliable UI reactivity and zero state bleeding |
 | **Auto-Scroll Engine** | 32ms software `Timer.periodic` | Hardware VSYNC-synchronized `Ticker` | 0 frame drops, 0 timing drift, lower CPU usage |
+| **Markdown Renderer** | Discontinued `general_framework` (`markdown_widget`) | Production `flutter_markdown` (`MarkdownBody`) | Zero supply chain risk, long-term SDK compatibility |
 | **Rebuild Scope** | Full-screen rebuild on every tap | Targeted `BlocSelector` subtrees | Markdown AST parsing eliminated during engagement |
 | **Theme Integrity** | Scattered inline `TextStyle` & radii | Centralized `AppTextStyles`, `AppBorders` | 100% Design system consistency |
 | **File Modularity (Header)** | 272-line monolithic header (6 classes) | 4 focused, single-responsibility files | High readability and maintainability |

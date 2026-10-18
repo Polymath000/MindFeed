@@ -732,10 +732,10 @@
     "semantic_hash": "a7f683f81058f8185ce17e3ed03074eb"
   },
   "pubspec.yaml": {
-    "mtime": 1792312500.0349584,
-    "seen": 1792318937.8901052,
-    "ast_hash": "a3ff501a5b95a44061d73f125fc64863",
-    "semantic_hash": "a3ff501a5b95a44061d73f125fc64863"
+    "mtime": 1792323894.539546,
+    "seen": 1792324209.3456955,
+    "ast_hash": "e71831b0da481eb7c1f120a15ab9b9b5",
+    "semantic_hash": ""
   },
   "assets/images/MIT_News-AI_coding.png": {
     "mtime": 1756997974.431451,
@@ -1032,9 +1032,9 @@
     "semantic_hash": "8cdbda286f0e9ed34f579afd2d72777d"
   },
   "CONTEXT.md": {
-    "mtime": 1792323638.5069673,
-    "seen": 1792323651.474577,
-    "ast_hash": "78a4fff5b51f15e45e82262aa0149cf3",
+    "mtime": 1792324130.540149,
+    "seen": 1792324209.3349538,
+    "ast_hash": "ec9d5902278ebda9ee5d3890f20d8aa4",
     "semantic_hash": ""
   },
   "SPEC.md": {
@@ -1518,10 +1518,10 @@
     "semantic_hash": "e8ef76bdbf2e100c91c61a089e40bdbc"
   },
   "lib/features/add_article/presentation/views/article_preview_view.dart": {
-    "mtime": 1792229363.108391,
-    "seen": 1792311114.9231632,
-    "ast_hash": "480805b07161e39c8e85c14934aed5a6",
-    "semantic_hash": "480805b07161e39c8e85c14934aed5a6"
+    "mtime": 1792323929.4644337,
+    "seen": 1792324209.137339,
+    "ast_hash": "1ea822394638ce1961b13419aa8ae14d",
+    "semantic_hash": ""
   },
   "lib/features/add_article/presentation/views/drafts_view.dart": {
     "mtime": 1792229363.10861,
@@ -1914,9 +1914,9 @@
     "semantic_hash": ""
   },
   "lib/features/home/presentation/widgets/article_reader_markdown_body.dart": {
-    "mtime": 1792318840.1010637,
-    "seen": 1792318937.8341262,
-    "ast_hash": "dcfeadda790b84b52da35b8cb6c3aa43",
+    "mtime": 1792323840.4946196,
+    "seen": 1792324209.2555256,
+    "ast_hash": "bf2de27341fa283461ffc3e38599fbd3",
     "semantic_hash": ""
   },
   "lib/features/home/presentation/widgets/article_reader_top_bar.dart": {
@@ -2196,9 +2196,9 @@
     "semantic_hash": ""
   },
   "docs/reports/article_reader_clean_architecture_and_performance_report.md": {
-    "mtime": 1792323578.5735862,
-    "seen": 1792323651.4803822,
-    "ast_hash": "8a1da8ccbf7175d66566a6828d99093e",
+    "mtime": 1792324010.3093047,
+    "seen": 1792324209.3418822,
+    "ast_hash": "b41781c3248e34bb17942dcc8a7b9b0b",
     "semantic_hash": ""
   },
   "lib/features/home/presentation/widgets/article_action_bar_section.dart": {

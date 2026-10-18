@@ -23,6 +23,7 @@ The codebase follows **Feature-First Clean Architecture**:
 - **Dependency Injection**: `get_it`
 - **Local Storage**: `hive`, `hive_flutter`, `shared_preferences`
 - **Backend & Network**: `supabase_flutter`, `http`, `connectivity_plus` with custom `SupabaseInterceptor`
+- **Markdown & Editorial Rendering**: `flutter_markdown` (migrated from discontinued `markdown_widget`)
 - **Zero Firebase Dependency**: Fully decoupled from Firebase SDKs, CLI configurations, and external Google services.
 
 ## 4. Recent Project Changes
@@ -191,7 +192,8 @@ The codebase follows **Feature-First Clean Architecture**:
     - Decomposed monolithic `article_reader_header.dart` into single-responsibility widgets: `ArticleReaderCoverImage`, `ArticleReaderMetadataHeader`, and `ArticleReaderAuthorBar`.
     - Decomposed `article_reader_markdown_body.dart` and extracted `ArticleReaderTagsWrap`.
     - Decomposed `article_view.dart` into 5 modular, single-responsibility widgets: `ArticleViewContent` (stateful Ticker shell & feedback handler), `ArticleReaderScrollView` (scrollable content hierarchy), `ArticleAuthorSection` (isolated 5-star author rating BlocSelector), `ArticleActionBarSection` (isolated like/bookmark BlocSelector), and `ArticleSlowScrollBarSection` (isolated slow-scroll BlocSelector), reducing `ArticleView` to a concise 45-line entry point.
-    - Cached `MarkdownConfig` (`_cachedMarkdownConfig`), eliminating 7 redundant style object instantiations per frame.
+    - Replaced discontinued `markdown_widget: ^2.3.2+8` (which depended on abandoned `general_framework`) with production-grade `flutter_markdown: ^0.7.7+1`, completely eliminating 4 unused transitive packages (`flutter_highlight`, `highlight`, `scroll_to_index`, `visibility_detector`) from the dependency graph.
+    - Cached `MarkdownStyleSheet` (`_cachedStyleSheet`) mapped directly to centralized design tokens (`AppTextStyles`, `AppBorders`, `AppColors`), eliminating repeated style object instantiations per frame.
     - Replaced hardcoded text styles, arbitrary border radii, and raw opacity overlays with `AppTextStyles`, `AppBorders`, and `AppColors`.
   - **UI Shell & VSYNC Auto-Scrolling Performance**:
     - Converted `ArticleSlowScrollBar` to a pure `StatelessWidget`, removing dual-state `setState` conflicts.
@@ -204,7 +206,7 @@ The codebase follows **Feature-First Clean Architecture**:
 
 ## 5. Architectural Reports & Documentation Index
 Detailed technical reports documenting audits, optimizations, and architectural refactoring are maintained in `docs/reports/`:
-- **Article Reader Clean Architecture, Sealed State Machine & VSYNC Auto-Scrolling Report** (`docs/reports/article_reader_clean_architecture_and_performance_report.md`): Detailed analysis of the Article Reader refactoring, covering domain aggregate extraction, Dart 3 sealed state machine, VSYNC `Ticker` scrolling, component decomposition, and rebuild scope isolation.
+- **Article Reader Clean Architecture, Sealed State Machine & VSYNC Auto-Scrolling Report** (`docs/reports/article_reader_clean_architecture_and_performance_report.md`): Detailed analysis of the Article Reader refactoring, covering domain aggregate extraction, Dart 3 sealed state machine, VSYNC `Ticker` scrolling, component decomposition, rebuild scope isolation, and the supply-chain security migration from discontinued `markdown_widget` to `flutter_markdown`.
 - **Legacy Prototype & Architectural Evolution Report** (`docs/reports/legacy_prototype_and_evolution_report.md`): Chronological audit of the 38 foundational commits from genesis (`b6782b4`) up to Pull Request #1 (`ba0ed81`), detailing early UI prototypes, feature consolidation (`cd8a116`), password security remediation (`a2a03eb`), and the editorial card stack pivot (`0ba79bd`).
 - **Mandatory Category Onboarding Gate & Password Recovery Architecture Report** (`docs/reports/category_onboarding_and_auth_architecture_report.md`): Architectural analysis of commits `f7e3024` to `39e50a4`, documenting deferred session and token persistence, 20-category vector pill modernization, Supabase password recovery pipeline, and `ValueNotifier` form optimizations.
 - **Dart DevTools Performance Profile & Raster Jank Optimization Report** (`docs/reports/devtools_performance_and_raster_optimization_report.md`): Quantitative timeline comparison (`17_07_21.029.json` vs. `18_08_16.161.json`) for commit `921c7eb`, detailing the elimination of 6,150 `saveLayer` passes via `Color.lerp`, masthead ticker isolation, asset downscaling, and sliver virtualization (78.8% raster time reduction).

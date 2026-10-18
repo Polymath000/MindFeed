@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:markdown_widget/markdown_widget.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_text_styles.dart';
+import 'package:mind_feed/core/constants/borders.dart';
 
 export 'article_reader_tags_wrap.dart';
 
@@ -19,25 +20,30 @@ class ArticleReaderMarkdownBody extends StatelessWidget {
   final String excerpt;
   final String title;
 
-  static final MarkdownConfig _cachedMarkdownConfig = MarkdownConfig(
-    configs: [
-      PConfig(textStyle: AppTextStyles.readerBodyParagraph),
-      H1Config(style: AppTextStyles.readerHeading1),
-      H2Config(style: AppTextStyles.readerHeading2),
-      H3Config(style: AppTextStyles.readerHeading3),
-      LinkConfig(style: AppTextStyles.readerLink),
-      BlockquoteConfig(
-        sideColor: AppColors.mutedInk,
-        textColor: AppColors.mutedInk,
+  static final MarkdownStyleSheet _cachedStyleSheet = MarkdownStyleSheet(
+    p: AppTextStyles.readerBodyParagraph,
+    h1: AppTextStyles.readerHeading1,
+    h2: AppTextStyles.readerHeading2,
+    h3: AppTextStyles.readerHeading3,
+    a: AppTextStyles.readerLink,
+    blockquote: AppTextStyles.readerBodyParagraph.copyWith(
+      color: AppColors.mutedInk,
+    ),
+    blockquoteDecoration: const BoxDecoration(
+      border: Border(
+        left: BorderSide(color: AppColors.mutedInk, width: 3),
       ),
-      CodeConfig(style: AppTextStyles.readerCode),
-    ],
+    ),
+    code: AppTextStyles.readerCode,
+    codeblockDecoration: const BoxDecoration(
+      color: AppColors.blackAlpha12,
+      borderRadius: AppBorders.control,
+    ),
   );
 
   @override
   Widget build(BuildContext context) {
-    final hasContent =
-        content != null && content!.trim().isNotEmpty;
+    final hasContent = content != null && content!.trim().isNotEmpty;
     final markdownData = hasContent ? content! : excerpt;
 
     return Column(
@@ -50,9 +56,10 @@ class ArticleReaderMarkdownBody extends StatelessWidget {
           ),
           const SizedBox(height: 20),
         ],
-        MarkdownBlock(
+        MarkdownBody(
           data: markdownData.isNotEmpty ? markdownData : title,
-          config: _cachedMarkdownConfig,
+          selectable: false,
+          styleSheet: _cachedStyleSheet,
         ),
       ],
     );
