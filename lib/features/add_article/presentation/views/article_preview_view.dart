@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:markdown_widget/markdown_widget.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
-import 'package:mind_feed/features/add_article/presentation/widget/article_preview_header.dart';
+import 'package:mind_feed/features/add_article/presentation/widgets/article_preview_header.dart';
 
 class ArticlePreviewView extends StatelessWidget {
   final EditorialNewsItem? item;
@@ -47,8 +47,9 @@ class ArticlePreviewView extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 48),
               children: [
                 ArticlePreviewHeader(item: preview),
-                MarkdownBlock(
+                MarkdownBody(
                   data: preview.content ?? '',
+                  selectable: false,
                 ),
               ],
             ),

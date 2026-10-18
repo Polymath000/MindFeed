@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:mind_feed/features/add_article/domain/helpers/article_validator.dart';
-import 'package:mind_feed/features/home/domain/entities/article_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/category_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/tag_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/category_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/tag_entity.dart';
 
 class AddArticleState extends Equatable {
   final bool isLoading;

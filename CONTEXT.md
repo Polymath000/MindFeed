@@ -6,16 +6,20 @@ Mind Feed is a Flutter content and article reading application featuring an edit
 ## 2. Architecture & Directory Structure
 The codebase follows **Feature-First Clean Architecture**:
 - `lib/config/`: App routing (`onGenerateRoute`), themes, color palette, typography.
-- `lib/core/`: Reusable components, design system primitives (`editorial_card`, `editorial_card_stack`), network utilities, local cache helpers, constants, and dependency injection (`setup_service_locator.dart`).
-- `lib/features/`: Feature modules adhering to presentation, domain, and data layers:
-  - `auth/`: Authentication (login, sign-up, password reset, categories).
-  - `home/`: Editorial home feed, article cards, card deck navigation.
-  - `articles_saved/`: Saved news stack and bookmarks.
-  - `author/`: Author profiles and author articles.
-  - `search/`: Search and category filtering.
-  - `settings/`: App settings and theme mode toggles.
-  - `profile/`: User profile and authored articles.
-  - `add_article/`: Local article authoring and device preferences.
+- `lib/core/`: Reusable components, shared article domain & data kernel (`core/articles/`), design system primitives (`editorial_card`, `editorial_card_stack`), network utilities, local cache helpers, constants, and dependency injection (`setup_service_locator.dart`).
+- `lib/features/`: Feature modules adhering to strict `presentation → domain → data` layers:
+  - `article/`: Dedicated Article Reader feature (`ArticleReaderCubit`, `ArticleReaderState`, `ArticleView`, 15 `article_*` reader widgets, `ArticleReaderDetails`, and 8 reader-specific domain use cases).
+  - `auth/`: Authentication (login, sign-up, OTP verification, password recovery, pure Dart `UserEntity`, and data-layer `UserEntityAdapter`).
+  - `home/`: Editorial home feed (`HomeFeedCubit`, `HomeView`, `HomeViewBody`, `HomeMastheadHeader`, `HomeLeadStorySection`), card deck navigation, and home-feed-specific use cases (`GetHomeFeedUseCase`, `GetUserFeedTopicsUseCase`, `FilterArticlesByTopicUseCase`).
+  - `collections/`: Saved news bookmarks (`CollectionsCubit`) and offline downloaded articles (`DownloadsCubit`, `DeleteDownloadedArticleUseCase`).
+  - `author/`: Author profiles and author articles (`AuthorCubit`).
+  - `search/`: Search and category filtering (`SearchCubit`, `SearchArticlesUseCase`, `GetArticlesByCategoryUseCase`).
+  - `settings/`: App settings, profile summary, archive cache management, and theme mode toggles (`SettingsCubit`, `ThemeModeCubit`).
+  - `profile/`: User profile, category onboarding (`CategoriesCubit`, `CategoriesView`), category sync reconciliation (`ReconcileCategorySyncUseCase`), and authored articles (`ProfileArticlesCubit`, `ProfileInfoCubit`).
+  - `add_article/`: Article authoring (`AddArticleCubit`, `PublishArticleUseCase`, `SaveDraftUseCase`, `UpdateArticleUseCase`) and drafts management (`DraftsCubit`).
+  - `main/`: Root navigation shell (`MainView`, `MainShellCubit`).
+  - `splash/`: Startup session & onboarding gate (`SplashCubit`, `CheckAppStartupUseCase`).
+  - `onboarding/`: Editorial onboarding carousel.
 
 ## 3. Technology Stack & Key Libraries
 - **Framework**: Flutter 3.9+ / Dart 3.9+
@@ -23,6 +27,7 @@ The codebase follows **Feature-First Clean Architecture**:
 - **Dependency Injection**: `get_it`
 - **Local Storage**: `hive`, `hive_flutter`, `shared_preferences`
 - **Backend & Network**: `supabase_flutter`, `http`, `connectivity_plus` with custom `SupabaseInterceptor`
+- **Markdown & Editorial Rendering**: `flutter_markdown` (migrated from discontinued `markdown_widget`)
 - **Zero Firebase Dependency**: Fully decoupled from Firebase SDKs, CLI configurations, and external Google services.
 
 ## 4. Recent Project Changes
@@ -178,11 +183,48 @@ The codebase follows **Feature-First Clean Architecture**:
     - Migrated `HomeFeedState` to a Dart 3 `sealed class` hierarchy (`HomeFeedInitial`, `HomeFeedLoading`, `HomeFeedLoaded`, `HomeFeedError`) with `SwipeSaveStatus`.
     - Refactored `HomeFeedCubit` and `HomeViewBody` into small `<20`-line methods, guarded all emissions with `if (!isClosed)`, eliminated `StatefulBuilder` mutation workarounds via immutable list emissions, and registered `GetUserFeedTopicsUseCase`, `FilterArticlesByTopicUseCase`, and `HomeFeedCubit` in `setup_service_locator.dart`.
   - Detailed report available in `docs/reports/home_feature_clean_architecture_and_engineering_report.md`.
+- **Article Reader Clean Architecture, Sealed State Machine & VSYNC Auto-Scrolling**:
+  - **Domain Layer Purification & Aggregate Modeling**:
+    - Created immutable `ArticleReaderDetails` aggregate domain entity in `lib/features/home/domain/entities/article_reader_details.dart`.
+    - Created `LoadArticleReaderDetailsUseCase` in `lib/features/home/domain/usecases/load_article_reader_details_use_case.dart` encapsulating article details, offline status, engagement status, and author rating summaries.
+    - Created atomic focused use cases: `CheckArticleDownloadedUseCase`, `IsArticleLikedUseCase`, and `IsArticleSavedUseCase`.
+  - **Dart 3 Sealed State Machine & Immutable State Transitions**:
+    - Migrated `ArticleReaderState` to a Dart 3 `sealed class` hierarchy (`ArticleReaderInitial`, `ArticleReaderLoading`, `ArticleReaderLoaded`, `ArticleReaderError`) with backward-compatible getters for seamless consumption.
+    - Refactored `ArticleReaderCubit` to use constructor-injected domain use cases, safe `if (!isClosed)` async emission guards, zero in-place entity mutations (using `.copyWith(...)`), and clean `.when()` pattern matching for `ApiResult<T>`.
+    - Deprecated runtime reflection in `article_reader_deps.dart`.
+  - **Component Decomposition & Theme Centralization**:
+    - Decomposed monolithic `article_reader_header.dart` into single-responsibility widgets: `ArticleReaderCoverImage`, `ArticleReaderMetadataHeader`, and `ArticleReaderAuthorBar`.
+    - Decomposed `article_reader_markdown_body.dart` and extracted `ArticleReaderTagsWrap`.
+    - Decomposed `article_view.dart` into 5 modular, single-responsibility widgets: `ArticleViewContent` (stateful Ticker shell & feedback handler), `ArticleReaderScrollView` (scrollable content hierarchy), `ArticleAuthorSection` (isolated 5-star author rating BlocSelector), `ArticleActionBarSection` (isolated like/bookmark BlocSelector), and `ArticleSlowScrollBarSection` (isolated slow-scroll BlocSelector), reducing `ArticleView` to a concise 45-line entry point.
+    - Replaced discontinued `markdown_widget: ^2.3.2+8` (which depended on abandoned `general_framework`) with production-grade `flutter_markdown: ^0.7.7+1`, completely eliminating 4 unused transitive packages (`flutter_highlight`, `highlight`, `scroll_to_index`, `visibility_detector`) from the dependency graph.
+    - Cached `MarkdownStyleSheet` (`_cachedStyleSheet`) mapped directly to centralized design tokens (`AppTextStyles`, `AppBorders`, `AppColors`), eliminating repeated style object instantiations per frame.
+    - Replaced hardcoded text styles, arbitrary border radii, and raw opacity overlays with `AppTextStyles`, `AppBorders`, and `AppColors`.
+  - **UI Shell & VSYNC Auto-Scrolling Performance**:
+    - Converted `ArticleSlowScrollBar` to a pure `StatelessWidget`, removing dual-state `setState` conflicts.
+    - Replaced the drifting 32ms software timer in `ArticleView` with a hardware VSYNC-synchronized Flutter `Ticker` (`SingleTickerProviderStateMixin`) with delta-time calculation.
+    - Isolated rebuild scopes using `BlocSelector` (`ArticleAuthorSection`, `ArticleActionBarSection`, `ArticleSlowScrollBarSection`) so heavy markdown rendering and cover images never re-render during engagement interactions.
+    - Registered `ArticleReaderCubit` in `setup_service_locator.dart`.
+    - Detailed report available in `docs/reports/article_reader_clean_architecture_and_performance_report.md`.
 - **Comprehensive Architectural & Evolution Reports Suite**:
   - Authored dedicated technical reports in `docs/reports/` documenting the complete engineering journey of MindFeed, key architectural pivots, and performance milestones.
+- **Feature Splitting & Cross-Feature Clean Architecture Refactoring**:
+  - **Shared `features/articles/` Domain Kernel Extraction**: Extracted shared entities (`ArticleEntity`, `CategoryEntity`, `TagEntity`, `DownloadedArticleEntity`, `AuthorRatingSummary`), repository contracts (`ArticlesRepository`, `OfflineArticlesRepository`, `ArticleEngagementRepository`), shared multi-feature use cases, remote/local data sources, models, and `ArticlesRepositoryImpl` out of `features/home/` into `lib/features/articles/`.
+  - **Single-Owner Use Case Relocation**: Relocated single-owner use cases to their owning vertical slices (`PublishArticleUseCase`, `SaveDraftUseCase`, `UpdateArticleUseCase` -> `add_article`; `SearchArticlesUseCase`, `GetArticlesByCategoryUseCase` -> `search`; `DeleteDownloadedArticleUseCase` -> `collections`), reducing cross-feature imports into `home` by 98.3% (`59 -> 1`).
+  - **Eliminated All Layer-Skipping & DI Fallback Anti-Patterns**:
+    - Created pure `settings/domain/` layer (`SettingsProfileSummary`, `GetSettingsProfileUseCase`, `GetArchiveCacheSizeUseCase`, `ClearDownloadedArticlesUseCase`) and refactored `SettingsCubit` + `SettingsViewBody` (13 new unit tests).
+    - Relocated `CategoriesCubit`, `CategoriesView`, `CategoriesViewBody`, and `CategoryCard` from `auth/presentation/` to `profile/presentation/`, stripping inline `ProfileRepoImpl` / `ProfileRemoteDataSourceImpl` instantiation.
+    - Converted `CategorySyncReconciler` into `ReconcileCategorySyncUseCase` (`profile/domain/usecases/`) orchestrated by `MainShellCubit` (`main/presentation/`).
+    - Refactored `CheckAppStartupUseCase` (`splash/domain/`) to depend on `AuthRepository` (`hasActiveSession()`, `logout()`) instead of `AuthApiSource` (`auth/data/`).
+    - Created `IsArticleStarredUseCase`, `GetUserProfileUseCase`, `GetFavoriteCategoriesUseCase`, `ProfileInfoCubit`, and `AuthorCubit`, and refactored `DownloadsCubit`, `CollectionsCubit`, `HomeFeedCubit`, `ArticleReaderCubit`, `DraftsCubit`, `AddArticleCubit`, `SearchCubit`, and `ProfileArticlesCubit` to require constructor-injected use cases only.
+  - **Domain Layer Purity & Directory Naming Standardization**:
+    - Stripped Hive annotations/imports from `UserEntity` and `DownloadedArticleEntity`, moving `UserEntityAdapter` and `DownloadedArticleEntityAdapter` to `data/models/`.
+    - Relocated `SearchFilterHelper` and `ArticlePayloadBuilder` out of `domain/` into `presentation/`.
+    - Broke circular UI navigation between `home` and `collections`/`settings` via `AppRoutes`, extracted shared `CustomArticleCardOfProfile` to `lib/core/widgets/article_card.dart`, and standardized all feature presentation folders to `controllers/` and `widgets/` (282/282 tests passing, 0 analyzer issues).
 
 ## 5. Architectural Reports & Documentation Index
 Detailed technical reports documenting audits, optimizations, and architectural refactoring are maintained in `docs/reports/`:
+- **Feature Splitting & Cross-Feature Clean Architecture Refactoring Report** (`docs/reports/feature_splitting_and_clean_architecture_report.md`): Comprehensive audit and refactoring of all 10 feature modules, detailing shared `features/articles/` domain kernel extraction, single-owner use case relocation, elimination of presentation-to-data/repository and domain-to-data/presentation violations, Hive adapter migration, and folder naming normalization.
+- **Article Reader Clean Architecture, Sealed State Machine & VSYNC Auto-Scrolling Report** (`docs/reports/article_reader_clean_architecture_and_performance_report.md`): Detailed analysis of the Article Reader refactoring, covering domain aggregate extraction, Dart 3 sealed state machine, VSYNC `Ticker` scrolling, component decomposition, rebuild scope isolation, and the supply-chain security migration from discontinued `markdown_widget` to `flutter_markdown`.
 - **Legacy Prototype & Architectural Evolution Report** (`docs/reports/legacy_prototype_and_evolution_report.md`): Chronological audit of the 38 foundational commits from genesis (`b6782b4`) up to Pull Request #1 (`ba0ed81`), detailing early UI prototypes, feature consolidation (`cd8a116`), password security remediation (`a2a03eb`), and the editorial card stack pivot (`0ba79bd`).
 - **Mandatory Category Onboarding Gate & Password Recovery Architecture Report** (`docs/reports/category_onboarding_and_auth_architecture_report.md`): Architectural analysis of commits `f7e3024` to `39e50a4`, documenting deferred session and token persistence, 20-category vector pill modernization, Supabase password recovery pipeline, and `ValueNotifier` form optimizations.
 - **Dart DevTools Performance Profile & Raster Jank Optimization Report** (`docs/reports/devtools_performance_and_raster_optimization_report.md`): Quantitative timeline comparison (`17_07_21.029.json` vs. `18_08_16.161.json`) for commit `921c7eb`, detailing the elimination of 6,150 `saveLayer` passes via `Color.lerp`, masthead ticker isolation, asset downscaling, and sliver virtualization (78.8% raster time reduction).
@@ -192,7 +234,7 @@ Detailed technical reports documenting audits, optimizations, and architectural 
 
 ## 6. Knowledge Graph Architecture & Codebase Navigation (Graphify)
 The MindFeed repository maintains a persistent GraphRAG knowledge graph under `graphify-out/` representing the entire codebase AST, community structures, call flows, and symbol dependencies:
-- **`graphify-out/graph.json`**: Primary machine-readable graph comprising 3,553 AST nodes, 5,580 edges, and 186 communities.
+- **`graphify-out/graph.json`**: Primary machine-readable graph comprising 4,108 AST nodes, 6,710 edges, and 193 communities.
 - **`graphify-out/GRAPH_REPORT.md`**: Architectural audit report detailing God Nodes (e.g. `CacheHelper`, `AppColors`, `AppRoutes`), cross-module bridges, and community cohesion scores.
 - **`graphify-out/graph.html`**: Interactive visual web canvas for graphical dependency navigation.
 

@@ -6,10 +6,6 @@ import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
-import 'package:mind_feed/features/collections/presentation/views/articles_saved.dart';
-import 'package:mind_feed/features/collections/presentation/views/downloaded_articles_view.dart';
-import 'package:mind_feed/features/settings/presentation/views/settings_view.dart';
-
 import '../views/home_view.dart';
 
 final AdvancedDrawerController advancedDrawerController =
@@ -108,17 +104,17 @@ class CustomDrawer extends StatelessWidget {
               title: const Text('My Drafts'),
             ),
             ListTile(
-              iconColor: (currentRoute == ArticlesSaved.routeName ||
+              iconColor: (
                       currentRoute == AppRoutes.articlesSaved)
                   ? AppColors.amber
                   : AppColors.white,
-              textColor: (currentRoute == ArticlesSaved.routeName ||
+              textColor: (
                       currentRoute == AppRoutes.articlesSaved)
                   ? AppColors.amber
                   : AppColors.white,
               onTap: () {
                 final bool isSaved =
-                    currentRoute == ArticlesSaved.routeName ||
+                    
                         currentRoute == AppRoutes.articlesSaved;
                 if (!isSaved) {
                   Navigator.pushNamed(context, AppRoutes.articlesSaved);
@@ -129,17 +125,17 @@ class CustomDrawer extends StatelessWidget {
               title: const Text('Saved Stories'),
             ),
             ListTile(
-              iconColor: (currentRoute == DownloadedArticlesView.routeName ||
+              iconColor: (
                       currentRoute == AppRoutes.downloadedArticles)
                   ? AppColors.amber
                   : AppColors.white,
-              textColor: (currentRoute == DownloadedArticlesView.routeName ||
+              textColor: (
                       currentRoute == AppRoutes.downloadedArticles)
                   ? AppColors.amber
                   : AppColors.white,
               onTap: () {
                 final bool isDownload =
-                    currentRoute == DownloadedArticlesView.routeName ||
+                    
                         currentRoute == AppRoutes.downloadedArticles;
                 if (!isDownload) {
                   Navigator.pushNamed(context, AppRoutes.downloadedArticles);
@@ -150,17 +146,17 @@ class CustomDrawer extends StatelessWidget {
               title: const Text('Downloads'),
             ),
             ListTile(
-              iconColor: (currentRoute == SettingsView.routeName ||
+              iconColor: (
                       currentRoute == AppRoutes.settings)
                   ? AppColors.amber
                   : AppColors.white,
-              textColor: (currentRoute == SettingsView.routeName ||
+              textColor: (
                       currentRoute == AppRoutes.settings)
                   ? AppColors.amber
                   : AppColors.white,
               onTap: () {
                 final bool isSettings =
-                    currentRoute == SettingsView.routeName ||
+                    
                         currentRoute == AppRoutes.settings;
                 if (!isSettings) {
                   Navigator.pushNamed(context, AppRoutes.settings);

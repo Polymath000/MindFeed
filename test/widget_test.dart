@@ -1,27 +1,80 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
+import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/category_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/tag_entity.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
+import 'package:mind_feed/core/articles/domain/usecases/delete_article_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_author_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_downloaded_articles_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_saved_articles_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_bookmark_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_star_use_case.dart';
+import 'package:mind_feed/features/auth/domain/repos/auth_repo.dart';
+import 'package:mind_feed/features/auth/domain/usecases/logout_use_case.dart';
+import 'package:mind_feed/features/collections/presentation/controllers/collections_cubit.dart';
 import 'package:mind_feed/features/collections/presentation/views/articles_saved.dart';
-import 'package:mind_feed/features/home/domain/entities/article_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/category_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/tag_entity.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
+import 'package:mind_feed/features/article/domain/usecases/check_article_downloaded_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/download_article_text_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/get_article_details_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_home_feed_use_case.dart';
-import 'package:mind_feed/features/home/presentation/views/article_view.dart';
+import 'package:mind_feed/features/home/domain/usecases/get_user_feed_topics_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/is_article_liked_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/is_article_saved_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/is_article_starred_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/rate_author_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_article_like_use_case.dart';
+import 'package:mind_feed/features/article/presentation/controllers/article_reader/article_reader_cubit.dart';
+import 'package:mind_feed/features/home/presentation/controllers/home_feed/home_feed_cubit.dart';
+import 'package:mind_feed/features/article/presentation/views/article_view.dart';
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 import 'package:mind_feed/features/main/presentation/views/main_view.dart';
 import 'package:mind_feed/features/main/presentation/widgets/main_navigation_bar.dart';
 import 'package:mind_feed/features/onboarding/presentation/views/onboarding_view.dart';
+import 'package:mind_feed/features/profile/domain/repos/profile_repo.dart';
+import 'package:mind_feed/features/profile/domain/usecases/get_favorite_categories_use_case.dart';
+import 'package:mind_feed/features/profile/domain/usecases/get_user_profile_use_case.dart';
+import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_cubit.dart';
+import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_info_cubit.dart';
 import 'package:mind_feed/features/profile/presentation/views/profile_view.dart';
+import 'package:mind_feed/features/settings/domain/usecases/clear_downloaded_articles_use_case.dart';
+import 'package:mind_feed/features/settings/domain/usecases/get_archive_cache_size_use_case.dart';
+import 'package:mind_feed/features/settings/domain/usecases/get_settings_profile_use_case.dart';
+import 'package:mind_feed/features/settings/presentation/controllers/settings_cubit/settings_cubit.dart';
 import 'package:mind_feed/features/settings/presentation/controllers/theme_mode_cubit/theme_mode_cubit.dart';
 import 'package:mind_feed/features/settings/presentation/views/settings_view.dart';
 
 Widget editorialHarness(Widget child) =>
     MaterialApp(theme: ThemeData.light(), home: child);
 
-class _FakeArticlesRepository implements ArticlesRepository {
+class _FakeProfileRepoForWidgetTest extends Fake implements ProfileRepository {
+  @override
+  Future<ApiResult<Map<String, dynamic>>> getProfile(String userId) async =>
+      const Success({});
+  @override
+  Future<ApiResult<List<Map<String, dynamic>>>> getFavoriteCategories(String userId) async =>
+      const Success([]);
+}
+
+class _FakeOfflineArticlesRepoForWidgetTest extends Fake implements OfflineArticlesRepository {
+  @override
+  Future<List<DownloadedArticleEntity>> getDownloadedArticles() async => [];
+  @override
+  Future<void> clearAllDownloadedArticles() async {}
+}
+
+class _FakeAuthRepoForWidgetTest extends Fake implements AuthRepository {
+  @override
+  Future<ApiResult<void>> logout() async => const Success(null);
+}
+
+class _FakeArticlesRepository
+    implements ArticlesRepository, ArticleEngagementRepository, OfflineArticlesRepository {
   final ArticleEntity sampleArticle;
   _FakeArticlesRepository(this.sampleArticle);
 
@@ -126,6 +179,51 @@ class _FakeArticlesRepository implements ArticlesRepository {
 
   @override
   Future<void> clearDownloadedArticles() async {}
+
+  @override
+  Future<ApiResult<void>> likeArticle(String articleId, String userId) async =>
+      const Success(null);
+
+  @override
+  Future<ApiResult<void>> unlikeArticle(String articleId, String userId) async =>
+      const Success(null);
+
+  @override
+  Future<ApiResult<bool>> isArticleLiked(String articleId, String userId) async =>
+      const Success(false);
+
+  @override
+  Future<ApiResult<AuthorRatingSummary>> rateAuthor({
+    required String authorKey,
+    required int stars,
+    String? authorId,
+    String authorName = 'Editorial Staff',
+  }) async =>
+      const FailureResult(ServerFailure('Not found'));
+
+  @override
+  Future<ApiResult<AuthorRatingSummary>> getAuthorRatingSummary({
+    required String authorKey,
+    String? authorId,
+    String authorName = 'Editorial Staff',
+  }) async =>
+      const FailureResult(ServerFailure('Not found'));
+
+  @override
+  Future<DownloadedArticleEntity?> getDownloadedArticleById(String id) async =>
+      null;
+
+  @override
+  Future<void> saveDownloadedArticle(DownloadedArticleEntity article) async {}
+
+  @override
+  Future<List<DownloadedArticleEntity>> getDownloadedArticles() async => [];
+
+  @override
+  Future<void> deleteDownloadedArticle(String id) async {}
+
+  @override
+  Future<void> clearAllDownloadedArticles() async {}
 }
 
 void main() {
@@ -138,20 +236,61 @@ void main() {
     tags: ['Tech'],
   );
 
-  setUp(() {
+  setUp(() async {
+    await getIt.reset();
     final repo = _FakeArticlesRepository(sampleArticle);
-    if (getIt.isRegistered<GetHomeFeedUseCase>()) {
-      getIt.unregister<GetHomeFeedUseCase>();
-    }
+    final profileRepo = _FakeProfileRepoForWidgetTest();
     getIt.registerLazySingleton<GetHomeFeedUseCase>(
       () => GetHomeFeedUseCase(repo),
     );
+    getIt.registerFactory<HomeFeedCubit>(
+      () => HomeFeedCubit(
+        getHomeFeedUseCase: GetHomeFeedUseCase(repo),
+        getUserFeedTopicsUseCase: GetUserFeedTopicsUseCase(profileRepository: profileRepo),
+        getSavedArticlesUseCase: GetSavedArticlesUseCase(repo),
+        toggleBookmarkUseCase: ToggleBookmarkUseCase(repo),
+        toggleStarUseCase: ToggleStarUseCase(repo),
+        toggleArticleLikeUseCase: ToggleArticleLikeUseCase(repo),
+      ),
+    );
+    getIt.registerFactory<CollectionsCubit>(
+      () => CollectionsCubit(
+        getSavedArticlesUseCase: GetSavedArticlesUseCase(repo),
+        toggleBookmarkUseCase: ToggleBookmarkUseCase(repo),
+      ),
+    );
+    getIt.registerFactory<ArticleReaderCubit>(
+      () => ArticleReaderCubit(
+        getArticleDetailsUseCase: GetArticleDetailsUseCase(repo),
+        checkArticleDownloadedUseCase: CheckArticleDownloadedUseCase(repo),
+        downloadArticleTextUseCase: DownloadArticleTextUseCase(repo),
+        isArticleLikedUseCase: IsArticleLikedUseCase(repo),
+        toggleArticleLikeUseCase: ToggleArticleLikeUseCase(repo),
+        isArticleSavedUseCase: IsArticleSavedUseCase(repo),
+        toggleBookmarkUseCase: ToggleBookmarkUseCase(repo),
+        rateAuthorUseCase: RateAuthorUseCase(repo),
+        getAuthorRatingUseCase: GetAuthorRatingUseCase(repo),
+        toggleStarUseCase: ToggleStarUseCase(repo),
+        isArticleStarredUseCase: IsArticleStarredUseCase(repo),
+      ),
+    );
+    getIt.registerFactory<ProfileArticlesCubit>(
+      () => ProfileArticlesCubit(
+        getArticlesByAuthorUseCase: GetArticlesByAuthorUseCase(repo),
+        deleteArticleUseCase: DeleteArticleUseCase(repo),
+      ),
+    );
+    getIt.registerFactory<ProfileInfoCubit>(
+      () => ProfileInfoCubit(
+        getUserProfileUseCase: GetUserProfileUseCase(profileRepo),
+        getFavoriteCategoriesUseCase: GetFavoriteCategoriesUseCase(profileRepo),
+        getArticlesByAuthorUseCase: GetArticlesByAuthorUseCase(repo),
+      ),
+    );
   });
 
-  tearDown(() {
-    if (getIt.isRegistered<GetHomeFeedUseCase>()) {
-      getIt.unregister<GetHomeFeedUseCase>();
-    }
+  tearDown(() async {
+    await getIt.reset();
   });
 
   testWidgets(
@@ -259,10 +398,20 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
 
+    final fakeProfileRepo = _FakeProfileRepoForWidgetTest();
+    final fakeOfflineRepo = _FakeOfflineArticlesRepoForWidgetTest();
+    final fakeAuthRepo = _FakeAuthRepoForWidgetTest();
+    final settingsCubit = SettingsCubit(
+      getSettingsProfileUseCase: GetSettingsProfileUseCase(fakeProfileRepo),
+      getArchiveCacheSizeUseCase: GetArchiveCacheSizeUseCase(GetDownloadedArticlesUseCase(fakeOfflineRepo)),
+      clearDownloadedArticlesUseCase: ClearDownloadedArticlesUseCase(fakeOfflineRepo),
+      logoutUseCase: LogoutUseCase(authRepo: fakeAuthRepo),
+    )..loadSettings();
+
     await tester.pumpWidget(
       BlocProvider<ThemeModeCubit>(
         create: (_) => ThemeModeCubit(),
-        child: editorialHarness(const SettingsView()),
+        child: editorialHarness(SettingsView(cubit: settingsCubit)),
       ),
     );
 

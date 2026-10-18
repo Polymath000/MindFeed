@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mind_feed/features/collections/presentation/cubit/downloads/downloads_cubit.dart';
-import 'package:mind_feed/features/collections/presentation/cubit/downloads/downloads_state.dart';
-import 'package:mind_feed/features/home/domain/entities/downloaded_article_entity.dart';
-import 'package:mind_feed/features/home/data/datasources/articles_local_data_source.dart';
-import 'package:mind_feed/features/home/domain/usecases/delete_downloaded_article_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/get_downloaded_articles_use_case.dart';
+import 'package:mind_feed/features/collections/presentation/controllers/downloads/downloads_cubit.dart';
+import 'package:mind_feed/features/collections/presentation/controllers/downloads/downloads_state.dart';
+import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
+import 'package:mind_feed/features/collections/domain/usecases/delete_downloaded_article_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_downloaded_articles_use_case.dart';
 
-class FakeArticlesLocalDataSource implements ArticlesLocalDataSource {
+class FakeOfflineArticlesRepository implements OfflineArticlesRepository {
   final Map<String, DownloadedArticleEntity> storage = {};
   bool shouldThrowOnGet = false;
   bool shouldThrowOnDelete = false;
@@ -63,19 +63,18 @@ DownloadedArticleEntity createTestArticle({
 }
 
 void main() {
-  late FakeArticlesLocalDataSource fakeDataSource;
+  late FakeOfflineArticlesRepository fakeRepository;
   late GetDownloadedArticlesUseCase getUseCase;
   late DeleteDownloadedArticleUseCase deleteUseCase;
   late DownloadsCubit cubit;
 
   setUp(() {
-    fakeDataSource = FakeArticlesLocalDataSource();
-    getUseCase = GetDownloadedArticlesUseCase(fakeDataSource);
-    deleteUseCase = DeleteDownloadedArticleUseCase(fakeDataSource);
+    fakeRepository = FakeOfflineArticlesRepository();
+    getUseCase = GetDownloadedArticlesUseCase(fakeRepository);
+    deleteUseCase = DeleteDownloadedArticleUseCase(fakeRepository);
     cubit = DownloadsCubit(
       getDownloadedArticlesUseCase: getUseCase,
       deleteDownloadedArticleUseCase: deleteUseCase,
-      localDataSource: fakeDataSource,
     );
   });
 
@@ -94,8 +93,8 @@ void main() {
       () async {
     final art1 = createTestArticle(id: '1', title: 'First Article');
     final art2 = createTestArticle(id: '2', title: 'Second Article');
-    await fakeDataSource.saveDownloadedArticle(art1);
-    await fakeDataSource.saveDownloadedArticle(art2);
+    await fakeRepository.saveDownloadedArticle(art1);
+    await fakeRepository.saveDownloadedArticle(art2);
 
     await cubit.loadDownloads();
 
@@ -112,6 +111,14 @@ void main() {
     expect(cubit.state.filteredArticles, isEmpty);
   });
 
+  test('loadDownloads handles failure gracefully', () async {
+    fakeRepository.shouldThrowOnGet = true;
+    await cubit.loadDownloads();
+
+    expect(cubit.state.status, equals(DownloadsStatus.error));
+    expect(cubit.state.errorMessage, equals('Failed to load downloaded articles'));
+  });
+
   test('filterArticles filters by title, author, category and tags', () async {
     final art1 = createTestArticle(
       id: '1',
@@ -125,8 +132,8 @@ void main() {
       slug: 'tech',
       author: 'Bob Jones',
     );
-    await fakeDataSource.saveDownloadedArticle(art1);
-    await fakeDataSource.saveDownloadedArticle(art2);
+    await fakeRepository.saveDownloadedArticle(art1);
+    await fakeRepository.saveDownloadedArticle(art2);
     await cubit.loadDownloads();
 
     cubit.filterArticles('Quantum');
@@ -152,8 +159,8 @@ void main() {
       () async {
     final art1 = createTestArticle(id: '1', title: 'Article One');
     final art2 = createTestArticle(id: '2', title: 'Article Two');
-    await fakeDataSource.saveDownloadedArticle(art1);
-    await fakeDataSource.saveDownloadedArticle(art2);
+    await fakeRepository.saveDownloadedArticle(art1);
+    await fakeRepository.saveDownloadedArticle(art2);
     await cubit.loadDownloads();
 
     await cubit.deleteDownload('1');
@@ -162,17 +169,17 @@ void main() {
     expect(cubit.state.filteredArticles.length, equals(1));
     expect(cubit.state.allArticles.first.id, equals('2'));
     expect(cubit.state.feedbackMessage, isNotNull);
-    final stored = await fakeDataSource.getDownloadedArticles();
+    final stored = await fakeRepository.getDownloadedArticles();
     expect(stored.length, equals(1));
     expect(stored.first.id, equals('2'));
   });
 
   test('deleteDownload handles failure gracefully', () async {
     final art = createTestArticle(id: '1', title: 'Resilient Article');
-    await fakeDataSource.saveDownloadedArticle(art);
+    await fakeRepository.saveDownloadedArticle(art);
     await cubit.loadDownloads();
 
-    fakeDataSource.shouldThrowOnDelete = true;
+    fakeRepository.shouldThrowOnDelete = true;
     await cubit.deleteDownload('1');
 
     expect(cubit.state.feedbackMessage, contains('Failed to delete'));

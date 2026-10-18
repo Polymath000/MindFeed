@@ -15,7 +15,7 @@ import 'package:mind_feed/features/auth/presentation/views/send_code_view.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/email_text_field.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/password_text_field.dart';
 
-class _FakeAuthRepository implements AuthRepository {
+class _FakeAuthRepository extends Fake implements AuthRepository {
   ApiResult<void> forgetPasswordResult = const Success(null);
   ApiResult<void> updatePasswordResult = const Success(null);
   String? lastForgetPasswordEmail;

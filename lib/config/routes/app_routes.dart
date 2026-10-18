@@ -1,10 +1,13 @@
+import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/features/settings/presentation/controllers/settings_cubit/settings_cubit.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_feed/features/auth/domain/entities/check_code_args.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
-import 'package:mind_feed/features/auth/presentation/views/categories_view.dart';
+import 'package:mind_feed/features/profile/presentation/views/categories_view.dart';
+import 'package:mind_feed/features/profile/presentation/controllers/categories_cubit/categories_cubit.dart';
+import 'package:mind_feed/features/main/presentation/controllers/main_shell_cubit/main_shell_cubit.dart';
 import 'package:mind_feed/features/auth/presentation/views/change_password_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/check_code_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/login_view.dart';
@@ -14,7 +17,7 @@ import 'package:mind_feed/features/author/presentation/views/author_view.dart';
 import 'package:mind_feed/features/collections/presentation/views/downloaded_articles_view.dart';
 import 'package:mind_feed/features/collections/presentation/views/articles_saved.dart';
 import 'package:mind_feed/features/collections/presentation/views/list_saved_articles.dart';
-import 'package:mind_feed/features/home/presentation/views/article_view.dart';
+import 'package:mind_feed/features/article/presentation/views/article_view.dart';
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 import 'package:mind_feed/features/main/presentation/views/main_view.dart';
 import 'package:mind_feed/features/onboarding/presentation/views/onboarding_view.dart';
@@ -57,7 +60,13 @@ sealed class AppRoutes {
       case AppRoutes.splash:
         return MaterialPageRoute(builder: (_) => const SplashView(), settings: settings);
       case AppRoutes.main:
-        return MaterialPageRoute(builder: (_) => const MainView(), settings: settings);
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => getIt<MainShellCubit>()..onShellStarted(),
+            child: const MainView(),
+          ),
+          settings: settings,
+        );
       case AppRoutes.onboarding:
         return MaterialPageRoute(builder: (_) => const OnboardingView(), settings: settings);
       case AppRoutes.login:
@@ -80,12 +89,18 @@ sealed class AppRoutes {
       case AppRoutes.author:
         return MaterialPageRoute(builder: (_) => const AuthorView(), settings: settings);
       case AppRoutes.settings:
-        return MaterialPageRoute(builder: (_) => BlocProvider(create: (_) => SettingsCubit()..loadSettings(), child: const SettingsView()), settings: settings);
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => getIt<SettingsCubit>()..loadSettings(),
+            child: const SettingsView(),
+          ),
+          settings: settings,
+        );
       case AppRoutes.addArticle:
         final item = settings.arguments as EditorialNewsItem?;
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => AddArticleCubit()..initialize(editingItem: item),
+            create: (_) => getIt<AddArticleCubit>()..initialize(editingItem: item),
             child: AddArticleView(initialItem: item),
           ),
           settings: settings,
@@ -93,7 +108,7 @@ sealed class AppRoutes {
       case AppRoutes.drafts:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => DraftsCubit()..loadDrafts(),
+            create: (_) => getIt<DraftsCubit>()..loadDrafts(),
             child: const DraftsView(),
           ),
           settings: settings,
@@ -136,7 +151,19 @@ sealed class AppRoutes {
         return MaterialPageRoute(builder: (_) => ChangePasswordView(email: email), settings: settings);
       case AppRoutes.categories:
         final user = settings.arguments as UserEntity?;
-        return MaterialPageRoute(builder: (_) => CategoriesView(userEntity: user), settings: settings);
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) {
+              final cubit = getIt<CategoriesCubit>();
+              if (user?.favoriteCategories != null && user!.favoriteCategories!.isNotEmpty) {
+                cubit.initialize(user.favoriteCategories!);
+              }
+              return cubit;
+            },
+            child: CategoriesView(userEntity: user),
+          ),
+          settings: settings,
+        );
       default:
         return MaterialPageRoute(builder: (_) => const Scaffold(body: Center(child: Text('Page not found'))), settings: settings);
     }

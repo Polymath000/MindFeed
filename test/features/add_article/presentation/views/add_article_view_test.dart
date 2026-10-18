@@ -4,11 +4,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
 import 'package:mind_feed/features/add_article/presentation/views/add_article.dart';
-import 'package:mind_feed/features/home/domain/usecases/get_categories_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/get_fixed_tags_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/publish_article_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/save_draft_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/update_article_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_categories_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_fixed_tags_use_case.dart';
+import 'package:mind_feed/features/add_article/domain/usecases/publish_article_use_case.dart';
+import 'package:mind_feed/features/add_article/domain/usecases/save_draft_use_case.dart';
+import 'package:mind_feed/features/add_article/domain/usecases/update_article_use_case.dart';
 import '../controllers/add_article_cubit_test.dart';
 
 void main() {

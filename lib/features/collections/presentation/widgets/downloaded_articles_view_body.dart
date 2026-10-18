@@ -2,8 +2,8 @@ import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/widgets/custom_app_bar.dart';
 import 'package:mind_feed/core/widgets/search_bar.dart';
-import 'package:mind_feed/features/collections/presentation/cubit/downloads/downloads_cubit.dart';
-import 'package:mind_feed/features/collections/presentation/cubit/downloads/downloads_state.dart';
+import 'package:mind_feed/features/collections/presentation/controllers/downloads/downloads_cubit.dart';
+import 'package:mind_feed/features/collections/presentation/controllers/downloads/downloads_state.dart';
 import 'package:mind_feed/features/collections/presentation/widgets/downloaded_article_card_tile.dart';
 import 'package:mind_feed/features/collections/presentation/widgets/downloaded_articles_empty_state.dart';
 

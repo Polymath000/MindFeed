@@ -5,15 +5,15 @@ import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
-import 'package:mind_feed/features/home/domain/entities/article_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/category_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/tag_entity.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
-import 'package:mind_feed/features/home/domain/usecases/get_categories_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/get_fixed_tags_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/publish_article_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/save_draft_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/update_article_use_case.dart';
+import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/category_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/tag_entity.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_categories_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_fixed_tags_use_case.dart';
+import 'package:mind_feed/features/add_article/domain/usecases/publish_article_use_case.dart';
+import 'package:mind_feed/features/add_article/domain/usecases/save_draft_use_case.dart';
+import 'package:mind_feed/features/add_article/domain/usecases/update_article_use_case.dart';
 
 class FakeArticlesRepository implements ArticlesRepository {
   final List<CategoryEntity> categories = [

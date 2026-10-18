@@ -1,13 +1,13 @@
 import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
-import 'package:mind_feed/features/auth/data/datasources/auth_api_source.dart';
+import 'package:mind_feed/features/auth/domain/repos/auth_repo.dart';
 import '../entities/startup_destination.dart';
 
 class CheckAppStartupUseCase {
-  final AuthApiSource? _authApiSource;
+  final AuthRepository _authRepository;
 
-  const CheckAppStartupUseCase({AuthApiSource? authApiSource})
-      : _authApiSource = authApiSource;
+  const CheckAppStartupUseCase({required AuthRepository authRepository})
+      : _authRepository = authRepository;
 
   Future<StartupDestination> call() async {
     final bool isOnboardingSeen =
@@ -30,7 +30,7 @@ class CheckAppStartupUseCase {
 
   bool _hasActiveSession() {
     try {
-      return _authApiSource?.currentUser != null;
+      return _authRepository.hasActiveSession();
     } catch (_) {
       return false;
     }
@@ -45,7 +45,7 @@ class CheckAppStartupUseCase {
 
   Future<void> _cleanupIncompleteSession() async {
     try {
-      await _authApiSource?.signOut();
+      await _authRepository.logout();
     } catch (_) {}
     try {
       await SharedPreferencesSingleton.remove(AppConstants.tokenKey);

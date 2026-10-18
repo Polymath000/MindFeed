@@ -5,15 +5,17 @@ import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/drafts_cubit/drafts_cubit.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/drafts_cubit/drafts_state.dart';
 import 'package:mind_feed/features/add_article/presentation/routes/add_article_routes.dart';
-import 'package:mind_feed/features/add_article/presentation/widget/draft_item_card.dart';
-import 'package:mind_feed/features/add_article/presentation/widget/drafts_status_views.dart';
+import 'package:mind_feed/features/add_article/presentation/widgets/draft_item_card.dart';
+import 'package:mind_feed/features/add_article/presentation/widgets/drafts_status_views.dart';
 
 class DraftsView extends StatelessWidget {
-  const DraftsView({super.key});
+  final DraftsCubit? cubit;
+
+  const DraftsView({super.key, this.cubit});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final scaffold = Scaffold(
       backgroundColor: AppColors.sandLight,
       appBar: AppBar(
         backgroundColor: AppColors.sandLight,
@@ -73,6 +75,14 @@ class DraftsView extends StatelessWidget {
         ),
       ),
     );
+
+    if (cubit != null) {
+      return BlocProvider<DraftsCubit>.value(
+        value: cubit!,
+        child: scaffold,
+      );
+    }
+    return scaffold;
   }
 
   void _openAddArticle(BuildContext context) {

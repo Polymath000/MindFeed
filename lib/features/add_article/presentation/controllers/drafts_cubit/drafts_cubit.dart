@@ -1,25 +1,20 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
-import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/drafts_cubit/drafts_state.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
-import 'package:mind_feed/features/home/domain/usecases/delete_article_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/delete_article_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_author_use_case.dart';
 
 class DraftsCubit extends Cubit<DraftsState> {
-  final ArticlesRepository articlesRepository;
+  final GetArticlesByAuthorUseCase getArticlesByAuthorUseCase;
   final DeleteArticleUseCase deleteArticleUseCase;
   final CurrentUserSnapshot? Function()? userResolver;
 
   DraftsCubit({
-    ArticlesRepository? articlesRepository,
-    DeleteArticleUseCase? deleteArticleUseCase,
+    required this.getArticlesByAuthorUseCase,
+    required this.deleteArticleUseCase,
     this.userResolver,
-  })  : articlesRepository =
-            articlesRepository ?? getIt<ArticlesRepository>(),
-        deleteArticleUseCase =
-            deleteArticleUseCase ?? getIt<DeleteArticleUseCase>(),
-        super(const DraftsInitial());
+  }) : super(const DraftsInitial());
 
   CurrentUserSnapshot? get _currentUser {
     if (userResolver != null) {
@@ -37,7 +32,7 @@ class DraftsCubit extends Cubit<DraftsState> {
       return;
     }
 
-    final result = await articlesRepository.getArticlesByAuthor(user.id!);
+    final result = await getArticlesByAuthorUseCase.call(user.id!);
 
     result.when(
       success: (articles) {

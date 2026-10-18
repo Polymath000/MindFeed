@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
-import 'package:mind_feed/features/home/domain/entities/article_entity.dart';
-import 'package:mind_feed/features/home/domain/usecases/delete_article_use_case.dart';
+import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/core/articles/domain/usecases/delete_article_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_author_use_case.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_cubit.dart';
-import 'package:mind_feed/features/profile/presentation/widget/user_articles.dart';
+import 'package:mind_feed/features/profile/presentation/widgets/user_articles.dart';
 import 'fake_articles_repository.dart';
 
 void main() {
   late FakeArticlesRepository fakeRepo;
+  late GetArticlesByAuthorUseCase getArticlesByAuthorUseCase;
   late DeleteArticleUseCase deleteUseCase;
 
   final publishedItem1 = ArticleEntity(
@@ -40,6 +42,7 @@ void main() {
 
   setUp(() {
     fakeRepo = FakeArticlesRepository();
+    getArticlesByAuthorUseCase = GetArticlesByAuthorUseCase(fakeRepo);
     deleteUseCase = DeleteArticleUseCase(fakeRepo);
   });
 
@@ -58,7 +61,7 @@ void main() {
   testWidgets('renders accurate published and draft count badge for mixed articles', (tester) async {
     fakeRepo.authorArticles = [publishedItem1, publishedItem2, draftItem1];
     final cubit = ProfileArticlesCubit(
-      articlesRepository: fakeRepo,
+      getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
       deleteArticleUseCase: deleteUseCase,
       userId: 'author-123',
     );
@@ -79,7 +82,7 @@ void main() {
   testWidgets('renders empty placeholder when no articles exist', (tester) async {
     fakeRepo.authorArticles = [];
     final cubit = ProfileArticlesCubit(
-      articlesRepository: fakeRepo,
+      getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
       deleteArticleUseCase: deleteUseCase,
       userId: 'author-123',
     );
@@ -97,7 +100,7 @@ void main() {
   testWidgets('delete button prompts confirmation dialog and removes on confirm', (tester) async {
     fakeRepo.authorArticles = [publishedItem1];
     final cubit = ProfileArticlesCubit(
-      articlesRepository: fakeRepo,
+      getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
       deleteArticleUseCase: deleteUseCase,
       userId: 'author-123',
     );
@@ -138,7 +141,7 @@ void main() {
     fakeRepo.authorArticles = [publishedItem1];
     fakeRepo.shouldDeleteSucceed = false;
     final cubit = ProfileArticlesCubit(
-      articlesRepository: fakeRepo,
+      getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
       deleteArticleUseCase: deleteUseCase,
       userId: 'author-123',
     );

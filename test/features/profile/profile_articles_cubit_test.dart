@@ -1,12 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mind_feed/features/home/domain/entities/article_entity.dart';
-import 'package:mind_feed/features/home/domain/usecases/delete_article_use_case.dart';
+import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/core/articles/domain/usecases/delete_article_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_author_use_case.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_cubit.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_state.dart';
 import 'fake_articles_repository.dart';
 
 void main() {
   late FakeArticlesRepository fakeRepo;
+  late GetArticlesByAuthorUseCase getArticlesByAuthorUseCase;
   late DeleteArticleUseCase deleteUseCase;
   late ProfileArticlesCubit cubit;
 
@@ -30,9 +32,10 @@ void main() {
 
   setUp(() {
     fakeRepo = FakeArticlesRepository();
+    getArticlesByAuthorUseCase = GetArticlesByAuthorUseCase(fakeRepo);
     deleteUseCase = DeleteArticleUseCase(fakeRepo);
     cubit = ProfileArticlesCubit(
-      articlesRepository: fakeRepo,
+      getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
       deleteArticleUseCase: deleteUseCase,
       userId: 'test-author',
     );
@@ -96,7 +99,7 @@ void main() {
 
     test('emits ProfileArticlesEmpty when target user id is missing', () async {
       final unauthenticatedCubit = ProfileArticlesCubit(
-        articlesRepository: fakeRepo,
+        getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
         deleteArticleUseCase: deleteUseCase,
         userId: null,
       );

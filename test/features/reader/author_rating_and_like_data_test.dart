@@ -3,10 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
-import 'package:mind_feed/features/home/data/models/article_model.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
-import 'package:mind_feed/features/home/domain/usecases/rate_author_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/toggle_article_like_use_case.dart';
+import 'package:mind_feed/core/articles/data/models/article_model.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
+import 'package:mind_feed/features/article/domain/usecases/rate_author_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_article_like_use_case.dart';
 
 class FakeArticleEngagementRepository implements ArticleEngagementRepository {
   bool shouldFail = false;
@@ -240,7 +240,7 @@ void main() {
       );
 
       result.when(
-        success: (summary) {
+        success: (AuthorRatingSummary summary) {
           expect(summary.authorKey, 'author-valid');
           expect(summary.userStars, 5);
           expect(summary.ratingAvg, 5.0);
@@ -258,7 +258,7 @@ void main() {
 
       final result = await getUseCase.call(authorKey: 'author-valid');
       result.when(
-        success: (summary) {
+        success: (AuthorRatingSummary summary) {
           expect(summary.userStars, 4);
           expect(summary.ratingAvg, 4.0);
         },

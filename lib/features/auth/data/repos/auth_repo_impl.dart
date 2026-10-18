@@ -178,4 +178,13 @@ class AuthRepoImpl extends AuthRepository {
     }
     return const Success(null);
   }
+
+  @override
+  bool hasActiveSession() {
+    try {
+      return authApiSource.currentUser != null;
+    } catch (_) {
+      return false;
+    }
+  }
 }
