@@ -19,6 +19,7 @@ sealed class AppBorders {
   static const BorderRadius pill = BorderRadius.all(Radius.circular(22));
   static const BorderRadius bar = BorderRadius.all(Radius.circular(18));
   static const BorderRadius badge = BorderRadius.all(Radius.circular(14));
+  static const BorderRadius tag = BorderRadius.all(Radius.circular(12));
   static const BorderRadius indicator = BorderRadius.all(Radius.circular(4));
   static const BorderRadius circular = BorderRadius.all(Radius.circular(1000));
 }

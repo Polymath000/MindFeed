@@ -178,11 +178,32 @@ The codebase follows **Feature-First Clean Architecture**:
     - Migrated `HomeFeedState` to a Dart 3 `sealed class` hierarchy (`HomeFeedInitial`, `HomeFeedLoading`, `HomeFeedLoaded`, `HomeFeedError`) with `SwipeSaveStatus`.
     - Refactored `HomeFeedCubit` and `HomeViewBody` into small `<20`-line methods, guarded all emissions with `if (!isClosed)`, eliminated `StatefulBuilder` mutation workarounds via immutable list emissions, and registered `GetUserFeedTopicsUseCase`, `FilterArticlesByTopicUseCase`, and `HomeFeedCubit` in `setup_service_locator.dart`.
   - Detailed report available in `docs/reports/home_feature_clean_architecture_and_engineering_report.md`.
+- **Article Reader Clean Architecture, Sealed State Machine & VSYNC Auto-Scrolling**:
+  - **Domain Layer Purification & Aggregate Modeling**:
+    - Created immutable `ArticleReaderDetails` aggregate domain entity in `lib/features/home/domain/entities/article_reader_details.dart`.
+    - Created `LoadArticleReaderDetailsUseCase` in `lib/features/home/domain/usecases/load_article_reader_details_use_case.dart` encapsulating article details, offline status, engagement status, and author rating summaries.
+    - Created atomic focused use cases: `CheckArticleDownloadedUseCase`, `IsArticleLikedUseCase`, and `IsArticleSavedUseCase`.
+  - **Dart 3 Sealed State Machine & Immutable State Transitions**:
+    - Migrated `ArticleReaderState` to a Dart 3 `sealed class` hierarchy (`ArticleReaderInitial`, `ArticleReaderLoading`, `ArticleReaderLoaded`, `ArticleReaderError`) with backward-compatible getters for seamless consumption.
+    - Refactored `ArticleReaderCubit` to use constructor-injected domain use cases, safe `if (!isClosed)` async emission guards, zero in-place entity mutations (using `.copyWith(...)`), and clean `.when()` pattern matching for `ApiResult<T>`.
+    - Deprecated runtime reflection in `article_reader_deps.dart`.
+  - **Component Decomposition & Theme Centralization**:
+    - Decomposed monolithic `article_reader_header.dart` into single-responsibility widgets: `ArticleReaderCoverImage`, `ArticleReaderMetadataHeader`, and `ArticleReaderAuthorBar`.
+    - Decomposed `article_reader_markdown_body.dart` and extracted `ArticleReaderTagsWrap`.
+    - Cached `MarkdownConfig` (`_cachedMarkdownConfig`), eliminating 7 redundant style object instantiations per frame.
+    - Replaced hardcoded text styles, arbitrary border radii, and raw opacity overlays with `AppTextStyles`, `AppBorders`, and `AppColors`.
+  - **UI Shell & VSYNC Auto-Scrolling Performance**:
+    - Converted `ArticleSlowScrollBar` to a pure `StatelessWidget`, removing dual-state `setState` conflicts.
+    - Replaced the drifting 32ms software timer in `ArticleView` with a hardware VSYNC-synchronized Flutter `Ticker` (`SingleTickerProviderStateMixin`) with delta-time calculation.
+    - Isolated rebuild scopes using `BlocSelector` (`_ArticleAuthorSection`, `_ArticleActionBarSection`, `_ArticleSlowScrollBarSection`) so heavy markdown rendering and cover images never re-render during engagement interactions.
+    - Registered `ArticleReaderCubit` in `setup_service_locator.dart`.
+    - Detailed report available in `docs/reports/article_reader_clean_architecture_and_performance_report.md`.
 - **Comprehensive Architectural & Evolution Reports Suite**:
   - Authored dedicated technical reports in `docs/reports/` documenting the complete engineering journey of MindFeed, key architectural pivots, and performance milestones.
 
 ## 5. Architectural Reports & Documentation Index
 Detailed technical reports documenting audits, optimizations, and architectural refactoring are maintained in `docs/reports/`:
+- **Article Reader Clean Architecture, Sealed State Machine & VSYNC Auto-Scrolling Report** (`docs/reports/article_reader_clean_architecture_and_performance_report.md`): Detailed analysis of the Article Reader refactoring, covering domain aggregate extraction, Dart 3 sealed state machine, VSYNC `Ticker` scrolling, component decomposition, and rebuild scope isolation.
 - **Legacy Prototype & Architectural Evolution Report** (`docs/reports/legacy_prototype_and_evolution_report.md`): Chronological audit of the 38 foundational commits from genesis (`b6782b4`) up to Pull Request #1 (`ba0ed81`), detailing early UI prototypes, feature consolidation (`cd8a116`), password security remediation (`a2a03eb`), and the editorial card stack pivot (`0ba79bd`).
 - **Mandatory Category Onboarding Gate & Password Recovery Architecture Report** (`docs/reports/category_onboarding_and_auth_architecture_report.md`): Architectural analysis of commits `f7e3024` to `39e50a4`, documenting deferred session and token persistence, 20-category vector pill modernization, Supabase password recovery pipeline, and `ValueNotifier` form optimizations.
 - **Dart DevTools Performance Profile & Raster Jank Optimization Report** (`docs/reports/devtools_performance_and_raster_optimization_report.md`): Quantitative timeline comparison (`17_07_21.029.json` vs. `18_08_16.161.json`) for commit `921c7eb`, detailing the elimination of 6,150 `saveLayer` passes via `Color.lerp`, masthead ticker isolation, asset downscaling, and sliver virtualization (78.8% raster time reduction).

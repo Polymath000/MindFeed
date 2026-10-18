@@ -16,7 +16,6 @@ import 'package:mind_feed/features/home/domain/usecases/toggle_article_like_use_
 import 'package:mind_feed/features/home/domain/usecases/toggle_bookmark_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/toggle_star_use_case.dart';
 import 'package:mind_feed/features/home/presentation/cubit/article_reader/article_reader_cubit.dart';
-import 'package:mind_feed/features/home/presentation/cubit/article_reader/article_reader_state.dart';
 
 class FakeArticlesRepository implements ArticlesRepository, ArticleEngagementRepository {
   bool shouldFailStar = false;
@@ -477,5 +476,76 @@ void main() {
     expect(unauthedCubit.state.userFeedback, contains('sign in'));
 
     unauthedCubit.close();
+  });
+
+  group('ArticleReaderState sealed classes & pattern matching', () {
+    test('exhaustive switch over ArticleReaderState', () {
+      const ArticleReaderState initial = ArticleReaderInitial();
+      const ArticleReaderState loading = ArticleReaderLoading();
+      const ArticleReaderState loaded = ArticleReaderLoaded(likeCount: 42);
+      const ArticleReaderState error = ArticleReaderError('Network failed');
+
+      String describe(ArticleReaderState state) => switch (state) {
+            ArticleReaderInitial() => 'initial',
+            ArticleReaderLoading() => 'loading',
+            ArticleReaderLoaded(:final likeCount) => 'loaded:$likeCount',
+            ArticleReaderError(:final message) => 'error:$message',
+          };
+
+      expect(describe(initial), equals('initial'));
+      expect(describe(loading), equals('loading'));
+      expect(describe(loaded), equals('loaded:42'));
+      expect(describe(error), equals('error:Network failed'));
+    });
+
+    test('ArticleReaderLoaded copyWith handles clearFeedback correctly', () {
+      const loaded = ArticleReaderLoaded(
+        userFeedback: 'Feedback message',
+        isLiked: false,
+      );
+      expect(loaded.userFeedback, equals('Feedback message'));
+
+      final updatedWithFeedback = loaded.copyWith(isLiked: true);
+      expect(updatedWithFeedback.userFeedback, equals('Feedback message'));
+      expect(updatedWithFeedback.isLiked, isTrue);
+
+      final cleared = loaded.copyWith(clearFeedback: true);
+      expect(cleared.userFeedback, isNull);
+    });
+
+    test('direct constructor injection of use cases without repository', () async {
+      final directCubit = ArticleReaderCubit(
+        getArticleDetailsUseCase: getArticleDetailsUseCase,
+        toggleArticleLikeUseCase: toggleArticleLikeUseCase,
+        toggleBookmarkUseCase: toggleBookmarkUseCase,
+        rateAuthorUseCase: rateAuthorUseCase,
+        getAuthorRatingUseCase: getAuthorRatingUseCase,
+        downloadArticleTextUseCase: downloadArticleTextUseCase,
+        currentUserId: 'direct_user_123',
+      );
+
+      final item = createSampleItem(content: 'Direct body');
+      await directCubit.initArticle(item);
+      expect(directCubit.state, isA<ArticleReaderLoaded>());
+
+      await directCubit.toggleLike();
+      expect(directCubit.state.isLiked, isTrue);
+
+      await directCubit.close();
+    });
+
+    test('item in-place immutability: original item reference is not mutated in-place', () async {
+      final originalItem = createSampleItem(starCount: 5, isStarred: false);
+      expect(originalItem.isLiked, isFalse);
+      expect(originalItem.isStarred, isFalse);
+
+      await cubit.initArticle(originalItem);
+      await cubit.toggleLike();
+
+      expect(cubit.state.isLiked, isTrue);
+      expect(cubit.state.item?.isLiked, isTrue);
+      // Verify original input object was not mutated in place
+      expect(originalItem.isLiked, isFalse);
+    });
   });
 }

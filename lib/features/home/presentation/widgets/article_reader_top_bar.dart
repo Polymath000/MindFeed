@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/app_text_styles.dart';
+import 'package:mind_feed/core/constants/borders.dart';
 
 class ArticleReaderTopBar extends StatelessWidget {
   const ArticleReaderTopBar({
@@ -19,101 +22,56 @@ class ArticleReaderTopBar extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Semantics(
-          button: true,
-          label: 'Back',
-          child: InkResponse(
-            onTap: onBack ?? () => Navigator.maybePop(context),
-            child: Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: Colors.black.withAlpha(20),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                AppIcons.arrowBackRounded,
-                color: AppColors.ink,
-                size: 22,
-              ),
-            ),
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 4,
-          ),
-          decoration: BoxDecoration(
-            color: badgeColor,
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: Text(
-            badge,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 11,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.5,
-            ),
-          ),
-        ),
+        _BackButton(onBack: onBack),
+        _BadgeLabel(badge: badge, color: badgeColor),
       ],
     );
   }
 }
 
-class ArticleReaderEmptyView extends StatelessWidget {
-  const ArticleReaderEmptyView({super.key});
+class _BackButton extends StatelessWidget {
+  const _BackButton({required this.onBack});
+  final VoidCallback? onBack;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.cream,
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  AppIcons.articleOutlined,
-                  size: 48,
-                  color: AppColors.mutedInk,
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Article Not Found',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.ink,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'No article content was provided.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.mutedInk,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                FilledButton(
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.ink,
-                    foregroundColor: AppColors.softCream,
-                  ),
-                  onPressed: () => Navigator.maybePop(context),
-                  child: const Text('Go Back'),
-                ),
-              ],
-            ),
+    return Semantics(
+      button: true,
+      label: 'Back',
+      child: InkResponse(
+        onTap: onBack ?? () => Navigator.maybePop(context),
+        child: Container(
+          width: 44,
+          height: 44,
+          decoration: const BoxDecoration(
+            color: AppColors.blackAlpha20,
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(
+            AppIcons.arrowBackRounded,
+            color: AppColors.ink,
+            size: 22,
           ),
         ),
       ),
+    );
+  }
+}
+
+class _BadgeLabel extends StatelessWidget {
+  const _BadgeLabel({required this.badge, required this.color});
+  final String badge;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: AppBorders.badge,
+      ),
+      child: Text(badge, style: AppTextStyles.readerTopBadge),
     );
   }
 }

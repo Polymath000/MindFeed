@@ -1,7 +1,6 @@
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/features/home/domain/entities/downloaded_article_entity.dart';
-import 'package:mind_feed/features/home/data/datasources/articles_local_data_source.dart';
 import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
 import 'package:mind_feed/features/home/domain/usecases/download_article_text_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_article_details_use_case.dart';
@@ -10,13 +9,14 @@ import 'package:mind_feed/features/home/domain/usecases/toggle_article_like_use_
 import 'package:mind_feed/features/home/domain/usecases/toggle_bookmark_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/toggle_star_use_case.dart';
 
+@Deprecated('Use constructor injection in ArticleReaderCubit directly')
 class ArticleReaderDependencies {
   final ArticlesRepository? articlesRepository;
   final ToggleStarUseCase? toggleStarUseCase;
   final ToggleBookmarkUseCase? toggleBookmarkUseCase;
   final GetArticleDetailsUseCase? getArticleDetailsUseCase;
   final DownloadArticleTextUseCase? downloadArticleTextUseCase;
-  final ArticlesLocalDataSource? localDataSource;
+  final OfflineArticlesRepository? localDataSource;
   final ToggleArticleLikeUseCase? toggleArticleLikeUseCase;
   final RateAuthorUseCase? rateAuthorUseCase;
   final GetAuthorRatingUseCase? getAuthorRatingUseCase;
@@ -129,11 +129,11 @@ class ArticleReaderDependencies {
     return ds != null ? DownloadArticleTextUseCase(ds) : null;
   }
 
-  ArticlesLocalDataSource? resolveLocalDataSource() {
+  OfflineArticlesRepository? resolveLocalDataSource() {
     if (localDataSource != null) return localDataSource;
     try {
-      if (getIt.isRegistered<ArticlesLocalDataSource>()) {
-        return getIt<ArticlesLocalDataSource>();
+      if (getIt.isRegistered<OfflineArticlesRepository>()) {
+        return getIt<OfflineArticlesRepository>();
       }
     } catch (_) {}
     return null;

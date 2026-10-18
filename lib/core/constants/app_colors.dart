@@ -162,6 +162,7 @@ sealed class AppColors {
   static const Color blackAlpha66 = Color(0x42000000);
   static const Color blackAlpha70 = Color(0x46000000);
   static const Color blackAlpha115 = Color(0x73000000);
+  static const Color black45 = blackAlpha115;
   static const Color creamAlpha65 = Color(0x41FFF1C6);
   static const Color softCreamAlpha180 = Color(0xB4FFF8E6);
   static const Color softCreamAlpha185 = Color(0xB9FFF8E6);

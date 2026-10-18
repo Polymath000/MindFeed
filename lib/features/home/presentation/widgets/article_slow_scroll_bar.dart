@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/app_text_styles.dart';
 import 'package:mind_feed/core/constants/borders.dart';
 
-class ArticleSlowScrollBar extends StatefulWidget {
+class ArticleSlowScrollBar extends StatelessWidget {
   const ArticleSlowScrollBar({
     super.key,
     required this.isScrolling,
@@ -24,41 +25,11 @@ class ArticleSlowScrollBar extends StatefulWidget {
   static const List<double> availablePaces = [0.5, 1.0, 1.5, 2.0];
 
   @override
-  State<ArticleSlowScrollBar> createState() => _ArticleSlowScrollBarState();
-}
-
-class _ArticleSlowScrollBarState extends State<ArticleSlowScrollBar> {
-  late bool _isRetracted;
-
-  @override
-  void initState() {
-    super.initState();
-    _isRetracted = widget.isRetracted;
-  }
-
-  @override
-  void didUpdateWidget(covariant ArticleSlowScrollBar oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.onToggleRetract != null) _isRetracted = widget.isRetracted;
-  }
-
-  bool get _effectiveRetracted =>
-      widget.onToggleRetract != null ? widget.isRetracted : _isRetracted;
-
-  void _toggleRetract() {
-    if (widget.onToggleRetract != null) {
-      widget.onToggleRetract!();
-    } else {
-      setState(() => _isRetracted = !_isRetracted);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (_effectiveRetracted) {
+    if (isRetracted) {
       return _RetractedSlowScrollPill(
-        isScrolling: widget.isScrolling,
-        onTap: _toggleRetract,
+        isScrolling: isScrolling,
+        onTap: onToggleRetract ?? () {},
       );
     }
     return Container(
@@ -66,7 +37,13 @@ class _ArticleSlowScrollBarState extends State<ArticleSlowScrollBar> {
       decoration: const BoxDecoration(
         color: AppColors.ink,
         borderRadius: AppBorders.bar,
-        boxShadow: [BoxShadow(color: AppColors.blackAlpha66, blurRadius: 10, offset: Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.blackAlpha66,
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -74,16 +51,16 @@ class _ArticleSlowScrollBarState extends State<ArticleSlowScrollBar> {
           mainAxisSize: MainAxisSize.min,
           children: [
             _SlowScrollToggleButton(
-              isScrolling: widget.isScrolling,
-              onTap: widget.onToggleSlowScroll,
+              isScrolling: isScrolling,
+              onTap: onToggleSlowScroll,
             ),
             const SizedBox(width: 8),
             _PaceChipsRow(
-              currentPace: widget.currentPace,
-              onSelectPace: widget.onSelectPace,
+              currentPace: currentPace,
+              onSelectPace: onSelectPace,
             ),
             const SizedBox(width: 10),
-            _RetractBarButton(onTap: _toggleRetract),
+            _RetractBarButton(onTap: onToggleRetract ?? () {}),
           ],
         ),
       ),
@@ -180,7 +157,7 @@ class _SlowScrollToggleButton extends StatelessWidget {
               const SizedBox(width: 6),
               Text(
                 isScrolling ? 'Scrolling' : 'Slow Scroll',
-                style: const TextStyle(color: AppColors.softCream, fontSize: 12, fontWeight: FontWeight.w700),
+                style: AppTextStyles.slowScrollButton,
               ),
             ],
           ),
@@ -244,11 +221,9 @@ class _PaceChip extends StatelessWidget {
         ),
         child: Text(
           '${pace.toStringAsFixed(1)}x',
-          style: TextStyle(
-            color: isSelected ? AppColors.ink : AppColors.softCream,
-            fontSize: 11,
-            fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-          ),
+          style: isSelected
+              ? AppTextStyles.paceChipSelected
+              : AppTextStyles.paceChipUnselected,
         ),
       ),
     );

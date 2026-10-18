@@ -84,6 +84,10 @@ class EditorialNewsItem {
     bool? isStarred,
     int? likesCount,
     int? starCount,
+    String? content,
+    double? authorRatingAvg,
+    int? authorRatingCount,
+    int? userAuthorStars,
   }) {
     return EditorialNewsItem(
       id: id,
@@ -100,7 +104,7 @@ class EditorialNewsItem {
       categoryId: categoryId,
       categorySlug: categorySlug,
       tags: tags,
-      content: content,
+      content: content ?? this.content,
       coverImageUrl: coverImageUrl,
       authorId: authorId,
       publishedAt: publishedAt,
@@ -111,9 +115,9 @@ class EditorialNewsItem {
       isLiked: isLiked ?? this.isLiked,
       isSaved: isSaved ?? this.isSaved,
       likesCount: likesCount ?? this.likesCount,
-      authorRatingAvg: authorRatingAvg,
-      authorRatingCount: authorRatingCount,
-      userAuthorStars: userAuthorStars,
+      authorRatingAvg: authorRatingAvg ?? this.authorRatingAvg,
+      authorRatingCount: authorRatingCount ?? this.authorRatingCount,
+      userAuthorStars: userAuthorStars ?? this.userAuthorStars,
     );
   }
 }

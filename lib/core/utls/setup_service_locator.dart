@@ -45,6 +45,7 @@ import 'package:mind_feed/features/home/domain/usecases/get_fixed_tags_use_case.
 import 'package:mind_feed/features/home/domain/usecases/filter_articles_by_topic_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_user_feed_topics_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/update_article_use_case.dart';
+import 'package:mind_feed/features/home/presentation/cubit/article_reader/article_reader_cubit.dart';
 import 'package:mind_feed/features/home/presentation/cubit/home_feed/home_feed_cubit.dart';
 import 'package:mind_feed/features/profile/data/datasources/profile_remote_data_source.dart';
 import 'package:mind_feed/features/profile/data/repos/profile_repo_impl.dart';
@@ -225,6 +226,19 @@ void setupServiceLocator() {
       toggleBookmarkUseCase: getIt<ToggleBookmarkUseCase>(),
       toggleStarUseCase: getIt<ToggleStarUseCase>(),
       toggleArticleLikeUseCase: getIt<ToggleArticleLikeUseCase>(),
+    ),
+  );
+  getIt.registerFactory<ArticleReaderCubit>(
+    () => ArticleReaderCubit(
+      articlesRepository: getIt<ArticlesRepository>(),
+      toggleStarUseCase: getIt<ToggleStarUseCase>(),
+      toggleBookmarkUseCase: getIt<ToggleBookmarkUseCase>(),
+      getArticleDetailsUseCase: getIt<GetArticleDetailsUseCase>(),
+      downloadArticleTextUseCase: getIt<DownloadArticleTextUseCase>(),
+      localDataSource: getIt<ArticlesLocalDataSource>(),
+      toggleArticleLikeUseCase: getIt<ToggleArticleLikeUseCase>(),
+      rateAuthorUseCase: getIt<RateAuthorUseCase>(),
+      getAuthorRatingUseCase: getIt<GetAuthorRatingUseCase>(),
     ),
   );
 }

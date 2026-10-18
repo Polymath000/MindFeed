@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/app_text_styles.dart';
+import 'package:mind_feed/core/constants/borders.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 
 class ArticleReaderActionBar extends StatelessWidget {
@@ -37,16 +40,15 @@ class ArticleReaderActionBar extends StatelessWidget {
     final displayCount = (likeCount != null && likeCount! > 0)
         ? likeCount!
         : (likeCount ?? starCount);
-    final toggleAction = onLikeToggle ?? onStarToggle;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppColors.ink,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: const [
+        borderRadius: AppBorders.control,
+        boxShadow: [
           BoxShadow(
-            color: Colors.black45,
+            color: AppColors.black45,
             blurRadius: 12,
             offset: Offset(0, 4),
           ),
@@ -55,40 +57,10 @@ class ArticleReaderActionBar extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Semantics(
-            button: true,
-            label: 'Like article',
-            excludeSemantics: true,
-            child: Tooltip(
-              message: 'Like article',
-              child: InkWell(
-                key: const Key('article_like_button'),
-                onTap: toggleAction,
-                borderRadius: BorderRadius.circular(20),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        activeLiked ? AppIcons.thumbUp : AppIcons.thumbUpOutlined,
-                        color: activeLiked ? AppColors.amberDark : AppColors.softCream,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '$displayCount',
-                        style: const TextStyle(
-                          color: AppColors.softCream,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+          _LikeButton(
+            isActive: activeLiked,
+            count: displayCount,
+            onTap: onLikeToggle ?? onStarToggle,
           ),
           const SizedBox(width: 4),
           EditorialIconButton(
@@ -109,6 +81,50 @@ class ArticleReaderActionBar extends StatelessWidget {
             onPressed: onShare,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _LikeButton extends StatelessWidget {
+  const _LikeButton({
+    required this.isActive,
+    required this.count,
+    required this.onTap,
+  });
+
+  final bool isActive;
+  final int count;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: 'Like article',
+      excludeSemantics: true,
+      child: Tooltip(
+        message: 'Like article',
+        child: InkWell(
+          key: const Key('article_like_button'),
+          onTap: onTap,
+          borderRadius: AppBorders.xs,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  isActive ? AppIcons.thumbUp : AppIcons.thumbUpOutlined,
+                  color: isActive ? AppColors.amberDark : AppColors.softCream,
+                  size: 20,
+                ),
+                const SizedBox(width: 4),
+                Text('$count', style: AppTextStyles.readerActionCount),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
