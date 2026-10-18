@@ -450,9 +450,9 @@
     "semantic_hash": "05f693a253b3ff339f8b0a45e8455c67"
   },
   "lib/features/home/presentation/views/article_view.dart": {
-    "mtime": 1792319148.4656117,
-    "seen": 1792319198.6562862,
-    "ast_hash": "25eb343fef390fc89c12d98f6af0b2c4",
+    "mtime": 1792322346.3145523,
+    "seen": 1792323651.3947856,
+    "ast_hash": "07372c48f75c4d333f63363f5da54655",
     "semantic_hash": ""
   },
   "lib/features/home/presentation/views/home_view.dart": {
@@ -1032,9 +1032,9 @@
     "semantic_hash": "8cdbda286f0e9ed34f579afd2d72777d"
   },
   "CONTEXT.md": {
-    "mtime": 1792319709.311583,
-    "seen": 1792319786.742899,
-    "ast_hash": "f7171c63197a0ef8939037fe36cae5a6",
+    "mtime": 1792323638.5069673,
+    "seen": 1792323651.474577,
+    "ast_hash": "78a4fff5b51f15e45e82262aa0149cf3",
     "semantic_hash": ""
   },
   "SPEC.md": {
@@ -2196,9 +2196,39 @@
     "semantic_hash": ""
   },
   "docs/reports/article_reader_clean_architecture_and_performance_report.md": {
-    "mtime": 1792319674.5281806,
-    "seen": 1792319786.7492135,
-    "ast_hash": "aee43d6a9404dbe0e7ee66b838b183ef",
+    "mtime": 1792323578.5735862,
+    "seen": 1792323651.4803822,
+    "ast_hash": "8a1da8ccbf7175d66566a6828d99093e",
+    "semantic_hash": ""
+  },
+  "lib/features/home/presentation/widgets/article_action_bar_section.dart": {
+    "mtime": 1792322366.311317,
+    "seen": 1792323651.3955886,
+    "ast_hash": "3011b33483ebaada342956649c8c7f3b",
+    "semantic_hash": ""
+  },
+  "lib/features/home/presentation/widgets/article_author_section.dart": {
+    "mtime": 1792323452.436611,
+    "seen": 1792323651.3955913,
+    "ast_hash": "0b6723b8fe7f589e65838a0dca472c9e",
+    "semantic_hash": ""
+  },
+  "lib/features/home/presentation/widgets/article_reader_scroll_view.dart": {
+    "mtime": 1792322353.6151664,
+    "seen": 1792323651.4016268,
+    "ast_hash": "5448acce4316569107a2226261921162",
+    "semantic_hash": ""
+  },
+  "lib/features/home/presentation/widgets/article_slow_scroll_bar_section.dart": {
+    "mtime": 1792322367.5116465,
+    "seen": 1792323651.4038272,
+    "ast_hash": "d0088c14d1eaeaab40ca3363d7c26f94",
+    "semantic_hash": ""
+  },
+  "lib/features/home/presentation/widgets/article_view_content.dart": {
+    "mtime": 1792322364.2088597,
+    "seen": 1792323651.4038293,
+    "ast_hash": "2c6bcb6ecf248bbf16903026f35fb069",
     "semantic_hash": ""
   }
 }

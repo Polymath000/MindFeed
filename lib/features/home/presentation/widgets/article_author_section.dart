@@ -1,0 +1,37 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/features/home/presentation/cubit/article_reader/article_reader_cubit.dart';
+import 'package:mind_feed/features/home/presentation/widgets/article_reader_header.dart';
+
+class ArticleAuthorSection extends StatelessWidget {
+  const ArticleAuthorSection({super.key, required this.article});
+  final EditorialNewsItem article;
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<ArticleReaderCubit>();
+    return BlocSelector<
+      ArticleReaderCubit,
+      ArticleReaderState,
+      ({double avg, int count, int stars})
+    >(
+      selector: (state) => (
+        avg: state.authorRatingAvg,
+        count: state.authorRatingCount,
+        stars: state.userAuthorStars,
+      ),
+      builder: (context, ratings) {
+        return ArticleReaderAuthorBar(
+          authorName: article.authorName,
+          authorRole: article.authorRole,
+          authorAvatar: article.authorAvatar,
+          authorRatingAvg: ratings.avg,
+          authorRatingCount: ratings.count,
+          userAuthorStars: ratings.stars,
+          onRateAuthor: cubit.rateAuthor,
+        );
+      },
+    );
+  }
+}

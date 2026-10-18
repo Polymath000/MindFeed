@@ -190,12 +190,13 @@ The codebase follows **Feature-First Clean Architecture**:
   - **Component Decomposition & Theme Centralization**:
     - Decomposed monolithic `article_reader_header.dart` into single-responsibility widgets: `ArticleReaderCoverImage`, `ArticleReaderMetadataHeader`, and `ArticleReaderAuthorBar`.
     - Decomposed `article_reader_markdown_body.dart` and extracted `ArticleReaderTagsWrap`.
+    - Decomposed `article_view.dart` into 5 modular, single-responsibility widgets: `ArticleViewContent` (stateful Ticker shell & feedback handler), `ArticleReaderScrollView` (scrollable content hierarchy), `ArticleAuthorSection` (isolated 5-star author rating BlocSelector), `ArticleActionBarSection` (isolated like/bookmark BlocSelector), and `ArticleSlowScrollBarSection` (isolated slow-scroll BlocSelector), reducing `ArticleView` to a concise 45-line entry point.
     - Cached `MarkdownConfig` (`_cachedMarkdownConfig`), eliminating 7 redundant style object instantiations per frame.
     - Replaced hardcoded text styles, arbitrary border radii, and raw opacity overlays with `AppTextStyles`, `AppBorders`, and `AppColors`.
   - **UI Shell & VSYNC Auto-Scrolling Performance**:
     - Converted `ArticleSlowScrollBar` to a pure `StatelessWidget`, removing dual-state `setState` conflicts.
     - Replaced the drifting 32ms software timer in `ArticleView` with a hardware VSYNC-synchronized Flutter `Ticker` (`SingleTickerProviderStateMixin`) with delta-time calculation.
-    - Isolated rebuild scopes using `BlocSelector` (`_ArticleAuthorSection`, `_ArticleActionBarSection`, `_ArticleSlowScrollBarSection`) so heavy markdown rendering and cover images never re-render during engagement interactions.
+    - Isolated rebuild scopes using `BlocSelector` (`ArticleAuthorSection`, `ArticleActionBarSection`, `ArticleSlowScrollBarSection`) so heavy markdown rendering and cover images never re-render during engagement interactions.
     - Registered `ArticleReaderCubit` in `setup_service_locator.dart`.
     - Detailed report available in `docs/reports/article_reader_clean_architecture_and_performance_report.md`.
 - **Comprehensive Architectural & Evolution Reports Suite**:
