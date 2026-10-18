@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
-import 'package:mind_feed/features/home/presentation/views/article_view.dart';
-import 'package:mind_feed/features/home/presentation/widgets/article_action_bar_section.dart';
-import 'package:mind_feed/features/home/presentation/widgets/article_author_section.dart';
-import 'package:mind_feed/features/home/presentation/widgets/article_reader_header.dart';
-import 'package:mind_feed/features/home/presentation/widgets/article_reader_markdown_body.dart';
-import 'package:mind_feed/features/home/presentation/widgets/article_reader_top_bar.dart';
+import 'package:mind_feed/features/article/presentation/views/article_view.dart';
+import 'package:mind_feed/features/article/presentation/widgets/article_action_bar_section.dart';
+import 'package:mind_feed/features/article/presentation/widgets/article_author_section.dart';
+import 'package:mind_feed/features/article/presentation/widgets/article_reader_header.dart';
+import 'package:mind_feed/features/article/presentation/widgets/article_reader_markdown_body.dart';
+import 'package:mind_feed/features/article/presentation/widgets/article_reader_top_bar.dart';
 
 class ArticleReaderScrollView extends StatelessWidget {
   const ArticleReaderScrollView({

@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import '../repos/articles_repo.dart';
-import 'article_entity.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
+import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
 
 class ArticleReaderDetails extends Equatable {
   final ArticleEntity article;

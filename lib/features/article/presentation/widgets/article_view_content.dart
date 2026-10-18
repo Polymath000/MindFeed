@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show Ticker;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
-import 'package:mind_feed/features/home/presentation/cubit/article_reader/article_reader_cubit.dart';
-import 'package:mind_feed/features/home/presentation/views/article_view.dart';
-import 'package:mind_feed/features/home/presentation/widgets/article_reader_empty_view.dart';
-import 'package:mind_feed/features/home/presentation/widgets/article_reader_scroll_view.dart';
-import 'package:mind_feed/features/home/presentation/widgets/article_slow_scroll_bar_section.dart';
+import 'package:mind_feed/features/article/presentation/controllers/article_reader/article_reader_cubit.dart';
+import 'package:mind_feed/features/article/presentation/views/article_view.dart';
+import 'package:mind_feed/features/article/presentation/widgets/article_reader_empty_view.dart';
+import 'package:mind_feed/features/article/presentation/widgets/article_reader_scroll_view.dart';
+import 'package:mind_feed/features/article/presentation/widgets/article_slow_scroll_bar_section.dart';
 
 class ArticleViewContent extends StatefulWidget {
   const ArticleViewContent({super.key, this.initialItem});

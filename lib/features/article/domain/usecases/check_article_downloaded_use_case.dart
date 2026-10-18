@@ -1,4 +1,4 @@
-import '../repos/articles_repo.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
 
 class CheckArticleDownloadedUseCase {
   final OfflineArticlesRepository repository;

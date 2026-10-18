@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
-import 'package:mind_feed/features/home/presentation/cubit/article_reader/article_reader_cubit.dart';
-import 'package:mind_feed/features/home/presentation/widgets/article_reader_action_bar.dart';
+import 'package:mind_feed/features/article/presentation/controllers/article_reader/article_reader_cubit.dart';
+import 'package:mind_feed/features/article/presentation/widgets/article_reader_action_bar.dart';
 
 class ArticleActionBarSection extends StatelessWidget {
   const ArticleActionBarSection({super.key, required this.title});

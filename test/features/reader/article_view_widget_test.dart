@@ -1,22 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
-import 'package:mind_feed/features/home/domain/usecases/rate_author_use_case.dart';
-import 'package:mind_feed/features/home/presentation/cubit/article_reader/article_reader_cubit.dart';
-import 'package:mind_feed/features/home/presentation/views/article_view.dart';
-import 'package:mind_feed/features/home/presentation/widgets/article_slow_scroll_bar.dart';
+import 'package:mind_feed/core/utls/setup_service_locator.dart';
+import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_bookmark_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_star_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/check_article_downloaded_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/download_article_text_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/get_article_details_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/is_article_liked_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/is_article_saved_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/is_article_starred_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/rate_author_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_article_like_use_case.dart';
+import 'package:mind_feed/features/article/presentation/controllers/article_reader/article_reader_cubit.dart';
+import 'package:mind_feed/features/article/presentation/views/article_view.dart';
+import 'package:mind_feed/features/article/presentation/widgets/article_slow_scroll_bar.dart';
 
-class _WidgetFakeEngagementRepository implements ArticleEngagementRepository {
+class _WidgetFakeArticlesRepo
+    implements ArticlesRepository, ArticleEngagementRepository, OfflineArticlesRepository {
   @override
-  Future<ApiResult<void>> likeArticle(String articleId, String userId) async => const Success(null);
+  Future<ApiResult<void>> likeArticle(String articleId, String userId) async =>
+      const Success(null);
 
   @override
-  Future<ApiResult<void>> unlikeArticle(String articleId, String userId) async => const Success(null);
+  Future<ApiResult<void>> unlikeArticle(String articleId, String userId) async =>
+      const Success(null);
 
   @override
-  Future<ApiResult<bool>> isArticleLiked(String articleId, String userId) async => const Success(false);
+  Future<ApiResult<bool>> isArticleLiked(String articleId, String userId) async =>
+      const Success(false);
 
   @override
   Future<ApiResult<AuthorRatingSummary>> rateAuthor({
@@ -38,15 +56,95 @@ class _WidgetFakeEngagementRepository implements ArticleEngagementRepository {
     String? authorId,
     String authorName = 'Editorial Staff',
   }) async =>
-      const Success(AuthorRatingSummary(
-        authorKey: 'sam rivera',
-        userStars: 0,
-        ratingAvg: 0.0,
-        ratingCount: 0,
-      ));
+      authorKey.toLowerCase().contains('sam')
+          ? const Success(AuthorRatingSummary(
+              authorKey: 'sam rivera',
+              userStars: 0,
+              ratingAvg: 0.0,
+              ratingCount: 0,
+            ))
+          : const FailureResult(ServerFailure('Not found'));
+
+  @override
+  Future<ApiResult<bool>> isArticleSaved(String articleId, String userId) async =>
+      const Success(false);
+
+  @override
+  Future<ApiResult<void>> saveBookmark(String articleId, String userId) async =>
+      const Success(null);
+
+  @override
+  Future<ApiResult<void>> removeBookmark(String articleId, String userId) async =>
+      const Success(null);
+
+  @override
+  Future<ApiResult<bool>> isArticleStarred(String articleId, String userId) async =>
+      const Success(false);
+
+  @override
+  Future<ApiResult<void>> starArticle(String articleId, String userId) async =>
+      const Success(null);
+
+  @override
+  Future<ApiResult<void>> unstarArticle(String articleId, String userId) async =>
+      const Success(null);
+
+  @override
+  Future<ApiResult<ArticleEntity>> getArticleById(String id) async =>
+      const FailureResult(ServerFailure('Not found'));
+
+  @override
+  Future<DownloadedArticleEntity?> getDownloadedArticleById(String id) async =>
+      null;
+
+  @override
+  Future<void> saveDownloadedArticle(DownloadedArticleEntity article) async {}
+
+  @override
+  Future<List<DownloadedArticleEntity>> getDownloadedArticles() async => [];
+
+  @override
+  Future<void> deleteDownloadedArticle(String id) async {}
+
+  @override
+  Future<void> clearAllDownloadedArticles() async {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+ArticleReaderCubit _createTestReaderCubit(
+  _WidgetFakeArticlesRepo repo, {
+  String? currentUserId,
+}) {
+  return ArticleReaderCubit(
+    getArticleDetailsUseCase: GetArticleDetailsUseCase(repo),
+    checkArticleDownloadedUseCase: CheckArticleDownloadedUseCase(repo),
+    downloadArticleTextUseCase: DownloadArticleTextUseCase(repo),
+    isArticleLikedUseCase: IsArticleLikedUseCase(repo),
+    toggleArticleLikeUseCase: ToggleArticleLikeUseCase(repo),
+    isArticleSavedUseCase: IsArticleSavedUseCase(repo),
+    toggleBookmarkUseCase: ToggleBookmarkUseCase(repo),
+    rateAuthorUseCase: RateAuthorUseCase(repo),
+    getAuthorRatingUseCase: GetAuthorRatingUseCase(repo),
+    toggleStarUseCase: ToggleStarUseCase(repo),
+    isArticleStarredUseCase: IsArticleStarredUseCase(repo),
+    currentUserId: currentUserId,
+  );
 }
 
 void main() {
+  setUp(() async {
+    await getIt.reset();
+    final repo = _WidgetFakeArticlesRepo();
+    getIt.registerFactory<ArticleReaderCubit>(
+      () => _createTestReaderCubit(repo),
+    );
+  });
+
+  tearDown(() async {
+    await getIt.reset();
+  });
   testWidgets(
       'ArticleView renders markdown content, 5-star author rating under author, slow scroll bar, and article like button',
       (tester) async {
@@ -124,11 +222,8 @@ void main() {
       color: const Color(0xFFFBF8F1),
     );
 
-    final repo = _WidgetFakeEngagementRepository();
-    final cubit = ArticleReaderCubit(
-      currentUserId: 'user_widget_test',
-      rateAuthorUseCase: RateAuthorUseCase(repo),
-    );
+    final repo = _WidgetFakeArticlesRepo();
+    final cubit = _createTestReaderCubit(repo, currentUserId: 'user_widget_test');
     await cubit.initArticle(item);
     await tester.pumpWidget(MaterialApp(home: ArticleView(item: item, cubit: cubit)));
     await tester.pumpAndSettle();

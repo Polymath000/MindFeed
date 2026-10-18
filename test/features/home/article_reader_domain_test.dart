@@ -1,16 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
-import 'package:mind_feed/features/home/domain/entities/article_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/article_reader_details.dart';
-import 'package:mind_feed/features/home/domain/entities/category_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/downloaded_article_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/tag_entity.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
-import 'package:mind_feed/features/home/domain/usecases/check_article_downloaded_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/is_article_liked_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/is_article_saved_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/load_article_reader_details_use_case.dart';
+import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/features/article/domain/entities/article_reader_details.dart';
+import 'package:mind_feed/core/articles/domain/entities/category_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/tag_entity.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
+import 'package:mind_feed/features/article/domain/usecases/check_article_downloaded_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/is_article_liked_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/is_article_saved_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/load_article_reader_details_use_case.dart';
 
 class MockOfflineArticlesRepo implements OfflineArticlesRepository {
   final Map<String, DownloadedArticleEntity> storage = {};

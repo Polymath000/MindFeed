@@ -1,9 +1,9 @@
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 
-import '../entities/article_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
 import '../entities/article_reader_details.dart';
-import '../repos/articles_repo.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
 
 class LoadArticleReaderDetailsUseCase {
   final ArticlesRepository articlesRepository;

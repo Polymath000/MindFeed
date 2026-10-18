@@ -3,19 +3,23 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
-import 'package:mind_feed/features/home/domain/entities/article_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/category_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/downloaded_article_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/tag_entity.dart';
-import 'package:mind_feed/features/home/data/datasources/articles_local_data_source.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
-import 'package:mind_feed/features/home/domain/usecases/download_article_text_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/get_article_details_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/rate_author_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/toggle_article_like_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/toggle_bookmark_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/toggle_star_use_case.dart';
-import 'package:mind_feed/features/home/presentation/cubit/article_reader/article_reader_cubit.dart';
+import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/category_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/tag_entity.dart';
+import 'package:mind_feed/core/articles/data/datasources/articles_local_data_source.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_bookmark_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_star_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/check_article_downloaded_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/download_article_text_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/get_article_details_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/is_article_liked_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/is_article_saved_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/is_article_starred_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/rate_author_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_article_like_use_case.dart';
+import 'package:mind_feed/features/article/presentation/controllers/article_reader/article_reader_cubit.dart';
 
 class FakeArticlesRepository implements ArticlesRepository, ArticleEngagementRepository {
   bool shouldFailStar = false;
@@ -276,37 +280,68 @@ void main() {
   late FakeArticlesRepository fakeRepo;
   late FakeArticlesLocalDataSource fakeLocalDs;
   late ToggleStarUseCase toggleStarUseCase;
+  late IsArticleStarredUseCase isArticleStarredUseCase;
   late ToggleArticleLikeUseCase toggleArticleLikeUseCase;
+  late IsArticleLikedUseCase isArticleLikedUseCase;
   late RateAuthorUseCase rateAuthorUseCase;
   late GetAuthorRatingUseCase getAuthorRatingUseCase;
   late ToggleBookmarkUseCase toggleBookmarkUseCase;
+  late IsArticleSavedUseCase isArticleSavedUseCase;
   late GetArticleDetailsUseCase getArticleDetailsUseCase;
+  late CheckArticleDownloadedUseCase checkArticleDownloadedUseCase;
   late DownloadArticleTextUseCase downloadArticleTextUseCase;
   late ArticleReaderCubit cubit;
+
+  ArticleReaderCubit createReaderCubit({
+    String? currentUserId = 'test_user_id',
+    GetArticleDetailsUseCase? customDetailsUseCase,
+    CheckArticleDownloadedUseCase? customCheckDownloadedUseCase,
+    DownloadArticleTextUseCase? customDownloadUseCase,
+    IsArticleLikedUseCase? customIsLikedUseCase,
+    ToggleArticleLikeUseCase? customLikeUseCase,
+    IsArticleSavedUseCase? customIsSavedUseCase,
+    ToggleBookmarkUseCase? customBookmarkUseCase,
+    RateAuthorUseCase? customRateAuthorUseCase,
+    GetAuthorRatingUseCase? customRatingSummaryUseCase,
+    ToggleStarUseCase? customToggleStarUseCase,
+    IsArticleStarredUseCase? customIsStarredUseCase,
+  }) {
+    return ArticleReaderCubit(
+      getArticleDetailsUseCase: customDetailsUseCase ?? getArticleDetailsUseCase,
+      checkArticleDownloadedUseCase:
+          customCheckDownloadedUseCase ?? checkArticleDownloadedUseCase,
+      downloadArticleTextUseCase:
+          customDownloadUseCase ?? downloadArticleTextUseCase,
+      isArticleLikedUseCase: customIsLikedUseCase ?? isArticleLikedUseCase,
+      toggleArticleLikeUseCase: customLikeUseCase ?? toggleArticleLikeUseCase,
+      isArticleSavedUseCase: customIsSavedUseCase ?? isArticleSavedUseCase,
+      toggleBookmarkUseCase: customBookmarkUseCase ?? toggleBookmarkUseCase,
+      rateAuthorUseCase: customRateAuthorUseCase ?? rateAuthorUseCase,
+      getAuthorRatingUseCase:
+          customRatingSummaryUseCase ?? getAuthorRatingUseCase,
+      toggleStarUseCase: customToggleStarUseCase ?? toggleStarUseCase,
+      isArticleStarredUseCase:
+          customIsStarredUseCase ?? isArticleStarredUseCase,
+      currentUserId: currentUserId,
+    );
+  }
 
   setUp(() {
     fakeRepo = FakeArticlesRepository();
     fakeLocalDs = FakeArticlesLocalDataSource();
     toggleStarUseCase = ToggleStarUseCase(fakeRepo);
+    isArticleStarredUseCase = IsArticleStarredUseCase(fakeRepo);
     toggleArticleLikeUseCase = ToggleArticleLikeUseCase(fakeRepo);
+    isArticleLikedUseCase = IsArticleLikedUseCase(fakeRepo);
     rateAuthorUseCase = RateAuthorUseCase(fakeRepo);
     getAuthorRatingUseCase = GetAuthorRatingUseCase(fakeRepo);
     toggleBookmarkUseCase = ToggleBookmarkUseCase(fakeRepo);
+    isArticleSavedUseCase = IsArticleSavedUseCase(fakeRepo);
     getArticleDetailsUseCase = GetArticleDetailsUseCase(fakeRepo);
+    checkArticleDownloadedUseCase = CheckArticleDownloadedUseCase(fakeLocalDs);
     downloadArticleTextUseCase = DownloadArticleTextUseCase(fakeLocalDs);
 
-    cubit = ArticleReaderCubit(
-      articlesRepository: fakeRepo,
-      toggleStarUseCase: toggleStarUseCase,
-      toggleArticleLikeUseCase: toggleArticleLikeUseCase,
-      rateAuthorUseCase: rateAuthorUseCase,
-      getAuthorRatingUseCase: getAuthorRatingUseCase,
-      toggleBookmarkUseCase: toggleBookmarkUseCase,
-      getArticleDetailsUseCase: getArticleDetailsUseCase,
-      downloadArticleTextUseCase: downloadArticleTextUseCase,
-      localDataSource: fakeLocalDs,
-      currentUserId: 'test_user_id',
-    );
+    cubit = createReaderCubit();
   });
 
   tearDown(() {
@@ -461,10 +496,7 @@ void main() {
   });
 
   test('does not crash when Supabase uninitialized and user is null', () async {
-    final unauthedCubit = ArticleReaderCubit(
-      articlesRepository: fakeRepo,
-      toggleStarUseCase: toggleStarUseCase,
-      toggleBookmarkUseCase: toggleBookmarkUseCase,
+    final unauthedCubit = createReaderCubit(
       currentUserId: null,
     );
     final item = createSampleItem(starCount: 2);
@@ -514,13 +546,7 @@ void main() {
     });
 
     test('direct constructor injection of use cases without repository', () async {
-      final directCubit = ArticleReaderCubit(
-        getArticleDetailsUseCase: getArticleDetailsUseCase,
-        toggleArticleLikeUseCase: toggleArticleLikeUseCase,
-        toggleBookmarkUseCase: toggleBookmarkUseCase,
-        rateAuthorUseCase: rateAuthorUseCase,
-        getAuthorRatingUseCase: getAuthorRatingUseCase,
-        downloadArticleTextUseCase: downloadArticleTextUseCase,
+      final directCubit = createReaderCubit(
         currentUserId: 'direct_user_123',
       );
 

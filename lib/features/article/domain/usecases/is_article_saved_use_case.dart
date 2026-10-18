@@ -1,12 +1,12 @@
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 
-import '../repos/articles_repo.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
 
-class IsArticleLikedUseCase {
-  final ArticleEngagementRepository repository;
+class IsArticleSavedUseCase {
+  final ArticlesRepository repository;
 
-  const IsArticleLikedUseCase(this.repository);
+  const IsArticleSavedUseCase(this.repository);
 
   Future<ApiResult<bool>> call({
     required String articleId,
@@ -19,6 +19,6 @@ class IsArticleLikedUseCase {
         ValidationFailure('Article ID and User ID cannot be empty'),
       );
     }
-    return repository.isArticleLiked(trimmedArticleId, trimmedUserId);
+    return repository.isArticleSaved(trimmedArticleId, trimmedUserId);
   }
 }

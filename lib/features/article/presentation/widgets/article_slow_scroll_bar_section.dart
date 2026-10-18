@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mind_feed/features/home/presentation/cubit/article_reader/article_reader_cubit.dart';
-import 'package:mind_feed/features/home/presentation/widgets/article_slow_scroll_bar.dart';
+import 'package:mind_feed/features/article/presentation/controllers/article_reader/article_reader_cubit.dart';
+import 'package:mind_feed/features/article/presentation/widgets/article_slow_scroll_bar.dart';
 
 class ArticleSlowScrollBarSection extends StatelessWidget {
   const ArticleSlowScrollBarSection({super.key});

@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
-import 'package:mind_feed/features/home/presentation/widgets/article_reader_empty_view.dart';
-import 'package:mind_feed/features/home/presentation/widgets/article_view_content.dart';
+import 'package:mind_feed/features/article/presentation/widgets/article_reader_empty_view.dart';
+import 'package:mind_feed/features/article/presentation/widgets/article_view_content.dart';
 
-import '../cubit/article_reader/article_reader_cubit.dart';
+import '../controllers/article_reader/article_reader_cubit.dart';
 
 export 'package:mind_feed/core/design/editorial_models.dart';
 
@@ -17,12 +17,8 @@ class ArticleView extends StatelessWidget {
   final EditorialNewsItem? item;
   final ArticleReaderCubit? cubit;
 
-  ArticleReaderCubit _createCubit() {
-    final c = getIt.isRegistered<ArticleReaderCubit>()
-        ? getIt<ArticleReaderCubit>()
-        : ArticleReaderCubit();
-    return c..initArticle(item);
-  }
+  ArticleReaderCubit _createCubit() =>
+      getIt<ArticleReaderCubit>()..initArticle(item);
 
   @override
   Widget build(BuildContext context) {
