@@ -190,4 +190,35 @@ Detailed technical reports documenting audits, optimizations, and architectural 
 - **Backend & Clean Architecture Audit Report** (`docs/reports/backend_and_clean_architecture_session_report.md`): Supabase database schema, RPC functions, and offline data sync.
 - **Flutter Refactor Analysis Report** (`docs/reports/flutter_refactor_analysis_report.md`): Baseline code health and refactoring recommendations.
 
+## 6. Knowledge Graph Architecture & Codebase Navigation (Graphify)
+The MindFeed repository maintains a persistent GraphRAG knowledge graph under `graphify-out/` representing the entire codebase AST, community structures, call flows, and symbol dependencies:
+- **`graphify-out/graph.json`**: Primary machine-readable graph comprising 3,553 AST nodes, 5,580 edges, and 186 communities.
+- **`graphify-out/GRAPH_REPORT.md`**: Architectural audit report detailing God Nodes (e.g. `CacheHelper`, `AppColors`, `AppRoutes`), cross-module bridges, and community cohesion scores.
+- **`graphify-out/graph.html`**: Interactive visual web canvas for graphical dependency navigation.
+
+### Graph Navigation Protocols for Antigravity & Developers
+1. **Targeted Subgraph Inquiries**:
+   ```bash
+   graphify query "<question>"
+   ```
+   Answers questions about feature workflows, caller hierarchies, and data paths without grepping or reading raw files blindly.
+2. **Shortest Architectural Path**:
+   ```bash
+   graphify path "<SourceSymbol>" "<TargetSymbol>"
+   ```
+   Traces direct and transitive connections between features, use cases, or data sources.
+3. **Symbol Explanation**:
+   ```bash
+   graphify explain "<Symbol>"
+   ```
+   Inspects callers, incoming references, outgoing dependencies, and cluster membership for any specific symbol.
+4. **Graph Synchronization**:
+   - Automated via git post-commit hooks (`.git/hooks/post-commit`).
+   - Manual incremental synchronization:
+     ```bash
+     graphify . --update --code-only
+     graphify cluster-only .
+     ```
+
+
 
