@@ -21,40 +21,61 @@ import 'package:mind_feed/features/auth/domain/usecases/verify_otp_use_case.dart
 import 'package:mind_feed/features/auth/domain/usecases/verify_recovery_otp_use_case.dart';
 import 'package:mind_feed/features/auth/presentation/controllers/change_password_cubit/change_password_cubit.dart';
 import 'package:mind_feed/features/auth/presentation/controllers/forget_password_cubit/forget_password_cubit.dart';
-import 'package:mind_feed/features/home/data/datasources/articles_local_data_source.dart';
-import 'package:mind_feed/features/home/data/datasources/articles_remote_data_source.dart';
-import 'package:mind_feed/features/home/data/repos/articles_repo_impl.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
-import 'package:mind_feed/features/home/domain/usecases/delete_article_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/delete_downloaded_article_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/download_article_text_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/get_article_details_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/get_articles_by_category_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/get_categories_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/get_downloaded_articles_use_case.dart';
+import 'package:mind_feed/features/collections/presentation/controllers/collections_cubit.dart';
+import 'package:mind_feed/features/collections/presentation/controllers/downloads/downloads_cubit.dart';
+import 'package:mind_feed/core/articles/data/datasources/articles_local_data_source.dart';
+import 'package:mind_feed/core/articles/data/datasources/articles_remote_data_source.dart';
+import 'package:mind_feed/core/articles/data/repos/articles_repo_impl.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
+import 'package:mind_feed/core/articles/domain/usecases/delete_article_use_case.dart';
+import 'package:mind_feed/features/collections/domain/usecases/delete_downloaded_article_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/download_article_text_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/get_article_details_use_case.dart';
+import 'package:mind_feed/features/search/domain/usecases/get_articles_by_category_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_categories_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_downloaded_articles_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_home_feed_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/get_saved_articles_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/publish_article_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/save_draft_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/search_articles_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/toggle_bookmark_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/toggle_star_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/rate_author_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/toggle_article_like_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/get_fixed_tags_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_saved_articles_use_case.dart';
+import 'package:mind_feed/features/add_article/domain/usecases/publish_article_use_case.dart';
+import 'package:mind_feed/features/add_article/domain/usecases/save_draft_use_case.dart';
+import 'package:mind_feed/features/search/domain/usecases/search_articles_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_bookmark_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_star_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/rate_author_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_article_like_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_fixed_tags_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/filter_articles_by_topic_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_user_feed_topics_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/update_article_use_case.dart';
-import 'package:mind_feed/features/home/presentation/cubit/article_reader/article_reader_cubit.dart';
-import 'package:mind_feed/features/home/presentation/cubit/home_feed/home_feed_cubit.dart';
+import 'package:mind_feed/features/add_article/domain/usecases/update_article_use_case.dart';
+import 'package:mind_feed/features/article/presentation/controllers/article_reader/article_reader_cubit.dart';
+import 'package:mind_feed/features/home/presentation/controllers/home_feed/home_feed_cubit.dart';
+import 'package:mind_feed/features/main/presentation/controllers/main_shell_cubit/main_shell_cubit.dart';
 import 'package:mind_feed/features/profile/data/datasources/profile_remote_data_source.dart';
 import 'package:mind_feed/features/profile/data/repos/profile_repo_impl.dart';
-import 'package:mind_feed/features/profile/data/services/category_sync_reconciler.dart';
 import 'package:mind_feed/features/profile/domain/repos/profile_repo.dart';
 import 'package:mind_feed/features/profile/domain/usecases/check_user_has_categories_use_case.dart';
+import 'package:mind_feed/features/profile/domain/usecases/reconcile_category_sync_use_case.dart';
 import 'package:mind_feed/features/profile/domain/usecases/save_favorite_categories_use_case.dart';
+import 'package:mind_feed/features/profile/presentation/controllers/categories_cubit/categories_cubit.dart';
+import 'package:mind_feed/features/settings/domain/usecases/clear_downloaded_articles_use_case.dart';
+import 'package:mind_feed/features/settings/domain/usecases/get_archive_cache_size_use_case.dart';
+import 'package:mind_feed/features/settings/domain/usecases/get_settings_profile_use_case.dart';
+import 'package:mind_feed/features/settings/presentation/controllers/settings_cubit/settings_cubit.dart';
 import 'package:mind_feed/features/splash/domain/usecases/check_app_startup_use_case.dart';
 import 'package:mind_feed/features/splash/presentation/controllers/splash_cubit/splash_cubit.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_author_use_case.dart';
+import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
+import 'package:mind_feed/features/add_article/presentation/controllers/drafts_cubit/drafts_cubit.dart';
+import 'package:mind_feed/features/search/presentation/controllers/search_cubit.dart';
+import 'package:mind_feed/features/author/presentation/controllers/author_cubit/author_cubit.dart';
+import 'package:mind_feed/features/profile/domain/usecases/get_favorite_categories_use_case.dart';
+import 'package:mind_feed/features/profile/domain/usecases/get_user_profile_use_case.dart';
+import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_cubit.dart';
+import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_info_cubit.dart';
+import 'package:mind_feed/features/article/domain/usecases/check_article_downloaded_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/is_article_liked_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/is_article_saved_use_case.dart';
+import 'package:mind_feed/features/article/domain/usecases/is_article_starred_use_case.dart';
 
 final getIt = GetIt.instance;
 
@@ -118,7 +139,7 @@ void setupServiceLocator() {
     () => ProfileRepoImpl(remoteDataSource: getIt<ProfileRemoteDataSource>()),
   );
   getIt.registerLazySingleton<CheckAppStartupUseCase>(
-    () => CheckAppStartupUseCase(authApiSource: getIt<AuthApiSource>()),
+    () => CheckAppStartupUseCase(authRepository: getIt<AuthRepository>()),
   );
   getIt.registerFactory<SplashCubit>(
     () => SplashCubit(checkAppStartupUseCase: getIt<CheckAppStartupUseCase>()),
@@ -129,11 +150,24 @@ void setupServiceLocator() {
   getIt.registerLazySingleton<SaveFavoriteCategoriesUseCase>(
     () => SaveFavoriteCategoriesUseCase(getIt<ProfileRepository>()),
   );
-  getIt.registerLazySingleton<CategorySyncReconciler>(
-    () => CategorySyncReconciler(profileRepository: getIt<ProfileRepository>()),
+  getIt.registerLazySingleton<ReconcileCategorySyncUseCase>(
+    () => ReconcileCategorySyncUseCase(getIt<ProfileRepository>()),
+  );
+  getIt.registerFactory<MainShellCubit>(
+    () => MainShellCubit(
+      reconcileCategorySyncUseCase: getIt<ReconcileCategorySyncUseCase>(),
+    ),
+  );
+  getIt.registerFactory<CategoriesCubit>(
+    () => CategoriesCubit(
+      saveFavoriteCategoriesUseCase: getIt<SaveFavoriteCategoriesUseCase>(),
+    ),
   );
   getIt.registerLazySingleton<ArticlesLocalDataSource>(
     () => ArticlesLocalDataSourceImpl(),
+  );
+  getIt.registerLazySingleton<OfflineArticlesRepository>(
+    () => getIt<ArticlesLocalDataSource>(),
   );
   getIt.registerLazySingleton<ArticlesRemoteDataSource>(
     () => ArticlesRemoteDataSourceImpl(supabaseClient: getIt<SupabaseClient>()),
@@ -228,17 +262,110 @@ void setupServiceLocator() {
       toggleArticleLikeUseCase: getIt<ToggleArticleLikeUseCase>(),
     ),
   );
+  getIt.registerLazySingleton<CheckArticleDownloadedUseCase>(
+    () => CheckArticleDownloadedUseCase(getIt<OfflineArticlesRepository>()),
+  );
+  getIt.registerLazySingleton<IsArticleLikedUseCase>(
+    () => IsArticleLikedUseCase(getIt<ArticleEngagementRepository>()),
+  );
+  getIt.registerLazySingleton<IsArticleSavedUseCase>(
+    () => IsArticleSavedUseCase(getIt<ArticlesRepository>()),
+  );
+  getIt.registerLazySingleton<IsArticleStarredUseCase>(
+    () => IsArticleStarredUseCase(getIt<ArticlesRepository>()),
+  );
   getIt.registerFactory<ArticleReaderCubit>(
     () => ArticleReaderCubit(
-      articlesRepository: getIt<ArticlesRepository>(),
-      toggleStarUseCase: getIt<ToggleStarUseCase>(),
-      toggleBookmarkUseCase: getIt<ToggleBookmarkUseCase>(),
       getArticleDetailsUseCase: getIt<GetArticleDetailsUseCase>(),
+      checkArticleDownloadedUseCase: getIt<CheckArticleDownloadedUseCase>(),
       downloadArticleTextUseCase: getIt<DownloadArticleTextUseCase>(),
-      localDataSource: getIt<ArticlesLocalDataSource>(),
+      isArticleLikedUseCase: getIt<IsArticleLikedUseCase>(),
       toggleArticleLikeUseCase: getIt<ToggleArticleLikeUseCase>(),
+      isArticleSavedUseCase: getIt<IsArticleSavedUseCase>(),
+      toggleBookmarkUseCase: getIt<ToggleBookmarkUseCase>(),
       rateAuthorUseCase: getIt<RateAuthorUseCase>(),
       getAuthorRatingUseCase: getIt<GetAuthorRatingUseCase>(),
+      toggleStarUseCase: getIt<ToggleStarUseCase>(),
+      isArticleStarredUseCase: getIt<IsArticleStarredUseCase>(),
+    ),
+  );
+  getIt.registerFactory<DownloadsCubit>(
+    () => DownloadsCubit(
+      getDownloadedArticlesUseCase: getIt<GetDownloadedArticlesUseCase>(),
+      deleteDownloadedArticleUseCase: getIt<DeleteDownloadedArticleUseCase>(),
+    ),
+  );
+  getIt.registerFactory<CollectionsCubit>(
+    () => CollectionsCubit(
+      getSavedArticlesUseCase: getIt<GetSavedArticlesUseCase>(),
+      toggleBookmarkUseCase: getIt<ToggleBookmarkUseCase>(),
+    ),
+  );
+  getIt.registerLazySingleton<GetSettingsProfileUseCase>(
+    () => GetSettingsProfileUseCase(getIt<ProfileRepository>()),
+  );
+  getIt.registerLazySingleton<GetArchiveCacheSizeUseCase>(
+    () => GetArchiveCacheSizeUseCase(getIt<GetDownloadedArticlesUseCase>()),
+  );
+  getIt.registerLazySingleton<ClearDownloadedArticlesUseCase>(
+    () => ClearDownloadedArticlesUseCase(getIt<OfflineArticlesRepository>()),
+  );
+  getIt.registerFactory<SettingsCubit>(
+    () => SettingsCubit(
+      getSettingsProfileUseCase: getIt<GetSettingsProfileUseCase>(),
+      getArchiveCacheSizeUseCase: getIt<GetArchiveCacheSizeUseCase>(),
+      clearDownloadedArticlesUseCase: getIt<ClearDownloadedArticlesUseCase>(),
+      logoutUseCase: getIt<LogoutUseCase>(),
+    ),
+  );
+  getIt.registerLazySingleton<GetArticlesByAuthorUseCase>(
+    () => GetArticlesByAuthorUseCase(getIt<ArticlesRepository>()),
+  );
+  getIt.registerFactory<DraftsCubit>(
+    () => DraftsCubit(
+      getArticlesByAuthorUseCase: getIt<GetArticlesByAuthorUseCase>(),
+      deleteArticleUseCase: getIt<DeleteArticleUseCase>(),
+    ),
+  );
+  getIt.registerFactory<AddArticleCubit>(
+    () => AddArticleCubit(
+      getCategoriesUseCase: getIt<GetCategoriesUseCase>(),
+      getFixedTagsUseCase: getIt<GetFixedTagsUseCase>(),
+      saveDraftUseCase: getIt<SaveDraftUseCase>(),
+      publishArticleUseCase: getIt<PublishArticleUseCase>(),
+      updateArticleUseCase: getIt<UpdateArticleUseCase>(),
+    ),
+  );
+  getIt.registerFactory<SearchCubit>(
+    () => SearchCubit(
+      searchArticlesUseCase: getIt<SearchArticlesUseCase>(),
+      getArticlesByCategoryUseCase: getIt<GetArticlesByCategoryUseCase>(),
+      getCategoriesUseCase: getIt<GetCategoriesUseCase>(),
+      getFixedTagsUseCase: getIt<GetFixedTagsUseCase>(),
+    ),
+  );
+  getIt.registerLazySingleton<GetUserProfileUseCase>(
+    () => GetUserProfileUseCase(getIt<ProfileRepository>()),
+  );
+  getIt.registerLazySingleton<GetFavoriteCategoriesUseCase>(
+    () => GetFavoriteCategoriesUseCase(getIt<ProfileRepository>()),
+  );
+  getIt.registerFactory<ProfileArticlesCubit>(
+    () => ProfileArticlesCubit(
+      getArticlesByAuthorUseCase: getIt<GetArticlesByAuthorUseCase>(),
+      deleteArticleUseCase: getIt<DeleteArticleUseCase>(),
+    ),
+  );
+  getIt.registerFactory<ProfileInfoCubit>(
+    () => ProfileInfoCubit(
+      getUserProfileUseCase: getIt<GetUserProfileUseCase>(),
+      getFavoriteCategoriesUseCase: getIt<GetFavoriteCategoriesUseCase>(),
+      getArticlesByAuthorUseCase: getIt<GetArticlesByAuthorUseCase>(),
+    ),
+  );
+  getIt.registerFactory<AuthorCubit>(
+    () => AuthorCubit(
+      getHomeFeedUseCase: getIt<GetHomeFeedUseCase>(),
     ),
   );
 }
