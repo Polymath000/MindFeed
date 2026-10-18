@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
-import 'package:mind_feed/features/profile/presentation/widget/custom_article_card_of_profile.dart';
+import 'package:mind_feed/core/widgets/article_card.dart';
 
 void main() {
   EditorialNewsItem buildItem({

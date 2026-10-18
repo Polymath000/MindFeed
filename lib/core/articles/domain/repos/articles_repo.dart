@@ -1,8 +1,11 @@
 import 'package:mind_feed/core/networking/api_result.dart';
-import 'package:mind_feed/features/home/domain/entities/article_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/category_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/downloaded_article_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/tag_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/author_rating_summary.dart';
+import 'package:mind_feed/core/articles/domain/entities/category_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/tag_entity.dart';
+
+export 'package:mind_feed/core/articles/domain/entities/author_rating_summary.dart';
 
 abstract class OfflineArticlesRepository {
   Future<void> saveDownloadedArticle(DownloadedArticleEntity article);
@@ -51,29 +54,6 @@ abstract class ArticlesRepository {
   );
   Future<ApiResult<void>> deleteArticle(String articleId);
   Future<void> clearDownloadedArticles();
-}
-
-class AuthorRatingSummary {
-  final String authorKey;
-  final int userStars;
-  final double ratingAvg;
-  final int ratingCount;
-
-  const AuthorRatingSummary({
-    required this.authorKey,
-    required this.userStars,
-    required this.ratingAvg,
-    required this.ratingCount,
-  });
-
-  factory AuthorRatingSummary.fromJson(Map<String, dynamic> json) {
-    return AuthorRatingSummary(
-      authorKey: json['author_key'] as String? ?? '',
-      userStars: (json['user_stars'] as num?)?.toInt() ?? 0,
-      ratingAvg: (json['rating_avg'] as num?)?.toDouble() ?? 0.0,
-      ratingCount: (json['rating_count'] as num?)?.toInt() ?? 0,
-    );
-  }
 }
 
 abstract class ArticleEngagementRepository {

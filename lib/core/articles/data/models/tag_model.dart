@@ -1,4 +1,4 @@
-import 'package:mind_feed/features/home/domain/entities/tag_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/tag_entity.dart';
 
 class TagModel extends TagEntity {
   const TagModel({

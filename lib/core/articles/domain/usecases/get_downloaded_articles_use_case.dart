@@ -1,5 +1,5 @@
-import 'package:mind_feed/features/home/domain/entities/downloaded_article_entity.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
+import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
 
 class GetDownloadedArticlesUseCase {
   final OfflineArticlesRepository localDataSource;

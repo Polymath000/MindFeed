@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
-import 'package:mind_feed/features/home/domain/entities/article_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/downloaded_article_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
 
 class EditorialNewsItem {
   final String id;

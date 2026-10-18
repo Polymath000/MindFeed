@@ -5,6 +5,8 @@ import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/borders.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 
+typedef ArticleCard = CustomArticleCardOfProfile;
+
 class CustomArticleCardOfProfile extends StatelessWidget {
   const CustomArticleCardOfProfile({
     super.key,

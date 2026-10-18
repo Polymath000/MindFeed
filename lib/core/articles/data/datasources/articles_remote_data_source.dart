@@ -1,8 +1,8 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:mind_feed/features/home/data/models/article_model.dart';
-import 'package:mind_feed/features/home/data/models/category_model.dart';
-import 'package:mind_feed/features/home/data/models/tag_model.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
+import 'package:mind_feed/core/articles/data/models/article_model.dart';
+import 'package:mind_feed/core/articles/data/models/category_model.dart';
+import 'package:mind_feed/core/articles/data/models/tag_model.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
 
 abstract class ArticlesRemoteDataSource {
   Future<List<ArticleModel>> getHomeFeed({

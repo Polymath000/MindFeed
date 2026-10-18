@@ -1,7 +1,8 @@
+import 'package:mind_feed/core/articles/data/models/downloaded_article_entity_adapter.dart';
 import 'package:hive/hive.dart';
 import 'package:mind_feed/core/errors/exceptions.dart';
-import 'package:mind_feed/features/home/domain/entities/downloaded_article_entity.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
+import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
 
 abstract class ArticlesLocalDataSource implements OfflineArticlesRepository {
   @override

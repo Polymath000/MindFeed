@@ -2,13 +2,13 @@ import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_error_handler.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/networking/network_info.dart';
-import 'package:mind_feed/features/home/data/datasources/articles_remote_data_source.dart';
-import 'package:mind_feed/features/home/domain/entities/article_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/category_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/tag_entity.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
+import 'package:mind_feed/core/articles/data/datasources/articles_remote_data_source.dart';
+import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/category_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/tag_entity.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
 
-import 'package:mind_feed/features/home/data/datasources/articles_local_data_source.dart';
+import 'package:mind_feed/core/articles/data/datasources/articles_local_data_source.dart';
 
 class ArticlesRepositoryImpl implements ArticlesRepository, ArticleEngagementRepository {
   final ArticlesRemoteDataSource remoteDataSource;
