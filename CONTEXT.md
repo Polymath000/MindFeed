@@ -177,4 +177,48 @@ The codebase follows **Feature-First Clean Architecture**:
   - **Dart 3 Sealed State, Immutable Cubit Updates & DI**:
     - Migrated `HomeFeedState` to a Dart 3 `sealed class` hierarchy (`HomeFeedInitial`, `HomeFeedLoading`, `HomeFeedLoaded`, `HomeFeedError`) with `SwipeSaveStatus`.
     - Refactored `HomeFeedCubit` and `HomeViewBody` into small `<20`-line methods, guarded all emissions with `if (!isClosed)`, eliminated `StatefulBuilder` mutation workarounds via immutable list emissions, and registered `GetUserFeedTopicsUseCase`, `FilterArticlesByTopicUseCase`, and `HomeFeedCubit` in `setup_service_locator.dart`.
+  - Detailed report available in `docs/reports/home_feature_clean_architecture_and_engineering_report.md`.
+- **Comprehensive Architectural & Evolution Reports Suite**:
+  - Authored dedicated technical reports in `docs/reports/` documenting the complete engineering journey of MindFeed, key architectural pivots, and performance milestones.
+
+## 5. Architectural Reports & Documentation Index
+Detailed technical reports documenting audits, optimizations, and architectural refactoring are maintained in `docs/reports/`:
+- **Legacy Prototype & Architectural Evolution Report** (`docs/reports/legacy_prototype_and_evolution_report.md`): Chronological audit of the 38 foundational commits from genesis (`b6782b4`) up to Pull Request #1 (`ba0ed81`), detailing early UI prototypes, feature consolidation (`cd8a116`), password security remediation (`a2a03eb`), and the editorial card stack pivot (`0ba79bd`).
+- **Mandatory Category Onboarding Gate & Password Recovery Architecture Report** (`docs/reports/category_onboarding_and_auth_architecture_report.md`): Architectural analysis of commits `f7e3024` to `39e50a4`, documenting deferred session and token persistence, 20-category vector pill modernization, Supabase password recovery pipeline, and `ValueNotifier` form optimizations.
+- **Dart DevTools Performance Profile & Raster Jank Optimization Report** (`docs/reports/devtools_performance_and_raster_optimization_report.md`): Quantitative timeline comparison (`17_07_21.029.json` vs. `18_08_16.161.json`) for commit `921c7eb`, detailing the elimination of 6,150 `saveLayer` passes via `Color.lerp`, masthead ticker isolation, asset downscaling, and sliver virtualization (78.8% raster time reduction).
+- **Home Feature Clean Architecture & Engineering Report** (`docs/reports/home_feature_clean_architecture_and_engineering_report.md`): Detailed breakdown of the 7 architectural rule violations in `lib/features/home/` and their systematic refactoring across 4 atomic Git commits.
+- **Backend & Clean Architecture Audit Report** (`docs/reports/backend_and_clean_architecture_session_report.md`): Supabase database schema, RPC functions, and offline data sync.
+- **Flutter Refactor Analysis Report** (`docs/reports/flutter_refactor_analysis_report.md`): Baseline code health and refactoring recommendations.
+
+## 6. Knowledge Graph Architecture & Codebase Navigation (Graphify)
+The MindFeed repository maintains a persistent GraphRAG knowledge graph under `graphify-out/` representing the entire codebase AST, community structures, call flows, and symbol dependencies:
+- **`graphify-out/graph.json`**: Primary machine-readable graph comprising 3,553 AST nodes, 5,580 edges, and 186 communities.
+- **`graphify-out/GRAPH_REPORT.md`**: Architectural audit report detailing God Nodes (e.g. `CacheHelper`, `AppColors`, `AppRoutes`), cross-module bridges, and community cohesion scores.
+- **`graphify-out/graph.html`**: Interactive visual web canvas for graphical dependency navigation.
+
+### Graph Navigation Protocols for Antigravity & Developers
+1. **Targeted Subgraph Inquiries**:
+   ```bash
+   graphify query "<question>"
+   ```
+   Answers questions about feature workflows, caller hierarchies, and data paths without grepping or reading raw files blindly.
+2. **Shortest Architectural Path**:
+   ```bash
+   graphify path "<SourceSymbol>" "<TargetSymbol>"
+   ```
+   Traces direct and transitive connections between features, use cases, or data sources.
+3. **Symbol Explanation**:
+   ```bash
+   graphify explain "<Symbol>"
+   ```
+   Inspects callers, incoming references, outgoing dependencies, and cluster membership for any specific symbol.
+4. **Graph Synchronization**:
+   - Automated via git post-commit hooks (`.git/hooks/post-commit`).
+   - Manual incremental synchronization:
+     ```bash
+     graphify . --update --code-only
+     graphify cluster-only .
+     ```
+
+
 
