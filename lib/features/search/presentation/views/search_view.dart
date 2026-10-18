@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/core/widgets/search_bar.dart';
-import 'package:mind_feed/features/search/presentation/cubit/search_cubit.dart';
+import 'package:mind_feed/features/search/presentation/controllers/search_cubit.dart';
 import 'package:mind_feed/features/search/presentation/widgets/search_filter_chips_bar.dart';
 import 'package:mind_feed/features/search/presentation/widgets/search_results_view.dart';
 
 class SearchView extends StatelessWidget {
-  const SearchView({super.key});
+  final SearchCubit? cubit;
+
+  const SearchView({super.key, this.cubit});
   static const String routeName = 'search';
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => SearchCubit(),
+      create: (_) => cubit ?? getIt<SearchCubit>(),
       child: const _SearchViewContent(),
     );
   }

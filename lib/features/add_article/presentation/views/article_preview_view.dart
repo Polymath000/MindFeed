@@ -3,7 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
-import 'package:mind_feed/features/add_article/presentation/widget/article_preview_header.dart';
+import 'package:mind_feed/features/add_article/presentation/widgets/article_preview_header.dart';
 
 class ArticlePreviewView extends StatelessWidget {
   final EditorialNewsItem? item;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
-import 'package:mind_feed/features/home/domain/entities/category_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/tag_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/category_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/tag_entity.dart';
 
 class SearchCategoryChipsBar extends StatelessWidget {
   final List<CategoryEntity> categories;

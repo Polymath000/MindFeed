@@ -6,17 +6,22 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:mind_feed/core/design/editorial_card_stack.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
-import 'package:mind_feed/features/home/domain/entities/article_entity.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
+import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_home_feed_use_case.dart';
-import 'package:mind_feed/features/home/presentation/cubit/home_feed/home_feed_cubit.dart';
+import 'package:mind_feed/features/home/presentation/controllers/home_feed/home_feed_cubit.dart';
 import 'package:mind_feed/features/home/presentation/widgets/home_view_body.dart';
 import 'package:mind_feed/features/home/presentation/widgets/home_feed_loading_views.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_saved_articles_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_bookmark_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_star_use_case.dart';
+import 'package:mind_feed/features/home/domain/usecases/get_user_feed_topics_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_article_like_use_case.dart';
 import 'package:mind_feed/features/home/presentation/widgets/home_lead_story_section.dart';
 import 'package:mind_feed/features/home/presentation/widgets/home_masthead_header.dart';
 import 'package:mind_feed/features/profile/domain/repos/profile_repo.dart';
 
-class _DelayedArticlesRepo implements ArticlesRepository {
+class _DelayedArticlesRepo implements ArticlesRepository, ArticleEngagementRepository {
   _DelayedArticlesRepo(this.completer);
 
   final Completer<ApiResult<List<ArticleEntity>>> completer;
@@ -27,6 +32,38 @@ class _DelayedArticlesRepo implements ArticlesRepository {
     int limit = 20,
     int offset = 0,
   }) => completer.future;
+
+  @override
+  Future<ApiResult<List<ArticleEntity>>> getSavedArticles(String userId) async =>
+      const Success([]);
+
+  @override
+  Future<ApiResult<void>> likeArticle(String articleId, String userId) async =>
+      const Success(null);
+
+  @override
+  Future<ApiResult<void>> unlikeArticle(String articleId, String userId) async =>
+      const Success(null);
+
+  @override
+  Future<ApiResult<bool>> isArticleLiked(String articleId, String userId) async =>
+      const Success(false);
+
+  @override
+  Future<ApiResult<void>> saveBookmark(String articleId, String userId) async =>
+      const Success(null);
+
+  @override
+  Future<ApiResult<void>> removeBookmark(String articleId, String userId) async =>
+      const Success(null);
+
+  @override
+  Future<ApiResult<void>> starArticle(String articleId, String userId) async =>
+      const Success(null);
+
+  @override
+  Future<ApiResult<void>> unstarArticle(String articleId, String userId) async =>
+      const Success(null);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -62,7 +99,11 @@ void main() {
       ]);
       final cubit = HomeFeedCubit(
         getHomeFeedUseCase: GetHomeFeedUseCase(repo),
-        profileRepository: profileRepo,
+        getUserFeedTopicsUseCase: GetUserFeedTopicsUseCase(profileRepository: profileRepo),
+        getSavedArticlesUseCase: GetSavedArticlesUseCase(repo),
+        toggleBookmarkUseCase: ToggleBookmarkUseCase(repo),
+        toggleStarUseCase: ToggleStarUseCase(repo),
+        toggleArticleLikeUseCase: ToggleArticleLikeUseCase(repo),
         currentUserId: 'user_1',
       )..fetchFeed();
       addTearDown(cubit.close);

@@ -6,17 +6,25 @@ import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_saved_stack.dart';
 import 'package:mind_feed/core/widgets/search_bar.dart';
-import 'package:mind_feed/features/collections/presentation/cubit/collections_cubit.dart';
+import 'package:mind_feed/core/utls/setup_service_locator.dart';
+import 'package:mind_feed/features/collections/presentation/controllers/collections_cubit.dart';
 
 class ArticlesSaved extends StatelessWidget {
-  const ArticlesSaved({super.key, this.refreshSeed = 0});
+  const ArticlesSaved({super.key, this.refreshSeed = 0, this.cubit});
   static const String routeName = 'articlesSaved';
   final int refreshSeed;
+  final CollectionsCubit? cubit;
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => CollectionsCubit(),
+    if (cubit != null) {
+      return BlocProvider<CollectionsCubit>.value(
+        value: cubit!,
+        child: _ArticlesSavedContent(refreshSeed: refreshSeed),
+      );
+    }
+    return BlocProvider<CollectionsCubit>(
+      create: (_) => getIt<CollectionsCubit>(),
       child: _ArticlesSavedContent(refreshSeed: refreshSeed),
     );
   }

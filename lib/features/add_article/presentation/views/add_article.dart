@@ -6,18 +6,19 @@ import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_state.dart';
 import 'package:mind_feed/features/add_article/presentation/routes/add_article_routes.dart';
-import 'package:mind_feed/features/add_article/presentation/widget/article_category_selector.dart';
-import 'package:mind_feed/features/add_article/presentation/widget/article_content_field.dart';
-import 'package:mind_feed/features/add_article/presentation/widget/article_cover_image_field.dart';
-import 'package:mind_feed/features/add_article/presentation/widget/article_edit_warning_banner.dart';
-import 'package:mind_feed/features/add_article/presentation/widget/article_editor_action_bar.dart';
-import 'package:mind_feed/features/add_article/presentation/widget/article_tag_selector.dart';
-import 'package:mind_feed/features/add_article/presentation/widget/article_title_field.dart';
+import 'package:mind_feed/features/add_article/presentation/widgets/article_category_selector.dart';
+import 'package:mind_feed/features/add_article/presentation/widgets/article_content_field.dart';
+import 'package:mind_feed/features/add_article/presentation/widgets/article_cover_image_field.dart';
+import 'package:mind_feed/features/add_article/presentation/widgets/article_edit_warning_banner.dart';
+import 'package:mind_feed/features/add_article/presentation/widgets/article_editor_action_bar.dart';
+import 'package:mind_feed/features/add_article/presentation/widgets/article_tag_selector.dart';
+import 'package:mind_feed/features/add_article/presentation/widgets/article_title_field.dart';
 
 class AddArticleView extends StatefulWidget {
   final EditorialNewsItem? initialItem;
+  final AddArticleCubit? cubit;
 
-  const AddArticleView({super.key, this.initialItem});
+  const AddArticleView({super.key, this.initialItem, this.cubit});
 
   @override
   State<AddArticleView> createState() => _AddArticleViewState();
@@ -46,7 +47,7 @@ class _AddArticleViewState extends State<AddArticleView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AddArticleCubit, AddArticleState>(
+    final content = BlocConsumer<AddArticleCubit, AddArticleState>(
       listener: (context, state) {
         final message = state.errorMessage ?? state.successMessage;
         if (message != null) {
@@ -122,5 +123,13 @@ class _AddArticleViewState extends State<AddArticleView> {
         );
       },
     );
+
+    if (widget.cubit != null) {
+      return BlocProvider<AddArticleCubit>.value(
+        value: widget.cubit!,
+        child: content,
+      );
+    }
+    return content;
   }
 }

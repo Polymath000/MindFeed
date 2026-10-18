@@ -2,16 +2,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
-import 'package:mind_feed/core/utls/setup_service_locator.dart';
-import 'package:mind_feed/features/add_article/domain/helpers/article_payload_builder.dart';
+import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/article_payload_builder.dart';
 import 'package:mind_feed/features/add_article/domain/helpers/article_validator.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_state.dart';
-import 'package:mind_feed/features/home/domain/entities/article_entity.dart';
-import 'package:mind_feed/features/home/domain/usecases/get_categories_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/get_fixed_tags_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/publish_article_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/save_draft_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/update_article_use_case.dart';
+import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_categories_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_fixed_tags_use_case.dart';
+import 'package:mind_feed/features/add_article/domain/usecases/publish_article_use_case.dart';
+import 'package:mind_feed/features/add_article/domain/usecases/save_draft_use_case.dart';
+import 'package:mind_feed/features/add_article/domain/usecases/update_article_use_case.dart';
 
 class AddArticleCubit extends Cubit<AddArticleState> {
   final GetCategoriesUseCase getCategoriesUseCase;
@@ -23,19 +22,14 @@ class AddArticleCubit extends Cubit<AddArticleState> {
   final ImageDimensionResolver? dimensionResolver;
 
   AddArticleCubit({
-    GetCategoriesUseCase? getCategoriesUseCase,
-    GetFixedTagsUseCase? getFixedTagsUseCase,
-    SaveDraftUseCase? saveDraftUseCase,
-    PublishArticleUseCase? publishArticleUseCase,
-    UpdateArticleUseCase? updateArticleUseCase,
+    required this.getCategoriesUseCase,
+    required this.getFixedTagsUseCase,
+    required this.saveDraftUseCase,
+    required this.publishArticleUseCase,
+    required this.updateArticleUseCase,
     this.userResolver,
     this.dimensionResolver,
-  })  : getCategoriesUseCase = getCategoriesUseCase ?? getIt(),
-        getFixedTagsUseCase = getFixedTagsUseCase ?? getIt(),
-        saveDraftUseCase = saveDraftUseCase ?? getIt(),
-        publishArticleUseCase = publishArticleUseCase ?? getIt(),
-        updateArticleUseCase = updateArticleUseCase ?? getIt(),
-        super(const AddArticleState());
+  }) : super(const AddArticleState());
 
   CurrentUserSnapshot? get _currentUser =>
       userResolver != null ? userResolver!() : CurrentUserSession.resolveCurrentUser();

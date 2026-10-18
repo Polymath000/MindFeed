@@ -2,17 +2,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
-import 'package:mind_feed/features/home/domain/entities/article_entity.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
+import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_saved_articles_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_bookmark_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_star_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_home_feed_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/get_saved_articles_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/toggle_bookmark_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/toggle_star_use_case.dart';
-import 'package:mind_feed/features/home/presentation/cubit/home_feed/home_feed_cubit.dart';
-import 'package:mind_feed/features/home/presentation/cubit/home_feed/home_feed_state.dart';
+import 'package:mind_feed/features/home/domain/usecases/get_user_feed_topics_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_article_like_use_case.dart';
+import 'package:mind_feed/features/home/presentation/controllers/home_feed/home_feed_cubit.dart';
+import 'package:mind_feed/features/home/presentation/controllers/home_feed/home_feed_state.dart';
 import 'package:mind_feed/features/profile/domain/repos/profile_repo.dart';
 
-class _FakeArticlesRepo implements ArticlesRepository {
+class _FakeArticlesRepo implements ArticlesRepository, ArticleEngagementRepository {
   bool shouldFail = false;
   String failureMessage = 'Network error occurred';
   List<ArticleEntity> articles = [];
@@ -62,6 +64,45 @@ class _FakeArticlesRepo implements ArticlesRepository {
   }
 
   @override
+  Future<ApiResult<void>> likeArticle(String articleId, String userId) =>
+      starArticle(articleId, userId);
+
+  @override
+  Future<ApiResult<void>> unlikeArticle(String articleId, String userId) =>
+      unstarArticle(articleId, userId);
+
+  @override
+  Future<ApiResult<bool>> isArticleLiked(String articleId, String userId) async =>
+      const Success(false);
+
+  @override
+  Future<ApiResult<AuthorRatingSummary>> rateAuthor({
+    required String authorKey,
+    required int stars,
+    String? authorId,
+    String authorName = 'Editorial Staff',
+  }) async =>
+      const Success(AuthorRatingSummary(
+        authorKey: '',
+        userStars: 0,
+        ratingAvg: 0,
+        ratingCount: 0,
+      ));
+
+  @override
+  Future<ApiResult<AuthorRatingSummary>> getAuthorRatingSummary({
+    required String authorKey,
+    String? authorId,
+    String authorName = 'Editorial Staff',
+  }) async =>
+      const Success(AuthorRatingSummary(
+        authorKey: '',
+        userStars: 0,
+        ratingAvg: 0,
+        ratingCount: 0,
+      ));
+
+  @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
@@ -88,9 +129,11 @@ void main() {
   late _FakeArticlesRepo fakeArticlesRepo;
   late _FakeProfileRepo fakeProfileRepo;
   late GetHomeFeedUseCase feedUseCase;
+  late GetUserFeedTopicsUseCase topicsUseCase;
   late GetSavedArticlesUseCase savedArticlesUseCase;
   late ToggleBookmarkUseCase toggleBookmarkUseCase;
   late ToggleStarUseCase toggleStarUseCase;
+  late ToggleArticleLikeUseCase toggleArticleLikeUseCase;
 
   const sampleArticle1 = ArticleEntity(
     id: 'art_1',
@@ -115,16 +158,37 @@ void main() {
     fakeProfileRepo = _FakeProfileRepo();
     fakeArticlesRepo.articles = [sampleArticle1, sampleArticle2];
     feedUseCase = GetHomeFeedUseCase(fakeArticlesRepo);
+    topicsUseCase = GetUserFeedTopicsUseCase(profileRepository: fakeProfileRepo);
     savedArticlesUseCase = GetSavedArticlesUseCase(fakeArticlesRepo);
     toggleBookmarkUseCase = ToggleBookmarkUseCase(fakeArticlesRepo);
     toggleStarUseCase = ToggleStarUseCase(fakeArticlesRepo);
+    toggleArticleLikeUseCase = ToggleArticleLikeUseCase(fakeArticlesRepo);
   });
 
-  test('initial state has default topics and All selected', () {
-    final cubit = HomeFeedCubit(
-      getHomeFeedUseCase: feedUseCase,
-      profileRepository: fakeProfileRepo,
+  HomeFeedCubit createTestCubit({
+    String? currentUserId,
+    String? Function()? userIdResolver,
+    GetHomeFeedUseCase? customFeedUseCase,
+    GetUserFeedTopicsUseCase? customTopicsUseCase,
+    GetSavedArticlesUseCase? customSavedUseCase,
+    ToggleBookmarkUseCase? customBookmarkUseCase,
+    ToggleStarUseCase? customStarUseCase,
+    ToggleArticleLikeUseCase? customLikeUseCase,
+  }) {
+    return HomeFeedCubit(
+      getHomeFeedUseCase: customFeedUseCase ?? feedUseCase,
+      getUserFeedTopicsUseCase: customTopicsUseCase ?? topicsUseCase,
+      getSavedArticlesUseCase: customSavedUseCase ?? savedArticlesUseCase,
+      toggleBookmarkUseCase: customBookmarkUseCase ?? toggleBookmarkUseCase,
+      toggleStarUseCase: customStarUseCase ?? toggleStarUseCase,
+      toggleArticleLikeUseCase: customLikeUseCase ?? toggleArticleLikeUseCase,
+      currentUserId: currentUserId,
+      userIdResolver: userIdResolver,
     );
+  }
+
+  test('initial state has default topics and All selected', () {
+    final cubit = createTestCubit();
     expect(cubit.state.status, equals(HomeFeedStatus.initial));
     expect(cubit.state.selectedTopic, equals('All'));
     expect(cubit.state.topics, contains('All'));
@@ -133,11 +197,7 @@ void main() {
   });
 
   test('fetchFeed successfully populates articles and preserves filtering', () async {
-    final cubit = HomeFeedCubit(
-      getHomeFeedUseCase: feedUseCase,
-      profileRepository: fakeProfileRepo,
-      currentUserId: 'user_123',
-    );
+    final cubit = createTestCubit(currentUserId: 'user_123');
 
     await cubit.fetchFeed();
 
@@ -161,10 +221,7 @@ void main() {
     fakeArticlesRepo.shouldFail = true;
     fakeArticlesRepo.failureMessage = 'SocketException: network is offline';
 
-    final cubit = HomeFeedCubit(
-      getHomeFeedUseCase: feedUseCase,
-      profileRepository: fakeProfileRepo,
-    );
+    final cubit = createTestCubit();
 
     await cubit.fetchFeed();
 
@@ -186,11 +243,7 @@ void main() {
       },
     ];
 
-    final cubit = HomeFeedCubit(
-      getHomeFeedUseCase: feedUseCase,
-      profileRepository: fakeProfileRepo,
-      currentUserId: 'user_456',
-    );
+    final cubit = createTestCubit(currentUserId: 'user_456');
 
     await cubit.fetchFeed();
 
@@ -211,12 +264,7 @@ void main() {
   test('loadFeed marks matching saved articles as saved for logged in user', () async {
     fakeArticlesRepo.savedArticles = [sampleArticle1];
 
-    final cubit = HomeFeedCubit(
-      getHomeFeedUseCase: feedUseCase,
-      profileRepository: fakeProfileRepo,
-      getSavedArticlesUseCase: savedArticlesUseCase,
-      currentUserId: 'user_saved_1',
-    );
+    final cubit = createTestCubit(currentUserId: 'user_saved_1');
 
     await cubit.loadFeed();
 
@@ -229,11 +277,7 @@ void main() {
   });
 
   test('saveArticleOnSwipeRight saves article and returns true on success', () async {
-    final cubit = HomeFeedCubit(
-      getHomeFeedUseCase: feedUseCase,
-      toggleBookmarkUseCase: toggleBookmarkUseCase,
-      currentUserId: 'user_save_right',
-    );
+    final cubit = createTestCubit(currentUserId: 'user_save_right');
 
     final item = sampleArticle1.toEditorialNewsItem();
     expect(item.isSaved, isFalse);
@@ -247,11 +291,7 @@ void main() {
   });
 
   test('saveArticleOnSwipeRight rolls back and returns false on failure or unauthenticated', () async {
-    final unauthCubit = HomeFeedCubit(
-      getHomeFeedUseCase: feedUseCase,
-      toggleBookmarkUseCase: toggleBookmarkUseCase,
-      userIdResolver: () => null,
-    );
+    final unauthCubit = createTestCubit(userIdResolver: () => null);
 
     final item1 = sampleArticle1.toEditorialNewsItem();
     final unauthResult = await unauthCubit.saveArticleOnSwipeRight(item1);
@@ -260,11 +300,7 @@ void main() {
     unauthCubit.close();
 
     fakeArticlesRepo.bookmarkFail = true;
-    final cubit = HomeFeedCubit(
-      getHomeFeedUseCase: feedUseCase,
-      toggleBookmarkUseCase: toggleBookmarkUseCase,
-      currentUserId: 'user_fail',
-    );
+    final cubit = createTestCubit(currentUserId: 'user_fail');
 
     final item2 = sampleArticle1.toEditorialNewsItem();
     final failResult = await cubit.saveArticleOnSwipeRight(item2);
@@ -274,11 +310,7 @@ void main() {
   });
 
   test('toggleBookmark toggles state optimistically and reverts on error', () async {
-    final cubit = HomeFeedCubit(
-      getHomeFeedUseCase: feedUseCase,
-      toggleBookmarkUseCase: toggleBookmarkUseCase,
-      currentUserId: 'user_toggle',
-    );
+    final cubit = createTestCubit(currentUserId: 'user_toggle');
 
     final item = sampleArticle1.toEditorialNewsItem();
     expect(item.isSaved, isFalse);
@@ -296,11 +328,7 @@ void main() {
   });
 
   test('toggleStar updates starCount and reverts on error', () async {
-    final cubit = HomeFeedCubit(
-      getHomeFeedUseCase: feedUseCase,
-      toggleStarUseCase: toggleStarUseCase,
-      currentUserId: 'user_star',
-    );
+    final cubit = createTestCubit(currentUserId: 'user_star');
 
     final item = sampleArticle1.toEditorialNewsItem();
     expect(item.isStarred, isFalse);

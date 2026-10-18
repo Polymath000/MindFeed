@@ -2,8 +2,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/drafts_cubit/drafts_cubit.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/drafts_cubit/drafts_state.dart';
-import 'package:mind_feed/features/home/domain/entities/article_entity.dart';
-import 'package:mind_feed/features/home/domain/usecases/delete_article_use_case.dart';
+import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/core/articles/domain/usecases/delete_article_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_author_use_case.dart';
 import 'add_article_cubit_test.dart';
 
 void main() {
@@ -19,7 +20,7 @@ void main() {
   setUp(() {
     repo = FakeArticlesRepository();
     cubit = DraftsCubit(
-      articlesRepository: repo,
+      getArticlesByAuthorUseCase: GetArticlesByAuthorUseCase(repo),
       deleteArticleUseCase: DeleteArticleUseCase(repo),
       userResolver: () => testUser,
     );
@@ -68,7 +69,7 @@ void main() {
 
   test('loadDrafts emits DraftsError when user is null', () async {
     final unauthCubit = DraftsCubit(
-      articlesRepository: repo,
+      getArticlesByAuthorUseCase: GetArticlesByAuthorUseCase(repo),
       deleteArticleUseCase: DeleteArticleUseCase(repo),
       userResolver: () => null,
     );

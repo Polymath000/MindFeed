@@ -63,6 +63,9 @@ class _FakeAuthRepo implements AuthRepository {
 
   @override
   Future<ApiResult<void>> logout() async => const Success(null);
+
+  @override
+  bool hasActiveSession() => false;
 }
 
 void main() {

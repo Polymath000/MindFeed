@@ -11,8 +11,8 @@ import 'package:mind_feed/core/design/editorial_card_stack.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
 
-import '../cubit/home_feed/home_feed_cubit.dart';
-import '../cubit/home_feed/home_feed_state.dart';
+import '../controllers/home_feed/home_feed_cubit.dart';
+import '../controllers/home_feed/home_feed_state.dart';
 import 'home_feed_empty_view.dart';
 import 'home_feed_error_view.dart';
 import 'home_feed_loading_views.dart';
@@ -39,9 +39,7 @@ class HomeViewBody extends StatelessWidget {
     );
   }
 
-  HomeFeedCubit _createCubit() => getIt.isRegistered<HomeFeedCubit>()
-      ? getIt<HomeFeedCubit>()
-      : HomeFeedCubit();
+  HomeFeedCubit _createCubit() => getIt<HomeFeedCubit>();
 }
 
 class _HomeViewBodyContent extends StatelessWidget {

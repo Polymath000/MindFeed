@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
-import 'package:mind_feed/features/home/domain/entities/downloaded_article_entity.dart';
-import 'package:mind_feed/features/home/presentation/views/article_view.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
+import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
 
 class DownloadedArticleCardTile extends StatelessWidget {
   final DownloadedArticleEntity article;
@@ -73,11 +74,10 @@ class DownloadedArticleCardTile extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(16),
             onTap: () {
-              Navigator.push(
+              Navigator.pushNamed(
                 context,
-                MaterialPageRoute(
-                  builder: (_) => ArticleView(item: article.toEditorialNewsItem()),
-                ),
+                AppRoutes.article,
+                arguments: article.toEditorialNewsItem(),
               );
             },
             child: Padding(

@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
-import 'package:mind_feed/features/home/domain/entities/category_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/tag_entity.dart';
-import 'package:mind_feed/features/search/domain/helpers/search_filter_helper.dart';
-import 'package:mind_feed/features/search/presentation/cubit/search_cubit.dart';
+import 'package:mind_feed/core/articles/domain/entities/category_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/tag_entity.dart';
+import 'package:mind_feed/features/search/presentation/helpers/search_filter_helper.dart';
+import 'package:mind_feed/features/search/presentation/controllers/search_cubit.dart';
 
 void main() {
   final item1 = EditorialNewsItem(

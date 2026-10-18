@@ -2,15 +2,15 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
-import 'package:mind_feed/features/home/domain/entities/article_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/category_entity.dart';
-import 'package:mind_feed/features/home/domain/entities/tag_entity.dart';
-import 'package:mind_feed/features/home/domain/repos/articles_repo.dart';
-import 'package:mind_feed/features/home/domain/usecases/get_articles_by_category_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/get_categories_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/get_fixed_tags_use_case.dart';
-import 'package:mind_feed/features/home/domain/usecases/search_articles_use_case.dart';
-import 'package:mind_feed/features/search/presentation/cubit/search_cubit.dart';
+import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/category_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/tag_entity.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
+import 'package:mind_feed/features/search/domain/usecases/get_articles_by_category_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_categories_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_fixed_tags_use_case.dart';
+import 'package:mind_feed/features/search/domain/usecases/search_articles_use_case.dart';
+import 'package:mind_feed/features/search/presentation/controllers/search_cubit.dart';
 
 const sampleCategory1 = CategoryEntity(
   id: 'cat_1',
