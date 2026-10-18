@@ -177,4 +177,17 @@ The codebase follows **Feature-First Clean Architecture**:
   - **Dart 3 Sealed State, Immutable Cubit Updates & DI**:
     - Migrated `HomeFeedState` to a Dart 3 `sealed class` hierarchy (`HomeFeedInitial`, `HomeFeedLoading`, `HomeFeedLoaded`, `HomeFeedError`) with `SwipeSaveStatus`.
     - Refactored `HomeFeedCubit` and `HomeViewBody` into small `<20`-line methods, guarded all emissions with `if (!isClosed)`, eliminated `StatefulBuilder` mutation workarounds via immutable list emissions, and registered `GetUserFeedTopicsUseCase`, `FilterArticlesByTopicUseCase`, and `HomeFeedCubit` in `setup_service_locator.dart`.
+  - Detailed report available in `docs/reports/home_feature_clean_architecture_and_engineering_report.md`.
+- **Comprehensive Architectural & Evolution Reports Suite**:
+  - Authored dedicated technical reports in `docs/reports/` documenting the complete engineering journey of MindFeed, key architectural pivots, and performance milestones.
+
+## 5. Architectural Reports & Documentation Index
+Detailed technical reports documenting audits, optimizations, and architectural refactoring are maintained in `docs/reports/`:
+- **Legacy Prototype & Architectural Evolution Report** (`docs/reports/legacy_prototype_and_evolution_report.md`): Chronological audit of the 38 foundational commits from genesis (`b6782b4`) up to Pull Request #1 (`ba0ed81`), detailing early UI prototypes, feature consolidation (`cd8a116`), password security remediation (`a2a03eb`), and the editorial card stack pivot (`0ba79bd`).
+- **Mandatory Category Onboarding Gate & Password Recovery Architecture Report** (`docs/reports/category_onboarding_and_auth_architecture_report.md`): Architectural analysis of commits `f7e3024` to `39e50a4`, documenting deferred session and token persistence, 20-category vector pill modernization, Supabase password recovery pipeline, and `ValueNotifier` form optimizations.
+- **Dart DevTools Performance Profile & Raster Jank Optimization Report** (`docs/reports/devtools_performance_and_raster_optimization_report.md`): Quantitative timeline comparison (`17_07_21.029.json` vs. `18_08_16.161.json`) for commit `921c7eb`, detailing the elimination of 6,150 `saveLayer` passes via `Color.lerp`, masthead ticker isolation, asset downscaling, and sliver virtualization (78.8% raster time reduction).
+- **Home Feature Clean Architecture & Engineering Report** (`docs/reports/home_feature_clean_architecture_and_engineering_report.md`): Detailed breakdown of the 7 architectural rule violations in `lib/features/home/` and their systematic refactoring across 4 atomic Git commits.
+- **Backend & Clean Architecture Audit Report** (`docs/reports/backend_and_clean_architecture_session_report.md`): Supabase database schema, RPC functions, and offline data sync.
+- **Flutter Refactor Analysis Report** (`docs/reports/flutter_refactor_analysis_report.md`): Baseline code health and refactoring recommendations.
+
 
