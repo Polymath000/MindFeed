@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mind_feed/config/routes/app_routes.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mind_feed/core/constants/app_text_styles.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
-import 'package:mind_feed/features/auth/presentation/views/categories_view.dart';
-import 'package:mind_feed/features/auth/presentation/widgets/category_card.dart';
 import 'package:mind_feed/features/profile/data/datasources/profile_remote_data_source.dart';
+import 'package:mind_feed/features/profile/data/repos/profile_repo_impl.dart';
+import 'package:mind_feed/features/profile/domain/usecases/save_favorite_categories_use_case.dart';
+import 'package:mind_feed/features/profile/presentation/controllers/categories_cubit/categories_cubit.dart';
+import 'package:mind_feed/features/profile/presentation/views/categories_view.dart';
+import 'package:mind_feed/features/profile/presentation/widgets/category_card.dart';
+
+const String mainRoute = '/';
 
 class FakeProfileRemoteDataSource extends Fake implements ProfileRemoteDataSource {
   final Map<String, List<String>> userFavorites = {};
@@ -117,6 +122,19 @@ class FakeProfileRemoteDataSource extends Fake implements ProfileRemoteDataSourc
   }
 }
 
+CategoriesCubit createTestCubit({
+  ProfileRemoteDataSource? remoteDataSource,
+  List<String>? initialCategories,
+}) {
+  final remote = remoteDataSource ?? FakeProfileRemoteDataSource();
+  final repo = ProfileRepoImpl(remoteDataSource: remote);
+  final useCase = SaveFavoriteCategoriesUseCase(repo);
+  return CategoriesCubit(
+    saveFavoriteCategoriesUseCase: useCase,
+    initialCategories: initialCategories,
+  );
+}
+
 Widget testHarness(Widget child) {
   return MaterialApp(
     home: Builder(
@@ -134,7 +152,8 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
 
-    await tester.pumpWidget(testHarness(const CategoriesView()));
+    final cubit = createTestCubit();
+    await tester.pumpWidget(testHarness(CategoriesView(categoriesCubit: cubit)));
 
     expect(find.text('Choose Your Favorite Categories'), findsOneWidget);
     expect(find.text("Select topics you're interested in"), findsOneWidget);
@@ -160,7 +179,6 @@ void main() {
     expect(find.text('Environment & Sustainability'), findsOneWidget);
     expect(find.text('Continue'), findsOneWidget);
   });
-
 
   testWidgets('CategoryCard toggles selection on tap', (tester) async {
     bool isSelected = false;
@@ -196,6 +214,7 @@ void main() {
     addTearDown(tester.view.reset);
 
     bool navigatedToMain = false;
+    final cubit = createTestCubit();
 
     await tester.pumpWidget(
       MaterialApp(
@@ -204,10 +223,10 @@ void main() {
           '/categories': (context) => Builder(
             builder: (ctx) {
               AppTextStyles.init(ctx);
-              return const CategoriesView();
+              return CategoriesView(categoriesCubit: cubit);
             },
           ),
-          AppRoutes.main: (context) {
+          mainRoute: (context) {
             navigatedToMain = true;
             return const Scaffold(body: Text('Main Screen'));
           },
@@ -248,6 +267,11 @@ void main() {
       favoriteCategories: ['Technology', 'Science'],
     );
 
+    final cubit = createTestCubit(
+      remoteDataSource: fakeRemote,
+      initialCategories: user.favoriteCategories,
+    );
+
     bool navigatedToMain = false;
 
     await tester.pumpWidget(
@@ -259,11 +283,11 @@ void main() {
               AppTextStyles.init(ctx);
               return CategoriesView(
                 userEntity: user,
-                profileRemoteDataSource: fakeRemote,
+                categoriesCubit: cubit,
               );
             },
           ),
-          AppRoutes.main: (context) {
+          mainRoute: (context) {
             navigatedToMain = true;
             return const Scaffold(body: Text('Main Screen'));
           },
@@ -298,6 +322,11 @@ void main() {
       favoriteCategories: ['Technology'],
     );
 
+    final cubit = createTestCubit(
+      remoteDataSource: fakeRemote,
+      initialCategories: user.favoriteCategories,
+    );
+
     bool navigatedToMain = false;
 
     await tester.pumpWidget(
@@ -309,11 +338,11 @@ void main() {
               AppTextStyles.init(ctx);
               return CategoriesView(
                 userEntity: user,
-                profileRemoteDataSource: fakeRemote,
+                categoriesCubit: cubit,
               );
             },
           ),
-          AppRoutes.main: (context) {
+          mainRoute: (context) {
             navigatedToMain = true;
             return const Scaffold(body: Text('Main Screen'));
           },
@@ -347,6 +376,11 @@ void main() {
       favoriteCategories: ['Technology'],
     );
 
+    final cubit = createTestCubit(
+      remoteDataSource: fakeRemote,
+      initialCategories: user.favoriteCategories,
+    );
+
     bool navigatedToMain = false;
 
     await tester.pumpWidget(
@@ -358,11 +392,11 @@ void main() {
               AppTextStyles.init(ctx);
               return CategoriesView(
                 userEntity: user,
-                profileRemoteDataSource: fakeRemote,
+                categoriesCubit: cubit,
               );
             },
           ),
-          AppRoutes.main: (context) {
+          mainRoute: (context) {
             navigatedToMain = true;
             return const Scaffold(body: Text('Main Screen'));
           },
@@ -377,5 +411,21 @@ void main() {
 
     expect(navigatedToMain, isTrue);
     expect(find.text('Main Screen'), findsOneWidget);
+  });
+
+  testWidgets('CategoriesView obtains CategoriesCubit from GetIt when not passed directly', (tester) async {
+    final cubit = createTestCubit();
+    if (GetIt.instance.isRegistered<CategoriesCubit>()) {
+      GetIt.instance.unregister<CategoriesCubit>();
+    }
+    GetIt.instance.registerFactory<CategoriesCubit>(() => cubit);
+    addTearDown(() {
+      if (GetIt.instance.isRegistered<CategoriesCubit>()) {
+        GetIt.instance.unregister<CategoriesCubit>();
+      }
+    });
+
+    await tester.pumpWidget(testHarness(const CategoriesView()));
+    expect(find.text('Choose Your Favorite Categories'), findsOneWidget);
   });
 }

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_text_styles.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
-import 'package:mind_feed/features/auth/presentation/controllers/categories_cubit/categories_cubit.dart';
 import 'package:mind_feed/features/auth/presentation/widgets/auth_background.dart';
-import 'package:mind_feed/features/auth/presentation/widgets/category_card.dart';
+import 'package:mind_feed/features/profile/presentation/controllers/categories_cubit/categories_cubit.dart';
+import 'package:mind_feed/features/profile/presentation/widgets/category_card.dart';
 
 import 'package:mind_feed/core/constants/category_items.dart';
 export 'package:mind_feed/core/constants/category_items.dart';
@@ -28,7 +27,7 @@ class CategoriesViewBody extends StatelessWidget {
         if (state is CategoriesSuccess) {
           Navigator.pushNamedAndRemoveUntil(
             context,
-            AppRoutes.main,
+            '/',
             (route) => false,
           );
         } else if (state is CategoriesFailure) {

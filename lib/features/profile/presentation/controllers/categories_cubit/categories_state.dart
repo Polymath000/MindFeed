@@ -1,23 +1,23 @@
 part of 'categories_cubit.dart';
 
-abstract class CategoriesState {
+sealed class CategoriesState {
   final List<String> selectedCategories;
   const CategoriesState(this.selectedCategories);
 }
 
-class CategoriesInitial extends CategoriesState {
+final class CategoriesInitial extends CategoriesState {
   const CategoriesInitial(super.selectedCategories);
 }
 
-class CategoriesSelectionChanged extends CategoriesState {
+final class CategoriesSelectionChanged extends CategoriesState {
   const CategoriesSelectionChanged(super.selectedCategories);
 }
 
-class CategoriesLoading extends CategoriesState {
+final class CategoriesLoading extends CategoriesState {
   const CategoriesLoading(super.selectedCategories);
 }
 
-class CategoriesSuccess extends CategoriesState {
+final class CategoriesSuccess extends CategoriesState {
   final bool isPendingSync;
   final bool isRemoteSynced;
 
@@ -28,10 +28,11 @@ class CategoriesSuccess extends CategoriesState {
   });
 }
 
-class CategoriesFailure extends CategoriesState {
+final class CategoriesFailure extends CategoriesState {
   final String errorMessage;
   const CategoriesFailure({
     required this.errorMessage,
     required List<String> selectedCategories,
   }) : super(selectedCategories);
 }
+

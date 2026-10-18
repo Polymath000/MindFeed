@@ -1,6 +1,5 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
-
-part of 'user_entity.dart';
+import 'package:hive/hive.dart';
+import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator

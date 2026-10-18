@@ -21,6 +21,12 @@ class CategoriesCubit extends Cubit<CategoriesState> {
 
   Set<String> get selectedCategories => Set.unmodifiable(_selectedCategories);
 
+  void initialize(List<String> categories) {
+    _selectedCategories.clear();
+    _selectedCategories.addAll(categories);
+    emit(CategoriesInitial(_selectedCategories.toList()));
+  }
+
   void toggleCategory(String name) {
     if (_selectedCategories.contains(name)) {
       _selectedCategories.remove(name);
@@ -52,6 +58,8 @@ class CategoriesCubit extends Cubit<CategoriesState> {
       categoryNames: list,
       currentUser: currentUser,
     );
+
+    if (isClosed) return;
 
     if (!outcome.isLocalSaved && !outcome.isRemoteSynced) {
       emit(CategoriesFailure(

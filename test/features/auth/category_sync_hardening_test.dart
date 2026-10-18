@@ -5,12 +5,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
+import 'package:mind_feed/features/auth/data/models/user_entity_adapter.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/domain/repos/auth_repo.dart';
 import 'package:mind_feed/features/auth/domain/usecases/logout_use_case.dart';
-import 'package:mind_feed/features/home/data/datasources/articles_local_data_source.dart';
+import 'package:mind_feed/core/articles/data/datasources/articles_local_data_source.dart';
 import 'package:mind_feed/features/profile/data/datasources/profile_remote_data_source.dart';
-import 'package:mind_feed/features/profile/data/services/category_sync_reconciler.dart';
+import 'package:mind_feed/features/profile/data/repos/profile_repo_impl.dart';
+import 'package:mind_feed/features/profile/domain/usecases/reconcile_category_sync_use_case.dart';
 
 class MockProfileRemoteDataSource extends Fake implements ProfileRemoteDataSource {
   final List<Map<String, dynamic>> categoriesList = [
@@ -99,10 +101,11 @@ void main() {
     } catch (_) {}
   });
 
-  group('CategorySyncReconciler Tests', () {
+  group('ReconcileCategorySyncUseCase Tests', () {
     test('reconcilePendingSync exits immediately and returns false if no sync is pending', () async {
-      final reconciler = CategorySyncReconciler(remoteDataSource: mockRemote);
-      final result = await reconciler.reconcilePendingSync(userId: 'user-123');
+      final repo = ProfileRepoImpl(remoteDataSource: mockRemote);
+      final reconciler = ReconcileCategorySyncUseCase(repo);
+      final result = await reconciler(userId: 'user-123');
 
       expect(result, isFalse);
       expect(mockRemote.setCallCount, 0);
@@ -121,8 +124,9 @@ void main() {
         ),
       );
 
-      final reconciler = CategorySyncReconciler(remoteDataSource: mockRemote);
-      final result = await reconciler.reconcilePendingSync(userId: 'user-123');
+      final repo = ProfileRepoImpl(remoteDataSource: mockRemote);
+      final reconciler = ReconcileCategorySyncUseCase(repo);
+      final result = await reconciler(userId: 'user-123');
 
       expect(result, isTrue);
       expect(mockRemote.setCallCount, 1);
@@ -145,8 +149,9 @@ void main() {
       );
 
       mockRemote.shouldThrow = true;
-      final reconciler = CategorySyncReconciler(remoteDataSource: mockRemote);
-      final result = await reconciler.reconcilePendingSync(userId: 'user-123');
+      final repo = ProfileRepoImpl(remoteDataSource: mockRemote);
+      final reconciler = ReconcileCategorySyncUseCase(repo);
+      final result = await reconciler(userId: 'user-123');
 
       expect(result, isFalse);
       expect(mockRemote.setCallCount, 1);

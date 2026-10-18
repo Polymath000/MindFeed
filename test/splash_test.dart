@@ -7,17 +7,39 @@ import 'package:mind_feed/features/splash/domain/usecases/check_app_startup_use_
 import 'package:mind_feed/features/splash/presentation/controllers/splash_cubit/splash_cubit.dart';
 import 'package:mind_feed/features/splash/presentation/controllers/splash_cubit/splash_state.dart';
 import 'package:mind_feed/features/splash/presentation/widgets/splash_view_body.dart';
+import 'package:mind_feed/core/networking/api_result.dart';
+import 'package:mind_feed/features/auth/domain/repos/auth_repo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+class FakeAuthRepository extends Fake implements AuthRepository {
+  bool activeSession = false;
+  bool logoutCalled = false;
+
+  @override
+  bool hasActiveSession() => activeSession;
+
+  @override
+  Future<ApiResult<void>> logout() async {
+    logoutCalled = true;
+    return const Success(null);
+  }
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  late FakeAuthRepository fakeAuthRepo;
+
+  setUp(() {
+    fakeAuthRepo = FakeAuthRepository();
+  });
 
   group('CheckAppStartupUseCase', () {
     test('returns StartupOnboarding when onboarding not seen', () async {
       SharedPreferences.setMockInitialValues({});
       await SharedPreferencesSingleton.init();
 
-      const useCase = CheckAppStartupUseCase();
+      final useCase = CheckAppStartupUseCase(authRepository: fakeAuthRepo);
       final destination = await useCase();
 
       expect(destination, isA<StartupOnboarding>());
@@ -29,7 +51,7 @@ void main() {
       });
       await SharedPreferencesSingleton.init();
 
-      const useCase = CheckAppStartupUseCase();
+      final useCase = CheckAppStartupUseCase(authRepository: fakeAuthRepo);
       final destination = await useCase();
 
       expect(destination, isA<StartupLogin>());
@@ -43,10 +65,39 @@ void main() {
       });
       await SharedPreferencesSingleton.init();
 
-      const useCase = CheckAppStartupUseCase();
+      final useCase = CheckAppStartupUseCase(authRepository: fakeAuthRepo);
       final destination = await useCase();
 
       expect(destination, isA<StartupMain>());
+    });
+
+    test('returns StartupMain when onboarding seen and user has active session', () async {
+      SharedPreferences.setMockInitialValues({
+        isOnboardingSeenKey: true,
+        AppConstants.hasCompletedCategoriesKey: true,
+      });
+      await SharedPreferencesSingleton.init();
+      fakeAuthRepo.activeSession = true;
+
+      final useCase = CheckAppStartupUseCase(authRepository: fakeAuthRepo);
+      final destination = await useCase();
+
+      expect(destination, isA<StartupMain>());
+    });
+
+    test('calls logout on incomplete session when categories are missing', () async {
+      SharedPreferences.setMockInitialValues({
+        isOnboardingSeenKey: true,
+        AppConstants.tokenKey: 'valid_access_token',
+        AppConstants.hasCompletedCategoriesKey: false,
+      });
+      await SharedPreferencesSingleton.init();
+
+      final useCase = CheckAppStartupUseCase(authRepository: fakeAuthRepo);
+      final destination = await useCase();
+
+      expect(destination, isA<StartupLogin>());
+      expect(fakeAuthRepo.logoutCalled, isTrue);
     });
   });
 
@@ -56,7 +107,7 @@ void main() {
       await SharedPreferencesSingleton.init();
 
       final cubit = SplashCubit(
-        checkAppStartupUseCase: const CheckAppStartupUseCase(),
+        checkAppStartupUseCase: CheckAppStartupUseCase(authRepository: fakeAuthRepo),
         minDisplayDuration: Duration.zero,
       );
 
@@ -76,7 +127,7 @@ void main() {
       await SharedPreferencesSingleton.init();
 
       final cubit = SplashCubit(
-        checkAppStartupUseCase: const CheckAppStartupUseCase(),
+        checkAppStartupUseCase: CheckAppStartupUseCase(authRepository: fakeAuthRepo),
         minDisplayDuration: Duration.zero,
       );
 
@@ -98,7 +149,7 @@ void main() {
       await SharedPreferencesSingleton.init();
 
       final cubit = SplashCubit(
-        checkAppStartupUseCase: const CheckAppStartupUseCase(),
+        checkAppStartupUseCase: CheckAppStartupUseCase(authRepository: fakeAuthRepo),
         minDisplayDuration: Duration.zero,
       );
 

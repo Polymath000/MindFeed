@@ -19,4 +19,5 @@ abstract class AuthRepository {
   Future<ApiResult<void>> updatePassword({required String newPassword});
   Future<ApiResult<String>> verifyRecoveryOtp({required String email, required String token});
   Future<ApiResult<void>> logout();
+  bool hasActiveSession();
 }
