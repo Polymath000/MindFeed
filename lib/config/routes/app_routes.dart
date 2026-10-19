@@ -13,7 +13,9 @@ import 'package:mind_feed/features/auth/presentation/views/check_code_view.dart'
 import 'package:mind_feed/features/auth/presentation/views/login_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/send_code_view.dart';
 import 'package:mind_feed/features/auth/presentation/views/signup_view.dart';
+import 'package:mind_feed/features/author/domain/entities/author_profile_args.dart';
 import 'package:mind_feed/features/author/presentation/views/author_view.dart';
+import 'package:mind_feed/features/search/presentation/views/tag_articles_view.dart';
 import 'package:mind_feed/features/collections/presentation/views/downloaded_articles_view.dart';
 import 'package:mind_feed/features/collections/presentation/views/articles_saved.dart';
 import 'package:mind_feed/features/collections/presentation/views/list_saved_articles.dart';
@@ -54,6 +56,7 @@ sealed class AppRoutes {
   static const String categories = '/categories';
   static const String drafts = '/drafts';
   static const String articlePreview = '/article-preview';
+  static const String tagArticles = '/tag-articles';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -87,7 +90,42 @@ sealed class AppRoutes {
         final args = settings.arguments as EditorialNewsItem?;
         return _createArticleRoute(item: args, settings: settings);
       case AppRoutes.author:
+        final authorArgs = settings.arguments;
+        if (authorArgs is AuthorProfileArgs) {
+          return MaterialPageRoute(
+            builder: (_) => AuthorView(
+              authorName: authorArgs.authorName,
+              authorRole: authorArgs.authorRole,
+              authorAvatar: authorArgs.authorAvatar,
+              authorId: authorArgs.authorId,
+            ),
+            settings: settings,
+          );
+        }
+        if (authorArgs is EditorialNewsItem) {
+          return MaterialPageRoute(
+            builder: (_) => AuthorView(
+              authorName: authorArgs.authorName,
+              authorRole: authorArgs.authorRole,
+              authorAvatar: authorArgs.authorAvatar,
+              authorId: authorArgs.authorId,
+            ),
+            settings: settings,
+          );
+        }
+        if (authorArgs is String && authorArgs.trim().isNotEmpty) {
+          return MaterialPageRoute(
+            builder: (_) => AuthorView(authorName: authorArgs.trim()),
+            settings: settings,
+          );
+        }
         return MaterialPageRoute(builder: (_) => const AuthorView(), settings: settings);
+      case AppRoutes.tagArticles:
+        final tag = settings.arguments is String ? (settings.arguments as String).trim() : '';
+        return MaterialPageRoute(
+          builder: (_) => TagArticlesView(tag: tag),
+          settings: settings,
+        );
       case AppRoutes.settings:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(

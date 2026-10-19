@@ -23,9 +23,13 @@ void main() {
     getHomeFeedUseCase = GetHomeFeedUseCase(fakeRepo);
   });
 
-  Widget buildTestWidget(AuthorCubit cubit) {
+  Widget buildTestWidget(AuthorCubit cubit, {String authorName = 'Wade Warren', String? authorRole}) {
     return MaterialApp(
-      home: AuthorView(cubit: cubit),
+      home: AuthorView(
+        cubit: cubit,
+        authorName: authorName,
+        authorRole: authorRole,
+      ),
     );
   }
 
@@ -55,6 +59,24 @@ void main() {
 
     expect(find.text('0 stories'), findsOneWidget);
     expect(find.text('Future of Silicon Chips'), findsNothing);
+
+    await cubit.close();
+  });
+
+  testWidgets('renders dynamic author details properly', (tester) async {
+    final cubit = AuthorCubit(getHomeFeedUseCase: getHomeFeedUseCase);
+
+    await tester.pumpWidget(
+      buildTestWidget(
+        cubit,
+        authorName: 'Ada Lovelace',
+        authorRole: 'Chief Pioneer',
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ada Lovelace'), findsOneWidget);
+    expect(find.text('Chief Pioneer'), findsOneWidget);
 
     await cubit.close();
   });

@@ -115,6 +115,14 @@ class _FakeArticlesRepository
       Success([sampleArticle]);
 
   @override
+  Future<ApiResult<List<ArticleEntity>>> getArticlesByTag(
+    String tag, {
+    int limit = 20,
+    int offset = 0,
+  }) async =>
+      Success([sampleArticle]);
+
+  @override
   Future<ApiResult<List<CategoryEntity>>> getCategories() async =>
       const Success([]);
 

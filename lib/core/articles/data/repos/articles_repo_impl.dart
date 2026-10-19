@@ -124,6 +124,28 @@ class ArticlesRepositoryImpl implements ArticlesRepository, ArticleEngagementRep
   }
 
   @override
+  Future<ApiResult<List<ArticleEntity>>> getArticlesByTag(
+    String tag, {
+    int limit = 20,
+    int offset = 0,
+  }) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final result = await remoteDataSource.getArticlesByTag(
+          tag,
+          limit: limit,
+          offset: offset,
+        );
+        return Success(result);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
+  }
+
+  @override
   Future<ApiResult<List<CategoryEntity>>> getCategories() async {
     if (await networkInfo.isConnected) {
       try {

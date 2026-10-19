@@ -159,6 +159,14 @@ class FakeArticlesRepository implements ArticlesRepository {
       Success(articles.values.where((a) => a.title.contains(query)).toList());
 
   @override
+  Future<ApiResult<List<ArticleEntity>>> getArticlesByTag(
+    String tag, {
+    int limit = 20,
+    int offset = 0,
+  }) async =>
+      Success(articles.values.where((a) => a.tags.contains(tag)).toList());
+
+  @override
   Future<ApiResult<void>> starArticle(
     String articleId,
     String userId,
