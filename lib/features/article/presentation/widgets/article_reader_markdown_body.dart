@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_text_styles.dart';
@@ -30,9 +30,7 @@ class ArticleReaderMarkdownBody extends StatelessWidget {
       color: AppColors.mutedInk,
     ),
     blockquoteDecoration: const BoxDecoration(
-      border: Border(
-        left: BorderSide(color: AppColors.mutedInk, width: 3),
-      ),
+      border: Border(left: BorderSide(color: AppColors.mutedInk, width: 3)),
     ),
     code: AppTextStyles.readerCode,
     codeblockDecoration: const BoxDecoration(
@@ -50,10 +48,7 @@ class ArticleReaderMarkdownBody extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (hasContent && excerpt.isNotEmpty) ...[
-          Text(
-            excerpt,
-            style: AppTextStyles.readerExcerpt,
-          ),
+          Text(excerpt, style: AppTextStyles.readerExcerpt),
           const SizedBox(height: 20),
         ],
         MarkdownBody(

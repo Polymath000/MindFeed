@@ -27,7 +27,7 @@ The codebase follows **Feature-First Clean Architecture**:
 - **Dependency Injection**: `get_it`
 - **Local Storage**: `hive`, `hive_flutter`, `shared_preferences`
 - **Backend & Network**: `supabase_flutter`, `http`, `connectivity_plus` with custom `SupabaseInterceptor`
-- **Markdown & Editorial Rendering**: `flutter_markdown` (migrated from discontinued `markdown_widget`)
+- **Markdown & Editorial Rendering**: `flutter_markdown_plus` (migrated to maintained fork from discontinued `flutter_markdown` / `markdown_widget`)
 - **Zero Firebase Dependency**: Fully decoupled from Firebase SDKs, CLI configurations, and external Google services.
 
 ## 4. Recent Project Changes

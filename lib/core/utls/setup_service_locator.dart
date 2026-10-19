@@ -64,9 +64,11 @@ import 'package:mind_feed/features/settings/presentation/controllers/settings_cu
 import 'package:mind_feed/features/splash/domain/usecases/check_app_startup_use_case.dart';
 import 'package:mind_feed/features/splash/presentation/controllers/splash_cubit/splash_cubit.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_author_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_tag_use_case.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/drafts_cubit/drafts_cubit.dart';
 import 'package:mind_feed/features/search/presentation/controllers/search_cubit.dart';
+import 'package:mind_feed/features/search/presentation/controllers/tag_articles_cubit/tag_articles_cubit.dart';
 import 'package:mind_feed/features/author/presentation/controllers/author_cubit/author_cubit.dart';
 import 'package:mind_feed/features/profile/domain/usecases/get_favorite_categories_use_case.dart';
 import 'package:mind_feed/features/profile/domain/usecases/get_user_profile_use_case.dart';
@@ -363,9 +365,18 @@ void setupServiceLocator() {
       getArticlesByAuthorUseCase: getIt<GetArticlesByAuthorUseCase>(),
     ),
   );
+  getIt.registerLazySingleton<GetArticlesByTagUseCase>(
+    () => GetArticlesByTagUseCase(getIt<ArticlesRepository>()),
+  );
+  getIt.registerFactory<TagArticlesCubit>(
+    () => TagArticlesCubit(
+      getArticlesByTagUseCase: getIt<GetArticlesByTagUseCase>(),
+    ),
+  );
   getIt.registerFactory<AuthorCubit>(
     () => AuthorCubit(
       getHomeFeedUseCase: getIt<GetHomeFeedUseCase>(),
+      getArticlesByAuthorUseCase: getIt<GetArticlesByAuthorUseCase>(),
     ),
   );
 }

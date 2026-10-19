@@ -26,6 +26,11 @@ abstract class ArticlesRemoteDataSource {
     int limit = 20,
     int offset = 0,
   });
+  Future<List<ArticleModel>> getArticlesByTag(
+    String tag, {
+    int limit = 20,
+    int offset = 0,
+  });
   Future<List<CategoryModel>> getCategories();
   Future<List<TagModel>> getFixedTags();
   Future<void> starArticle(String articleId, String userId);
@@ -185,6 +190,25 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
   }
 
   @override
+  Future<List<ArticleModel>> getArticlesByTag(
+    String tag, {
+    int limit = 20,
+    int offset = 0,
+  }) async {
+    final response = await _client
+        .from('articles')
+        .select()
+        .eq('status', 'published')
+        .contains('tags', [tag])
+        .order('published_at', ascending: false, nullsFirst: false)
+        .range(offset, offset + limit - 1);
+
+    return (response as List)
+        .map((e) => ArticleModel.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
+  }
+
+  @override
   Future<List<CategoryModel>> getCategories() async {
     final response = await _client
         .from('categories')
@@ -238,12 +262,19 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
 
   @override
   Future<void> likeArticle(String articleId, String userId) async {
+    final user = _client.auth.currentUser;
+    if (user == null || user.id != userId) {
+      throw StateError(
+        'An authenticated session for the requested user is required.',
+      );
+    }
     await _client.from('article_likes').upsert(
       {
         'user_id': userId,
         'article_id': articleId,
       },
       onConflict: 'user_id,article_id',
+      ignoreDuplicates: true,
     );
   }
 
@@ -309,12 +340,19 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
 
   @override
   Future<void> saveBookmark(String articleId, String userId) async {
+    final user = _client.auth.currentUser;
+    if (user == null || user.id != userId) {
+      throw StateError(
+        'An authenticated session for the requested user is required.',
+      );
+    }
     await _client.from('saved_articles').upsert(
       {
         'user_id': userId,
         'article_id': articleId,
       },
       onConflict: 'user_id,article_id',
+      ignoreDuplicates: true,
     );
   }
 

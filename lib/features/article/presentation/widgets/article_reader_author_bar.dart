@@ -15,6 +15,7 @@ class ArticleReaderAuthorBar extends StatelessWidget {
     this.authorRatingCount = 0,
     this.userAuthorStars = 0,
     this.onRateAuthor,
+    this.onAuthorTap,
   });
 
   final String authorName;
@@ -24,6 +25,7 @@ class ArticleReaderAuthorBar extends StatelessWidget {
   final int authorRatingCount;
   final int userAuthorStars;
   final ValueChanged<int>? onRateAuthor;
+  final VoidCallback? onAuthorTap;
 
   int get _activeThreshold =>
       userAuthorStars > 0 ? userAuthorStars : authorRatingAvg.round();
@@ -50,17 +52,34 @@ class ArticleReaderAuthorBar extends StatelessWidget {
   Widget _buildIdentityRow() {
     return Row(
       children: [
-        ClipOval(child: _AuthorAvatarImage(avatarUrl: authorAvatar)),
-        const SizedBox(width: 12),
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(authorRole, style: AppTextStyles.readerAuthorRole),
-              Text(authorName, style: AppTextStyles.readerAuthorName),
-            ],
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onAuthorTap,
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2.0),
+                child: Row(
+                  children: [
+                    ClipOval(child: _AuthorAvatarImage(avatarUrl: authorAvatar)),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(authorRole, style: AppTextStyles.readerAuthorRole),
+                          Text(authorName, style: AppTextStyles.readerAuthorName),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
+        const SizedBox(width: 8),
         EditorialFollowButton(authorName: authorName),
       ],
     );

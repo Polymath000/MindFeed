@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_author_use_case.dart';
 import 'package:mind_feed/features/author/presentation/controllers/author_cubit/author_cubit.dart';
 import 'package:mind_feed/features/author/presentation/controllers/author_cubit/author_state.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_home_feed_use_case.dart';
@@ -8,10 +9,12 @@ import 'fake_author_articles_repository.dart';
 void main() {
   late FakeAuthorArticlesRepository fakeRepo;
   late GetHomeFeedUseCase getHomeFeedUseCase;
+  late GetArticlesByAuthorUseCase getArticlesByAuthorUseCase;
   late AuthorCubit cubit;
 
   const authorArticle = ArticleEntity(
     id: 'wade-1',
+    authorId: 'auth-wade',
     title: 'The AI Revolution',
     slug: 'ai-revolution',
     excerpt: 'An in-depth look at AI.',
@@ -20,6 +23,7 @@ void main() {
 
   const otherArticle = ArticleEntity(
     id: 'other-1',
+    authorId: 'auth-jane',
     title: 'Global Markets',
     slug: 'global-markets',
     excerpt: 'Market trends overview.',
@@ -29,7 +33,11 @@ void main() {
   setUp(() {
     fakeRepo = FakeAuthorArticlesRepository();
     getHomeFeedUseCase = GetHomeFeedUseCase(fakeRepo);
-    cubit = AuthorCubit(getHomeFeedUseCase: getHomeFeedUseCase);
+    getArticlesByAuthorUseCase = GetArticlesByAuthorUseCase(fakeRepo);
+    cubit = AuthorCubit(
+      getHomeFeedUseCase: getHomeFeedUseCase,
+      getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
+    );
   });
 
   tearDown(() {
@@ -41,7 +49,22 @@ void main() {
       expect(cubit.state, equals(const AuthorInitial()));
     });
 
-    test('emits [AuthorLoading, AuthorLoaded] with matching author articles', () async {
+    test('emits [AuthorLoading, AuthorLoaded] with matching author articles via authorId', () async {
+      fakeRepo.feedArticles = [authorArticle, otherArticle];
+
+      final expectedStates = [
+        const AuthorLoading(),
+        isA<AuthorLoaded>()
+            .having((s) => s.articles.length, 'length', 1)
+            .having((s) => s.articles.first.id, 'id', 'wade-1'),
+      ];
+
+      expectLater(cubit.stream, emitsInOrder(expectedStates));
+
+      await cubit.loadAuthorArticles('Wade Warren', authorId: 'auth-wade');
+    });
+
+    test('emits [AuthorLoading, AuthorLoaded] with matching author articles via authorName fallback', () async {
       fakeRepo.feedArticles = [authorArticle, otherArticle];
 
       final expectedStates = [
@@ -81,6 +104,20 @@ void main() {
       expectLater(cubit.stream, emitsInOrder(expectedStates));
 
       await cubit.loadAuthorArticles('Wade Warren');
+    });
+
+    test('emits [AuthorLoading, AuthorError] when getArticlesByAuthor fails', () async {
+      fakeRepo.shouldSucceed = false;
+      fakeRepo.errorMessage = 'Author service unavailable';
+
+      final expectedStates = [
+        const AuthorLoading(),
+        const AuthorError('Author service unavailable'),
+      ];
+
+      expectLater(cubit.stream, emitsInOrder(expectedStates));
+
+      await cubit.loadAuthorArticles('Wade Warren', authorId: 'auth-wade');
     });
   });
 }

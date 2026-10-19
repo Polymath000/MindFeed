@@ -12,6 +12,10 @@ class ApiErrorHandler {
     if (error is NoInternetException) {
       return ApiErrorHandler._('No internet connection. Please check your network and try again.', 'no-internet');
     }
+
+    if (error is StateError) {
+      return ApiErrorHandler._(error.message, 'state-error');
+    }
     
     if (error is AuthException) {
       final msg = error.message.toLowerCase();
@@ -31,11 +35,11 @@ class ApiErrorHandler {
       }
     } else if (error is PostgrestException) {
       switch (error.code) {
-        case '42501': // Postgres Insufficient Privilege (Row Level Security)
+        case '42501':
           return ApiErrorHandler._('You do not have permission to execute this action.', error.code);
-        case '23505': // Postgres Unique Violation
+        case '23505':
           return ApiErrorHandler._('This record already exists.', error.code);
-        case '53300': // Postgres Too Many Connections
+        case '53300':
           return ApiErrorHandler._('The service is currently unavailable. Try again later.', error.code);
         default:
           return ApiErrorHandler._(error.message, error.code);

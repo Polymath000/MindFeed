@@ -37,6 +37,11 @@ abstract class ArticlesRepository {
     int limit = 20,
     int offset = 0,
   });
+  Future<ApiResult<List<ArticleEntity>>> getArticlesByTag(
+    String tag, {
+    int limit = 20,
+    int offset = 0,
+  });
   Future<ApiResult<List<CategoryEntity>>> getCategories();
   Future<ApiResult<List<TagEntity>>> getFixedTags();
   Future<ApiResult<void>> starArticle(String articleId, String userId);

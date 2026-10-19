@@ -105,6 +105,10 @@ class MockArticlesRepo implements ArticlesRepository {
           {int limit = 20, int offset = 0}) async =>
       const Success([]);
   @override
+  Future<ApiResult<List<ArticleEntity>>> getArticlesByTag(String tag,
+          {int limit = 20, int offset = 0}) async =>
+      const Success([]);
+  @override
   Future<ApiResult<void>> starArticle(String articleId, String userId) async =>
       const Success(null);
   @override

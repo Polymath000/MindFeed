@@ -1,11 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 
 class AuthorPersonalInfo extends StatelessWidget {
-  const AuthorPersonalInfo({super.key});
+  final String authorName;
+  final String? authorRole;
+  final String? authorAvatar;
+
+  const AuthorPersonalInfo({
+    super.key,
+    this.authorName = 'Wade Warren',
+    this.authorRole,
+    this.authorAvatar,
+  });
+
+  Widget _buildAvatar() {
+    final avatar = authorAvatar;
+    if (avatar != null && avatar.trim().isNotEmpty) {
+      if (avatar.startsWith('http://') || avatar.startsWith('https://')) {
+        return Image.network(
+          avatar,
+          width: 96,
+          height: 96,
+          fit: BoxFit.cover,
+          errorBuilder: (_, _, _) => _buildFallbackAvatar(),
+        );
+      }
+      return Image.asset(
+        avatar,
+        width: 96,
+        height: 96,
+        fit: BoxFit.cover,
+        errorBuilder: (_, _, _) => _buildFallbackAvatar(),
+      );
+    }
+    return Image.asset(
+      Assets.assetsImagesWadeAvatar,
+      width: 96,
+      height: 96,
+      fit: BoxFit.cover,
+      errorBuilder: (_, _, _) => _buildFallbackAvatar(),
+    );
+  }
+
+  Widget _buildFallbackAvatar() {
+    return CircleAvatar(
+      radius: 48,
+      backgroundColor: AppColors.blush,
+      child: Text(
+        authorName.trim().isNotEmpty ? authorName.trim()[0].toUpperCase() : 'A',
+        style: const TextStyle(
+          color: AppColors.ink,
+          fontSize: 32,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,23 +74,14 @@ class AuthorPersonalInfo extends StatelessWidget {
                 border: Border.all(color: AppColors.cream, width: 2),
               ),
               child: ClipOval(
-                child: Image.asset(
-                  Assets.assetsImagesWadeAvatar,
-                  width: 96,
-                  height: 96,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, _, _) => const CircleAvatar(
-                    radius: 48,
-                    backgroundColor: AppColors.blush,
-                    child: Icon(AppIcons.personAlt, size: 48, color: AppColors.ink),
-                  ),
-                ),
+                child: _buildAvatar(),
               ),
             ),
             const SizedBox(height: 14),
-            const Text(
-              'Wade Warren',
-              style: TextStyle(
+            Text(
+              authorName,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
                 color: AppColors.softCream,
                 fontSize: 22,
                 fontWeight: FontWeight.w800,
@@ -46,16 +89,17 @@ class AuthorPersonalInfo extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 4),
-            const Text(
-              'Investigative Tech & Science Lead • MindFeed',
-              style: TextStyle(
+            Text(
+              authorRole ?? 'Investigative Tech & Science Lead • MindFeed',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
                 color: AppColors.greyText,
                 fontSize: 13.5,
                 fontWeight: FontWeight.w500,
               ),
             ),
             const SizedBox(height: 14),
-            const EditorialFollowButton(),
+            EditorialFollowButton(authorName: authorName),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

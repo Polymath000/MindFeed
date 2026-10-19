@@ -12,11 +12,17 @@ import 'package:mind_feed/features/author/presentation/widgets/author_app_bar.da
 class AuthorView extends StatelessWidget {
   final AuthorCubit? cubit;
   final String authorName;
+  final String? authorRole;
+  final String? authorAvatar;
+  final String? authorId;
 
   const AuthorView({
     super.key,
     this.cubit,
     this.authorName = 'Wade Warren',
+    this.authorRole,
+    this.authorAvatar,
+    this.authorId,
   });
 
   static const String routeName = 'author';
@@ -26,18 +32,35 @@ class AuthorView extends StatelessWidget {
     if (cubit != null) {
       return BlocProvider.value(
         value: cubit!,
-        child: const _AuthorViewBody(),
+        child: _AuthorViewBody(
+          authorName: authorName,
+          authorRole: authorRole,
+          authorAvatar: authorAvatar,
+        ),
       );
     }
     return BlocProvider(
-      create: (_) => GetIt.instance<AuthorCubit>()..loadAuthorArticles(authorName),
-      child: const _AuthorViewBody(),
+      create: (_) => GetIt.instance<AuthorCubit>()
+        ..loadAuthorArticles(authorName, authorId: authorId),
+      child: _AuthorViewBody(
+        authorName: authorName,
+        authorRole: authorRole,
+        authorAvatar: authorAvatar,
+      ),
     );
   }
 }
 
 class _AuthorViewBody extends StatelessWidget {
-  const _AuthorViewBody();
+  final String authorName;
+  final String? authorRole;
+  final String? authorAvatar;
+
+  const _AuthorViewBody({
+    required this.authorName,
+    this.authorRole,
+    this.authorAvatar,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +72,11 @@ class _AuthorViewBody extends StatelessWidget {
           child: CustomScrollView(
             slivers: [
               const AuthorAppBar(),
-              const AuthorPersonalInfo(),
+              AuthorPersonalInfo(
+                authorName: authorName,
+                authorRole: authorRole,
+                authorAvatar: authorAvatar,
+              ),
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
                 sliver: SliverToBoxAdapter(

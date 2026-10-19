@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/features/article/presentation/controllers/article_reader/article_reader_cubit.dart';
 import 'package:mind_feed/features/article/presentation/widgets/article_reader_header.dart';
+import 'package:mind_feed/features/author/domain/entities/author_profile_args.dart';
 
 class ArticleAuthorSection extends StatelessWidget {
   const ArticleAuthorSection({super.key, required this.article});
@@ -30,6 +32,18 @@ class ArticleAuthorSection extends StatelessWidget {
           authorRatingCount: ratings.count,
           userAuthorStars: ratings.stars,
           onRateAuthor: cubit.rateAuthor,
+          onAuthorTap: () {
+            Navigator.pushNamed(
+              context,
+              AppRoutes.author,
+              arguments: AuthorProfileArgs(
+                authorName: article.authorName,
+                authorRole: article.authorRole,
+                authorAvatar: article.authorAvatar,
+                authorId: article.authorId,
+              ),
+            );
+          },
         );
       },
     );

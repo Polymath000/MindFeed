@@ -79,6 +79,15 @@ class FakeArticlesRemoteDataSource implements ArticlesRemoteDataSource {
   }
 
   @override
+  Future<List<ArticleModel>> getArticlesByTag(
+    String tag, {
+    int limit = 20,
+    int offset = 0,
+  }) async {
+    return articles.where((a) => a.tags.contains(tag)).toList();
+  }
+
+  @override
   Future<List<CategoryModel>> getCategories() async {
     return categories;
   }

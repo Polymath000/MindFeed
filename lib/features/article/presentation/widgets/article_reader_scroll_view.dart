@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/features/article/presentation/views/article_view.dart';
 import 'package:mind_feed/features/article/presentation/widgets/article_action_bar_section.dart';
@@ -37,7 +38,14 @@ class ArticleReaderScrollView extends StatelessWidget {
         ArticleAuthorSection(article: article),
         if (article.tags.isNotEmpty) ...[
           const SizedBox(height: 16),
-          ArticleReaderTagsWrap(tags: article.tags),
+          ArticleReaderTagsWrap(
+            tags: article.tags,
+            onTagTap: (tag) => Navigator.pushNamed(
+              context,
+              AppRoutes.tagArticles,
+              arguments: tag,
+            ),
+          ),
         ],
         const SizedBox(height: 20),
         ArticleReaderCoverImage(

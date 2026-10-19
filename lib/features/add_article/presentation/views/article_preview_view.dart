@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
@@ -47,10 +47,7 @@ class ArticlePreviewView extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 48),
               children: [
                 ArticlePreviewHeader(item: preview),
-                MarkdownBody(
-                  data: preview.content ?? '',
-                  selectable: false,
-                ),
+                MarkdownBody(data: preview.content ?? '', selectable: false),
               ],
             ),
           ),
