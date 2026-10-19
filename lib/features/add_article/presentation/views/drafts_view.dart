@@ -77,10 +77,7 @@ class DraftsView extends StatelessWidget {
     );
 
     if (cubit != null) {
-      return BlocProvider<DraftsCubit>.value(
-        value: cubit!,
-        child: scaffold,
-      );
+      return BlocProvider<DraftsCubit>.value(value: cubit!, child: scaffold);
     }
     return scaffold;
   }

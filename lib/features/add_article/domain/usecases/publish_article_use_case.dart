@@ -20,13 +20,19 @@ class PublishArticleUseCase {
       final articleResult = await repo.getArticleById(articleId);
       final bool failed = articleResult.when(
         success: (article) {
-          if (resolvedTitle.isEmpty) resolvedTitle = article.title.trim();
-          if (resolvedContent.isEmpty) resolvedContent = (article.content ?? '').trim();
+          if (resolvedTitle.isEmpty) {
+            resolvedTitle = article.title.trim();
+          }
+          if (resolvedContent.isEmpty) {
+            resolvedContent = (article.content ?? '').trim();
+          }
           return false;
         },
         failure: (_) => true,
       );
-      if (failed) return articleResult;
+      if (failed) {
+        return articleResult;
+      }
     }
 
     final titleWords = resolvedTitle

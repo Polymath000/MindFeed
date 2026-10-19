@@ -8,10 +8,7 @@ import 'package:mind_feed/features/add_article/presentation/widgets/article_fiel
 class ArticleTitleField extends StatelessWidget {
   final TextEditingController controller;
 
-  const ArticleTitleField({
-    super.key,
-    required this.controller,
-  });
+  const ArticleTitleField({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {

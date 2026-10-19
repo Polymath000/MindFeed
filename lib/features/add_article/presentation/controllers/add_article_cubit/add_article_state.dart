@@ -82,8 +82,9 @@ class AddArticleState extends Equatable {
       isSavingDraft: isSavingDraft ?? this.isSavingDraft,
       isPublishing: isPublishing ?? this.isPublishing,
       isSuccess: isSuccess ?? this.isSuccess,
-      successMessage:
-          clearSuccess ? null : (successMessage ?? this.successMessage),
+      successMessage: clearSuccess
+          ? null
+          : (successMessage ?? this.successMessage),
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       categories: categories ?? this.categories,
       availableTags: availableTags ?? this.availableTags,
@@ -104,23 +105,23 @@ class AddArticleState extends Equatable {
 
   @override
   List<Object?> get props => [
-        isLoading,
-        isSavingDraft,
-        isPublishing,
-        isSuccess,
-        successMessage,
-        errorMessage,
-        categories,
-        availableTags,
-        title,
-        content,
-        coverImageUrl,
-        selectedCategoryId,
-        selectedTags,
-        editingItemId,
-        editingItemStatus,
-        publishedAt,
-        formErrors,
-        lastSavedArticle,
-      ];
+    isLoading,
+    isSavingDraft,
+    isPublishing,
+    isSuccess,
+    successMessage,
+    errorMessage,
+    categories,
+    availableTags,
+    title,
+    content,
+    coverImageUrl,
+    selectedCategoryId,
+    selectedTags,
+    editingItemId,
+    editingItemStatus,
+    publishedAt,
+    formErrors,
+    lastSavedArticle,
+  ];
 }

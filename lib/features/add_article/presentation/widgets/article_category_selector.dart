@@ -27,13 +27,17 @@ class ArticleCategorySelector extends StatelessWidget {
             const SizedBox(height: 6),
             DropdownButtonFormField<String>(
               key: const Key('article_category_field'),
-              initialValue: state.selectedCategoryId,
+              initialValue:
+                  state.categories.any((c) => c.id == state.selectedCategoryId)
+                      ? state.selectedCategoryId
+                      : null,
               isExpanded: true,
               dropdownColor: AppColors.whiteLight,
               decoration: articleInputDecoration(
                 hintText: 'Select a primary category',
                 errorText: state.formErrors.categoryError,
               ),
+
               items: state.categories.map((cat) {
                 return DropdownMenuItem<String>(
                   value: cat.id,
