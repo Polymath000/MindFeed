@@ -26,6 +26,7 @@ class EditorialNewsItem {
   final DateTime? publishedAt;
   final int readingTimeMinutes;
   final String status;
+  final bool isLocalDraft;
   int starCount;
   bool isStarred;
   bool isLiked;
@@ -56,6 +57,7 @@ class EditorialNewsItem {
     this.publishedAt,
     this.readingTimeMinutes = 3,
     this.status = 'published',
+    this.isLocalDraft = false,
     this.starCount = 0,
     this.isStarred = false,
     this.isLiked = false,
@@ -79,6 +81,8 @@ class EditorialNewsItem {
   }
 
   EditorialNewsItem copyWith({
+    String? authorId,
+    bool? isLocalDraft,
     bool? isSaved,
     bool? isLiked,
     bool? isStarred,
@@ -106,10 +110,11 @@ class EditorialNewsItem {
       tags: tags,
       content: content ?? this.content,
       coverImageUrl: coverImageUrl,
-      authorId: authorId,
+      authorId: authorId ?? this.authorId,
       publishedAt: publishedAt,
       readingTimeMinutes: readingTimeMinutes,
       status: status,
+      isLocalDraft: isLocalDraft ?? this.isLocalDraft,
       starCount: starCount ?? this.starCount,
       isStarred: isStarred ?? this.isStarred,
       isLiked: isLiked ?? this.isLiked,
@@ -127,7 +132,10 @@ extension ArticleEntityEditorialMapper on ArticleEntity {
     return EditorialNewsItem(
       id: id,
       badge: badge,
-      badgeColor: _parseHexColor(badgeColor, defaultColor: AppColors.redHighlight),
+      badgeColor: _parseHexColor(
+        badgeColor,
+        defaultColor: AppColors.redHighlight,
+      ),
       title: title,
       updated: _formatUpdatedTime(publishedAt ?? updatedAt),
       authorName: authorName,
@@ -147,6 +155,7 @@ extension ArticleEntityEditorialMapper on ArticleEntity {
       publishedAt: publishedAt,
       readingTimeMinutes: readingTimeMinutes,
       status: status,
+      isLocalDraft: false,
       starCount: starCount,
       isStarred: isStarred,
       isLiked: isLiked,
@@ -158,17 +167,21 @@ extension ArticleEntityEditorialMapper on ArticleEntity {
     );
   }
 
-  static Color _parseHexColor(String? hexString, {required Color defaultColor}) {
+  static Color _parseHexColor(
+    String? hexString, {
+    required Color defaultColor,
+  }) {
     if (hexString == null || hexString.trim().isEmpty) return defaultColor;
     final clean = hexString.replaceAll('#', '').trim();
-    if (clean.length == 6) {
-      final val = int.tryParse('FF$clean', radix: 16);
-      return val != null ? Color(val) : defaultColor;
-    } else if (clean.length == 8) {
-      final val = int.tryParse(clean, radix: 16);
-      return val != null ? Color(val) : defaultColor;
-    }
-    return defaultColor;
+    final val = switch (clean.length) {
+      6 => int.tryParse('FF$clean', radix: 16),
+      8 => int.tryParse(clean, radix: 16),
+      _ => null,
+    };
+    return switch (val != null) {
+      true => Color(val!),
+      false => defaultColor,
+    };
   }
 
   static String _formatUpdatedTime(DateTime? dateTime) {
@@ -201,15 +214,20 @@ extension DownloadedArticleEntityEditorialMapper on DownloadedArticleEntity {
       updated: '$readingTimeMinutes min read',
       authorName: authorName.isNotEmpty ? authorName : 'Unknown',
       authorRole: authorRole.isNotEmpty ? authorRole : 'Published by',
-      authorAvatar: authorAvatar.isNotEmpty ? authorAvatar : Assets.assetsImagesWadeAvatar,
+      authorAvatar: authorAvatar.isNotEmpty
+          ? authorAvatar
+          : Assets.assetsImagesWadeAvatar,
       excerpt: excerpt.isNotEmpty
           ? excerpt
-          : (content.length > 150 ? '${content.substring(0, 150)}...' : content),
+          : (content.length > 150
+                ? '${content.substring(0, 150)}...'
+                : content),
       content: content,
       tags: tags,
       publishedAt: publishedAt,
       readingTimeMinutes: readingTimeMinutes,
       status: 'published',
+      isLocalDraft: false,
       color: AppColors.cream,
       isLive: false,
       isLiked: false,

@@ -354,9 +354,9 @@
     "semantic_hash": ""
   },
   "lib/features/author/presentation/views/author_view.dart": {
-    "mtime": 1792382696.3493521,
-    "seen": 1792383128.0250077,
-    "ast_hash": "9f12ec2e6c8eeb914314428f2d749d91",
+    "mtime": 1792507161.1088085,
+    "seen": 1792507386.996199,
+    "ast_hash": "d8de985339995ae9b4db1f8ea7ab85e4",
     "semantic_hash": ""
   },
   "lib/features/author/presentation/widgets/article_card_of_author.dart": {
@@ -744,15 +744,15 @@
     "semantic_hash": ""
   },
   "lib/core/design/editorial_card_stack.dart": {
-    "mtime": 1792381076.2926767,
-    "seen": 1792381376.9362018,
-    "ast_hash": "d2025789117ecd60f2fd63121bf4ccb2",
+    "mtime": 1792503275.067436,
+    "seen": 1792503499.2697985,
+    "ast_hash": "cf782657747cbd6709712af2a2d3622e",
     "semantic_hash": ""
   },
   "lib/core/design/editorial_models.dart": {
-    "mtime": 1792381076.2926767,
-    "seen": 1792381376.936204,
-    "ast_hash": "3b1e010f9a7f730874baab9fc34e9fbc",
+    "mtime": 1792506301.6250243,
+    "seen": 1792506452.0979373,
+    "ast_hash": "a8dfd36a482184571b31c4ea891e6cff",
     "semantic_hash": ""
   },
   "lib/core/design/editorial_saved_stack.dart": {
@@ -762,10 +762,10 @@
     "semantic_hash": ""
   },
   "test/editorial_stack_test.dart": {
-    "mtime": 1792203969.9627693,
-    "seen": 1792381376.9365253,
-    "ast_hash": "4607a3d788847203f96a925777ea5dbf",
-    "semantic_hash": "4607a3d788847203f96a925777ea5dbf"
+    "mtime": 1792503420.5936697,
+    "seen": 1792503499.3090026,
+    "ast_hash": "7d363ee6ec8db5b9cadfa385637b1e48",
+    "semantic_hash": ""
   },
   "docs/UI_SPECIFICATION.md": {
     "mtime": 1792058089.677603,
@@ -1278,8 +1278,8 @@
     "semantic_hash": ""
   },
   "lib/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_cubit.dart": {
-    "mtime": 1792381076.3475304,
-    "seen": 1792381376.9364555,
+    "mtime": 1792506652.7506316,
+    "seen": 1792507387.008305,
     "ast_hash": "e6f0fba0d74226cdebf1e05d8622dcb5",
     "semantic_hash": ""
   },
@@ -1314,9 +1314,9 @@
     "semantic_hash": ""
   },
   "test/features/profile/custom_article_card_of_profile_test.dart": {
-    "mtime": 1792381076.3805728,
-    "seen": 1792381376.9365556,
-    "ast_hash": "5d8f00f10b49e47057bf1b1cffe13dc4",
+    "mtime": 1792507691.670856,
+    "seen": 1792507795.3562593,
+    "ast_hash": "ce5da40e8a920169b9aa229a119b26a0",
     "semantic_hash": ""
   },
   "test/features/profile/fake_articles_repository.dart": {
@@ -1332,9 +1332,9 @@
     "semantic_hash": ""
   },
   "test/features/profile/user_articles_widget_test.dart": {
-    "mtime": 1792381076.383575,
-    "seen": 1792381376.9365637,
-    "ast_hash": "05b4eed9fcaa109ba0eb7cc3fdc385c3",
+    "mtime": 1792505636.6001687,
+    "seen": 1792505871.8828218,
+    "ast_hash": "3a1cdf66544e5da9916a2a0017a6e938",
     "semantic_hash": ""
   },
   "test/features/reader/article_reader_cubit_test.dart": {
@@ -1650,9 +1650,9 @@
     "semantic_hash": ""
   },
   "GEMINI.md": {
-    "mtime": 1792381076.2078545,
-    "seen": 1792381376.9365928,
-    "ast_hash": "590ee0511921383fc9c2c97e262f1d91",
+    "mtime": 1792431072.5185645,
+    "seen": 1792503499.3181503,
+    "ast_hash": "74bd5f77232c81fae81a81bb1f29c850",
     "semantic_hash": ""
   },
   "docs/reports/category_onboarding_and_auth_architecture_report.md": {
@@ -1698,9 +1698,9 @@
     "semantic_hash": ""
   },
   "lib/core/widgets/article_card.dart": {
-    "mtime": 1792381076.2936766,
-    "seen": 1792381376.9362247,
-    "ast_hash": "f821f136f669156661e352d45ae1d39f",
+    "mtime": 1792507632.9169917,
+    "seen": 1792507795.3133197,
+    "ast_hash": "94bc19cb283176942d7ec4e3de926f3c",
     "semantic_hash": ""
   },
   "lib/features/add_article/domain/usecases/publish_article_use_case.dart": {
@@ -1962,9 +1962,9 @@
     "semantic_hash": ""
   },
   "lib/features/profile/presentation/widgets/user_articles.dart": {
-    "mtime": 1792381076.3542871,
-    "seen": 1792381376.9364712,
-    "ast_hash": "1ae5303efbd8f4b44fa971bb8c6bbce6",
+    "mtime": 1792507275.538344,
+    "seen": 1792507387.011313,
+    "ast_hash": "dce63d3ad867a58b1acf2a66178852ad",
     "semantic_hash": ""
   },
   "lib/features/search/domain/usecases/get_articles_by_category_use_case.dart": {
@@ -2460,9 +2460,9 @@
     "semantic_hash": ""
   },
   "lib/features/search/presentation/views/tag_articles_view.dart": {
-    "mtime": 1792382575.754764,
-    "seen": 1792383128.0374475,
-    "ast_hash": "e8664cac99ad1f6e03e25f2852cde351",
+    "mtime": 1792507161.119334,
+    "seen": 1792507387.013544,
+    "ast_hash": "695fa6601b2d72fcd10a2698cd927bb0",
     "semantic_hash": ""
   },
   "test/features/reader/article_author_navigation_test.dart": {
@@ -2541,6 +2541,42 @@
     "mtime": 1792429129.7710803,
     "seen": 1792429388.4569292,
     "ast_hash": "9bf4ab5e354f4947fb3618c609670954",
+    "semantic_hash": ""
+  },
+  "lib/core/design/editorial_background_card.dart": {
+    "mtime": 1792503079.6840055,
+    "seen": 1792503499.2696393,
+    "ast_hash": "6efd41637c208904aba9d4b7b2aedaac",
+    "semantic_hash": ""
+  },
+  "lib/core/design/editorial_card_feedback_badge.dart": {
+    "mtime": 1792503035.808363,
+    "seen": 1792503499.2697961,
+    "ast_hash": "79b5db10c9f29813697f026c17caea0b",
+    "semantic_hash": ""
+  },
+  "lib/core/design/editorial_deck_synchronizer.dart": {
+    "mtime": 1792503168.3631816,
+    "seen": 1792503499.2697997,
+    "ast_hash": "088009593fc0aa85dddadd09ae8f5a72",
+    "semantic_hash": ""
+  },
+  "lib/core/design/editorial_top_card_layer.dart": {
+    "mtime": 1792503125.7061412,
+    "seen": 1792503499.270261,
+    "ast_hash": "36b43c8be80fbee246b2ffd96cb59523",
+    "semantic_hash": ""
+  },
+  ".agents/rules/empirical_verification.md": {
+    "mtime": 1792431093.5598,
+    "seen": 1792503499.3174155,
+    "ast_hash": "ad88c68797ac713aacfc155893e22dfc",
+    "semantic_hash": ""
+  },
+  "lib/core/widgets/article_card_layout.dart": {
+    "mtime": 1792507230.0142841,
+    "seen": 1792507386.9755392,
+    "ast_hash": "5da15d3f26e423632962861cd14b2a34",
     "semantic_hash": ""
   }
 }

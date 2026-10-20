@@ -40,8 +40,9 @@ class AuthorView extends StatelessWidget {
       );
     }
     return BlocProvider(
-      create: (_) => GetIt.instance<AuthorCubit>()
-        ..loadAuthorArticles(authorName, authorId: authorId),
+      create: (_) =>
+          GetIt.instance<AuthorCubit>()
+            ..loadAuthorArticles(authorName, authorId: authorId),
       child: _AuthorViewBody(
         authorName: authorName,
         authorRole: authorRole,
@@ -78,7 +79,10 @@ class _AuthorViewBody extends StatelessWidget {
                 authorAvatar: authorAvatar,
               ),
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 8.0,
+                ),
                 sliver: SliverToBoxAdapter(
                   child: BlocBuilder<AuthorCubit, AuthorState>(
                     builder: (context, state) {
@@ -113,9 +117,7 @@ class _AuthorViewBody extends StatelessWidget {
                           ),
                           const SizedBox(height: 14),
                           ...authorArticles.map(
-                            (item) => CustomArticleCardOfProfile(
-                              item: item,
-                            ),
+                            (item) => ArticleCard(item: item),
                           ),
                           const SizedBox(height: 80),
                         ],

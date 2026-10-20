@@ -10,11 +10,7 @@ class TagArticlesView extends StatelessWidget {
   final TagArticlesCubit? cubit;
   final String tag;
 
-  const TagArticlesView({
-    super.key,
-    this.cubit,
-    required this.tag,
-  });
+  const TagArticlesView({super.key, this.cubit, required this.tag});
 
   static const String routeName = 'tag_articles';
 
@@ -79,12 +75,16 @@ class _TagArticlesBody extends StatelessWidget {
                         Text(
                           state.message,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(color: AppColors.greyText, fontSize: 14),
+                          style: const TextStyle(
+                            color: AppColors.greyText,
+                            fontSize: 14,
+                          ),
                         ),
                         const SizedBox(height: 16),
                         ElevatedButton(
-                          onPressed: () =>
-                              context.read<TagArticlesCubit>().loadArticlesByTag(tag),
+                          onPressed: () => context
+                              .read<TagArticlesCubit>()
+                              .loadArticlesByTag(tag),
                           child: const Text('Retry'),
                         ),
                       ],
@@ -97,17 +97,23 @@ class _TagArticlesBody extends StatelessWidget {
                 return Center(
                   child: Text(
                     'No articles found with #$tag',
-                    style: const TextStyle(color: AppColors.greyText, fontSize: 15),
+                    style: const TextStyle(
+                      color: AppColors.greyText,
+                      fontSize: 15,
+                    ),
                   ),
                 );
               }
 
               if (state is TagArticlesLoaded) {
                 return ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                    vertical: 12.0,
+                  ),
                   itemCount: state.articles.length,
                   itemBuilder: (context, index) {
-                    return CustomArticleCardOfProfile(item: state.articles[index]);
+                    return ArticleCard(item: state.articles[index]);
                   },
                 );
               }
