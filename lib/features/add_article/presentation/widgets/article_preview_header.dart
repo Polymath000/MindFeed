@@ -7,10 +7,7 @@ import 'package:mind_feed/core/design/editorial_models.dart';
 class ArticlePreviewHeader extends StatelessWidget {
   final EditorialNewsItem item;
 
-  const ArticlePreviewHeader({
-    super.key,
-    required this.item,
-  });
+  const ArticlePreviewHeader({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +75,11 @@ class ArticlePreviewHeader extends StatelessWidget {
                 color: Colors.black.withAlpha(20),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(AppIcons.arrowBackRounded, color: AppColors.ink, size: 22),
+              child: const Icon(
+                AppIcons.arrowBackRounded,
+                color: AppColors.ink,
+                size: 22,
+              ),
             ),
           ),
         ),
@@ -104,7 +105,11 @@ class ArticlePreviewHeader extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               '${item.readingTimeMinutes} min read',
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.mutedInk),
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: AppColors.mutedInk,
+              ),
             ),
           ],
         ),
@@ -122,7 +127,10 @@ class ArticlePreviewHeader extends StatelessWidget {
         fit: BoxFit.cover,
         errorBuilder: (_, __, ___) => Container(
           height: 200,
-          decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(20)),
+          decoration: BoxDecoration(
+            color: Colors.black12,
+            borderRadius: BorderRadius.circular(20),
+          ),
           child: const Center(
             child: Icon(AppIcons.imageOutlined, size: 48, color: AppColors.ink),
           ),
@@ -132,7 +140,9 @@ class ArticlePreviewHeader extends StatelessWidget {
   }
 
   Widget _buildAuthorRow() {
-    final hasRemoteAvatar = item.authorAvatar.startsWith('http') || item.authorAvatar.startsWith('https');
+    final hasRemoteAvatar =
+        item.authorAvatar.startsWith('http') ||
+        item.authorAvatar.startsWith('https');
 
     return Row(
       children: [
@@ -141,7 +151,8 @@ class ArticlePreviewHeader extends StatelessWidget {
           backgroundColor: AppColors.cream,
           backgroundImage: hasRemoteAvatar
               ? NetworkImage(item.authorAvatar)
-              : const AssetImage(Assets.assetsImagesWadeAvatar) as ImageProvider,
+              : const AssetImage(Assets.assetsImagesWadeAvatar)
+                    as ImageProvider,
         ),
         const SizedBox(width: 12),
         Column(
@@ -149,7 +160,11 @@ class ArticlePreviewHeader extends StatelessWidget {
           children: [
             Text(
               item.authorName,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: AppColors.ink),
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+                color: AppColors.ink,
+              ),
             ),
             Text(
               item.updated.isNotEmpty ? item.updated : 'Draft',
@@ -175,7 +190,11 @@ class ArticlePreviewHeader extends StatelessWidget {
           ),
           child: Text(
             '#$tag',
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.ink),
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: AppColors.ink,
+            ),
           ),
         );
       }).toList(),

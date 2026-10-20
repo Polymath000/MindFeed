@@ -12,7 +12,9 @@ sealed class ArticlePayloadBuilder {
   }
 
   static String? resolveEditLockoutError(EditorialNewsItem? item) {
-    if (item != null && item.status == 'published' && !item.isEditableWithinWindow) {
+    if (item != null &&
+        item.status == 'published' &&
+        !item.isEditableWithinWindow) {
       return 'Published articles can only be edited within 30 days of publication';
     }
     return null;
@@ -58,8 +60,9 @@ sealed class ArticlePayloadBuilder {
     required CurrentUserSnapshot user,
     required bool includeSlug,
   }) {
-    final category = state.categories
-        .firstWhere((c) => c.id == state.selectedCategoryId);
+    final category = state.categories.firstWhere(
+      (c) => c.id == state.selectedCategoryId,
+    );
     final excerpt = ArticleValidator.generateExcerpt(state.content);
     final readingTime = ArticleValidator.computeReadingTime(state.content);
 

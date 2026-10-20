@@ -85,7 +85,9 @@ void main() {
 
     test('rejects invalid schemes or non-URLs', () {
       expect(
-        ArticleValidator.validateCoverImageUrlFormat('ftp://example.com/img.png'),
+        ArticleValidator.validateCoverImageUrlFormat(
+          'ftp://example.com/img.png',
+        ),
         isNotNull,
       );
       expect(
@@ -149,8 +151,14 @@ void main() {
 
   group('ArticleValidator.validateCategory', () {
     test('rejects null or empty category', () {
-      expect(ArticleValidator.validateCategory(null, ['cat-1', 'cat-2']), isNotNull);
-      expect(ArticleValidator.validateCategory('', ['cat-1', 'cat-2']), isNotNull);
+      expect(
+        ArticleValidator.validateCategory(null, ['cat-1', 'cat-2']),
+        isNotNull,
+      );
+      expect(
+        ArticleValidator.validateCategory('', ['cat-1', 'cat-2']),
+        isNotNull,
+      );
     });
 
     test('rejects category not in available categories list', () {
@@ -197,10 +205,13 @@ void main() {
     test('accepts 1 to 5 valid unique tags', () {
       expect(ArticleValidator.validateTags(['tech'], allowedTags), isNull);
       expect(
-        ArticleValidator.validateTags(
-          ['tech', 'flutter', 'dart', 'news', 'ai'],
-          allowedTags,
-        ),
+        ArticleValidator.validateTags([
+          'tech',
+          'flutter',
+          'dart',
+          'news',
+          'ai',
+        ], allowedTags),
         isNull,
       );
     });
@@ -208,7 +219,9 @@ void main() {
 
   group('ArticleValidator.generateSlug', () {
     test('creates hyphenated lower-case slug with suffix', () {
-      final slug = ArticleValidator.generateSlug('My First Article in MindFeed!');
+      final slug = ArticleValidator.generateSlug(
+        'My First Article in MindFeed!',
+      );
       expect(slug, startsWith('my-first-article-in-mindfeed-'));
       expect(slug.contains('!'), isFalse);
     });
@@ -267,21 +280,25 @@ void main() {
       expect(errors.tagsError, isNotNull);
     });
 
-    test('returns no errors when all fields are valid and image is landscape', () async {
-      final body = List.filled(300, 'word').join(' ');
-      final errors = await ArticleValidator.validateForPublish(
-        title: 'Valid Story Headline',
-        content: body,
-        coverImageUrl: 'https://example.com/cover.jpg',
-        categoryId: 'cat-1',
-        availableCategoryIds: ['cat-1'],
-        tags: ['tech'],
-        allowedTagNames: ['tech'],
-        dimensionResolver: (url, {timeout = const Duration(seconds: 5)}) async =>
-            const Size(1200, 630),
-      );
+    test(
+      'returns no errors when all fields are valid and image is landscape',
+      () async {
+        final body = List.filled(300, 'word').join(' ');
+        final errors = await ArticleValidator.validateForPublish(
+          title: 'Valid Story Headline',
+          content: body,
+          coverImageUrl: 'https://example.com/cover.jpg',
+          categoryId: 'cat-1',
+          availableCategoryIds: ['cat-1'],
+          tags: ['tech'],
+          allowedTagNames: ['tech'],
+          dimensionResolver:
+              (url, {timeout = const Duration(seconds: 5)}) async =>
+                  const Size(1200, 630),
+        );
 
-      expect(errors.hasErrors, isFalse);
-    });
+        expect(errors.hasErrors, isFalse);
+      },
+    );
   });
 }

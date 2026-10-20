@@ -7,10 +7,7 @@ InputDecoration articleInputDecoration({
 }) {
   return InputDecoration(
     hintText: hintText,
-    hintStyle: const TextStyle(
-      color: AppColors.greyText,
-      fontSize: 14,
-    ),
+    hintStyle: const TextStyle(color: AppColors.greyText, fontSize: 14),
     errorText: errorText,
     errorMaxLines: 2,
     errorStyle: const TextStyle(
@@ -20,10 +17,7 @@ InputDecoration articleInputDecoration({
     ),
     filled: true,
     fillColor: AppColors.whiteLight,
-    contentPadding: const EdgeInsets.symmetric(
-      horizontal: 16,
-      vertical: 14,
-    ),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
       borderSide: const BorderSide(color: AppColors.creamBorder),
@@ -34,24 +28,15 @@ InputDecoration articleInputDecoration({
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide(
-        color: AppColors.ink,
-        width: 1.5,
-      ),
+      borderSide: const BorderSide(color: AppColors.ink, width: 1.5),
     ),
     errorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide(
-        color: AppColors.redHighlight,
-        width: 1.2,
-      ),
+      borderSide: const BorderSide(color: AppColors.redHighlight, width: 1.2),
     ),
     focusedErrorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide(
-        color: AppColors.redHighlight,
-        width: 1.5,
-      ),
+      borderSide: const BorderSide(color: AppColors.redHighlight, width: 1.5),
     ),
   );
 }

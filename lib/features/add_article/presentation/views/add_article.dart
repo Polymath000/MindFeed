@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
-import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_state.dart';
-import 'package:mind_feed/features/add_article/presentation/routes/add_article_routes.dart';
+import 'package:mind_feed/features/add_article/presentation/widgets/add_article_app_bar.dart';
 import 'package:mind_feed/features/add_article/presentation/widgets/article_category_selector.dart';
 import 'package:mind_feed/features/add_article/presentation/widgets/article_content_field.dart';
 import 'package:mind_feed/features/add_article/presentation/widgets/article_cover_image_field.dart';
@@ -32,9 +31,15 @@ class _AddArticleViewState extends State<AddArticleView> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.initialItem?.title ?? '');
-    _contentController = TextEditingController(text: widget.initialItem?.content ?? '');
-    _coverUrlController = TextEditingController(text: widget.initialItem?.coverImageUrl ?? '');
+    _titleController = TextEditingController(
+      text: widget.initialItem?.title ?? '',
+    );
+    _contentController = TextEditingController(
+      text: widget.initialItem?.content ?? '',
+    );
+    _coverUrlController = TextEditingController(
+      text: widget.initialItem?.coverImageUrl ?? '',
+    );
   }
 
   @override
@@ -55,58 +60,45 @@ class _AddArticleViewState extends State<AddArticleView> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(message),
-              backgroundColor: state.errorMessage != null ? AppColors.redHighlight : AppColors.ink,
+              backgroundColor: state.errorMessage != null
+                  ? AppColors.redHighlight
+                  : AppColors.ink,
             ),
           );
         }
       },
       builder: (context, state) {
-        final isEditing = state.editingItemId != null && state.editingItemId!.isNotEmpty;
+        final isEditing =
+            state.editingItemId != null && state.editingItemId!.isNotEmpty;
         final titleText = isEditing
             ? (state.isEditingPublished ? 'Edit Published Story' : 'Edit Draft')
             : 'Write Story';
 
         return Scaffold(
           backgroundColor: AppColors.sandLight,
-          appBar: AppBar(
-            backgroundColor: AppColors.sandLight,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(AppIcons.arrowBackRounded, color: AppColors.ink),
-              onPressed: () => Navigator.maybePop(context),
-            ),
-            title: Text(
-              titleText,
-              style: const TextStyle(
-                color: AppColors.ink,
-                fontWeight: FontWeight.w900,
-                fontSize: 20,
-                letterSpacing: -0.4,
-              ),
-            ),
-            actions: [
-              TextButton.icon(
-                onPressed: () => Navigator.pushNamed(context, AddArticleRoutes.drafts),
-                icon: const Icon(Icons.folder_outlined, size: 18, color: AppColors.ink),
-                label: const Text('Drafts', style: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w700)),
-              ),
-              const SizedBox(width: 8),
-            ],
-          ),
+          appBar: AddArticleAppBar(title: titleText),
           body: SafeArea(
             child: state.isLoading
-                ? const Center(child: CircularProgressIndicator(color: AppColors.ink))
+                ? const Center(
+                    child: CircularProgressIndicator(color: AppColors.ink),
+                  )
                 : Center(
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 720),
                       child: ListView(
                         padding: const EdgeInsets.fromLTRB(20, 12, 20, 48),
                         children: [
-                          if (state.hasLockoutError && widget.initialItem != null && !widget.initialItem!.isEditableWithinWindow)
-                            ArticleEditWarningBanner(message: state.errorMessage!),
+                          if (state.hasLockoutError &&
+                              widget.initialItem != null &&
+                              !widget.initialItem!.isEditableWithinWindow)
+                            ArticleEditWarningBanner(
+                              message: state.errorMessage!,
+                            ),
                           ArticleTitleField(controller: _titleController),
                           const SizedBox(height: 20),
-                          ArticleCoverImageField(controller: _coverUrlController),
+                          ArticleCoverImageField(
+                            controller: _coverUrlController,
+                          ),
                           const SizedBox(height: 20),
                           const ArticleCategorySelector(),
                           const SizedBox(height: 20),

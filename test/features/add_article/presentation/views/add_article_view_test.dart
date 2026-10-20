@@ -40,8 +40,9 @@ void main() {
     cubit.close();
   });
 
-  testWidgets('editor shows field error messages when publishing empty form',
-      (WidgetTester tester) async {
+  testWidgets('editor shows field error messages when publishing empty form', (
+    WidgetTester tester,
+  ) async {
     tester.view.physicalSize = const Size(1200, 2400);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(() {
@@ -85,8 +86,9 @@ void main() {
     expect(find.text('Article title cannot be empty'), findsNothing);
   });
 
-  testWidgets('editor shows draft error when saving draft with empty title',
-      (WidgetTester tester) async {
+  testWidgets('editor shows draft error when saving draft with empty title', (
+    WidgetTester tester,
+  ) async {
     tester.view.physicalSize = const Size(1200, 2400);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(() {
@@ -113,8 +115,9 @@ void main() {
     expect(find.text('Title cannot be empty to save a draft'), findsWidgets);
   });
 
-  testWidgets('tapping preset cover chip populates cover URL and updates state',
-      (WidgetTester tester) async {
+  testWidgets('tapping preset cover chip populates cover URL and updates state', (
+    WidgetTester tester,
+  ) async {
     tester.view.physicalSize = const Size(1200, 2400);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(() {
@@ -145,7 +148,9 @@ void main() {
         'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=800&fit=crop';
     expect(cubit.state.coverImageUrl, expectedUrl);
 
-    final textField = tester.widget<TextField>(find.byKey(const Key('article_cover_field')));
+    final textField = tester.widget<TextField>(
+      find.byKey(const Key('article_cover_field')),
+    );
     expect(textField.controller?.text, expectedUrl);
   });
 }

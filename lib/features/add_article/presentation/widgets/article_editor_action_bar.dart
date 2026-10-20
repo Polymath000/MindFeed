@@ -34,13 +34,8 @@ class ArticleEditorActionBar extends StatelessWidget {
                 key: const Key('save_draft_button'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.ink,
-                  side: const BorderSide(
-                    color: AppColors.ink,
-                    width: 1.5,
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 14,
-                  ),
+                  side: const BorderSide(color: AppColors.ink, width: 1.5),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -59,9 +54,7 @@ class ArticleEditorActionBar extends StatelessWidget {
                       )
                     : const Text(
                         'Save Draft',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w800,
-                        ),
+                        style: TextStyle(fontWeight: FontWeight.w800),
                       ),
               ),
             ),
@@ -77,9 +70,7 @@ class ArticleEditorActionBar extends StatelessWidget {
                     width: 1.5,
                   ),
                   backgroundColor: AppColors.cream,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 14,
-                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -87,9 +78,7 @@ class ArticleEditorActionBar extends StatelessWidget {
                 onPressed: () => _openPreview(context, state),
                 child: const Text(
                   'Preview',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.w800),
                 ),
               ),
             ),
@@ -102,9 +91,7 @@ class ArticleEditorActionBar extends StatelessWidget {
                   backgroundColor: AppColors.ink,
                   foregroundColor: AppColors.softCream,
                   elevation: 0,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 14,
-                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),

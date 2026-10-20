@@ -9,29 +9,34 @@ import 'package:mind_feed/features/add_article/presentation/routes/add_article_r
 class DraftItemCard extends StatelessWidget {
   final EditorialNewsItem draft;
 
-  const DraftItemCard({
-    super.key,
-    required this.draft,
-  });
+  const DraftItemCard({super.key, required this.draft});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.whiteLight,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        key: Key('draft_card_${draft.id}'),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.creamBorder),
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeaderRow(),
-          const SizedBox(height: 8),
-          _buildMetaRow(),
-          const SizedBox(height: 14),
-          _buildActionsRow(context),
-        ],
+        onTap: () => _openDraft(context),
+        child: Ink(
+          decoration: BoxDecoration(
+            color: AppColors.whiteLight,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.creamBorder),
+          ),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeaderRow(),
+              const SizedBox(height: 8),
+              _buildMetaRow(),
+              const SizedBox(height: 14),
+              _buildActionsRow(context),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -94,48 +99,9 @@ class DraftItemCard extends StatelessWidget {
 
   Widget _buildActionsRow(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        TextButton.icon(
-          onPressed: () => Navigator.pushNamed(
-            context,
-            AddArticleRoutes.articlePreview,
-            arguments: draft,
-          ),
-          icon: const Icon(
-            AppIcons.visibilityOutlined,
-            size: 16,
-            color: AppColors.mutedInk,
-          ),
-          label: const Text(
-            'Preview',
-            style: TextStyle(color: AppColors.mutedInk),
-          ),
-        ),
-        const SizedBox(width: 8),
-        TextButton.icon(
-          onPressed: () {
-            Navigator.pushNamed(
-              context,
-              AddArticleRoutes.addArticle,
-              arguments: draft,
-            ).then((_) {
-              if (context.mounted) {
-                context.read<DraftsCubit>().loadDrafts();
-              }
-            });
-          },
-          icon: const Icon(AppIcons.edit, size: 16, color: AppColors.ink),
-          label: const Text(
-            'Edit',
-            style: TextStyle(
-              color: AppColors.ink,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
         IconButton(
+          key: Key('delete_draft_button_${draft.id}'),
           tooltip: 'Delete Draft',
           icon: const Icon(
             AppIcons.delete,
@@ -144,8 +110,63 @@ class DraftItemCard extends StatelessWidget {
           ),
           onPressed: () => _showDeleteConfirmation(context),
         ),
+        const Spacer(),
+        TextButton(
+          key: Key('preview_draft_button_${draft.id}'),
+          onPressed: () => Navigator.pushNamed(
+            context,
+            AddArticleRoutes.articlePreview,
+            arguments: draft,
+          ),
+          child: const Text(
+            'Preview',
+            style: TextStyle(
+              color: AppColors.mutedInk,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        const SizedBox(width: 4),
+        TextButton(
+          key: Key('edit_draft_button_${draft.id}'),
+          onPressed: () => _openDraft(context),
+          child: const Text(
+            'Edit',
+            style: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w700),
+          ),
+        ),
+        const SizedBox(width: 4),
+        ElevatedButton(
+          key: Key('publish_draft_button_${draft.id}'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.ink,
+            foregroundColor: AppColors.softCream,
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          onPressed: () => _openDraft(context),
+          child: const Text(
+            'Publish',
+            style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
+          ),
+        ),
       ],
     );
+  }
+
+  void _openDraft(BuildContext context) {
+    Navigator.pushNamed(
+      context,
+      AddArticleRoutes.addArticle,
+      arguments: draft,
+    ).then((_) {
+      if (context.mounted) {
+        context.read<DraftsCubit>().loadDrafts();
+      }
+    });
   }
 
   void _showDeleteConfirmation(BuildContext context) {
@@ -153,15 +174,10 @@ class DraftItemCard extends StatelessWidget {
       context: context,
       builder: (dialogCtx) => AlertDialog(
         backgroundColor: AppColors.sandLight,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text(
           'Delete Draft?',
-          style: TextStyle(
-            color: AppColors.ink,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: AppColors.ink, fontWeight: FontWeight.bold),
         ),
         content: const Text(
           'Are you sure you want to delete this draft? This action cannot be undone.',

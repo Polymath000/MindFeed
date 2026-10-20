@@ -26,10 +26,7 @@ const _presetCovers = [
 class ArticleCoverImageField extends StatelessWidget {
   final TextEditingController controller;
 
-  const ArticleCoverImageField({
-    super.key,
-    required this.controller,
-  });
+  const ArticleCoverImageField({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -55,10 +52,7 @@ class ArticleCoverImageField extends StatelessWidget {
               onChanged: (val) =>
                   context.read<AddArticleCubit>().onCoverImageUrlChanged(val),
               keyboardType: TextInputType.url,
-              style: const TextStyle(
-                fontSize: 14,
-                color: AppColors.ink,
-              ),
+              style: const TextStyle(fontSize: 14, color: AppColors.ink),
               decoration: articleInputDecoration(
                 hintText: 'https://example.com/cover-image.jpg',
                 errorText: state.formErrors.coverImageUrlError,
@@ -76,7 +70,9 @@ class ArticleCoverImageField extends StatelessWidget {
                     preset.label,
                     style: TextStyle(
                       fontSize: 12,
-                      fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                      fontWeight: isSelected
+                          ? FontWeight.w800
+                          : FontWeight.w600,
                       color: isSelected ? AppColors.cream : AppColors.ink,
                     ),
                   ),
@@ -87,9 +83,9 @@ class ArticleCoverImageField extends StatelessWidget {
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
                     controller.text = preset.url;
-                    context
-                        .read<AddArticleCubit>()
-                        .onCoverImageUrlChanged(preset.url);
+                    context.read<AddArticleCubit>().onCoverImageUrlChanged(
+                      preset.url,
+                    );
                   },
                 );
               }).toList(),
@@ -108,9 +104,7 @@ class ArticleCoverImageField extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: AppColors.cream,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: AppColors.creamBorder,
-                      ),
+                      border: Border.all(color: AppColors.creamBorder),
                     ),
                     child: const Center(
                       child: Row(

@@ -4,10 +4,7 @@ import 'package:mind_feed/core/constants/app_colors.dart';
 class ArticleEditWarningBanner extends StatelessWidget {
   final String message;
 
-  const ArticleEditWarningBanner({
-    super.key,
-    required this.message,
-  });
+  const ArticleEditWarningBanner({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +14,7 @@ class ArticleEditWarningBanner extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.redHighlight.withAlpha(25),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.redHighlight.withAlpha(80),
-        ),
+        border: Border.all(color: AppColors.redHighlight.withAlpha(80)),
       ),
       child: Row(
         children: [

@@ -57,10 +57,7 @@ class DraftsErrorView extends StatelessWidget {
 class DraftsEmptyView extends StatelessWidget {
   final VoidCallback onWriteNew;
 
-  const DraftsEmptyView({
-    super.key,
-    required this.onWriteNew,
-  });
+  const DraftsEmptyView({super.key, required this.onWriteNew});
 
   @override
   Widget build(BuildContext context) {
@@ -97,10 +94,7 @@ class DraftsEmptyView extends StatelessWidget {
             const Text(
               'Start writing a new story to see your saved drafts here.',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: AppColors.mutedInk,
-              ),
+              style: TextStyle(fontSize: 14, color: AppColors.mutedInk),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(

@@ -84,7 +84,8 @@ class FakeArticlesRepository implements ArticlesRepository {
       tags: updates['tags'] != null
           ? List<String>.from(updates['tags'] as List)
           : existing.tags,
-      readingTimeMinutes: updates['reading_time_minutes'] as int? ??
+      readingTimeMinutes:
+          updates['reading_time_minutes'] as int? ??
           existing.readingTimeMinutes,
       updatedAt: DateTime.now(),
     );
@@ -137,18 +138,16 @@ class FakeArticlesRepository implements ArticlesRepository {
     List<String>? preferredCategoryIds,
     int limit = 20,
     int offset = 0,
-  }) async =>
-      Success(articles.values.toList());
+  }) async => Success(articles.values.toList());
 
   @override
   Future<ApiResult<List<ArticleEntity>>> getArticlesByCategory(
     String categoryId, {
     int limit = 20,
     int offset = 0,
-  }) async =>
-      Success(
-        articles.values.where((a) => a.categoryId == categoryId).toList(),
-      );
+  }) async => Success(
+    articles.values.where((a) => a.categoryId == categoryId).toList(),
+  );
 
   @override
   Future<ApiResult<List<ArticleEntity>>> searchArticles(
@@ -167,52 +166,41 @@ class FakeArticlesRepository implements ArticlesRepository {
       Success(articles.values.where((a) => a.tags.contains(tag)).toList());
 
   @override
-  Future<ApiResult<void>> starArticle(
-    String articleId,
-    String userId,
-  ) async =>
+  Future<ApiResult<void>> starArticle(String articleId, String userId) async =>
       const Success(null);
 
   @override
   Future<ApiResult<void>> unstarArticle(
     String articleId,
     String userId,
-  ) async =>
-      const Success(null);
+  ) async => const Success(null);
 
   @override
   Future<ApiResult<bool>> isArticleStarred(
     String articleId,
     String userId,
-  ) async =>
-      const Success(false);
+  ) async => const Success(false);
 
   @override
-  Future<ApiResult<void>> saveBookmark(
-    String articleId,
-    String userId,
-  ) async =>
+  Future<ApiResult<void>> saveBookmark(String articleId, String userId) async =>
       const Success(null);
 
   @override
   Future<ApiResult<void>> removeBookmark(
     String articleId,
     String userId,
-  ) async =>
-      const Success(null);
+  ) async => const Success(null);
 
   @override
   Future<ApiResult<List<ArticleEntity>>> getSavedArticles(
     String userId,
-  ) async =>
-      const Success([]);
+  ) async => const Success([]);
 
   @override
   Future<ApiResult<bool>> isArticleSaved(
     String articleId,
     String userId,
-  ) async =>
-      const Success(false);
+  ) async => const Success(false);
 
   @override
   Future<void> clearDownloadedArticles() async {}
@@ -318,38 +306,95 @@ void main() {
     expect(repo.articles.values.first.status, 'published');
   });
 
-  test('edit window rejection for published article older than 30 days', () async {
-    final oldPublishedDate =
-        DateTime.now().subtract(const Duration(days: 35));
-    final oldArticle = ArticleEntity(
-      id: 'art-old',
-      title: 'Old Story',
-      slug: 'old-story',
-      excerpt: 'Excerpt',
-      content: List.filled(300, 'word').join(' '),
-      authorId: testUser.id,
-      categoryId: 'cat-1',
-      tags: const ['flutter'],
-      coverImageUrl: 'https://example.com/cover.jpg',
-      status: 'published',
-      publishedAt: oldPublishedDate,
-    );
-    repo.articles[oldArticle.id] = oldArticle;
+  test(
+    'edit window rejection for published article older than 30 days',
+    () async {
+      final oldPublishedDate = DateTime.now().subtract(
+        const Duration(days: 35),
+      );
+      final oldArticle = ArticleEntity(
+        id: 'art-old',
+        title: 'Old Story',
+        slug: 'old-story',
+        excerpt: 'Excerpt',
+        content: List.filled(300, 'word').join(' '),
+        authorId: testUser.id,
+        categoryId: 'cat-1',
+        tags: const ['flutter'],
+        coverImageUrl: 'https://example.com/cover.jpg',
+        status: 'published',
+        publishedAt: oldPublishedDate,
+      );
+      repo.articles[oldArticle.id] = oldArticle;
 
-    await cubit.initialize(editingItem: oldArticle.toEditorialNewsItem());
+      await cubit.initialize(editingItem: oldArticle.toEditorialNewsItem());
 
+      expect(
+        cubit.state.errorMessage,
+        contains(
+          'Published articles can only be edited within 30 days of publication',
+        ),
+      );
+
+      cubit.onTitleChanged('Trying to edit title');
+      await cubit.publish();
+
+      expect(cubit.state.isSuccess, isFalse);
+      expect(
+        cubit.state.errorMessage,
+        contains(
+          'Published articles can only be edited within 30 days of publication',
+        ),
+      );
+    },
+  );
+
+  test('addCustomTag normalizes and selects custom tag', () async {
+    await cubit.initialize();
+    cubit.addCustomTag(' #Machine Learning ');
     expect(
-      cubit.state.errorMessage,
-      contains('Published articles can only be edited within 30 days of publication'),
+      cubit.state.availableTags.any((t) => t.name == 'machine-learning'),
+      isTrue,
     );
-
-    cubit.onTitleChanged('Trying to edit title');
-    await cubit.publish();
-
-    expect(cubit.state.isSuccess, isFalse);
-    expect(
-      cubit.state.errorMessage,
-      contains('Published articles can only be edited within 30 days of publication'),
-    );
+    expect(cubit.state.selectedTags, contains('machine-learning'));
   });
+
+  test(
+    'addCustomTag selects existing tag without duplicating in availableTags',
+    () async {
+      await cubit.initialize();
+      final initialCount = cubit.state.availableTags.length;
+      cubit.addCustomTag('FLUTTER');
+      expect(cubit.state.availableTags.length, initialCount);
+      expect(cubit.state.selectedTags, contains('flutter'));
+    },
+  );
+
+  test('addCustomTag ignores empty or oversized tags', () async {
+    await cubit.initialize();
+    final initialAvailable = cubit.state.availableTags.length;
+    cubit.addCustomTag('   ');
+    cubit.addCustomTag('#');
+    cubit.addCustomTag('a' * 35);
+    expect(cubit.state.availableTags.length, initialAvailable);
+    expect(cubit.state.selectedTags.isEmpty, isTrue);
+  });
+
+  test(
+    'addCustomTag does not select tag if 5 tags are already selected',
+    () async {
+      await cubit.initialize();
+      cubit.onTagToggled('flutter');
+      cubit.onTagToggled('dart');
+      cubit.onTagToggled('ai');
+      cubit.addCustomTag('tag4');
+      cubit.addCustomTag('tag5');
+      expect(cubit.state.selectedTags.length, 5);
+
+      cubit.addCustomTag('tag6');
+      expect(cubit.state.availableTags.any((t) => t.name == 'tag6'), isTrue);
+      expect(cubit.state.selectedTags.length, 5);
+      expect(cubit.state.selectedTags.contains('tag6'), isFalse);
+    },
+  );
 }

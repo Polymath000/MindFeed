@@ -3,10 +3,8 @@ import 'dart:math' as math;
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
-typedef ImageDimensionResolver = Future<Size?> Function(
-  String url, {
-  Duration timeout,
-});
+typedef ImageDimensionResolver =
+    Future<Size?> Function(String url, {Duration timeout});
 
 Future<Size?> defaultImageDimensionResolver(
   String url, {
@@ -87,13 +85,14 @@ class ArticleFormErrors extends Equatable {
     return ArticleFormErrors(
       titleError: clearTitle ? null : (titleError ?? this.titleError),
       contentError: clearContent ? null : (contentError ?? this.contentError),
-      coverImageUrlError:
-          clearCoverImageUrl ? null : (coverImageUrlError ?? this.coverImageUrlError),
-      categoryError:
-          clearCategory ? null : (categoryError ?? this.categoryError),
+      coverImageUrlError: clearCoverImageUrl
+          ? null
+          : (coverImageUrlError ?? this.coverImageUrlError),
+      categoryError: clearCategory
+          ? null
+          : (categoryError ?? this.categoryError),
       tagsError: clearTags ? null : (tagsError ?? this.tagsError),
-      generalError:
-          clearGeneral ? null : (generalError ?? this.generalError),
+      generalError: clearGeneral ? null : (generalError ?? this.generalError),
     );
   }
 
@@ -107,13 +106,13 @@ class ArticleFormErrors extends Equatable {
 
   @override
   List<Object?> get props => [
-        titleError,
-        contentError,
-        coverImageUrlError,
-        categoryError,
-        tagsError,
-        generalError,
-      ];
+    titleError,
+    contentError,
+    coverImageUrlError,
+    categoryError,
+    tagsError,
+    generalError,
+  ];
 }
 
 class ArticleValidator {
@@ -199,10 +198,7 @@ class ArticleValidator {
     return null;
   }
 
-  static String? validateTags(
-    List<String> tags,
-    List<String> allowedTagNames,
-  ) {
+  static String? validateTags(List<String> tags, List<String> allowedTagNames) {
     if (tags.isEmpty) {
       return 'Please select between 1 and 5 tags';
     }
