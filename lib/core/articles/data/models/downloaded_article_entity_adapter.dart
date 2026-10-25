@@ -1,7 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:hive/hive.dart';
+
 import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
 
-class DownloadedArticleEntityAdapter extends TypeAdapter<DownloadedArticleEntity> {
+class DownloadedArticleEntityAdapter
+    extends TypeAdapter<DownloadedArticleEntity> {
   @override
   final int typeId = 2;
 
@@ -25,21 +29,34 @@ class DownloadedArticleEntityAdapter extends TypeAdapter<DownloadedArticleEntity
       publishedAt: fields[10] is DateTime
           ? fields[10] as DateTime
           : (fields[10] is int
-              ? DateTime.fromMillisecondsSinceEpoch(fields[10] as int)
-              : DateTime.tryParse(fields[10]?.toString() ?? '') ?? DateTime.now()),
+                ? DateTime.fromMillisecondsSinceEpoch(fields[10] as int)
+                : DateTime.tryParse(fields[10]?.toString() ?? '') ??
+                      DateTime.now()),
       readingTimeMinutes: fields[11] as int? ?? 0,
       downloadedAt: fields[12] is DateTime
           ? fields[12] as DateTime
           : (fields[12] is int
-              ? DateTime.fromMillisecondsSinceEpoch(fields[12] as int)
-              : DateTime.tryParse(fields[12]?.toString() ?? '') ?? DateTime.now()),
+                ? DateTime.fromMillisecondsSinceEpoch(fields[12] as int)
+                : DateTime.tryParse(fields[12]?.toString() ?? '') ??
+                      DateTime.now()),
+      coverImageUrl: fields[13] as String?,
+      coverImageBytes: _toUint8List(fields[14]),
+      authorAvatarBytes: _toUint8List(fields[15]),
     );
+  }
+
+  static Uint8List? _toUint8List(dynamic raw) {
+    if (raw == null) return null;
+    if (raw is Uint8List) return raw;
+    if (raw is List<int>) return Uint8List.fromList(raw);
+    if (raw is List) return Uint8List.fromList(raw.cast<int>());
+    return null;
   }
 
   @override
   void write(BinaryWriter writer, DownloadedArticleEntity obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(16)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -65,7 +82,13 @@ class DownloadedArticleEntityAdapter extends TypeAdapter<DownloadedArticleEntity
       ..writeByte(11)
       ..write(obj.readingTimeMinutes)
       ..writeByte(12)
-      ..write(obj.downloadedAt);
+      ..write(obj.downloadedAt)
+      ..writeByte(13)
+      ..write(obj.coverImageUrl)
+      ..writeByte(14)
+      ..write(obj.coverImageBytes)
+      ..writeByte(15)
+      ..write(obj.authorAvatarBytes);
   }
 
   @override

@@ -527,8 +527,9 @@ class ArticleReaderCubit extends Cubit<ArticleReaderState> {
       await _downloadArticleTextUseCase.call(
         ArticleReaderDependencies.mapToDownloadedEntity(item),
       );
-      if (!isClosed) {
-        emit(loaded.copyWith(
+      if (!isClosed && state is ArticleReaderLoaded) {
+        final currentLoaded = state as ArticleReaderLoaded;
+        emit(currentLoaded.copyWith(
           isDownloaded: true,
           userFeedback: 'Article saved for offline reading',
         ));

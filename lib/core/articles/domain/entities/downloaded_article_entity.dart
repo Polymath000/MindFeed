@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 class DownloadedArticleEntity {
   final String id;
   final String title;
@@ -12,6 +14,9 @@ class DownloadedArticleEntity {
   final DateTime publishedAt;
   final int readingTimeMinutes;
   final DateTime downloadedAt;
+  final String? coverImageUrl;
+  final Uint8List? coverImageBytes;
+  final Uint8List? authorAvatarBytes;
 
   const DownloadedArticleEntity({
     required this.id,
@@ -27,6 +32,9 @@ class DownloadedArticleEntity {
     required this.publishedAt,
     required this.readingTimeMinutes,
     required this.downloadedAt,
+    this.coverImageUrl,
+    this.coverImageBytes,
+    this.authorAvatarBytes,
   });
 
   DownloadedArticleEntity copyWith({
@@ -43,6 +51,9 @@ class DownloadedArticleEntity {
     DateTime? publishedAt,
     int? readingTimeMinutes,
     DateTime? downloadedAt,
+    String? coverImageUrl,
+    Uint8List? coverImageBytes,
+    Uint8List? authorAvatarBytes,
   }) {
     return DownloadedArticleEntity(
       id: id ?? this.id,
@@ -58,6 +69,9 @@ class DownloadedArticleEntity {
       publishedAt: publishedAt ?? this.publishedAt,
       readingTimeMinutes: readingTimeMinutes ?? this.readingTimeMinutes,
       downloadedAt: downloadedAt ?? this.downloadedAt,
+      coverImageUrl: coverImageUrl ?? this.coverImageUrl,
+      coverImageBytes: coverImageBytes ?? this.coverImageBytes,
+      authorAvatarBytes: authorAvatarBytes ?? this.authorAvatarBytes,
     );
   }
 
