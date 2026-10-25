@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
@@ -175,6 +178,44 @@ class ArticleValidator {
 
     final res = resolver ?? defaultImageDimensionResolver;
     final size = await res(url.trim(), timeout: timeout);
+    if (size == null) {
+      return 'Unable to verify cover image dimensions';
+    }
+    if (size.width <= size.height) {
+      return 'Cover image must be landscape (width must be greater than height, got ${size.width.toInt()}x${size.height.toInt()})';
+    }
+    return null;
+  }
+
+  static Future<String?> validateCoverImageBytesDimensions(
+    Uint8List bytes, {
+    Future<({double width, double height})?> Function(Uint8List bytes)?
+        bytesDimensionResolver,
+  }) async {
+    ({double width, double height})? size;
+    if (bytesDimensionResolver != null) {
+      size = await bytesDimensionResolver(bytes);
+    } else {
+      try {
+        final codec = await ui.instantiateImageCodec(bytes);
+        try {
+          final frame = await codec.getNextFrame();
+          try {
+            size = (
+              width: frame.image.width.toDouble(),
+              height: frame.image.height.toDouble(),
+            );
+          } finally {
+            frame.image.dispose();
+          }
+        } finally {
+          codec.dispose();
+        }
+      } catch (_) {
+        size = null;
+      }
+    }
+
     if (size == null) {
       return 'Unable to verify cover image dimensions';
     }

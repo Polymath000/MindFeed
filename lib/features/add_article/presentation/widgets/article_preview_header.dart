@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
-import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/widgets/editorial_avatar.dart';
 
 class ArticlePreviewHeader extends StatelessWidget {
   final EditorialNewsItem item;
@@ -140,19 +140,13 @@ class ArticlePreviewHeader extends StatelessWidget {
   }
 
   Widget _buildAuthorRow() {
-    final hasRemoteAvatar =
-        item.authorAvatar.startsWith('http') ||
-        item.authorAvatar.startsWith('https');
-
     return Row(
       children: [
-        CircleAvatar(
-          radius: 20,
-          backgroundColor: AppColors.cream,
-          backgroundImage: hasRemoteAvatar
-              ? NetworkImage(item.authorAvatar)
-              : const AssetImage(Assets.assetsImagesWadeAvatar)
-                    as ImageProvider,
+        EditorialAvatar(
+          avatarUrl: item.authorAvatar,
+          avatarBytes: item.authorAvatarBytes,
+          size: 40,
+          fallbackName: item.authorName,
         ),
         const SizedBox(width: 12),
         Column(

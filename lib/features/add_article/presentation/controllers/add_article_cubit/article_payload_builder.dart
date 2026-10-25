@@ -41,12 +41,17 @@ sealed class ArticlePayloadBuilder {
       'tags': state.selectedTags,
     };
 
+    if (user.avatarUrl != null && user.avatarUrl!.trim().isNotEmpty) {
+      payload['author_avatar'] = user.avatarUrl!.trim();
+    }
+
     if (category != null) {
       payload['category_id'] = category.id;
       payload['category_slug'] = category.slug;
       payload['badge'] = category.name.toUpperCase();
     }
     if (state.coverImageUrl.trim().isNotEmpty) {
+      payload['hero_image_url'] = state.coverImageUrl.trim();
       payload['cover_image_url'] = state.coverImageUrl.trim();
     }
     if (includeSlug) {
@@ -75,10 +80,14 @@ sealed class ArticlePayloadBuilder {
       'category_id': category.id,
       'category_slug': category.slug,
       'badge': category.name.toUpperCase(),
+      'hero_image_url': state.coverImageUrl.trim(),
       'cover_image_url': state.coverImageUrl.trim(),
       'tags': state.selectedTags,
       'reading_time_minutes': readingTime,
     };
+    if (user.avatarUrl != null && user.avatarUrl!.trim().isNotEmpty) {
+      payload['author_avatar'] = user.avatarUrl!.trim();
+    }
     if (includeSlug) {
       payload['slug'] = ArticleValidator.generateSlug(state.title);
     }

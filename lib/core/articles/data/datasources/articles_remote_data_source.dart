@@ -1,8 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mind_feed/core/articles/data/models/article_model.dart';
 import 'package:mind_feed/core/articles/data/models/category_model.dart';
 import 'package:mind_feed/core/articles/data/models/tag_model.dart';
 import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
+import 'package:mind_feed/core/services/supabase_storage_service.dart';
 
 abstract class ArticlesRemoteDataSource {
   Future<List<ArticleModel>> getHomeFeed({
@@ -61,16 +64,42 @@ abstract class ArticlesRemoteDataSource {
     Map<String, dynamic> updates,
   );
   Future<void> deleteArticle(String articleId);
+  Future<String> uploadArticleCoverImage({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousCoverUrl,
+  });
 }
 
 class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
   static const String _articleSelectQuery = '*';
   final SupabaseClient? _supabaseClient;
+  final SupabaseStorageService _storageService;
 
-  ArticlesRemoteDataSourceImpl({SupabaseClient? supabaseClient})
-      : _supabaseClient = supabaseClient;
+  ArticlesRemoteDataSourceImpl({
+    SupabaseClient? supabaseClient,
+    SupabaseStorageService? storageService,
+  })  : _supabaseClient = supabaseClient,
+        _storageService = storageService ??
+            SupabaseStorageService(supabaseClient: supabaseClient);
 
   SupabaseClient get _client => _supabaseClient ?? Supabase.instance.client;
+
+  @override
+  Future<String> uploadArticleCoverImage({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousCoverUrl,
+  }) {
+    return _storageService.uploadArticleCover(
+      userId: userId,
+      bytes: bytes,
+      fileExtension: fileExtension,
+      previousCoverUrl: previousCoverUrl,
+    );
+  }
 
   @override
   Future<List<ArticleModel>> getHomeFeed({

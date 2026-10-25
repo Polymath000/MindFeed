@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_error_handler.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
@@ -334,6 +336,30 @@ class ArticlesRepositoryImpl implements ArticlesRepository, ArticleEngagementRep
   Future<void> clearDownloadedArticles() async {
     if (localDataSource != null) {
       await localDataSource!.clearAllDownloadedArticles();
+    }
+  }
+
+  @override
+  Future<ApiResult<String>> uploadArticleCoverImage({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousCoverUrl,
+  }) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final result = await remoteDataSource.uploadArticleCoverImage(
+          userId: userId,
+          bytes: bytes,
+          fileExtension: fileExtension,
+          previousCoverUrl: previousCoverUrl,
+        );
+        return Success(result);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
     }
   }
 

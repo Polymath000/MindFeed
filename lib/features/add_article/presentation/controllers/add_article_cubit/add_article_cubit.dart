@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_categories_use_case.dart';
@@ -9,6 +11,7 @@ import 'package:mind_feed/features/add_article/domain/helpers/article_validator.
 import 'package:mind_feed/features/add_article/domain/usecases/publish_article_use_case.dart';
 import 'package:mind_feed/features/add_article/domain/usecases/save_draft_use_case.dart';
 import 'package:mind_feed/features/add_article/domain/usecases/update_article_use_case.dart';
+import 'package:mind_feed/features/add_article/domain/usecases/upload_article_cover_image_use_case.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_state.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/article_payload_builder.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/article_state_transformers.dart';
@@ -19,8 +22,11 @@ class AddArticleCubit extends Cubit<AddArticleState> {
   final SaveDraftUseCase saveDraftUseCase;
   final PublishArticleUseCase publishArticleUseCase;
   final UpdateArticleUseCase updateArticleUseCase;
+  final UploadArticleCoverImageUseCase? uploadArticleCoverImageUseCase;
   final CurrentUserSnapshot? Function()? userResolver;
   final ImageDimensionResolver? dimensionResolver;
+  final Future<({double width, double height})?> Function(Uint8List bytes)?
+      bytesDimensionResolver;
 
   AddArticleCubit({
     required this.getCategoriesUseCase,
@@ -28,8 +34,10 @@ class AddArticleCubit extends Cubit<AddArticleState> {
     required this.saveDraftUseCase,
     required this.publishArticleUseCase,
     required this.updateArticleUseCase,
+    this.uploadArticleCoverImageUseCase,
     this.userResolver,
     this.dimensionResolver,
+    this.bytesDimensionResolver,
   }) : super(const AddArticleState());
 
   CurrentUserSnapshot? get _currentUser => userResolver != null
@@ -64,6 +72,70 @@ class AddArticleCubit extends Cubit<AddArticleState> {
 
   void onCoverImageUrlChanged(String url) =>
       emit(ArticleStateTransformers.updateCoverImageUrl(state, url));
+
+  Future<String?> uploadCoverImage({
+    required Uint8List bytes,
+    required String fileName,
+  }) async {
+    if (state.isUploadingCoverImage) return null;
+
+    final user = _currentUser;
+    if (user?.id == null) {
+      emit(ArticleStateTransformers.authError(state));
+      return null;
+    }
+
+    final dimError = await ArticleValidator.validateCoverImageBytesDimensions(
+      bytes,
+      bytesDimensionResolver: bytesDimensionResolver,
+    );
+    if (dimError != null) {
+      emit(
+        state.copyWith(
+          formErrors: state.formErrors.copyWith(coverImageUrlError: dimError),
+        ),
+      );
+      return null;
+    }
+
+    if (uploadArticleCoverImageUseCase == null) {
+      emit(state.copyWith(errorMessage: 'Image upload service unavailable'));
+      return null;
+    }
+
+    emit(
+      state.copyWith(
+        isUploadingCoverImage: true,
+        clearError: true,
+        clearSuccess: true,
+      ),
+    );
+
+    final result = await uploadArticleCoverImageUseCase!(
+      userId: user!.id!,
+      bytes: bytes,
+      fileExtension: fileName,
+      previousCoverUrl: state.coverImageUrl,
+    );
+
+    return result.when(
+      success: (publicUrl) {
+        emit(
+          ArticleStateTransformers.updateCoverImageUrl(
+            state.copyWith(isUploadingCoverImage: false),
+            publicUrl,
+          ),
+        );
+        return publicUrl;
+      },
+      failure: (f) {
+        emit(
+          state.copyWith(isUploadingCoverImage: false, errorMessage: f.message),
+        );
+        return null;
+      },
+    );
+  }
 
   void onCategorySelected(String? categoryId) =>
       emit(ArticleStateTransformers.selectCategory(state, categoryId));

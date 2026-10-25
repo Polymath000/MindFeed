@@ -8,6 +8,7 @@ class AddArticleState extends Equatable {
   final bool isLoading;
   final bool isSavingDraft;
   final bool isPublishing;
+  final bool isUploadingCoverImage;
   final bool isSuccess;
   final String? successMessage;
   final String? errorMessage;
@@ -28,6 +29,7 @@ class AddArticleState extends Equatable {
     this.isLoading = false,
     this.isSavingDraft = false,
     this.isPublishing = false,
+    this.isUploadingCoverImage = false,
     this.isSuccess = false,
     this.successMessage,
     this.errorMessage,
@@ -58,6 +60,7 @@ class AddArticleState extends Equatable {
     bool? isLoading,
     bool? isSavingDraft,
     bool? isPublishing,
+    bool? isUploadingCoverImage,
     bool? isSuccess,
     String? successMessage,
     String? errorMessage,
@@ -81,6 +84,8 @@ class AddArticleState extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       isSavingDraft: isSavingDraft ?? this.isSavingDraft,
       isPublishing: isPublishing ?? this.isPublishing,
+      isUploadingCoverImage:
+          isUploadingCoverImage ?? this.isUploadingCoverImage,
       isSuccess: isSuccess ?? this.isSuccess,
       successMessage: clearSuccess
           ? null
@@ -108,6 +113,7 @@ class AddArticleState extends Equatable {
     isLoading,
     isSavingDraft,
     isPublishing,
+    isUploadingCoverImage,
     isSuccess,
     successMessage,
     errorMessage,

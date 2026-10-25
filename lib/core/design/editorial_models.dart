@@ -1,9 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
-import 'package:mind_feed/core/constants/app_colors.dart';
-import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
 import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/services/supabase_storage_service.dart';
 
 class EditorialNewsItem {
   final String id;
@@ -22,6 +24,9 @@ class EditorialNewsItem {
   final List<String> tags;
   final String? content;
   final String? coverImageUrl;
+  String? get heroImageUrl => coverImageUrl;
+  final Uint8List? coverImageBytes;
+  final Uint8List? authorAvatarBytes;
   final String? authorId;
   final DateTime? publishedAt;
   final int readingTimeMinutes;
@@ -52,6 +57,8 @@ class EditorialNewsItem {
     this.tags = const [],
     this.content,
     this.coverImageUrl,
+    this.coverImageBytes,
+    this.authorAvatarBytes,
     this.authorId,
     this.publishedAt,
     this.readingTimeMinutes = 3,
@@ -85,6 +92,10 @@ class EditorialNewsItem {
     int? likesCount,
     int? starCount,
     String? content,
+    String? coverImageUrl,
+    Uint8List? coverImageBytes,
+    Uint8List? authorAvatarBytes,
+    String? authorAvatar,
     double? authorRatingAvg,
     int? authorRatingCount,
     int? userAuthorStars,
@@ -97,7 +108,7 @@ class EditorialNewsItem {
       updated: updated,
       authorName: authorName,
       authorRole: authorRole,
-      authorAvatar: authorAvatar,
+      authorAvatar: authorAvatar ?? this.authorAvatar,
       excerpt: excerpt,
       color: color,
       isLive: isLive,
@@ -105,7 +116,9 @@ class EditorialNewsItem {
       categorySlug: categorySlug,
       tags: tags,
       content: content ?? this.content,
-      coverImageUrl: coverImageUrl,
+      coverImageUrl: coverImageUrl ?? this.coverImageUrl,
+      coverImageBytes: coverImageBytes ?? this.coverImageBytes,
+      authorAvatarBytes: authorAvatarBytes ?? this.authorAvatarBytes,
       authorId: authorId,
       publishedAt: publishedAt,
       readingTimeMinutes: readingTimeMinutes,
@@ -127,14 +140,15 @@ extension ArticleEntityEditorialMapper on ArticleEntity {
     return EditorialNewsItem(
       id: id,
       badge: badge,
-      badgeColor: _parseHexColor(badgeColor, defaultColor: AppColors.redHighlight),
+      badgeColor: _parseHexColor(
+        badgeColor,
+        defaultColor: AppColors.redHighlight,
+      ),
       title: title,
       updated: _formatUpdatedTime(publishedAt ?? updatedAt),
       authorName: authorName,
       authorRole: authorRole,
-      authorAvatar: (authorAvatar != null && authorAvatar!.trim().isNotEmpty)
-          ? authorAvatar!
-          : Assets.assetsImagesWadeAvatar,
+      authorAvatar: SupabaseStorageService.resolveAvatarUrl(authorAvatar) ?? '',
       excerpt: excerpt,
       color: _parseHexColor(cardColor, defaultColor: AppColors.cream),
       isLive: isLive,
@@ -142,7 +156,11 @@ extension ArticleEntityEditorialMapper on ArticleEntity {
       categorySlug: categorySlug,
       tags: tags,
       content: content,
-      coverImageUrl: coverImageUrl ?? heroImageUrl,
+      coverImageUrl: SupabaseStorageService.resolveArticleMediaUrl(
+        (heroImageUrl != null && heroImageUrl!.trim().isNotEmpty)
+            ? heroImageUrl
+            : coverImageUrl,
+      ),
       authorId: authorId,
       publishedAt: publishedAt,
       readingTimeMinutes: readingTimeMinutes,
@@ -201,11 +219,18 @@ extension DownloadedArticleEntityEditorialMapper on DownloadedArticleEntity {
       updated: '$readingTimeMinutes min read',
       authorName: authorName.isNotEmpty ? authorName : 'Unknown',
       authorRole: authorRole.isNotEmpty ? authorRole : 'Published by',
-      authorAvatar: authorAvatar.isNotEmpty ? authorAvatar : Assets.assetsImagesWadeAvatar,
+      authorAvatar: SupabaseStorageService.resolveAvatarUrl(authorAvatar) ?? '',
       excerpt: excerpt.isNotEmpty
           ? excerpt
-          : (content.length > 150 ? '${content.substring(0, 150)}...' : content),
+          : (content.length > 150
+                ? '${content.substring(0, 150)}...'
+                : content),
       content: content,
+      coverImageUrl: SupabaseStorageService.resolveArticleMediaUrl(
+        coverImageUrl,
+      ),
+      coverImageBytes: coverImageBytes,
+      authorAvatarBytes: authorAvatarBytes,
       tags: tags,
       publishedAt: publishedAt,
       readingTimeMinutes: readingTimeMinutes,

@@ -65,6 +65,8 @@ import 'package:mind_feed/features/splash/domain/usecases/check_app_startup_use_
 import 'package:mind_feed/features/splash/presentation/controllers/splash_cubit/splash_cubit.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_author_use_case.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_tag_use_case.dart';
+import 'package:mind_feed/core/services/supabase_storage_service.dart';
+import 'package:mind_feed/features/add_article/domain/usecases/upload_article_cover_image_use_case.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/drafts_cubit/drafts_cubit.dart';
 import 'package:mind_feed/features/search/presentation/controllers/search_cubit.dart';
@@ -72,6 +74,7 @@ import 'package:mind_feed/features/search/presentation/controllers/tag_articles_
 import 'package:mind_feed/features/author/presentation/controllers/author_cubit/author_cubit.dart';
 import 'package:mind_feed/features/profile/domain/usecases/get_favorite_categories_use_case.dart';
 import 'package:mind_feed/features/profile/domain/usecases/get_user_profile_use_case.dart';
+import 'package:mind_feed/features/profile/domain/usecases/upload_profile_avatar_use_case.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_cubit.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_info_cubit.dart';
 import 'package:mind_feed/features/article/domain/usecases/check_article_downloaded_use_case.dart';
@@ -83,6 +86,9 @@ final getIt = GetIt.instance;
 
 void setupServiceLocator() {
   getIt.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
+  getIt.registerLazySingleton<SupabaseStorageService>(
+    () => SupabaseStorageService(supabaseClient: getIt<SupabaseClient>()),
+  );
   getIt.registerLazySingleton<NetworkInfoImpl>(
     () => NetworkInfoImpl(Connectivity()),
   );
@@ -135,7 +141,10 @@ void setupServiceLocator() {
     () => ChangePasswordCubit(updatePasswordUseCase: getIt<UpdatePasswordUseCase>()),
   );
   getIt.registerLazySingleton<ProfileRemoteDataSource>(
-    () => ProfileRemoteDataSourceImpl(supabaseClient: getIt<SupabaseClient>()),
+    () => ProfileRemoteDataSourceImpl(
+      supabaseClient: getIt<SupabaseClient>(),
+      storageService: getIt<SupabaseStorageService>(),
+    ),
   );
   getIt.registerLazySingleton<ProfileRepository>(
     () => ProfileRepoImpl(remoteDataSource: getIt<ProfileRemoteDataSource>()),
@@ -172,7 +181,10 @@ void setupServiceLocator() {
     () => getIt<ArticlesLocalDataSource>(),
   );
   getIt.registerLazySingleton<ArticlesRemoteDataSource>(
-    () => ArticlesRemoteDataSourceImpl(supabaseClient: getIt<SupabaseClient>()),
+    () => ArticlesRemoteDataSourceImpl(
+      supabaseClient: getIt<SupabaseClient>(),
+      storageService: getIt<SupabaseStorageService>(),
+    ),
   );
   getIt.registerLazySingleton<ArticlesRepository>(
     () => ArticlesRepositoryImpl(
@@ -235,6 +247,9 @@ void setupServiceLocator() {
   );
   getIt.registerLazySingleton<UpdateArticleUseCase>(
     () => UpdateArticleUseCase(getIt<ArticlesRepository>()),
+  );
+  getIt.registerLazySingleton<UploadArticleCoverImageUseCase>(
+    () => UploadArticleCoverImageUseCase(getIt<ArticlesRepository>()),
   );
   getIt.registerLazySingleton<ArticleEngagementRepository>(
     () => getIt<ArticlesRepository>() as ArticleEngagementRepository,
@@ -336,6 +351,7 @@ void setupServiceLocator() {
       saveDraftUseCase: getIt<SaveDraftUseCase>(),
       publishArticleUseCase: getIt<PublishArticleUseCase>(),
       updateArticleUseCase: getIt<UpdateArticleUseCase>(),
+      uploadArticleCoverImageUseCase: getIt<UploadArticleCoverImageUseCase>(),
     ),
   );
   getIt.registerFactory<SearchCubit>(
@@ -352,6 +368,9 @@ void setupServiceLocator() {
   getIt.registerLazySingleton<GetFavoriteCategoriesUseCase>(
     () => GetFavoriteCategoriesUseCase(getIt<ProfileRepository>()),
   );
+  getIt.registerLazySingleton<UploadProfileAvatarUseCase>(
+    () => UploadProfileAvatarUseCase(getIt<ProfileRepository>()),
+  );
   getIt.registerFactory<ProfileArticlesCubit>(
     () => ProfileArticlesCubit(
       getArticlesByAuthorUseCase: getIt<GetArticlesByAuthorUseCase>(),
@@ -363,6 +382,7 @@ void setupServiceLocator() {
       getUserProfileUseCase: getIt<GetUserProfileUseCase>(),
       getFavoriteCategoriesUseCase: getIt<GetFavoriteCategoriesUseCase>(),
       getArticlesByAuthorUseCase: getIt<GetArticlesByAuthorUseCase>(),
+      uploadProfileAvatarUseCase: getIt<UploadProfileAvatarUseCase>(),
     ),
   );
   getIt.registerLazySingleton<GetArticlesByTagUseCase>(

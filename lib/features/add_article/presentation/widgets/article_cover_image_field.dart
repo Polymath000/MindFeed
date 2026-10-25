@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
@@ -33,6 +34,7 @@ class ArticleCoverImageField extends StatelessWidget {
     return BlocBuilder<AddArticleCubit, AddArticleState>(
       buildWhen: (previous, current) =>
           previous.coverImageUrl != current.coverImageUrl ||
+          previous.isUploadingCoverImage != current.isUploadingCoverImage ||
           previous.formErrors.coverImageUrlError !=
               current.formErrors.coverImageUrlError,
       builder: (context, state) {
@@ -57,6 +59,65 @@ class ArticleCoverImageField extends StatelessWidget {
                 hintText: 'https://example.com/cover-image.jpg',
                 errorText: state.formErrors.coverImageUrlError,
               ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                OutlinedButton.icon(
+                  key: const Key('upload_cover_image_button'),
+                  onPressed: state.isUploadingCoverImage
+                      ? null
+                      : () async {
+                          final result = await FilePicker.platform.pickFiles(
+                            type: FileType.image,
+                            withData: true,
+                          );
+                          if (result == null || result.files.isEmpty) return;
+                          final file = result.files.first;
+                          if (file.bytes == null) return;
+                          if (!context.mounted) return;
+                          final uploadedUrl = await context
+                              .read<AddArticleCubit>()
+                              .uploadCoverImage(
+                                bytes: file.bytes!,
+                                fileName: file.name,
+                              );
+                          if (uploadedUrl != null) {
+                            controller.text = uploadedUrl;
+                          }
+                        },
+                  icon: state.isUploadingCoverImage
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.ink,
+                          ),
+                        )
+                      : const Icon(Icons.cloud_upload_outlined, size: 18),
+                  label: Text(
+                    state.isUploadingCoverImage
+                        ? 'Uploading...'
+                        : 'Upload Cover Image',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.ink,
+                    side: const BorderSide(color: AppColors.creamBorder),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 8),
             Wrap(
