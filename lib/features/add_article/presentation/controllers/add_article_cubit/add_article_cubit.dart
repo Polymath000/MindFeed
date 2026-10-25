@@ -7,14 +7,14 @@ import 'package:mind_feed/core/articles/domain/usecases/get_fixed_tags_use_case.
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
+import 'package:mind_feed/features/add_article/domain/helpers/article_payload_builder.dart';
+import 'package:mind_feed/features/add_article/domain/helpers/article_state_transformers.dart';
 import 'package:mind_feed/features/add_article/domain/helpers/article_validator.dart';
 import 'package:mind_feed/features/add_article/domain/usecases/publish_article_use_case.dart';
 import 'package:mind_feed/features/add_article/domain/usecases/save_draft_use_case.dart';
 import 'package:mind_feed/features/add_article/domain/usecases/update_article_use_case.dart';
 import 'package:mind_feed/features/add_article/domain/usecases/upload_article_cover_image_use_case.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_state.dart';
-import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/article_payload_builder.dart';
-import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/article_state_transformers.dart';
 
 class AddArticleCubit extends Cubit<AddArticleState> {
   final GetCategoriesUseCase getCategoriesUseCase;

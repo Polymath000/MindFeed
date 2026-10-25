@@ -4,6 +4,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_text_styles.dart';
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/design/editorial_card_stack.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 
@@ -26,7 +27,7 @@ class HomeFeedLoadingView extends StatelessWidget {
       updated: 'Updated moments ago',
       authorName: 'Editorial Staff',
       authorRole: 'Senior Columnist',
-      authorAvatar: '',
+      authorAvatar: AppConstants.defaultAvatarUrl,
       excerpt:
           'Loading the latest perspectives, investigative reports, and curated essays tailored to your reading preferences.',
       color: AppColors.cream,
@@ -40,7 +41,7 @@ class HomeFeedLoadingView extends StatelessWidget {
       updated: 'Updated recently',
       authorName: 'Editorial Staff',
       authorRole: 'Contributing Writer',
-      authorAvatar: '',
+      authorAvatar: AppConstants.defaultAvatarUrl,
       excerpt:
           'Discovering how new breakthroughs continue to reshape our understanding of the world around us.',
       color: AppColors.sand,
@@ -54,7 +55,7 @@ class HomeFeedLoadingView extends StatelessWidget {
       updated: 'Updated today',
       authorName: 'Editorial Staff',
       authorRole: 'Culture Editor',
-      authorAvatar: '',
+      authorAvatar: AppConstants.defaultAvatarUrl,
       excerpt:
           'A closer look at the ideas and creative movements defining contemporary thought and digital publishing.',
       color: AppColors.creamLight,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
 import 'package:mind_feed/features/add_article/presentation/views/add_article.dart';
@@ -115,42 +117,60 @@ void main() {
     expect(find.text('Title cannot be empty to save a draft'), findsWidgets);
   });
 
-  testWidgets('tapping preset cover chip populates cover URL and updates state', (
-    WidgetTester tester,
-  ) async {
-    tester.view.physicalSize = const Size(1200, 2400);
-    tester.view.devicePixelRatio = 1.0;
-    addTearDown(() {
-      tester.view.resetPhysicalSize();
-      tester.view.resetDevicePixelRatio();
-    });
+  testWidgets(
+    'editing article populates cover URL from heroImageUrl and typing updates state',
+    (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(1200, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
 
-    await cubit.initialize();
+      const heroUrl =
+          'https://tsqruoqiajkbrdhprfxa.supabase.co/storage/v1/object/public/article-media/u1/hero_cover.jpg';
+      final editingItem = EditorialNewsItem(
+        id: 'article-edit-1',
+        badge: 'TECH',
+        badgeColor: AppColors.creamDark,
+        title: 'Editing Story',
+        updated: 'Just now',
+        authorName: 'Widget Test Author',
+        authorRole: 'Editor',
+        authorAvatar: '',
+        excerpt: 'Excerpt',
+        color: AppColors.cream,
+        coverImageUrl: heroUrl,
+      );
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<AddArticleCubit>.value(
-          value: cubit,
-          child: const AddArticleView(),
+      await cubit.initialize(editingItem: editingItem);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<AddArticleCubit>.value(
+            value: cubit,
+            child: AddArticleView(initialItem: editingItem),
+          ),
         ),
-      ),
-    );
-    await tester.pumpAndSettle();
+      );
+      await tester.pumpAndSettle();
 
-    final techChip = find.byKey(const Key('preset_cover_Tech Cover'));
-    expect(techChip, findsOneWidget);
+      expect(cubit.state.coverImageUrl, heroUrl);
 
-    await tester.ensureVisible(techChip);
-    await tester.tap(techChip);
-    await tester.pumpAndSettle();
+      final textField = tester.widget<TextField>(
+        find.byKey(const Key('article_cover_field')),
+      );
+      expect(textField.controller?.text, heroUrl);
 
-    const expectedUrl =
-        'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=800&fit=crop';
-    expect(cubit.state.coverImageUrl, expectedUrl);
+      const updatedUrl =
+          'https://tsqruoqiajkbrdhprfxa.supabase.co/storage/v1/object/public/article-media/u1/new_cover.jpg';
+      await tester.enterText(
+        find.byKey(const Key('article_cover_field')),
+        updatedUrl,
+      );
+      await tester.pumpAndSettle();
 
-    final textField = tester.widget<TextField>(
-      find.byKey(const Key('article_cover_field')),
-    );
-    expect(textField.controller?.text, expectedUrl);
-  });
+      expect(cubit.state.coverImageUrl, updatedUrl);
+    },
+  );
 }

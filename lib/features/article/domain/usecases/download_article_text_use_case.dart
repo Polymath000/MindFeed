@@ -30,27 +30,27 @@ class DownloadArticleTextUseCase {
   }
 
   Future<void> call(DownloadedArticleEntity article) async {
+    final resolvedCover =
+        SupabaseStorageService.resolveArticleMediaUrl(article.coverImageUrl) ??
+            article.coverImageUrl;
     Uint8List? coverBytes = article.coverImageBytes;
-    if (coverBytes == null) {
-      final resolvedCover =
-          SupabaseStorageService.resolveArticleMediaUrl(article.coverImageUrl) ??
-              article.coverImageUrl;
-      if (resolvedCover != null && resolvedCover.startsWith('http')) {
-        coverBytes = await _imageDownloader(resolvedCover);
-      }
+    if (coverBytes == null &&
+        resolvedCover != null &&
+        resolvedCover.startsWith('http')) {
+      coverBytes = await _imageDownloader(resolvedCover);
     }
 
+    final resolvedAvatar =
+        SupabaseStorageService.resolveAvatarUrl(article.authorAvatar) ??
+            article.authorAvatar;
     Uint8List? avatarBytes = article.authorAvatarBytes;
-    if (avatarBytes == null) {
-      final resolvedAvatar =
-          SupabaseStorageService.resolveAvatarUrl(article.authorAvatar) ??
-              article.authorAvatar;
-      if (resolvedAvatar.startsWith('http')) {
-        avatarBytes = await _imageDownloader(resolvedAvatar);
-      }
+    if (avatarBytes == null && resolvedAvatar.startsWith('http')) {
+      avatarBytes = await _imageDownloader(resolvedAvatar);
     }
 
     final entityToSave = article.copyWith(
+      coverImageUrl: resolvedCover,
+      authorAvatar: resolvedAvatar,
       coverImageBytes: coverBytes ?? article.coverImageBytes,
       authorAvatarBytes: avatarBytes ?? article.authorAvatarBytes,
     );

@@ -38,7 +38,9 @@ class _AddArticleViewState extends State<AddArticleView> {
       text: widget.initialItem?.content ?? '',
     );
     _coverUrlController = TextEditingController(
-      text: widget.initialItem?.coverImageUrl ?? '',
+      text: widget.initialItem?.heroImageUrl ??
+          widget.initialItem?.coverImageUrl ??
+          '',
     );
   }
 

@@ -5,7 +5,6 @@ import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entit
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
-import 'package:mind_feed/core/services/supabase_storage_service.dart';
 
 class DownloadedArticleCardTile extends StatelessWidget {
   final DownloadedArticleEntity article;
@@ -42,14 +41,14 @@ class DownloadedArticleCardTile extends StatelessWidget {
       );
     }
 
-    final coverUrl =
-        SupabaseStorageService.resolveArticleMediaUrl(article.coverImageUrl) ??
-            article.coverImageUrl;
-    if (coverUrl != null && coverUrl.trim().isNotEmpty) {
+    final coverUrl = article.coverImageUrl?.trim();
+    if (coverUrl != null &&
+        coverUrl.isNotEmpty &&
+        !coverUrl.startsWith('assets/')) {
       return ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
         child: Image.network(
-          coverUrl.trim(),
+          coverUrl,
           height: 120,
           width: double.infinity,
           cacheWidth: 1080,

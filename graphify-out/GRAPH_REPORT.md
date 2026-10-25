@@ -1,17 +1,17 @@
 # Graph Report - mind_feed  (2026-10-25)
 
 ## Corpus Check
-- 390 files · ~168,761 words
+- 390 files · ~168,774 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 205 file(s) not represented in the graph (top: .arb 197, (none) 4, .example 1)
 
 ## Summary
-- 4368 nodes · 7190 edges · 206 communities (185 shown, 21 thin omitted)
+- 4368 nodes · 7191 edges · 205 communities (186 shown, 19 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 77 edges (avg confidence: 0.75)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `2c3cd01b`
+- Built from commit: `bb9128f6`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -23,11 +23,11 @@
 - 4. Detailed Issue Breakdown & Code Transformations
 - VoidCallback?
 - search_cubit.dart
-- Success
+- get_settings_profile_use_case_test.dart
 - tag_articles_cubit_test.dart
 - MindFeed Editorial UI Specification & Architecture
 - article_entity.dart
-- main_navigation_bar.dart
+- editorial_design.dart
 - home_feed_cubit.dart
 - app_routes.dart
 - collections_cubit_test.dart
@@ -50,11 +50,11 @@
 - article_reader_cubit.dart
 - article_view.dart
 - article_validator.dart
-- setup_service_locator.dart
+- home_skeletonizer_test.dart
 - profile_repo_impl.dart
 - add_article_state.dart
-- editorial_card.dart
-- article_preview_header.dart
+- editorial_avatar.dart
+- package:mind_feed/core/constants/app_icons.dart
 - Flutter Refactor Analysis Report
 - article_view_content.dart
 - package:mind_feed/core/constants/borders.dart
@@ -65,10 +65,10 @@
 - List
 - auth_api_source.dart
 - forget_password_flow_test.dart
-- home_feed_loading_views.dart
-- ArticlesRepository
+- package:mind_feed/core/design/editorial_models.dart
+- load_article_reader_details_use_case.dart
 - fake_articles_repository.dart
-- current_user_session.dart
+- package:mind_feed/features/auth/domain/entities/user_entity.dart
 - editorial_card_stack.dart
 - Business Requirements Document (BRD)
 - theme_config.dart
@@ -81,7 +81,7 @@
 - collections_cubit.dart
 - borders.dart
 - get_user_feed_topics_use_case.dart
-- get_settings_profile_use_case_test.dart
+- ProfileRepository
 - main.dart
 - add_article_view_test.dart
 - Article Reader: Clean Architecture, Sealed State Machine & VSYNC Auto-Scrolling Engineering Report
@@ -91,7 +91,7 @@
 - downloads_cubit_test.dart
 - auth_repo_impl.dart
 - add_article_cubit.dart
-- package:mind_feed/core/services/current_user_session.dart
+- article_payload_builder.dart
 - Task Packet: S1-editorial-shell
 - Task Packet: S2-auth-refinement
 - Backend Implementation Plan
@@ -114,11 +114,11 @@
 - constants.dart
 - 1 Overview
 - Category Onboarding And Auth Architecture Report
-- user_articles_widget_test.dart
+- profile_articles_cubit_test.dart
 - profile_info_state.dart
 - article_reader_action_bar.dart
 - settings_cubit_test.dart
-- package:mind_feed/features/auth/domain/entities/user_entity.dart
+- duplicate_signup_test.dart
 - package:mind_feed/core/networking/api_result.dart
 - cache_helper.dart
 - password_text_field.dart
@@ -137,14 +137,14 @@
 - settings_reading_section.dart
 - get_archive_cache_size_use_case_test.dart
 - package:mind_feed/core/constants/app_colors.dart
-- Equatable
+- article_reader_details.dart
 - articles_saved.dart
 - Devtools Performance And Raster Optimization Report
 - Phase 1 Baseline Verification Report
-- shared_preferences_singleton.dart
+- login_cubit.dart
 - author_cubit_test.dart
 - change_password_form.dart
-- article_state_transformers.dart
+- articles_local_data_source.dart
 - theme_mode_cubit.dart
 - categories_cubit.dart
 - package:flutter_test/flutter_test.dart
@@ -156,24 +156,25 @@
 - splash_logo_widget.dart
 - save_favorite_categories_use_case.dart
 - author_rating_summary.dart
-- TagArticlesCubit
+- login_form.dart
 - personal_infromation.dart
-- profile_view_body.dart
-- check_code_view.dart
+- user_articles_widget_test.dart
+- article_state_transformers.dart
 - list_saved_articles.dart
 - app_images.dart
 - build
-- downloaded_articles_view.dart
-- package:mind_feed/features/auth/domain/repos/auth_repo.dart
+- change_password_cubit.dart
+- add_article_app_bar.dart
 - author_rating_and_like_data_test.dart
-- String?
+- Equatable
 - 2 Architecture  Directory Structure
-- package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart
-- SettingsState
+- change_password_view.dart
+- article_model.dart
 - author_state.dart
 - Mind Feed
 - main_shell_cubit_test.dart
 - signup_params.dart
+- send_code_view.dart
 - add_tag_dialog.dart
 - @immutable
 - MindFeed Editorial UI Transformation Plan
@@ -181,14 +182,14 @@
 - failures.dart
 - package:mind_feed/core/articles/domain/entities/tag_entity.dart
 - package:mind_feed/core/utls/setup_service_locator.dart
-- auth_repo.dart
+- package:mind_feed/features/auth/domain/repos/auth_repo.dart
 - static const String
 - sign_up_form_body.dart
 - personalize_graphify.py
 - login_params.dart
-- SettingsCubit
+- page_view_item.dart
 - profile_avatar_and_stats.dart
-- custom_drawer.dart
+- package:mind_feed/core/constants/app_text_styles.dart
 - 3 Technology Stack  Key Libraries
 - check_code_args.dart
 - 4 Recent Project Changes
@@ -197,24 +198,22 @@
 - Design Context
 - 6 Knowledge Graph Architecture  Codebase Navigation Graphify
 - This file configures the analyzer, which statically analyzes Dart code to
+- Exception?
+- DownloadedArticleEntity
 - Pubspec
 - Confirm Signup
 - Graph Navigation Protocols for Antigravity  Developers
 - Project Context Mind Feed
-- editorial_design.dart
+- update_password_use_case.dart
 - settings_dialogs.dart
-- package:mind_feed/core/constants/app_icons.dart
+- package:mind_feed/config/routes/app_routes.dart
 - author_view.dart
 - article_author_navigation_test.dart
-- tag_articles_view.dart
-- fake_author_articles_repository.dart
-- package:mind_feed/core/design/editorial_models.dart
-- profile_repo.dart
+- EditorialNewsItem
 - downloads_state.dart
-- dart:typed_data
+- setup_service_locator.dart
 - categories_view.dart
 - package:flutter/foundation.dart
-- check_article_downloaded_use_case.dart
 - search_filter_helper_test.dart
 - ArticlesRemoteDataSource
 
@@ -235,8 +234,8 @@
   assets/images/onBoarding_2.jpg → docs/UI_SPECIFICATION.md
 - `Onboarding Visual: Onboarding 3` --conceptually_related_to--> `MindFeed Editorial UI Specification & Architecture`  [INFERRED]
   assets/images/onBoarding_3.jpg → docs/UI_SPECIFICATION.md
-- `_FakeOfflineArticlesRepository` --implements--> `OfflineArticlesRepository`  [EXTRACTED]
-  test/features/settings/domain/usecases/get_archive_cache_size_use_case_test.dart → lib/core/articles/domain/repos/articles_repo.dart
+- `FakeArticleEngagementRepository` --implements--> `ArticleEngagementRepository`  [EXTRACTED]
+  test/features/reader/author_rating_and_like_data_test.dart → lib/core/articles/domain/repos/articles_repo.dart
 - `_FakeAuthRepo` --implements--> `AuthRepository`  [EXTRACTED]
   test/auth_forms_test.dart → lib/features/auth/domain/repos/auth_repo.dart
 - `Visual Asset: Target News Ui` --conceptually_related_to--> `MindFeed Editorial UI Specification & Architecture`  [INFERRED]
@@ -245,7 +244,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (206 total, 21 thin omitted)
+## Communities (205 total, 19 thin omitted)
 
 ### Community 0 - "app_colors.dart"
 Cohesion: 0.01
@@ -275,13 +274,13 @@ Nodes (21): ArticlePreviewBottomBar, build, onEdit, onPublish, build, DraftsEmpt
 Cohesion: 0.07
 Nodes (39): _activeRequestId, _applyFiltersAndEmit, close, _currentQuery, _categories, _selectedCategory, _selectedTags, _tags (+31 more)
 
-### Community 7 - "Success"
-Cohesion: 0.21
-Nodes (9): ApiResult, data, failure, FailureResult, Success, call, _extractKeywords, FilterArticlesByTopicUseCase (+1 more)
+### Community 7 - "get_settings_profile_use_case_test.dart"
+Cohesion: 0.10
+Nodes (19): ApiResult, data, failure, FailureResult, Success, fakeRepo, favs, getCategories (+11 more)
 
 ### Community 8 - "tag_articles_cubit_test.dart"
-Cohesion: 0.11
-Nodes (13): _getArticlesByTagUseCase, loadArticlesByTag, cubit, dartArticle, fakeRepo, flutterArticle, getArticlesByTagUseCase, main (+5 more)
+Cohesion: 0.06
+Nodes (36): _getArticlesByTagUseCase, loadArticlesByTag, TagArticlesCubit, articles, message, props, TagArticlesEmpty, TagArticlesError (+28 more)
 
 ### Community 9 - "MindFeed Editorial UI Specification & Architecture"
 Cohesion: 0.22
@@ -291,13 +290,13 @@ Nodes (13): Onboarding Visual: Onboarding 2, Onboarding Visual: Onboarding 3, Vi
 Cohesion: 0.06
 Nodes (35): authorAvatar, authorId, authorName, authorRatingAvg, authorRatingCount, authorRole, badge, badgeColor (+27 more)
 
-### Community 11 - "main_navigation_bar.dart"
-Cohesion: 0.08
-Nodes (20): categories, CategoryItem, icon, name, active, build, icon, label (+12 more)
+### Community 11 - "editorial_design.dart"
+Cohesion: 0.06
+Nodes (28): categories, CategoryItem, icon, name, authorName, build, _buildShareAction, createState (+20 more)
 
 ### Community 12 - "home_feed_cubit.dart"
-Cohesion: 0.06
-Nodes (30): call, repo, ToggleStarUseCase, _currentUserId, _executeLikeToggle, _executeStarToggle, fetchFeed, _fetchSavedArticleIds (+22 more)
+Cohesion: 0.05
+Nodes (33): call, repo, ToggleBookmarkUseCase, call, repo, ToggleStarUseCase, _currentUserId, _executeLikeToggle (+25 more)
 
 ### Community 13 - "app_routes.dart"
 Cohesion: 0.05
@@ -309,19 +308,19 @@ Nodes (35): clearDownloadedArticles, _createArticle, deleteArticle, excerpt, fak
 
 ### Community 15 - "profile_info_cubit_test.dart"
 Cohesion: 0.06
-Nodes (28): call, GetFavoriteCategoriesUseCase, repository, call, GetUserProfileUseCase, repository, _configuredUserId, _createInitialState (+20 more)
+Nodes (28): call, GetArticlesByAuthorUseCase, repository, call, GetFavoriteCategoriesUseCase, repository, _configuredUserId, _createInitialState (+20 more)
 
 ### Community 16 - "search_cubit_test.dart"
 Cohesion: 0.06
 Nodes (35): clearDownloadedArticles, createCubit, deleteArticle, fakeRepo, getArticleById, getArticlesByAuthor, getArticlesByCategory, getArticlesByCategoryUseCase (+27 more)
 
 ### Community 17 - "downloaded_article_entity_adapter.dart"
-Cohesion: 0.12
-Nodes (13): DownloadedArticleEntityAdapter, hashCode, operator, read, _toUint8List, typeId, write, hashCode (+5 more)
+Cohesion: 0.13
+Nodes (11): hashCode, operator, read, _toUint8List, typeId, write, hashCode, operator (+3 more)
 
 ### Community 18 - "editorial_models.dart"
-Cohesion: 0.04
-Nodes (43): capitalize, reversed, StringExtension, toDateTime, toDouble, toInt, toNum, authorAvatar (+35 more)
+Cohesion: 0.05
+Nodes (36): authorAvatar, authorAvatarBytes, authorId, authorKey, authorName, authorRatingAvg, authorRatingCount, authorRole (+28 more)
 
 ### Community 19 - "articles_repo.dart"
 Cohesion: 0.06
@@ -344,8 +343,8 @@ Cohesion: 0.07
 Nodes (18): build, LoginViewBody, _handleState, build, SignUpForm, build, SignUpViewBody, _FakeAuthRepo (+10 more)
 
 ### Community 24 - "home_feed_cubit_test.dart"
-Cohesion: 0.05
-Nodes (35): call, repo, ToggleBookmarkUseCase, allCategories, articles, bookmarkFail, createTestCubit, failureMessage (+27 more)
+Cohesion: 0.06
+Nodes (32): allCategories, articles, bookmarkFail, createTestCubit, failureMessage, favoriteCategories, feedUseCase, getAuthorRatingSummary (+24 more)
 
 ### Community 25 - "app_theme_data.dart"
 Cohesion: 0.06
@@ -353,7 +352,7 @@ Nodes (16): card, checkbox, chip, dialog, dropdownMenu, filledButton, floatingAc
 
 ### Community 26 - "package:flutter/material.dart"
 Cohesion: 0.06
-Nodes (23): customShowSnackBar, duration, ArticleReaderEmptyView, build, ArticleReaderMetadataHeader, build, _MetadataSummaryRow, readingTimeMinutes (+15 more)
+Nodes (23): customShowSnackBar, duration, ArticleEditWarningBanner, build, message, build, DownloadedArticlesEmptyState, isDark (+15 more)
 
 ### Community 28 - "articles_remote_data_source.dart"
 Cohesion: 0.06
@@ -364,8 +363,8 @@ Cohesion: 0.07
 Nodes (28): 1 Executive Summary, 21 Git Status  Branching, 22 Migration  SQL Script Inventory, 23 Dependency Registrations  Service Locator setup_service_locatordart, 24 Existing Codebase Architecture  Data Layer, 2 Repository State and Migration Inventory, 31 Live Tables  Schema Summary, 32 Exact Table Columns  Constraints (+20 more)
 
 ### Community 30 - "settings_tile_primitives.dart"
-Cohesion: 0.08
-Nodes (26): build, _buildStamp, _buildTitleSubtitle, children, icon, kicker, max, onChanged (+18 more)
+Cohesion: 0.07
+Nodes (31): ArticleCard, CustomArticleCardOfProfile, item, onDelete, onEdit, build, _buildStamp, _buildTitleSubtitle (+23 more)
 
 ### Community 31 - "article_reader_domain_test.dart"
 Cohesion: 0.05
@@ -383,9 +382,9 @@ Nodes (6): ArticleView, build, _createCubit, cubit, item, routeName
 Cohesion: 0.07
 Nodes (26): ArticleValidator, categoryError, computeReadingTime, contentError, copyWith, countWords, coverImageUrlError, defaultImageDimensionResolver (+18 more)
 
-### Community 35 - "setup_service_locator.dart"
-Cohesion: 0.06
-Nodes (23): getIt, setupServiceLocator, call, CheckUserHasCategoriesUseCase, profileRepository, call, repository, UploadProfileAvatarUseCase (+15 more)
+### Community 35 - "home_skeletonizer_test.dart"
+Cohesion: 0.08
+Nodes (15): completer, favorites, getCategories, getFavoriteCategories, getHomeFeed, getSavedArticles, isArticleLiked, likeArticle (+7 more)
 
 ### Community 36 - "profile_repo_impl.dart"
 Cohesion: 0.07
@@ -395,13 +394,13 @@ Nodes (21): connectivity, isConnected, NetworkInfo, NetworkInfoImpl, getCategori
 Cohesion: 0.07
 Nodes (26): availableTags, categories, content, contentWordCount, copyWith, coverImageUrl, editingItemId, editingItemStatus (+18 more)
 
-### Community 38 - "editorial_card.dart"
-Cohesion: 0.07
-Nodes (26): backgroundColor, build, EditorialCard, item, onLike, onOpen, onSave, onShare (+18 more)
+### Community 38 - "editorial_avatar.dart"
+Cohesion: 0.10
+Nodes (17): avatarBytes, avatarUrl, backgroundColor, build, _buildFallback, EditorialAvatar, fallbackName, foregroundColor (+9 more)
 
-### Community 39 - "article_preview_header.dart"
-Cohesion: 0.08
-Nodes (20): ArticlePreviewHeader, build, _buildAuthorRow, _buildCoverImage, _buildTagsWrap, _buildTopBar, item, authorAvatar (+12 more)
+### Community 39 - "package:mind_feed/core/constants/app_icons.dart"
+Cohesion: 0.04
+Nodes (38): backgroundColor, build, EditorialCard, item, onLike, onOpen, onSave, onShare (+30 more)
 
 ### Community 40 - "Flutter Refactor Analysis Report"
 Cohesion: 0.08
@@ -420,44 +419,44 @@ Cohesion: 0.08
 Nodes (20): clearAllDownloadedArticles, _createTestReaderCubit, deleteDownloadedArticle, getArticleById, getAuthorRatingSummary, getDownloadedArticleById, getDownloadedArticles, isArticleLiked (+12 more)
 
 ### Community 44 - "widget_test.dart"
-Cohesion: 0.04
-Nodes (42): clearAllCalled, clearAllDownloadedArticles, _FakeOfflineArticlesRepository, main, shouldThrow, clearAllDownloadedArticles, clearDownloadedArticles, deleteArticle (+34 more)
+Cohesion: 0.05
+Nodes (37): clearAllDownloadedArticles, clearDownloadedArticles, deleteArticle, deleteDownloadedArticle, editorialHarness, getArticleById, getArticlesByAuthor, getArticlesByCategory (+29 more)
 
 ### Community 45 - "category_onboarding_clean_architecture_test.dart"
-Cohesion: 0.05
-Nodes (35): categoriesList, clearDownloadedArticles, clearOfflineCalled, from, fromInvoked, getCategories, getFavoriteCategories, invokedParams (+27 more)
+Cohesion: 0.08
+Nodes (22): categoriesList, clearDownloadedArticles, clearOfflineCalled, from, fromInvoked, getCategories, getFavoriteCategories, invokedParams (+14 more)
 
 ### Community 46 - "check_code_controller.dart"
-Cohesion: 0.08
-Nodes (19): _authSubscription, autovalidateMode, codeController, context, _cooldownTimer, dispose, _disposed, email (+11 more)
+Cohesion: 0.06
+Nodes (25): call, repo, ResendOtpUseCase, call, repo, VerifyOtpUseCase, _authSubscription, autovalidateMode (+17 more)
 
 ### Community 47 - "List"
-Cohesion: 0.11
-Nodes (15): description, id, name, props, slug, id, name, props (+7 more)
+Cohesion: 0.10
+Nodes (17): description, id, name, props, slug, accessToken, AuthResultEntity, email (+9 more)
 
 ### Community 48 - "auth_api_source.dart"
 Cohesion: 0.11
 Nodes (16): AuthApiSource, authConfirmRedirectUrl, _client, currentUser, login, onAuthStateChange, resendOtp, resetPassword (+8 more)
 
 ### Community 49 - "forget_password_flow_test.dart"
-Cohesion: 0.07
-Nodes (33): call, repo, UpdatePasswordUseCase, ChangePasswordCubit, updatePassword, updatePasswordUseCase, build, ChangePasswordView (+25 more)
+Cohesion: 0.08
+Nodes (19): call, ForgetPasswordUseCase, repo, fakeRepo, forgetPassword, forgetPasswordResult, forgetPasswordUseCase, lastForgetPasswordEmail (+11 more)
 
-### Community 50 - "home_feed_loading_views.dart"
+### Community 50 - "package:mind_feed/core/design/editorial_models.dart"
+Cohesion: 0.11
+Nodes (10): build, editorialShimmerEffect, HomeFeedLoadingView, _placeholderStories, harness, main, testItems, buildItem (+2 more)
+
+### Community 51 - "load_article_reader_details_use_case.dart"
 Cohesion: 0.13
-Nodes (7): build, editorialShimmerEffect, HomeFeedLoadingView, _placeholderStories, harness, main, testItems
-
-### Community 51 - "ArticlesRepository"
-Cohesion: 0.06
-Nodes (40): ArticlesRepositoryImpl, ArticleEngagementRepository, ArticlesRepository, OfflineArticlesRepository, articlesRepository, call, _checkDownloadedSafely, engagementRepository (+32 more)
+Nodes (13): articlesRepository, call, _checkDownloadedSafely, engagementRepository, _fallbackAuthorRating, LoadArticleReaderDetailsUseCase, _loadEngagements, offlineRepository (+5 more)
 
 ### Community 52 - "fake_articles_repository.dart"
 Cohesion: 0.08
 Nodes (25): authorArticles, clearDownloadedArticles, deleteArticle, failureMessage, getArticleById, getArticlesByAuthor, getArticlesByCategory, getArticlesByTag (+17 more)
 
-### Community 53 - "current_user_session.dart"
-Cohesion: 0.13
-Nodes (12): avatarUrl, cacheUserAvatarUrl, cacheUserCategories, currentUserId, CurrentUserSession, CurrentUserSnapshot, displayName, email (+4 more)
+### Community 53 - "package:mind_feed/features/auth/domain/entities/user_entity.dart"
+Cohesion: 0.07
+Nodes (24): avatarUrl, cacheUserAvatarUrl, cacheUserCategories, currentUserId, CurrentUserSession, CurrentUserSnapshot, displayName, email (+16 more)
 
 ### Community 54 - "editorial_card_stack.dart"
 Cohesion: 0.09
@@ -472,12 +471,12 @@ Cohesion: 0.13
 Nodes (9): dark, dynamicSchemeVariant, isAmoledSelected, light, platform, seedColor, SettingsEntity, _themeData (+1 more)
 
 ### Community 57 - "email_confirmation_and_auth_flow_test.dart"
-Cohesion: 0.08
-Nodes (22): CacheException, NoInternetException, ServerException, async, authRepo, connected, createHttpClient, fakeApiSource (+14 more)
+Cohesion: 0.09
+Nodes (19): async, authRepo, connected, createHttpClient, fakeApiSource, fakeUserCache, lastResentEmail, login (+11 more)
 
 ### Community 58 - "package:flutter_bloc/flutter_bloc.dart"
-Cohesion: 0.13
-Nodes (17): AddArticleCubit, ArticleCategorySelector, build, ArticleContentField, build, controller, ArticleCoverImageField, build (+9 more)
+Cohesion: 0.12
+Nodes (18): AddArticleCubit, ArticleCategorySelector, build, ArticleContentField, build, controller, ArticleCoverImageField, build (+10 more)
 
 ### Community 59 - "Fake"
 Cohesion: 0.11
@@ -493,11 +492,11 @@ Nodes (21): 1 Executive Summary, 21 Why originmain Was Merged Before Feature Orc
 
 ### Community 62 - "offline_articles_and_logout_test.dart"
 Cohesion: 0.06
-Nodes (31): ArticlesLocalDataSource, ArticlesLocalDataSourceImpl, _box, boxName, clearAllDownloadedArticles, deleteDownloadedArticle, getDownloadedArticleById, getDownloadedArticles (+23 more)
+Nodes (29): categoriesList, clearAllDownloadedArticles, cleared, getCategories, lastSyncedIds, logout, main, mockLocal (+21 more)
 
 ### Community 63 - "collections_cubit.dart"
 Cohesion: 0.19
-Nodes (16): _allStories, _currentUserId, deleteArticle, _getSavedArticlesUseCase, loadSavedStories, _resolvedUserId, searchStories, _toggleBookmarkUseCase (+8 more)
+Nodes (17): _allStories, _currentUserId, deleteArticle, _getSavedArticlesUseCase, loadSavedStories, _resolvedUserId, searchStories, _toggleBookmarkUseCase (+9 more)
 
 ### Community 64 - "borders.dart"
 Cohesion: 0.10
@@ -507,9 +506,9 @@ Nodes (18): badge, bar, card, circular, control, indicator, l, m (+10 more)
 Cohesion: 0.14
 Nodes (13): _appendCachedTopics, buildInitialTopics, call, _extractCategoryName, GetUserFeedTopicsUseCase, _loadRemoteFavorites, _matchCategoryIds, _parseFavoriteMaps (+5 more)
 
-### Community 66 - "get_settings_profile_use_case_test.dart"
-Cohesion: 0.06
-Nodes (32): ProfileRepoImpl, ProfileRepository, call, GetSettingsProfileUseCase, profileRepository, FakeProfileRepo, _FakeProfileRepo, FakeProfileRepository (+24 more)
+### Community 66 - "ProfileRepository"
+Cohesion: 0.08
+Nodes (23): ProfileRepoImpl, getCategories, getFavoriteCategories, getProfile, ProfileRepository, reconcilePendingCategorySync, saveLocalCategories, syncFavoriteCategories (+15 more)
 
 ### Community 67 - "main.dart"
 Cohesion: 0.06
@@ -536,8 +535,8 @@ Cohesion: 0.20
 Nodes (19): Allowed edit scope, Areas that must not be redesigned, Completed work, Continuation objective, Current failures, Continuation Packet: S1-editorial-shell-recovery, Exact files to inspect, Exact remaining work (+11 more)
 
 ### Community 73 - "downloads_cubit_test.dart"
-Cohesion: 0.11
-Nodes (16): author, clearAllDownloadedArticles, createTestArticle, cubit, deleteDownloadedArticle, deleteUseCase, fakeRepository, getDownloadedArticleById (+8 more)
+Cohesion: 0.05
+Nodes (32): call, DeleteDownloadedArticleUseCase, localDataSource, _applyFilter, deleteDownload, _deleteDownloadedArticleUseCase, DownloadsCubit, filterArticles (+24 more)
 
 ### Community 74 - "auth_repo_impl.dart"
 Cohesion: 0.08
@@ -547,9 +546,9 @@ Nodes (20): CacheHelper, cacheHelper, getUser, key, UserCacheDataSource, authApi
 Cohesion: 0.09
 Nodes (19): addCustomTag, _currentUser, dimensionResolver, getCategoriesUseCase, getFixedTagsUseCase, _handlePublishResult, initialize, onCategorySelected (+11 more)
 
-### Community 76 - "package:mind_feed/core/services/current_user_session.dart"
-Cohesion: 0.12
-Nodes (11): ArticlePayloadBuilder, buildDraftPayload, buildPublishPayload, resolveAuthorName, resolveEditLockoutError, validateStateForPublish, ArticleEditorActionBar, build (+3 more)
+### Community 76 - "article_payload_builder.dart"
+Cohesion: 0.18
+Nodes (7): ArticlePayloadBuilder, buildDraftPayload, buildPublishPayload, resolveAuthorName, resolveEditLockoutError, validateStateForPublish, main
 
 ### Community 77 - "Task Packet: S1-editorial-shell"
 Cohesion: 0.22
@@ -572,24 +571,24 @@ Cohesion: 0.05
 Nodes (47): ArticleSlowScrollBar, availablePaces, build, _buildContent, currentPace, isRetracted, isScrolling, isSelected (+39 more)
 
 ### Community 82 - "home_view_body.dart"
-Cohesion: 0.10
-Nodes (18): HomeFeedCubit, bottomInset, _buildMainBody, _buildTopicsSkeleton, _buildTopSliver, _createCubit, cubit, _handleSwipeSave (+10 more)
+Cohesion: 0.08
+Nodes (22): build, build, HomeFeedCubit, bottomInset, build, _buildMainBody, _buildTopicsSkeleton, _buildTopSliver (+14 more)
 
 ### Community 83 - "article_reader_author_bar.dart"
 Cohesion: 0.11
 Nodes (18): _activeThreshold, ArticleReaderAuthorBar, authorAvatar, authorAvatarBytes, authorName, authorRatingAvg, authorRatingCount, authorRole (+10 more)
 
 ### Community 84 - "categories_view_test.dart"
-Cohesion: 0.11
-Nodes (15): allCategories, createTestCubit, getCategories, getFavoriteCategories, initialCategories, main, mainRoute, remote (+7 more)
+Cohesion: 0.09
+Nodes (18): build, CategoriesViewBody, userEntity, allCategories, createTestCubit, getCategories, getFavoriteCategories, initialCategories (+10 more)
 
 ### Community 85 - "add_article.dart"
 Cohesion: 0.11
 Nodes (11): AddArticleView, _AddArticleViewState, build, _contentController, _coverUrlController, createState, cubit, dispose (+3 more)
 
 ### Community 86 - "articles_remote_data_source_test.dart"
-Cohesion: 0.08
-Nodes (18): async, auth, authClient, connected, currentUser, currentUserValue, FakePostgrestTransformBuilder, FakeUser (+10 more)
+Cohesion: 0.06
+Nodes (25): capitalize, reversed, StringExtension, toDateTime, toDouble, toInt, toNum, async (+17 more)
 
 ### Community 87 - "package:mind_feed/core/articles/domain/entities/category_entity.dart"
 Cohesion: 0.10
@@ -600,8 +599,8 @@ Cohesion: 0.15
 Nodes (15): allArticles, copyWith, errorMessage, filteredArticles, HomeFeedError, HomeFeedInitial, HomeFeedLoaded, HomeFeedLoading (+7 more)
 
 ### Community 89 - "draft_item_card_test.dart"
-Cohesion: 0.11
-Nodes (10): AddArticleAppBar, build, preferredSize, title, buildTestHarness, cubit, main, repo (+2 more)
+Cohesion: 0.10
+Nodes (14): deleteArticleUseCase, deleteDraft, getArticlesByAuthorUseCase, loadDrafts, cubit, main, repo, testUser (+6 more)
 
 ### Community 90 - "device_preference_notifier.dart"
 Cohesion: 0.13
@@ -609,11 +608,11 @@ Nodes (13): copyWith, DevicePreferenceNotifier, DevicePreferences, hashCode, isD
 
 ### Community 91 - "check_code_actions_section.dart"
 Cohesion: 0.09
-Nodes (15): build, ChangePasswordViewBody, email, build, CheckCodeActionsSection, CheckCodeHeader, email, errorMessageListenable (+7 more)
+Nodes (17): build, CheckCodeActionsSection, CheckCodeHeader, email, errorMessageListenable, isLoadingListenable, onBackPressed, onResend (+9 more)
 
 ### Community 92 - "home_masthead_header.dart"
-Cohesion: 0.06
-Nodes (24): build, Logo, build, _buildAnimatedTexts, _buildDecoration, _displayTopics, HomeMastheadAnimatedTitle, HomeMastheadHeader (+16 more)
+Cohesion: 0.07
+Nodes (21): build, Logo, advancedDrawerController, CustomDrawer, routeName, build, _buildAnimatedTexts, _buildDecoration (+13 more)
 
 ### Community 93 - "main_view.dart"
 Cohesion: 0.14
@@ -628,16 +627,16 @@ Cohesion: 0.14
 Nodes (10): CheckCodeController, build, CheckCodeViewBody, _CheckCodeViewBodyState, _controller, createState, dispose, email (+2 more)
 
 ### Community 96 - "constants.dart"
-Cohesion: 0.12
-Nodes (14): AppConstants, appName, authConfirmRedirectUrl, compact, hasCompletedCategoriesKey, isOnboardingSeenKey, mastheadRotatingWords, page (+6 more)
+Cohesion: 0.11
+Nodes (15): AppConstants, appName, authConfirmRedirectUrl, compact, defaultAvatarUrl, hasCompletedCategoriesKey, isOnboardingSeenKey, mastheadRotatingWords (+7 more)
 
 ### Community 98 - "Category Onboarding And Auth Architecture Report"
 Cohesion: 0.13
 Nodes (15): 1 Eliminating setState with ValueNotifier, 1 Executive Summary, 2 Button Loading UX  Custom Loading Indicator, 2 Mandatory Category Onboarding Gate  Deferred Persistence, 3 20Category Catalog Modernization  Design System Compliance, 4 EndtoEnd Password Recovery Architecture Supabase Auth, 5 Form Performance  NonBlocking Loading UX 24151ce b50fd09, 6 Verification  Automated Test Coverage (+7 more)
 
-### Community 99 - "user_articles_widget_test.dart"
-Cohesion: 0.06
-Nodes (32): DeleteArticleUseCase, call, GetArticlesByAuthorUseCase, repository, deleteArticleUseCase, deleteDraft, getArticlesByAuthorUseCase, loadDrafts (+24 more)
+### Community 99 - "profile_articles_cubit_test.dart"
+Cohesion: 0.10
+Nodes (16): call, DeleteArticleUseCase, repo, _articles, _configuredUserId, deleteArticle, _deleteArticleUseCase, _getArticlesByAuthorUseCase (+8 more)
 
 ### Community 100 - "profile_info_state.dart"
 Cohesion: 0.16
@@ -648,51 +647,51 @@ Cohesion: 0.11
 Nodes (17): ArticleReaderActionBar, build, count, isActive, isDownloaded, isLiked, isSaved, isStarred (+9 more)
 
 ### Community 102 - "settings_cubit_test.dart"
-Cohesion: 0.14
-Nodes (12): authRepo, clearAllDownloadedArticles, cubit, getDownloadedArticles, getFavoriteCategories, getProfile, items, loggedOut (+4 more)
+Cohesion: 0.06
+Nodes (28): OfflineArticlesRepository, call, CheckArticleDownloadedUseCase, localDataSource, repository, _FakeOfflineArticlesRepository, MockOfflineArticlesRepo, FakeOfflineArticlesRepository (+20 more)
 
-### Community 103 - "package:mind_feed/features/auth/domain/entities/user_entity.dart"
-Cohesion: 0.10
-Nodes (15): fromEntity, fromJson, toJson, toUserEntity, UserModel, UserEntity, build, CategoriesViewBody (+7 more)
+### Community 103 - "duplicate_signup_test.dart"
+Cohesion: 0.13
+Nodes (12): call, repo, SignupUseCase, build, routeName, signupCubit, SignUpView, call (+4 more)
 
 ### Community 104 - "package:mind_feed/core/networking/api_result.dart"
 Cohesion: 0.04
-Nodes (46): call, repo, call, GetArticlesByTagUseCase, repository, call, GetSavedArticlesUseCase, repo (+38 more)
+Nodes (65): ArticlesRepositoryImpl, ArticleEngagementRepository, ArticlesRepository, call, GetArticlesByTagUseCase, repository, call, GetSavedArticlesUseCase (+57 more)
 
 ### Community 105 - "cache_helper.dart"
-Cohesion: 0.14
-Nodes (11): box, clearData, containsKey, getData, getDataFromHive, getDataString, kBoxName, put (+3 more)
+Cohesion: 0.08
+Nodes (20): box, clearData, containsKey, getData, getDataFromHive, getDataString, kBoxName, put (+12 more)
 
 ### Community 106 - "password_text_field.dart"
 Cohesion: 0.05
 Nodes (35): build, CustomTextField, hintText, keyboardType, obscureText, onChanged, prefixIcon, suffixIcon (+27 more)
 
 ### Community 107 - "login_category_check_test.dart"
-Cohesion: 0.08
-Nodes (32): call, LoginUseCase, repo, _checkHasCategories, checkUserHasCategoriesUseCase, eitherFailureOrLogin, _handleLoginSuccess, LoginCubit (+24 more)
+Cohesion: 0.11
+Nodes (14): build, loginCubit, LoginView, routeName, fakeToken, getCategories, getFavoriteCategories, login (+6 more)
 
 ### Community 108 - "signup_cubit.dart"
-Cohesion: 0.13
-Nodes (23): SignupUseCase, eitherFailureOrSignup, SignupCubit, signUpUseCase, build, routeName, signupCubit, SignUpView (+15 more)
+Cohesion: 0.32
+Nodes (13): eitherFailureOrSignup, SignupCubit, signUpUseCase, email, errorMessage, isUserAlreadyRegistered, SignupFailure, SignupInitial (+5 more)
 
 ### Community 109 - "State"
 Cohesion: 0.19
 Nodes (13): EditorialCardStack, _EditorialCardStackState, EditorialFollowButton, _EditorialFollowButtonState, EditorialSavedStack, _EditorialSavedStackState, _CustomLoadingIndicatorState, ArticleViewContent (+5 more)
 
 ### Community 110 - "send_code_view_body.dart"
-Cohesion: 0.07
-Nodes (23): _autovalidateMode, build, createState, dispose, _emailController, formKey, initState, LoginForm (+15 more)
+Cohesion: 0.13
+Nodes (12): _autovalidateMode, build, _buildEmailField, _buildHeader, _buildInstructions, createState, dispose, _email (+4 more)
 
 ### Community 111 - "forget_password_cubit.dart"
-Cohesion: 0.20
-Nodes (14): ForgetPasswordCubit, forgetPasswordUseCase, sendResetInstructions, build, cubit, routeName, SendCodeView, email (+6 more)
+Cohesion: 0.39
+Nodes (10): ForgetPasswordCubit, forgetPasswordUseCase, sendResetInstructions, email, errorMessage, ForgetPasswordFailure, ForgetPasswordInitial, ForgetPasswordLoading (+2 more)
 
 ### Community 112 - "settings_cubit.dart"
-Cohesion: 0.08
-Nodes (33): clearCache, clearDownloadedArticlesUseCase, getArchiveCacheSizeUseCase, getSettingsProfileUseCase, loadCacheSize, _loadPreferences, loadSettings, loadUserData (+25 more)
+Cohesion: 0.05
+Nodes (47): clearCache, clearDownloadedArticlesUseCase, getArchiveCacheSizeUseCase, getSettingsProfileUseCase, loadCacheSize, _loadPreferences, loadSettings, loadUserData (+39 more)
 
 ### Community 113 - "ArticleReaderCubit"
-Cohesion: 0.14
+Cohesion: 0.16
 Nodes (11): ArticleReaderCubit, ArticleActionBarSection, build, title, article, ArticleAuthorSection, build, ArticleSlowScrollBarSection (+3 more)
 
 ### Community 114 - "add_article_cubit_test.dart"
@@ -700,16 +699,16 @@ Cohesion: 0.07
 Nodes (29): articles, categories, clearDownloadedArticles, cubit, deleteArticle, getArticleById, getArticlesByAuthor, getArticlesByCategory (+21 more)
 
 ### Community 115 - "DraftsCubit"
-Cohesion: 0.09
-Nodes (26): DraftsCubit, drafts, DraftsEmpty, DraftsError, DraftsInitial, DraftsLoaded, DraftsLoading, DraftsState (+18 more)
+Cohesion: 0.10
+Nodes (24): DraftsCubit, drafts, DraftsEmpty, DraftsError, DraftsInitial, DraftsLoaded, DraftsLoading, DraftsState (+16 more)
 
 ### Community 116 - "editorial_saved_stack.dart"
 Cohesion: 0.18
 Nodes (10): build, _buildDismissibleCard, createState, _deleteItem, didUpdateWidget, initState, items, onDeleteArticle (+2 more)
 
 ### Community 117 - "ProfileArticlesCubit"
-Cohesion: 0.13
-Nodes (22): build, build, ProfileArticlesCubit, articles, draftCount, message, ProfileArticlesEmpty, ProfileArticlesError (+14 more)
+Cohesion: 0.15
+Nodes (20): ProfileArticlesCubit, articles, draftCount, message, ProfileArticlesEmpty, ProfileArticlesError, ProfileArticlesInitial, ProfileArticlesLoaded (+12 more)
 
 ### Community 118 - "onboarding_view_body.dart"
 Cohesion: 0.17
@@ -720,20 +719,20 @@ Cohesion: 0.13
 Nodes (13): bionicGuide, breakingAlerts, build, fontScale, morningBriefing, onBionicGuideChanged, onBreakingAlertsChanged, onFontScaleChanged (+5 more)
 
 ### Community 120 - "get_archive_cache_size_use_case_test.dart"
-Cohesion: 0.12
-Nodes (15): call, GetArchiveCacheSizeUseCase, getDownloadedArticlesUseCase, articles, cacheSizeUseCase, clearAllDownloadedArticles, deleteDownloadedArticle, _FakeOfflineArticlesRepository (+7 more)
+Cohesion: 0.07
+Nodes (26): call, GetDownloadedArticlesUseCase, localDataSource, ArticleReaderDependencies, mapToDownloadedEntity, call, GetArchiveCacheSizeUseCase, getDownloadedArticlesUseCase (+18 more)
 
 ### Community 121 - "package:mind_feed/core/constants/app_colors.dart"
-Cohesion: 0.05
-Nodes (27): ArticleEditWarningBanner, build, message, articleInputDecoration, ArticleSectionHeader, build, counter, isCounterError (+19 more)
+Cohesion: 0.09
+Nodes (16): articleInputDecoration, ArticleSectionHeader, build, counter, isCounterError, isCounterSuccess, title, authBackground (+8 more)
 
-### Community 122 - "Equatable"
-Cohesion: 0.10
-Nodes (18): ArticleModel, TagModel, ArticleEntity, TagEntity, ArticleEntityEditorialMapper, ArticleFormErrors, AddArticleState, article (+10 more)
+### Community 122 - "article_reader_details.dart"
+Cohesion: 0.11
+Nodes (16): ArticleModel, ArticleEntity, ArticleEntityEditorialMapper, article, authorRating, copyWith, defaultAuthorRating, isDownloaded (+8 more)
 
 ### Community 123 - "articles_saved.dart"
-Cohesion: 0.13
-Nodes (17): CollectionsCubit, ArticlesSaved, _ArticlesSavedContent, _ArticlesSavedContentState, build, createState, cubit, didUpdateWidget (+9 more)
+Cohesion: 0.20
+Nodes (12): CollectionsCubit, ArticlesSaved, _ArticlesSavedContent, _ArticlesSavedContentState, createState, cubit, didUpdateWidget, dispose (+4 more)
 
 ### Community 124 - "Devtools Performance And Raster Optimization Report"
 Cohesion: 0.17
@@ -743,33 +742,33 @@ Nodes (12): 1 Executive Summary, 2 Quantitative Performance Comparison, 3 Deep R
 Cohesion: 0.17
 Nodes (12): 1 Executive Summary, 21 Baseline Migration supabasemigrations20261015000000_baseline_schemasql, 22 Catalog Seed Migration supabasemigrations20261015000001_seed_catalogsql, 23 Supabase Configuration  Supplemental Seeds, 2 Deliverables Inventory in Version Control, 3 Local Clean Database Verification Results, 41 Migration History Tracking, 42 Live Data Preservation Audit (+4 more)
 
-### Community 126 - "shared_preferences_singleton.dart"
-Cohesion: 0.17
-Nodes (9): clear, getBool, getKeys, getString, init, _instance, remove, setBool (+1 more)
+### Community 126 - "login_cubit.dart"
+Cohesion: 0.26
+Nodes (15): _checkHasCategories, checkUserHasCategoriesUseCase, eitherFailureOrLogin, _handleLoginSuccess, LoginCubit, loginUseCase, email, errorMessage (+7 more)
 
 ### Community 127 - "author_cubit_test.dart"
-Cohesion: 0.12
-Nodes (12): authorArticle, cubit, fakeRepo, getArticlesByAuthorUseCase, getHomeFeedUseCase, main, otherArticle, buildTestWidget (+4 more)
+Cohesion: 0.10
+Nodes (15): _getArticlesByAuthorUseCase, _getHomeFeedUseCase, loadAuthorArticles, authorArticle, cubit, fakeRepo, getArticlesByAuthorUseCase, getHomeFeedUseCase (+7 more)
 
 ### Community 128 - "change_password_form.dart"
 Cohesion: 0.13
 Nodes (15): _autovalidateMode, build, _buildConfirmPasswordField, _buildNewPasswordField, _buildRequirements, ChangePasswordForm, _ChangePasswordFormState, _confirmPassword (+7 more)
 
-### Community 129 - "article_state_transformers.dart"
-Cohesion: 0.10
-Nodes (17): applyCustomTag, ArticleStateTransformers, authError, buildDraftSuccessState, buildInitializedState, buildPublishSuccessState, draftTitleError, publishErrors (+9 more)
+### Community 129 - "articles_local_data_source.dart"
+Cohesion: 0.13
+Nodes (13): ArticlesLocalDataSource, ArticlesLocalDataSourceImpl, _box, boxName, clearAllDownloadedArticles, deleteDownloadedArticle, getDownloadedArticleById, getDownloadedArticles (+5 more)
 
 ### Community 130 - "theme_mode_cubit.dart"
 Cohesion: 0.36
 Nodes (9): changeThemeMode, getThemeMode, ThemeModeCubit, ThemeWidget, ThemeModeDark, ThemeModeInitial, ThemeModeLight, ThemeModeState (+1 more)
 
 ### Community 131 - "categories_cubit.dart"
-Cohesion: 0.23
+Cohesion: 0.21
 Nodes (17): CategoriesCubit, _selectedCategories, initialize, _requireSelection, saveCategories, saveFavoriteCategoriesUseCase, toggleCategory, selectedCategories (+9 more)
 
 ### Community 132 - "package:flutter_test/flutter_test.dart"
-Cohesion: 0.17
-Nodes (5): main, buildTestWidget, main, number, main
+Cohesion: 0.11
+Nodes (9): main, scienceCategory, techCategory, testUser, main, buildTestWidget, main, number (+1 more)
 
 ### Community 133 - "splash_test.dart"
 Cohesion: 0.09
@@ -784,7 +783,7 @@ Cohesion: 0.18
 Nodes (11): 1 Executive Summary, 21 Baseline Migration, 22 Seed Migrations  Local Seed Files, 23 Production Editorial Articles Backup, 2 Deliverables Inventory, 3 Live Database Verification and Integrity Evidence, 4 Migration History Reconciliation Evidence, 5 Phase 1 Completion  Next Steps (+3 more)
 
 ### Community 136 - "article_reader_scroll_view.dart"
-Cohesion: 0.20
+Cohesion: 0.18
 Nodes (4): article, ArticleReaderScrollView, build, controller
 
 ### Community 137 - "custom_loading_indecator.dart"
@@ -803,17 +802,21 @@ Nodes (8): call, CategorySaveOutcome, errorMessage, isLocalSaved, isPendingSync,
 Cohesion: 0.29
 Nodes (6): authorKey, AuthorRatingSummary, fromJson, ratingAvg, ratingCount, userStars
 
-### Community 141 - "TagArticlesCubit"
-Cohesion: 0.35
-Nodes (10): TagArticlesCubit, articles, message, props, TagArticlesEmpty, TagArticlesError, TagArticlesInitial, TagArticlesLoaded (+2 more)
+### Community 141 - "login_form.dart"
+Cohesion: 0.13
+Nodes (11): _autovalidateMode, build, createState, dispose, _emailController, formKey, initState, LoginForm (+3 more)
 
 ### Community 142 - "personal_infromation.dart"
 Cohesion: 0.14
 Nodes (13): ProfileInfoCubit, build, cubit, infoCubit, ProfileView, routeName, build, _buildBody (+5 more)
 
-### Community 144 - "check_code_view.dart"
-Cohesion: 0.29
-Nodes (5): build, CheckCodeView, email, isPasswordReset, routeName
+### Community 143 - "user_articles_widget_test.dart"
+Cohesion: 0.13
+Nodes (10): build, ProfileViewBody, buildTestWidget, deleteUseCase, draftItem1, fakeRepo, getArticlesByAuthorUseCase, main (+2 more)
+
+### Community 144 - "article_state_transformers.dart"
+Cohesion: 0.14
+Nodes (13): applyCustomTag, ArticleStateTransformers, authError, buildDraftSuccessState, buildInitializedState, buildPublishSuccessState, draftTitleError, publishErrors (+5 more)
 
 ### Community 145 - "list_saved_articles.dart"
 Cohesion: 0.33
@@ -823,29 +826,33 @@ Nodes (3): build, ListSavedArticles, routeName
 Cohesion: 0.33
 Nodes (5): Assets, assetsImagesMindFeedLogo, assetsImagesOnBoarding1, assetsImagesOnBoarding2, assetsImagesOnBoarding3
 
-### Community 148 - "downloaded_articles_view.dart"
-Cohesion: 0.16
-Nodes (7): DownloadsCubit, build, cubit, DownloadedArticlesView, routeName, build, DownloadedArticlesViewBody
+### Community 147 - "build"
+Cohesion: 0.25
+Nodes (3): build, build, build
 
-### Community 149 - "package:mind_feed/features/auth/domain/repos/auth_repo.dart"
-Cohesion: 0.12
-Nodes (12): call, ForgetPasswordUseCase, repo, call, repo, ResendOtpUseCase, call, repo (+4 more)
+### Community 148 - "change_password_cubit.dart"
+Cohesion: 0.44
+Nodes (9): ChangePasswordCubit, updatePassword, updatePasswordUseCase, ChangePasswordFailure, ChangePasswordInitial, ChangePasswordLoading, ChangePasswordState, ChangePasswordSuccess (+1 more)
+
+### Community 149 - "add_article_app_bar.dart"
+Cohesion: 0.22
+Nodes (4): AddArticleAppBar, build, preferredSize, title
 
 ### Community 150 - "author_rating_and_like_data_test.dart"
-Cohesion: 0.15
-Nodes (9): currentSummary, getAuthorRatingSummary, isArticleLiked, likeArticle, likedArticles, main, rateAuthor, shouldFail (+1 more)
+Cohesion: 0.14
+Nodes (10): currentSummary, FakeArticleEngagementRepository, getAuthorRatingSummary, isArticleLiked, likeArticle, likedArticles, main, rateAuthor (+2 more)
 
-### Community 151 - "String?"
-Cohesion: 0.13
-Nodes (12): avatarUrl, copyWith, email, favoriteCategories, token, userName, authorAvatar, authorId (+4 more)
+### Community 151 - "Equatable"
+Cohesion: 0.11
+Nodes (16): TagModel, id, name, props, slug, TagEntity, ArticleFormErrors, AddArticleState (+8 more)
 
-### Community 153 - "package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart"
-Cohesion: 0.12
-Nodes (12): call, GetDownloadedArticlesUseCase, localDataSource, ArticleReaderDependencies, mapToDownloadedEntity, DeleteDownloadedArticleUseCase, _applyFilter, deleteDownload (+4 more)
+### Community 153 - "change_password_view.dart"
+Cohesion: 0.25
+Nodes (5): build, ChangePasswordView, cubit, email, routeName
 
-### Community 154 - "SettingsState"
-Cohesion: 0.40
-Nodes (5): SettingsError, SettingsInitial, SettingsLoaded, SettingsLoading, SettingsState
+### Community 154 - "article_model.dart"
+Cohesion: 0.29
+Nodes (6): copyWith, fromEntity, fromJson, _parseDateTime, _parseTags, toJson
 
 ### Community 155 - "author_state.dart"
 Cohesion: 0.35
@@ -862,6 +869,10 @@ Nodes (26): MainShellCubit, onShellStarted, _reconcileCategorySyncUseCase, call,
 ### Community 158 - "signup_params.dart"
 Cohesion: 0.25
 Nodes (7): displayName, email, password, SignupParams, toJson, toSignUpJson, toUpdateDisplayNameJson
+
+### Community 159 - "send_code_view.dart"
+Cohesion: 0.29
+Nodes (4): build, cubit, routeName, SendCodeView
 
 ### Community 160 - "add_tag_dialog.dart"
 Cohesion: 0.22
@@ -891,13 +902,13 @@ Nodes (12): fromEntity, fromJson, toJson, call, GetFixedTagsUseCase, repo, _, co
 Cohesion: 0.13
 Nodes (9): ArticlesCategoryView, build, cubit, routeName, build, cubit, routeName, SearchView (+1 more)
 
-### Community 167 - "auth_repo.dart"
-Cohesion: 0.14
-Nodes (11): forgetPassword, hasActiveSession, login, logout, resendOtp, signup, updatePassword, verifyOtp (+3 more)
+### Community 167 - "package:mind_feed/features/auth/domain/repos/auth_repo.dart"
+Cohesion: 0.10
+Nodes (15): forgetPassword, hasActiveSession, login, logout, resendOtp, signup, updatePassword, verifyOtp (+7 more)
 
 ### Community 168 - "static const String"
-Cohesion: 0.18
-Nodes (7): addArticle, AddArticleRoutes, articlePreview, drafts, build, HomeView, routeName
+Cohesion: 0.11
+Nodes (12): addArticle, AddArticleRoutes, articlePreview, drafts, build, CheckCodeView, email, isPasswordReset (+4 more)
 
 ### Community 169 - "sign_up_form_body.dart"
 Cohesion: 0.14
@@ -907,65 +918,61 @@ Nodes (12): _autovalidateMode, build, _confirmPasswordController, createState, d
 Cohesion: 0.40
 Nodes (4): email, LoginParams, password, toJson
 
-### Community 172 - "SettingsCubit"
-Cohesion: 0.16
-Nodes (9): SettingsCubit, build, cubit, routeName, SettingsView, build, _handleClearCache, _handleSignOut (+1 more)
+### Community 172 - "page_view_item.dart"
+Cohesion: 0.33
+Nodes (4): build, description, PageViewItem, title
 
 ### Community 173 - "profile_avatar_and_stats.dart"
 Cohesion: 0.18
 Nodes (10): articlesCount, avatarUrl, build, _buildStatItem, displayName, followingCount, isUploadingAvatar, onTapAvatar (+2 more)
 
-### Community 174 - "custom_drawer.dart"
-Cohesion: 0.14
-Nodes (7): build, CustomAppBar, _handleMenuButtonPressed, title, advancedDrawerController, CustomDrawer, routeName
+### Community 174 - "package:mind_feed/core/constants/app_text_styles.dart"
+Cohesion: 0.08
+Nodes (19): build, CustomAppBar, _handleMenuButtonPressed, title, ArticleReaderEmptyView, build, ArticleReaderMetadataHeader, build (+11 more)
 
 ### Community 176 - "check_code_args.dart"
 Cohesion: 0.50
 Nodes (3): CheckCodeArgs, email, isPasswordReset
 
-### Community 193 - "editorial_design.dart"
-Cohesion: 0.12
-Nodes (15): authorName, build, _buildShareAction, createState, EditorialIconButton, icon, initialFollowing, initState (+7 more)
+### Community 186 - "Exception?"
+Cohesion: 0.60
+Nodes (3): CacheException, NoInternetException, ServerException
+
+### Community 188 - "DownloadedArticleEntity"
+Cohesion: 0.40
+Nodes (4): DownloadedArticleEntityAdapter, DownloadedArticleEntity, DownloadedArticleEntityEditorialMapper, UserEntityAdapter
+
+### Community 193 - "update_password_use_case.dart"
+Cohesion: 0.50
+Nodes (3): call, repo, UpdatePasswordUseCase
 
 ### Community 194 - "settings_dialogs.dart"
 Cohesion: 0.22
 Nodes (8): context, options, showDialog, showDigestPickerSheet, showEditProfileSheet, showModalBottomSheet, showPrivacyManifestDialog, showSignOutDialog
 
-### Community 196 - "package:mind_feed/core/constants/app_icons.dart"
-Cohesion: 0.05
-Nodes (29): ArticleCard, CustomArticleCardOfProfile, item, onDelete, onEdit, build, MoreVertIcon, build (+21 more)
+### Community 196 - "package:mind_feed/config/routes/app_routes.dart"
+Cohesion: 0.06
+Nodes (18): build, ForgetPasswordText, ArticleCardOfAuthor, build, imagePath, isDwonload, isFav, title (+10 more)
 
 ### Community 199 - "author_view.dart"
 Cohesion: 0.17
 Nodes (9): authorAvatar, authorId, authorName, authorRole, AuthorView, _AuthorViewBody, build, cubit (+1 more)
 
 ### Community 200 - "article_author_navigation_test.dart"
-Cohesion: 0.22
+Cohesion: 0.20
 Nodes (5): didPush, main, noSuchMethod, pushedRoute, _TestNavigatorObserver
 
-### Community 201 - "tag_articles_view.dart"
-Cohesion: 0.25
-Nodes (6): build, cubit, routeName, tag, _TagArticlesBody, TagArticlesView
-
-### Community 202 - "fake_author_articles_repository.dart"
-Cohesion: 0.25
-Nodes (7): errorMessage, FakeAuthorArticlesRepository, feedArticles, getArticlesByAuthor, getArticlesByTag, getHomeFeed, shouldSucceed
-
-### Community 204 - "package:mind_feed/core/design/editorial_models.dart"
-Cohesion: 0.11
-Nodes (12): EditorialNewsItem, ArticlePreviewView, build, item, _openEditor, buildPreviewHarness, draftItem, main (+4 more)
-
-### Community 205 - "profile_repo.dart"
-Cohesion: 0.22
-Nodes (8): getCategories, getFavoriteCategories, getProfile, reconcilePendingCategorySync, saveLocalCategories, syncFavoriteCategories, updateProfile, uploadAvatar
+### Community 204 - "EditorialNewsItem"
+Cohesion: 0.14
+Nodes (9): EditorialNewsItem, ArticlePreviewView, build, item, _openEditor, buildPreviewHarness, draftItem, main (+1 more)
 
 ### Community 208 - "downloads_state.dart"
 Cohesion: 0.20
 Nodes (9): allArticles, copyWith, DownloadsStatus, errorMessage, feedbackMessage, filteredArticles, props, searchQuery (+1 more)
 
-### Community 213 - "dart:typed_data"
-Cohesion: 0.07
-Nodes (20): copyWith, fromEntity, fromJson, _parseDateTime, _parseTags, toJson, call, repository (+12 more)
+### Community 213 - "setup_service_locator.dart"
+Cohesion: 0.08
+Nodes (18): getIt, setupServiceLocator, call, _defaultImageDownloader, DownloadArticleTextUseCase, localDataSource, call, CheckUserHasCategoriesUseCase (+10 more)
 
 ### Community 216 - "categories_view.dart"
 Cohesion: 0.25
@@ -974,10 +981,6 @@ Nodes (5): build, categoriesCubit, CategoriesView, routeName, userEntity
 ### Community 217 - "package:flutter/foundation.dart"
 Cohesion: 0.29
 Nodes (3): _inner, send, SupabaseInterceptor
-
-### Community 220 - "check_article_downloaded_use_case.dart"
-Cohesion: 0.33
-Nodes (4): call, CheckArticleDownloadedUseCase, localDataSource, repository
 
 ### Community 222 - "search_filter_helper_test.dart"
 Cohesion: 0.33
@@ -990,22 +993,22 @@ Nodes (3): ArticlesRemoteDataSource, ArticlesRemoteDataSourceImpl, FakeArticlesR
 ## Knowledge Gaps
 - **2745 isolated node(s):** `capitalize`, `reversed`, `toInt`, `toDouble`, `toNum` (+2740 more)
   These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 3032 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **21 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **19 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `UserEntity` connect `package:mind_feed/features/auth/domain/entities/user_entity.dart` to `main.dart`, `profile_repo_impl.dart`, `cache_helper.dart`, `auth_repo_impl.dart`, `login_category_check_test.dart`, `signup_cubit.dart`, `category_onboarding_clean_architecture_test.dart`, `settings_cubit.dart`, `downloaded_article_entity_adapter.dart`, `current_user_session.dart`, `String?`, `categories_view.dart`, `offline_articles_and_logout_test.dart`?**
+- **Why does `UserEntity` connect `package:mind_feed/features/auth/domain/entities/user_entity.dart` to `main.dart`, `profile_repo_impl.dart`, `cache_helper.dart`, `auth_repo_impl.dart`, `signup_cubit.dart`, `category_onboarding_clean_architecture_test.dart`, `List`, `settings_cubit.dart`, `categories_view_test.dart`, `categories_view.dart`, `offline_articles_and_logout_test.dart`, `DownloadedArticleEntity`, `login_cubit.dart`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **What connects `capitalize`, `reversed`, `toInt` to the rest of the system?**
   _2745 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `app_colors.dart` be split into smaller, more focused modules?**
   _Cohesion score 0.014598540145985401 - nodes in this community are weakly interconnected._
+- **Why does `TagArticlesCubit` connect `tag_articles_cubit_test.dart` to `ArticleReaderCubit`, `setup_service_locator.dart`?**
+  _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **Should `App Icons` be split into smaller, more focused modules?**
   _Cohesion score 0.019417475728155338 - nodes in this community are weakly interconnected._
 - **Should `article_reader_cubit_test.dart` be split into smaller, more focused modules?**
   _Cohesion score 0.028985507246376812 - nodes in this community are weakly interconnected._
 - **Should `profile_remote_data_source.dart` be split into smaller, more focused modules?**
-  _Cohesion score 0.05263157894736842 - nodes in this community are weakly interconnected._
-- **Should `4. Detailed Issue Breakdown & Code Transformations` be split into smaller, more focused modules?**
-  _Cohesion score 0.05128205128205128 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05405405405405406 - nodes in this community are weakly interconnected._

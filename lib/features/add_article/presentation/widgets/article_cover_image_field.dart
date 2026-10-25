@@ -6,24 +6,6 @@ import 'package:mind_feed/features/add_article/presentation/controllers/add_arti
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_state.dart';
 import 'package:mind_feed/features/add_article/presentation/widgets/article_field_helpers.dart';
 
-const _presetCovers = [
-  (
-    label: 'Tech Cover',
-    url:
-        'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=800&fit=crop',
-  ),
-  (
-    label: 'Science Cover',
-    url:
-        'https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=1200&h=800&fit=crop',
-  ),
-  (
-    label: 'Editorial Cover',
-    url:
-        'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1200&h=800&fit=crop',
-  ),
-];
-
 class ArticleCoverImageField extends StatelessWidget {
   final TextEditingController controller;
 
@@ -118,38 +100,6 @@ class ArticleCoverImageField extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 6,
-              children: _presetCovers.map((preset) {
-                final isSelected = state.coverImageUrl.trim() == preset.url;
-                return ActionChip(
-                  key: Key('preset_cover_${preset.label}'),
-                  label: Text(
-                    preset.label,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: isSelected
-                          ? FontWeight.w800
-                          : FontWeight.w600,
-                      color: isSelected ? AppColors.cream : AppColors.ink,
-                    ),
-                  ),
-                  backgroundColor: isSelected ? AppColors.ink : AppColors.cream,
-                  side: BorderSide(
-                    color: isSelected ? AppColors.ink : AppColors.creamBorder,
-                  ),
-                  visualDensity: VisualDensity.compact,
-                  onPressed: () {
-                    controller.text = preset.url;
-                    context.read<AddArticleCubit>().onCoverImageUrlChanged(
-                      preset.url,
-                    );
-                  },
-                );
-              }).toList(),
             ),
             if (hasImage) ...[
               const SizedBox(height: 10),

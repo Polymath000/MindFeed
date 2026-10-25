@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
-import 'package:mind_feed/core/services/supabase_storage_service.dart';
 
 class EditorialAvatar extends StatelessWidget {
   const EditorialAvatar({
@@ -42,8 +41,10 @@ class EditorialAvatar extends StatelessWidget {
       );
     }
 
-    final resolvedUrl = SupabaseStorageService.resolveAvatarUrl(avatarUrl);
-    if (resolvedUrl != null && resolvedUrl.isNotEmpty) {
+    final resolvedUrl = avatarUrl?.trim();
+    if (resolvedUrl != null &&
+        resolvedUrl.isNotEmpty &&
+        !resolvedUrl.startsWith('assets/')) {
       return ClipOval(
         child: Image.network(
           resolvedUrl,

@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_author_use_case.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
-import 'package:mind_feed/core/services/supabase_storage_service.dart';
 import 'package:mind_feed/features/profile/domain/usecases/get_favorite_categories_use_case.dart';
 import 'package:mind_feed/features/profile/domain/usecases/get_user_profile_use_case.dart';
 import 'package:mind_feed/features/profile/domain/usecases/upload_profile_avatar_use_case.dart';
@@ -81,12 +80,7 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
             currentBio = remoteBio;
           }
           if (remoteAvatar != null && remoteAvatar.isNotEmpty) {
-            final resolved =
-                SupabaseStorageService.resolveAvatarUrl(remoteAvatar);
-            if (resolved != null && resolved.isNotEmpty) {
-              currentAvatar = resolved;
-              CurrentUserSession.cacheUserAvatarUrl(currentAvatar!);
-            }
+            currentAvatar = remoteAvatar;
           }
         },
         failure: (_) {},

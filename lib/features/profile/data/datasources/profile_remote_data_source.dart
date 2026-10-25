@@ -101,7 +101,14 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         .select()
         .eq('id', userId)
         .single();
-    return Map<String, dynamic>.from(response);
+    final map = Map<String, dynamic>.from(response);
+    final rawAvatar = map['avatar_url'] as String?;
+    final resolvedAvatar =
+        SupabaseStorageService.resolveAvatarUrl(rawAvatar, client: _client);
+    if (resolvedAvatar != null && resolvedAvatar.isNotEmpty) {
+      map['avatar_url'] = resolvedAvatar;
+    }
+    return map;
   }
 
   @override

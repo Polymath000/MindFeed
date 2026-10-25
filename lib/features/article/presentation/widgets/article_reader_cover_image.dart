@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/borders.dart';
-import 'package:mind_feed/core/services/supabase_storage_service.dart';
 
 class ArticleReaderCoverImage extends StatelessWidget {
   const ArticleReaderCoverImage({
@@ -45,9 +44,10 @@ class ArticleReaderCoverImage extends StatelessWidget {
       );
     }
 
-    final resolvedUrl =
-        SupabaseStorageService.resolveArticleMediaUrl(coverImageUrl);
-    if (resolvedUrl != null && resolvedUrl.isNotEmpty) {
+    final resolvedUrl = coverImageUrl?.trim();
+    if (resolvedUrl != null &&
+        resolvedUrl.isNotEmpty &&
+        !resolvedUrl.startsWith('assets/')) {
       return Image.network(
         resolvedUrl,
         height: 240,
