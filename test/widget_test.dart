@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -232,6 +234,15 @@ class _FakeArticlesRepository
 
   @override
   Future<void> clearAllDownloadedArticles() async {}
+
+  @override
+  Future<ApiResult<String>> uploadArticleCoverImage({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousCoverUrl,
+  }) async =>
+      const Success('https://example.com/cover.jpg');
 }
 
 void main() {

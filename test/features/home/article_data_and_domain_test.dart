@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/errors/failures.dart';
@@ -213,6 +215,16 @@ class FakeArticlesRemoteDataSource implements ArticlesRemoteDataSource {
   Future<void> deleteArticle(String articleId) async {
     articles.removeWhere((a) => a.id == articleId);
   }
+
+  @override
+  Future<String> uploadArticleCoverImage({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousCoverUrl,
+  }) async {
+    return 'https://example.com/storage/v1/object/public/article-media/$userId/cover.$fileExtension';
+  }
 }
 
 void main() {
@@ -292,7 +304,7 @@ void main() {
         cardColor: '#FFF1C6',
         authorName: 'Dr. Jane Doe',
         authorRole: 'Chief Scientist',
-        authorAvatar: 'assets/custom.png',
+        authorAvatar: 'https://images.unsplash.com/avatar.png',
         isLive: true,
         isLiked: true,
         isSaved: false,
@@ -306,7 +318,7 @@ void main() {
       expect(editorial.color.toARGB32(), 0xFFFFF1C6);
       expect(editorial.title, 'Title line 1\nTitle line 2');
       expect(editorial.authorName, 'Dr. Jane Doe');
-      expect(editorial.authorAvatar, 'assets/custom.png');
+      expect(editorial.authorAvatar, 'https://images.unsplash.com/avatar.png');
       expect(editorial.isLive, true);
       expect(editorial.isLiked, true);
       expect(editorial.isSaved, false);

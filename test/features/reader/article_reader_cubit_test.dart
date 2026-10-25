@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
@@ -229,6 +231,15 @@ class FakeArticlesRepository implements ArticlesRepository, ArticleEngagementRep
 
   @override
   Future<void> clearDownloadedArticles() async {}
+
+  @override
+  Future<ApiResult<String>> uploadArticleCoverImage({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousCoverUrl,
+  }) async =>
+      const Success('https://example.com/cover.jpg');
 }
 
 class FakeArticlesLocalDataSource implements ArticlesLocalDataSource {

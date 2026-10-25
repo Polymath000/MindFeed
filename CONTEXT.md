@@ -220,6 +220,21 @@ The codebase follows **Feature-First Clean Architecture**:
     - Stripped Hive annotations/imports from `UserEntity` and `DownloadedArticleEntity`, moving `UserEntityAdapter` and `DownloadedArticleEntityAdapter` to `data/models/`.
     - Relocated `SearchFilterHelper` and `ArticlePayloadBuilder` out of `domain/` into `presentation/`.
     - Broke circular UI navigation between `home` and `collections`/`settings` via `AppRoutes`, extracted shared `CustomArticleCardOfProfile` to `lib/core/widgets/article_card.dart`, and standardized all feature presentation folders to `controllers/` and `widgets/` (282/282 tests passing, 0 analyzer issues).
+- **Supabase Storage (`avatars` & `article-media`), `profiles.avatar_url` Sync, Offline Image Caching & Asset Cleanup**:
+  - **Centralized Storage Service (`lib/core/services/supabase_storage_service.dart`) & RLS Migration (`supabase/migrations/20261025193000_storage_buckets_and_policies.sql`)**:
+    - Configured public `avatars` and `article-media` buckets with per-user folder RLS policies and protection for `defaultAvatar.png`.
+    - Added URL resolution (`resolveAvatarUrl`, `resolveArticleMediaUrl`), custom avatar replacement with automatic deletion of the previous non-default avatar object in `avatars`, and cover image upload in `article-media`.
+  - **Reusable `EditorialAvatar` (`lib/core/widgets/editorial_avatar.dart`) & `profiles.avatar_url` Integration**:
+    - Added `avatarUrl` to `UserEntity`, `UserModel`, `UserEntityAdapter` (Hive field 4), and `CurrentUserSession.cacheUserAvatarUrl`.
+    - Implemented `UploadProfileAvatarUseCase`, `ProfileRepository.uploadAvatar`, `ProfileInfoCubit.uploadAvatar`, and interactive avatar upload via `FilePicker` on `ProfileAvatarAndStats`, updating `public.profiles.avatar_url`, auth metadata, and authored articles.
+    - Replaced hardcoded `Image.asset` calls across `EditorialCard`, `ArticleReaderAuthorBar`, `AuthorPersonalInfo`, `ProfileAvatarAndStats`, `SettingsAccountCard`, and `ArticlePreviewHeader` with `EditorialAvatar`.
+  - **Article Cover Image Upload (`article-media` Bucket)**:
+    - Implemented `UploadArticleCoverImageUseCase`, `ArticleValidator.validateCoverImageBytesDimensions` (enforcing landscape aspect ratio prior to upload), `AddArticleCubit.uploadCoverImage`, and the "Upload Cover Image" button in `ArticleCoverImageField`.
+  - **Offline Image Downloading (`DownloadedArticleEntity`)**:
+    - Extended `DownloadedArticleEntity` and `DownloadedArticleEntityAdapter` with `coverImageUrl` (field 13), `coverImageBytes` (field 14), and `authorAvatarBytes` (field 15).
+    - Enhanced `DownloadArticleTextUseCase` to download and persist cover and avatar image bytes for offline reading, rendered via `Image.memory` in `ArticleReaderCoverImage`, `EditorialAvatar`, and `DownloadedArticleCardTile`, and counted in `GetArchiveCacheSizeUseCase`.
+  - **Asset & Dead Code Cleanup**:
+    - Removed unused image assets (`MIT_News-AI_coding.png`, `pills.jpg`, `justTest.webp`, `wade_avatar.png` — ~1.51 MB total) and 5 unused legacy mock widgets in `collections/presentation/widgets/` (350/350 tests passing, 0 analyzer issues).
 
 ## 5. Architectural Reports & Documentation Index
 Detailed technical reports documenting audits, optimizations, and architectural refactoring are maintained in `docs/reports/`:

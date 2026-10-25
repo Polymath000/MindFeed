@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
@@ -159,4 +161,13 @@ class FakeArticlesRepository implements ArticlesRepository {
 
   @override
   Future<void> clearDownloadedArticles() async {}
+
+  @override
+  Future<ApiResult<String>> uploadArticleCoverImage({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousCoverUrl,
+  }) async =>
+      const Success('https://example.com/cover.jpg');
 }
