@@ -1,4 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'package:mind_feed/core/services/current_user_session.dart';
+import 'package:mind_feed/core/services/supabase_storage_service.dart';
 
 abstract class ProfileRemoteDataSource {
   Future<Map<String, dynamic>> getProfile(String userId);
@@ -7,6 +12,12 @@ abstract class ProfileRemoteDataSource {
     String? displayName,
     String? bio,
     String? avatarUrl,
+  });
+  Future<String> uploadAvatar({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousAvatarUrl,
   });
   Future<List<Map<String, dynamic>>> getCategories();
   Future<List<Map<String, dynamic>>> getFavoriteCategories(String userId);
@@ -22,11 +33,66 @@ abstract class ProfileRemoteDataSource {
 
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   final SupabaseClient? _supabaseClient;
+  final SupabaseStorageService? _storageServiceParam;
 
-  ProfileRemoteDataSourceImpl({SupabaseClient? supabaseClient})
-      : _supabaseClient = supabaseClient;
+  ProfileRemoteDataSourceImpl({
+    SupabaseClient? supabaseClient,
+    SupabaseStorageService? storageService,
+  })  : _supabaseClient = supabaseClient,
+        _storageServiceParam = storageService;
 
   SupabaseClient get _client => _supabaseClient ?? Supabase.instance.client;
+  SupabaseStorageService get _storageService =>
+      _storageServiceParam ?? SupabaseStorageService(supabaseClient: _client);
+
+  @override
+  Future<String> uploadAvatar({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousAvatarUrl,
+  }) async {
+    String? effectivePreviousUrl = previousAvatarUrl?.trim();
+    if (effectivePreviousUrl == null || effectivePreviousUrl.isEmpty) {
+      try {
+        final existing = await _client
+            .from('profiles')
+            .select('avatar_url')
+            .eq('id', userId)
+            .maybeSingle();
+        if (existing != null && existing['avatar_url'] != null) {
+          effectivePreviousUrl = existing['avatar_url']?.toString();
+        }
+      } catch (_) {}
+    }
+
+    final newUrl = await _storageService.uploadAvatar(
+      userId: userId,
+      bytes: bytes,
+      fileExtension: fileExtension,
+      previousAvatarUrl: effectivePreviousUrl,
+    );
+
+    await updateProfile(userId: userId, avatarUrl: newUrl);
+
+    try {
+      await _client.auth
+          .updateUser(UserAttributes(data: {'avatar_url': newUrl}));
+    } catch (_) {}
+
+    try {
+      await _client
+          .from('articles')
+          .update({'author_avatar': newUrl})
+          .eq('author_id', userId);
+    } catch (_) {}
+
+    try {
+      await CurrentUserSession.cacheUserAvatarUrl(newUrl);
+    } catch (_) {}
+
+    return newUrl;
+  }
 
   @override
   Future<Map<String, dynamic>> getProfile(String userId) async {

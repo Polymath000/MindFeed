@@ -1,24 +1,32 @@
+import 'dart:typed_data';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mind_feed/core/services/current_user_session.dart';
+
 import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_author_use_case.dart';
+import 'package:mind_feed/core/services/current_user_session.dart';
+import 'package:mind_feed/core/services/supabase_storage_service.dart';
 import 'package:mind_feed/features/profile/domain/usecases/get_favorite_categories_use_case.dart';
 import 'package:mind_feed/features/profile/domain/usecases/get_user_profile_use_case.dart';
+import 'package:mind_feed/features/profile/domain/usecases/upload_profile_avatar_use_case.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_info_state.dart';
 
 class ProfileInfoCubit extends Cubit<ProfileInfoState> {
   final GetUserProfileUseCase _getUserProfileUseCase;
   final GetFavoriteCategoriesUseCase _getFavoriteCategoriesUseCase;
   final GetArticlesByAuthorUseCase _getArticlesByAuthorUseCase;
+  final UploadProfileAvatarUseCase? _uploadProfileAvatarUseCase;
   final String? _configuredUserId;
 
   ProfileInfoCubit({
     required GetUserProfileUseCase getUserProfileUseCase,
     required GetFavoriteCategoriesUseCase getFavoriteCategoriesUseCase,
     required GetArticlesByAuthorUseCase getArticlesByAuthorUseCase,
+    UploadProfileAvatarUseCase? uploadProfileAvatarUseCase,
     String? userId,
   })  : _getUserProfileUseCase = getUserProfileUseCase,
         _getFavoriteCategoriesUseCase = getFavoriteCategoriesUseCase,
         _getArticlesByAuthorUseCase = getArticlesByAuthorUseCase,
+        _uploadProfileAvatarUseCase = uploadProfileAvatarUseCase,
         _configuredUserId = userId,
         super(_createInitialState());
 
@@ -73,7 +81,12 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
             currentBio = remoteBio;
           }
           if (remoteAvatar != null && remoteAvatar.isNotEmpty) {
-            currentAvatar = remoteAvatar;
+            final resolved =
+                SupabaseStorageService.resolveAvatarUrl(remoteAvatar);
+            if (resolved != null && resolved.isNotEmpty) {
+              currentAvatar = resolved;
+              CurrentUserSession.cacheUserAvatarUrl(currentAvatar!);
+            }
           }
         },
         failure: (_) {},
@@ -111,7 +124,70 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
         avatarUrl: currentAvatar,
         followingCount: currentFollowing,
         articlesCount: currentArticles,
+        isUploadingAvatar: false,
+        avatarErrorMessage: null,
       ));
     }
+  }
+
+  Future<void> uploadAvatar({
+    required Uint8List bytes,
+    required String fileName,
+  }) async {
+    String? targetUserId = _configuredUserId;
+    if (targetUserId == null || targetUserId.isEmpty) {
+      targetUserId = CurrentUserSession.currentUserId ??
+          CurrentUserSession.resolveCurrentUser()?.id;
+    }
+
+    if (targetUserId == null ||
+        targetUserId.isEmpty ||
+        _uploadProfileAvatarUseCase == null) {
+      return;
+    }
+
+    emit(ProfileInfoLoaded(
+      displayName: state.displayName,
+      userSubtitle: state.userSubtitle,
+      avatarUrl: state.avatarUrl,
+      followingCount: state.followingCount,
+      articlesCount: state.articlesCount,
+      isUploadingAvatar: true,
+      avatarErrorMessage: null,
+    ));
+
+    final result = await _uploadProfileAvatarUseCase(
+      userId: targetUserId,
+      bytes: bytes,
+      fileExtension: fileName,
+      previousAvatarUrl: state.avatarUrl,
+    );
+
+    if (isClosed) return;
+
+    result.when(
+      success: (newUrl) {
+        emit(ProfileInfoLoaded(
+          displayName: state.displayName,
+          userSubtitle: state.userSubtitle,
+          avatarUrl: newUrl,
+          followingCount: state.followingCount,
+          articlesCount: state.articlesCount,
+          isUploadingAvatar: false,
+          avatarErrorMessage: null,
+        ));
+      },
+      failure: (failure) {
+        emit(ProfileInfoLoaded(
+          displayName: state.displayName,
+          userSubtitle: state.userSubtitle,
+          avatarUrl: state.avatarUrl,
+          followingCount: state.followingCount,
+          articlesCount: state.articlesCount,
+          isUploadingAvatar: false,
+          avatarErrorMessage: failure.message,
+        ));
+      },
+    );
   }
 }

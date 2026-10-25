@@ -1,18 +1,63 @@
+import 'dart:typed_data';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:hive/hive.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/errors/failures.dart';
+import 'package:mind_feed/core/networking/api_error_handler.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
+import 'package:mind_feed/core/networking/network_info.dart';
 import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
+import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/profile/data/datasources/profile_remote_data_source.dart';
 import 'package:mind_feed/features/profile/domain/repos/profile_repo.dart';
 
 class ProfileRepoImpl implements ProfileRepository {
   final ProfileRemoteDataSource remoteDataSource;
+  final NetworkInfo? networkInfo;
   bool _isReconciling = false;
 
-  ProfileRepoImpl({required this.remoteDataSource});
+  ProfileRepoImpl({
+    required this.remoteDataSource,
+    this.networkInfo,
+  });
+
+  NetworkInfo get _effectiveNetworkInfo {
+    if (networkInfo != null) return networkInfo!;
+    try {
+      if (getIt.isRegistered<NetworkInfo>()) {
+        return getIt<NetworkInfo>();
+      }
+    } catch (_) {}
+    return NetworkInfoImpl(Connectivity());
+  }
+
+  @override
+  Future<ApiResult<String>> uploadAvatar({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousAvatarUrl,
+  }) async {
+    if (await _effectiveNetworkInfo.isConnected) {
+      try {
+        final result = await remoteDataSource.uploadAvatar(
+          userId: userId,
+          bytes: bytes,
+          fileExtension: fileExtension,
+          previousAvatarUrl: previousAvatarUrl,
+        );
+        return Success(result);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
+  }
 
   @override
   Future<ApiResult<Map<String, dynamic>>> getProfile(String userId) async {

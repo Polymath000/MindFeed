@@ -1,6 +1,9 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+
+import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_info_cubit.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_info_state.dart';
@@ -52,9 +55,49 @@ class PersonalInfromation extends StatelessWidget {
 class _PersonalInformationContent extends StatelessWidget {
   const _PersonalInformationContent();
 
+  Future<void> _pickAndUploadAvatar(BuildContext context) async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        withData: true,
+      );
+      if (result != null && result.files.isNotEmpty) {
+        final file = result.files.first;
+        if (file.bytes != null && context.mounted) {
+          context.read<ProfileInfoCubit>().uploadAvatar(
+                bytes: file.bytes!,
+                fileName: file.name,
+              );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to pick image: $e'),
+            backgroundColor: AppColors.roseRed,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileInfoCubit, ProfileInfoState>(
+    return BlocConsumer<ProfileInfoCubit, ProfileInfoState>(
+      listenWhen: (prev, curr) =>
+          curr.avatarErrorMessage != null &&
+          curr.avatarErrorMessage != prev.avatarErrorMessage,
+      listener: (context, state) {
+        if (state.avatarErrorMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.avatarErrorMessage!),
+              backgroundColor: AppColors.roseRed,
+            ),
+          );
+        }
+      },
       builder: (context, state) {
         return ProfileAvatarAndStats(
           avatarUrl: state.avatarUrl,
@@ -62,6 +105,8 @@ class _PersonalInformationContent extends StatelessWidget {
           userSubtitle: state.userSubtitle,
           articlesCount: state.articlesCount,
           followingCount: state.followingCount,
+          isUploadingAvatar: state.isUploadingAvatar,
+          onTapAvatar: () => _pickAndUploadAvatar(context),
         );
       },
     );

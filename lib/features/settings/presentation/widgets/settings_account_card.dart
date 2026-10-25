@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
-import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/core/widgets/editorial_avatar.dart';
 
 class SettingsHeaderBanner extends StatelessWidget {
   const SettingsHeaderBanner({super.key});
@@ -85,34 +85,10 @@ class SettingsAccountCard extends StatelessWidget {
               color: AppColors.cream,
               shape: BoxShape.circle,
             ),
-            child: ClipOval(
-              child: avatarUrl != null && avatarUrl!.isNotEmpty
-                  ? Image.network(
-                      avatarUrl!,
-                      width: 44,
-                      height: 44,
-                      cacheWidth: 132,
-                      cacheHeight: 132,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => const CircleAvatar(
-                        radius: 22,
-                        backgroundColor: AppColors.blush,
-                        child: Icon(AppIcons.personAlt, color: AppColors.ink),
-                      ),
-                    )
-                  : Image.asset(
-                      Assets.assetsImagesWadeAvatar,
-                      width: 44,
-                      height: 44,
-                      cacheWidth: 132,
-                      cacheHeight: 132,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => const CircleAvatar(
-                        radius: 22,
-                        backgroundColor: AppColors.blush,
-                        child: Icon(AppIcons.personAlt, color: AppColors.ink),
-                      ),
-                    ),
+            child: EditorialAvatar(
+              avatarUrl: avatarUrl,
+              size: 44,
+              fallbackName: displayName,
             ),
           ),
           const SizedBox(width: 14),

@@ -1,10 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 
-// **************************************************************************
-// TypeAdapterGenerator
-// **************************************************************************
-
 class UserEntityAdapter extends TypeAdapter<UserEntity> {
   @override
   final int typeId = 0;
@@ -20,13 +16,14 @@ class UserEntityAdapter extends TypeAdapter<UserEntity> {
       email: fields[1] as String?,
       userName: fields[0] as String?,
       token: fields[3] as String?,
+      avatarUrl: fields[4] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserEntity obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.userName)
       ..writeByte(1)
@@ -34,7 +31,9 @@ class UserEntityAdapter extends TypeAdapter<UserEntity> {
       ..writeByte(2)
       ..write(obj.favoriteCategories)
       ..writeByte(3)
-      ..write(obj.token);
+      ..write(obj.token)
+      ..writeByte(4)
+      ..write(obj.avatarUrl);
   }
 
   @override
