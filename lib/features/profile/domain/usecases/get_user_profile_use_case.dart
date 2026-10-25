@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/core/services/supabase_storage_service.dart';
@@ -14,13 +15,10 @@ class GetUserProfileUseCase {
       success: (profile) {
         final map = Map<String, dynamic>.from(profile);
         final rawAvatar = map['avatar_url'] as String?;
-        final resolved = SupabaseStorageService.resolveAvatarUrl(rawAvatar);
-        if (resolved != null && resolved.isNotEmpty) {
-          map['avatar_url'] = resolved;
-          CurrentUserSession.cacheUserAvatarUrl(resolved);
-        } else {
-          map.remove('avatar_url');
-        }
+        final resolved = SupabaseStorageService.resolveAvatarUrl(rawAvatar) ??
+            AppConstants.defaultAvatarUrl;
+        map['avatar_url'] = resolved;
+        CurrentUserSession.cacheUserAvatarUrl(resolved);
         return Success(map);
       },
       failure: (failure) => FailureResult(failure),

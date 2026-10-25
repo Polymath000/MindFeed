@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
 import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/services/supabase_storage_service.dart';
 
 class EditorialNewsItem {
@@ -148,7 +149,8 @@ extension ArticleEntityEditorialMapper on ArticleEntity {
       updated: _formatUpdatedTime(publishedAt ?? updatedAt),
       authorName: authorName,
       authorRole: authorRole,
-      authorAvatar: SupabaseStorageService.resolveAvatarUrl(authorAvatar) ?? '',
+      authorAvatar: SupabaseStorageService.resolveAvatarUrl(authorAvatar) ??
+          AppConstants.defaultAvatarUrl,
       excerpt: excerpt,
       color: _parseHexColor(cardColor, defaultColor: AppColors.cream),
       isLive: isLive,
@@ -219,7 +221,8 @@ extension DownloadedArticleEntityEditorialMapper on DownloadedArticleEntity {
       updated: '$readingTimeMinutes min read',
       authorName: authorName.isNotEmpty ? authorName : 'Unknown',
       authorRole: authorRole.isNotEmpty ? authorRole : 'Published by',
-      authorAvatar: SupabaseStorageService.resolveAvatarUrl(authorAvatar) ?? '',
+      authorAvatar: SupabaseStorageService.resolveAvatarUrl(authorAvatar) ??
+          AppConstants.defaultAvatarUrl,
       excerpt: excerpt.isNotEmpty
           ? excerpt
           : (content.length > 150

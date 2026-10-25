@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
@@ -64,11 +65,10 @@ class GetSettingsProfileUseCase {
         );
       }
 
-      final resolvedAvatar = SupabaseStorageService.resolveAvatarUrl(avatarUrl);
-      if (resolvedAvatar != null && resolvedAvatar.isNotEmpty) {
-        avatarUrl = resolvedAvatar;
-        CurrentUserSession.cacheUserAvatarUrl(avatarUrl!);
-      }
+      final resolvedAvatar = SupabaseStorageService.resolveAvatarUrl(avatarUrl) ??
+          AppConstants.defaultAvatarUrl;
+      avatarUrl = resolvedAvatar;
+      CurrentUserSession.cacheUserAvatarUrl(avatarUrl!);
 
       return Success(
         SettingsProfileSummary(

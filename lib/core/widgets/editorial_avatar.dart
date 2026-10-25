@@ -41,13 +41,13 @@ class EditorialAvatar extends StatelessWidget {
       );
     }
 
-    final resolvedUrl = avatarUrl?.trim();
-    if (resolvedUrl != null &&
-        resolvedUrl.isNotEmpty &&
-        !resolvedUrl.startsWith('assets/')) {
+    final cleanUrl = avatarUrl?.trim();
+    if (cleanUrl != null &&
+        cleanUrl.isNotEmpty &&
+        !cleanUrl.startsWith('assets/')) {
       return ClipOval(
         child: Image.network(
-          resolvedUrl,
+          cleanUrl,
           width: size,
           height: size,
           cacheWidth: decodeSize,

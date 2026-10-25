@@ -1,4 +1,5 @@
 import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/services/supabase_storage_service.dart';
 
 class ArticleModel extends ArticleEntity {
@@ -45,6 +46,8 @@ class ArticleModel extends ArticleEntity {
     final rawAvatar =
         (profileMap?['avatar_url'] as String?) ??
         (json['author_avatar'] as String?);
+    final rawAuthorName = json['author_name'] as String?;
+    final profileDisplayName = profileMap?['display_name'] as String?;
 
     return ArticleModel(
       id: json['id'] as String? ?? '',
@@ -53,9 +56,12 @@ class ArticleModel extends ArticleEntity {
       slug: json['slug'] as String? ?? '',
       excerpt: json['excerpt'] as String? ?? '',
       content: json['content'] as String?,
-      authorName: json['author_name'] as String? ?? 'Editorial Staff',
+      authorName: (rawAuthorName != null && rawAuthorName.trim().isNotEmpty)
+          ? rawAuthorName
+          : (profileDisplayName ?? 'Editorial Staff'),
       authorRole: json['author_role'] as String? ?? 'Writer',
-      authorAvatar: SupabaseStorageService.resolveAvatarUrl(rawAvatar),
+      authorAvatar: SupabaseStorageService.resolveAvatarUrl(rawAvatar) ??
+          AppConstants.defaultAvatarUrl,
       authorId: json['author_id'] as String?,
       categoryId: json['category_id'] as String?,
       categorySlug: json['category_slug'] as String?,

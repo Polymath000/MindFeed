@@ -73,7 +73,8 @@ abstract class ArticlesRemoteDataSource {
 }
 
 class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
-  static const String _articleSelectQuery = '*';
+  static const String _articleSelectQuery =
+      '*, profiles!articles_author_id_fkey(avatar_url, display_name)';
   final SupabaseClient? _supabaseClient;
   final SupabaseStorageService _storageService;
 
@@ -110,7 +111,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
     if (preferredCategoryIds != null && preferredCategoryIds.isNotEmpty) {
       final preferredResponse = await _client
           .from('articles')
-          .select()
+          .select(_articleSelectQuery)
           .eq('status', 'published')
           .inFilter('category_id', preferredCategoryIds)
           .order('published_at', ascending: false, nullsFirst: false)
@@ -127,7 +128,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
       final remainingLimit = limit - preferredArticles.length;
       final remainingResponse = await _client
           .from('articles')
-          .select()
+          .select(_articleSelectQuery)
           .eq('status', 'published')
           .not('category_id', 'in', '(${preferredCategoryIds.join(",")})')
           .order('published_at', ascending: false, nullsFirst: false)
@@ -142,7 +143,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
 
     final response = await _client
         .from('articles')
-        .select()
+        .select(_articleSelectQuery)
         .eq('status', 'published')
         .order('published_at', ascending: false, nullsFirst: false)
         .range(offset, offset + limit - 1);
@@ -156,7 +157,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
   Future<ArticleModel> getArticleById(String id) async {
     final response = await _client
         .from('articles')
-        .select()
+        .select(_articleSelectQuery)
         .eq('id', id)
         .single();
     return ArticleModel.fromJson(Map<String, dynamic>.from(response));
@@ -170,7 +171,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
   }) async {
     final response = await _client
         .from('articles')
-        .select()
+        .select(_articleSelectQuery)
         .eq('status', 'published')
         .eq('category_id', categoryId)
         .order('published_at', ascending: false, nullsFirst: false)
@@ -189,7 +190,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
   }) async {
     final response = await _client
         .from('articles')
-        .select()
+        .select(_articleSelectQuery)
         .eq('author_id', authorId)
         .order('created_at', ascending: false)
         .range(offset, offset + limit - 1);
@@ -207,7 +208,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
   }) async {
     final response = await _client
         .from('articles')
-        .select()
+        .select(_articleSelectQuery)
         .eq('status', 'published')
         .or('title.ilike.%$query%,excerpt.ilike.%$query%,content.ilike.%$query%')
         .order('published_at', ascending: false, nullsFirst: false)
@@ -226,7 +227,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
   }) async {
     final response = await _client
         .from('articles')
-        .select()
+        .select(_articleSelectQuery)
         .eq('status', 'published')
         .contains('tags', [tag])
         .order('published_at', ascending: false, nullsFirst: false)
@@ -397,7 +398,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
   Future<List<ArticleModel>> getSavedArticles(String userId) async {
     final response = await _client
         .from('saved_articles')
-        .select('article:articles(*)')
+        .select('article:articles($_articleSelectQuery)')
         .eq('user_id', userId)
         .order('created_at', ascending: false);
 
@@ -460,7 +461,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
         .from('articles')
         .update({'status': 'published'})
         .eq('id', articleId)
-        .select()
+        .select(_articleSelectQuery)
         .single();
 
     return ArticleModel.fromJson(Map<String, dynamic>.from(response));
@@ -482,7 +483,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
         .from('articles')
         .update(payload)
         .eq('id', articleId)
-        .select()
+        .select(_articleSelectQuery)
         .single();
 
     return ArticleModel.fromJson(Map<String, dynamic>.from(response));

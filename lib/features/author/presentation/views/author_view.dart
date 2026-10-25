@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/widgets/article_card.dart';
 import 'package:mind_feed/features/author/presentation/controllers/author_cubit/author_cubit.dart';
@@ -81,6 +82,9 @@ class _AuthorViewBody extends StatelessWidget {
                   state is AuthorLoaded &&
                   state.articles.isNotEmpty) {
                 effectiveAvatar = state.articles.first.authorAvatar;
+              }
+              if (effectiveAvatar == null || effectiveAvatar.trim().isEmpty) {
+                effectiveAvatar = AppConstants.defaultAvatarUrl;
               }
 
               return CustomScrollView(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/widgets/editorial_avatar.dart';
 
@@ -17,8 +18,11 @@ class AuthorPersonalInfo extends StatelessWidget {
   });
 
   Widget _buildAvatar() {
+    final resolved = (authorAvatar != null && authorAvatar!.trim().isNotEmpty)
+        ? authorAvatar!.trim()
+        : AppConstants.defaultAvatarUrl;
     return EditorialAvatar(
-      avatarUrl: authorAvatar,
+      avatarUrl: resolved,
       size: 96,
       fallbackName: authorName,
     );

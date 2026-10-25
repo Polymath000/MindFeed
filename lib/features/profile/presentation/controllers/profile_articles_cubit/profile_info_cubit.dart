@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_author_use_case.dart';
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/features/profile/domain/usecases/get_favorite_categories_use_case.dart';
 import 'package:mind_feed/features/profile/domain/usecases/get_user_profile_use_case.dart';
@@ -41,7 +42,7 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
     return ProfileInfoInitial(
       displayName: initialName,
       userSubtitle: initialSubtitle,
-      avatarUrl: sessionUser?.avatarUrl,
+      avatarUrl: sessionUser?.avatarUrl ?? AppConstants.defaultAvatarUrl,
       followingCount: localUser?.favoriteCategories?.length ?? 0,
       articlesCount: 0,
     );
