@@ -1146,9 +1146,9 @@
     "semantic_hash": ""
   },
   "test/features/add_article/presentation/views/add_article_view_test.dart": {
-    "mtime": 1792958738.8072977,
-    "seen": 1792958837.7853427,
-    "ast_hash": "b51d8bec72311ec7618ef80ac96e88d2",
+    "mtime": 1793015176.4838781,
+    "seen": 1793015251.2746148,
+    "ast_hash": "cd0735e5466d305184688534cd931106",
     "semantic_hash": ""
   },
   "test/features/profile/custom_article_card_of_profile_test.dart": {
@@ -1572,9 +1572,9 @@
     "semantic_hash": ""
   },
   "lib/features/add_article/presentation/widgets/article_cover_image_field.dart": {
-    "mtime": 1792958682.4661374,
-    "seen": 1792958837.6262043,
-    "ast_hash": "44816970b45074eccfeb68c59ae40b7e",
+    "mtime": 1793015128.6799417,
+    "seen": 1793015251.1123824,
+    "ast_hash": "175e92b970bd9037fa8474d50c332936",
     "semantic_hash": ""
   },
   "lib/features/add_article/presentation/widgets/article_edit_warning_banner.dart": {

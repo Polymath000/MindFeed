@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mind_feed/config/themes/theme_config.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
@@ -147,6 +148,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
+          theme: const ThemeConfig().light,
           home: BlocProvider<AddArticleCubit>.value(
             value: cubit,
             child: AddArticleView(initialItem: editingItem),

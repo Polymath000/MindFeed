@@ -43,63 +43,64 @@ class ArticleCoverImageField extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Row(
-              children: [
-                OutlinedButton.icon(
-                  key: const Key('upload_cover_image_button'),
-                  onPressed: state.isUploadingCoverImage
-                      ? null
-                      : () async {
-                          final result = await FilePicker.platform.pickFiles(
-                            type: FileType.image,
-                            withData: true,
-                          );
-                          if (result == null || result.files.isEmpty) return;
-                          final file = result.files.first;
-                          if (file.bytes == null) return;
-                          if (!context.mounted) return;
-                          final uploadedUrl = await context
-                              .read<AddArticleCubit>()
-                              .uploadCoverImage(
-                                bytes: file.bytes!,
-                                fileName: file.name,
-                              );
-                          if (uploadedUrl != null) {
-                            controller.text = uploadedUrl;
-                          }
-                        },
-                  icon: state.isUploadingCoverImage
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AppColors.ink,
-                          ),
-                        )
-                      : const Icon(Icons.cloud_upload_outlined, size: 18),
-                  label: Text(
-                    state.isUploadingCoverImage
-                        ? 'Uploading...'
-                        : 'Upload Cover Image',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.ink,
-                    side: const BorderSide(color: AppColors.creamBorder),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: OutlinedButton.icon(
+                key: const Key('upload_cover_image_button'),
+                onPressed: state.isUploadingCoverImage
+                    ? null
+                    : () async {
+                        final result = await FilePicker.platform.pickFiles(
+                          type: FileType.image,
+                          withData: true,
+                        );
+                        if (result == null || result.files.isEmpty) return;
+                        final file = result.files.first;
+                        if (file.bytes == null) return;
+                        if (!context.mounted) return;
+                        final uploadedUrl = await context
+                            .read<AddArticleCubit>()
+                            .uploadCoverImage(
+                              bytes: file.bytes!,
+                              fileName: file.name,
+                            );
+                        if (uploadedUrl != null) {
+                          controller.text = uploadedUrl;
+                        }
+                      },
+                icon: state.isUploadingCoverImage
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.ink,
+                        ),
+                      )
+                    : const Icon(Icons.cloud_upload_outlined, size: 18),
+                label: Text(
+                  state.isUploadingCoverImage
+                      ? 'Uploading...'
+                      : 'Upload Cover Image',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-              ],
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.ink,
+                  minimumSize: const Size(0, 38),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  side: const BorderSide(color: AppColors.creamBorder),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                ),
+              ),
             ),
             if (hasImage) ...[
               const SizedBox(height: 10),
