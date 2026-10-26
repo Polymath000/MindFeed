@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_state.dart';
 import 'package:mind_feed/features/add_article/presentation/widgets/add_tag_dialog.dart';
@@ -54,11 +55,10 @@ class ArticleTagSelector extends StatelessWidget {
                   label: const Text('Add Tag'),
                   onPressed: () {
                     if (state.selectedTags.length >= 5) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Maximum of 5 tags allowed'),
-                          duration: Duration(seconds: 2),
-                        ),
+                      customShowSnackBar(
+                        context: context,
+                        message: 'Maximum of 5 tags allowed',
+                        duration: const Duration(seconds: 2),
                       );
                       return;
                     }

@@ -1,7 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
+import 'package:mind_feed/features/add_article/domain/helpers/article_validator.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_state.dart';
 import 'package:mind_feed/features/add_article/presentation/widgets/article_field_helpers.dart';
@@ -50,22 +54,58 @@ class ArticleCoverImageField extends StatelessWidget {
                 onPressed: state.isUploadingCoverImage
                     ? null
                     : () async {
-                        final result = await FilePicker.platform.pickFiles(
-                          type: FileType.image,
-                          withData: true,
-                        );
-                        if (result == null || result.files.isEmpty) return;
-                        final file = result.files.first;
-                        if (file.bytes == null) return;
-                        if (!context.mounted) return;
-                        final uploadedUrl = await context
-                            .read<AddArticleCubit>()
-                            .uploadCoverImage(
-                              bytes: file.bytes!,
-                              fileName: file.name,
+                        try {
+                          final result = await FilePicker.platform.pickFiles(
+                            type: FileType.image,
+                            withData: true,
+                          );
+                          if (result == null || result.files.isEmpty) return;
+                          final file = result.files.first;
+                          Uint8List? bytes = file.bytes;
+                          if (bytes == null) {
+                            try {
+                              bytes = await file.xFile.readAsBytes();
+                            } catch (_) {}
+                          }
+                          if (bytes == null) {
+                            if (context.mounted) {
+                              customShowSnackBar(
+                                context: context,
+                                message: 'Unable to read selected image data',
+                              );
+                            }
+                            return;
+                          }
+                          if (bytes.lengthInBytes >
+                              ArticleValidator.maxCoverImageSizeBytes) {
+                            final mb = (bytes.lengthInBytes / (1024 * 1024))
+                                .toStringAsFixed(1);
+                            if (context.mounted) {
+                              customShowSnackBar(
+                                context: context,
+                                message:
+                                    'Cover image must be 10 MB or less (selected: $mb MB)',
+                              );
+                            }
+                            return;
+                          }
+                          if (!context.mounted) return;
+                          final uploadedUrl = await context
+                              .read<AddArticleCubit>()
+                              .uploadCoverImage(
+                                bytes: bytes,
+                                fileName: file.name,
+                              );
+                          if (uploadedUrl != null) {
+                            controller.text = uploadedUrl;
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            customShowSnackBar(
+                              context: context,
+                              message: 'Failed to pick image: $e',
                             );
-                        if (uploadedUrl != null) {
-                          controller.text = uploadedUrl;
+                          }
                         }
                       },
                 icon: state.isUploadingCoverImage

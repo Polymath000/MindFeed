@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_state.dart';
 import 'package:mind_feed/features/add_article/presentation/widgets/add_article_app_bar.dart';
@@ -38,7 +39,8 @@ class _AddArticleViewState extends State<AddArticleView> {
       text: widget.initialItem?.content ?? '',
     );
     _coverUrlController = TextEditingController(
-      text: widget.initialItem?.heroImageUrl ??
+      text:
+          widget.initialItem?.heroImageUrl ??
           widget.initialItem?.coverImageUrl ??
           '',
     );
@@ -58,15 +60,7 @@ class _AddArticleViewState extends State<AddArticleView> {
       listener: (context, state) {
         final message = state.errorMessage ?? state.successMessage;
         if (message != null) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(message),
-              backgroundColor: state.errorMessage != null
-                  ? AppColors.redHighlight
-                  : AppColors.ink,
-            ),
-          );
+          customShowSnackBar(context: context, message: message);
         }
       },
       builder: (context, state) {

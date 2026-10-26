@@ -187,6 +187,16 @@ class ArticleValidator {
     return null;
   }
 
+  static const int maxCoverImageSizeBytes = 10 * 1024 * 1024; // 10 MB
+
+  static String? validateCoverImageBytesSize(int bytesLength) {
+    if (bytesLength > maxCoverImageSizeBytes) {
+      final mb = (bytesLength / (1024 * 1024)).toStringAsFixed(1);
+      return 'Cover image must be 10 MB or less (currently $mb MB)';
+    }
+    return null;
+  }
+
   static Future<String?> validateCoverImageBytesDimensions(
     Uint8List bytes, {
     Future<({double width, double height})?> Function(Uint8List bytes)?

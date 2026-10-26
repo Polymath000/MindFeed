@@ -85,6 +85,19 @@ class AddArticleCubit extends Cubit<AddArticleState> {
       return null;
     }
 
+    final sizeError = ArticleValidator.validateCoverImageBytesSize(
+      bytes.lengthInBytes,
+    );
+    if (sizeError != null) {
+      emit(
+        state.copyWith(
+          formErrors: state.formErrors.copyWith(coverImageUrlError: sizeError),
+          errorMessage: sizeError,
+        ),
+      );
+      return null;
+    }
+
     final dimError = await ArticleValidator.validateCoverImageBytesDimensions(
       bytes,
       bytesDimensionResolver: bytesDimensionResolver,

@@ -1,9 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_info_cubit.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_info_state.dart';
@@ -63,20 +65,32 @@ class _PersonalInformationContent extends StatelessWidget {
       );
       if (result != null && result.files.isNotEmpty) {
         final file = result.files.first;
-        if (file.bytes != null && context.mounted) {
+        Uint8List? bytes = file.bytes;
+        if (bytes == null) {
+          try {
+            bytes = await file.xFile.readAsBytes();
+          } catch (_) {}
+        }
+        if (bytes != null && context.mounted) {
+          if (bytes.lengthInBytes > 10 * 1024 * 1024) {
+            final mb = (bytes.lengthInBytes / (1024 * 1024)).toStringAsFixed(1);
+            customShowSnackBar(
+              context: context,
+              message: 'Avatar size must be 10 MB or less (selected: $mb MB)',
+            );
+            return;
+          }
           context.read<ProfileInfoCubit>().uploadAvatar(
-                bytes: file.bytes!,
+                bytes: bytes,
                 fileName: file.name,
               );
         }
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to pick image: $e'),
-            backgroundColor: AppColors.roseRed,
-          ),
+        customShowSnackBar(
+          context: context,
+          message: 'Failed to pick image: $e',
         );
       }
     }
@@ -90,11 +104,9 @@ class _PersonalInformationContent extends StatelessWidget {
           curr.avatarErrorMessage != prev.avatarErrorMessage,
       listener: (context, state) {
         if (state.avatarErrorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.avatarErrorMessage!),
-              backgroundColor: AppColors.roseRed,
-            ),
+          customShowSnackBar(
+            context: context,
+            message: state.avatarErrorMessage!,
           );
         }
       },
