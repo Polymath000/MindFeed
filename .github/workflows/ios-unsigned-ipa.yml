@@ -1,0 +1,76 @@
+name: ios-unsigned-ipa
+on:
+  pull_request:
+    paths:
+      - .github/workflows/ios-unsigned-ipa.yml
+  workflow_dispatch:
+    inputs:
+      dart_defines:
+        description: >-
+          Optional space-separated KEY=VALUE pairs passed as --dart-define, e.g.
+          API_URL=https://api.example.com. Values are compiled
+          into the app and shown in the run log: never pass secrets here.
+        required: false
+        default: ''
+        type: string
+permissions:
+  contents: read
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v6
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.3'
+          cache: true
+      - name: Toolchain versions
+        run: |
+          flutter --version
+          xcodebuild -version
+      - name: Pub get
+        run: flutter pub get
+      - name: Build iOS release without code signing
+        env:
+          DART_DEFINES: ${{ inputs.dart_defines }}
+        run: |
+          set -euo pipefail
+          args=()
+          read -r -a pairs <<< "${DART_DEFINES}"
+          for pair in ${pairs[@]+"${pairs[@]}"}; do
+            if [[ ! "$pair" =~ ^[A-Z][A-Z0-9_]*=.+$ ]]; then
+              echo "::error::Invalid dart define '${pair%%=*}': expected KEY=VALUE with an upper-case key."
+              exit 1
+            fi
+            args+=("--dart-define=$pair")
+          done
+          flutter build ios --release --no-codesign ${args[@]+"${args[@]}"}
+      - name: Package unsigned IPA
+        id: package
+        run: |
+          set -euo pipefail
+          app_path="build/ios/iphoneos/Runner.app"
+          if [[ ! -d "$app_path" ]]; then
+            echo "::error::Expected app bundle not found: $app_path"
+            exit 1
+          fi
+          ipa_name="MindFeed-${GITHUB_SHA::7}-unsigned.ipa"
+          staging="$RUNNER_TEMP/ipa"
+          output_dir="$GITHUB_WORKSPACE/build/ios-ipa"
+          mkdir -p "$staging/Payload" "$output_dir"
+          cp -R "$app_path" "$staging/Payload/"
+          (cd "$staging" && /usr/bin/zip -qry "$output_dir/$ipa_name" Payload)
+          test -s "$output_dir/$ipa_name"
+          ls -lh "$output_dir/$ipa_name"
+          echo "ipa_path=build/ios-ipa/$ipa_name" >> "$GITHUB_OUTPUT"
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-unsigned-ipa
+          path: ${{ steps.package.outputs.ipa_path }}
+          if-no-files-found: error
+          retention-days: 7
