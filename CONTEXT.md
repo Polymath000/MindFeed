@@ -31,12 +31,17 @@ The codebase follows **Feature-First Clean Architecture**:
 - **Zero Firebase Dependency**: Fully decoupled from Firebase SDKs, CLI configurations, and external Google services.
 
 ## 4. Recent Project Changes
-- **Secret Management (1Password & Environment)**:
+- **Secret Management & Build Packaging**:
   - Secret keys are never committed in the source code.
   - Dedicated 1Password vault `MindFeed` created with item `Supabase` containing `PROJECT_URL` and `SUPABASE_PUBLISHABLE_KEY`.
   - Credentials injected via 1Password CLI (`op inject` / `op run`) or `--dart-define` / `--dart-define-from-file`.
   - In code, constants resolve via `String.fromEnvironment('PROJECT_URL')` and `String.fromEnvironment('SUPABASE_PUBLISHABLE_KEY')` with fallback to `SUPABASE_URL` / `SUPABASE_ANON_KEY`.
   - `.env` files are strictly ignored in `.gitignore`.
+  - Android package namespace and applicationId updated to `mind.feed.pol4b`.
+  - Production APK build command standard:
+    ```bash
+    flutter build apk --release --dart-define-from-file=.env --obfuscate --split-debug-info=build/app/outputs/symbols
+    ```
 - **Supabase & Networking Architecture**:
   - Replaced legacy REST/Dio infrastructure with `supabase_flutter`.
   - Added `SupabaseInterceptor` to trace and debug requests in debug mode.
