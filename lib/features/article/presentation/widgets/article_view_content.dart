@@ -9,8 +9,13 @@ import 'package:mind_feed/features/article/presentation/widgets/article_reader_s
 import 'package:mind_feed/features/article/presentation/widgets/article_slow_scroll_bar_section.dart';
 
 class ArticleViewContent extends StatefulWidget {
-  const ArticleViewContent({super.key, this.initialItem});
+  const ArticleViewContent({
+    super.key,
+    this.initialItem,
+    this.isPreview = false,
+  });
   final EditorialNewsItem? initialItem;
+  final bool isPreview;
 
   @override
   State<ArticleViewContent> createState() => _ArticleViewContentState();
@@ -112,16 +117,18 @@ class _ArticleViewContentState extends State<ArticleViewContent>
                   ArticleReaderScrollView(
                     controller: _scrollController,
                     article: article,
+                    isPreview: widget.isPreview,
                   ),
-                  const Positioned(
-                    bottom: 16,
-                    left: 20,
-                    right: 20,
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: ArticleSlowScrollBarSection(),
+                  if (!widget.isPreview)
+                    const Positioned(
+                      bottom: 16,
+                      left: 20,
+                      right: 20,
+                      child: Align(
+                        alignment: Alignment.bottomRight,
+                        child: ArticleSlowScrollBarSection(),
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),

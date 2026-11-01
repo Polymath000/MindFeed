@@ -12,10 +12,16 @@ import '../controllers/article_reader/article_reader_cubit.dart';
 export 'package:mind_feed/core/design/editorial_models.dart';
 
 class ArticleView extends StatelessWidget {
-  const ArticleView({super.key, this.item, this.cubit});
+  const ArticleView({
+    super.key,
+    this.item,
+    this.cubit,
+    this.isPreview = false,
+  });
   static const String routeName = 'article';
   final EditorialNewsItem? item;
   final ArticleReaderCubit? cubit;
+  final bool isPreview;
 
   ArticleReaderCubit _createCubit() =>
       getIt<ArticleReaderCubit>()..initArticle(item);
@@ -27,12 +33,12 @@ class ArticleView extends StatelessWidget {
       if (cubit!.state.item == null && item != null) cubit!.initArticle(item);
       return BlocProvider<ArticleReaderCubit>.value(
         value: cubit!,
-        child: ArticleViewContent(initialItem: item),
+        child: ArticleViewContent(initialItem: item, isPreview: isPreview),
       );
     }
     return BlocProvider<ArticleReaderCubit>(
       create: (_) => _createCubit(),
-      child: ArticleViewContent(initialItem: item),
+      child: ArticleViewContent(initialItem: item, isPreview: isPreview),
     );
   }
 }

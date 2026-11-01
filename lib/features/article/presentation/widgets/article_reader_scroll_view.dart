@@ -13,10 +13,12 @@ class ArticleReaderScrollView extends StatelessWidget {
     super.key,
     required this.controller,
     required this.article,
+    this.isPreview = false,
   });
 
   final ScrollController controller;
   final EditorialNewsItem article;
+  final bool isPreview;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class ArticleReaderScrollView extends StatelessWidget {
         ArticleReaderTopBar(
           badge: article.badge,
           badgeColor: article.badgeColor,
+          isPreview: isPreview,
         ),
         const SizedBox(height: 16),
         ArticleReaderMetadataHeader(
@@ -40,18 +43,22 @@ class ArticleReaderScrollView extends StatelessWidget {
           const SizedBox(height: 16),
           ArticleReaderTagsWrap(
             tags: article.tags,
-            onTagTap: (tag) => Navigator.pushNamed(
-              context,
-              AppRoutes.tagArticles,
-              arguments: tag,
-            ),
+            onTagTap: isPreview
+                ? null
+                : (tag) => Navigator.pushNamed(
+                    context,
+                    AppRoutes.tagArticles,
+                    arguments: tag,
+                  ),
           ),
         ],
         const SizedBox(height: 20),
         ArticleReaderCoverImage(
           coverImageUrl: article.coverImageUrl,
           coverImageBytes: article.coverImageBytes,
-          overlay: ArticleActionBarSection(title: article.title),
+          overlay: isPreview
+              ? null
+              : ArticleActionBarSection(title: article.title),
         ),
         const SizedBox(height: 24),
         ArticleReaderMarkdownBody(

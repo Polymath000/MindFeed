@@ -11,18 +11,20 @@ class ArticleReaderTopBar extends StatelessWidget {
     required this.badge,
     required this.badgeColor,
     this.onBack,
+    this.isPreview = false,
   });
 
   final String badge;
   final Color badgeColor;
   final VoidCallback? onBack;
+  final bool isPreview;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _BackButton(onBack: onBack),
+        _BackButton(onBack: onBack, isPreview: isPreview),
         _BadgeLabel(badge: badge, color: badgeColor),
       ],
     );
@@ -30,8 +32,9 @@ class ArticleReaderTopBar extends StatelessWidget {
 }
 
 class _BackButton extends StatelessWidget {
-  const _BackButton({required this.onBack});
+  const _BackButton({required this.onBack, this.isPreview = false});
   final VoidCallback? onBack;
+  final bool isPreview;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +42,9 @@ class _BackButton extends StatelessWidget {
       button: true,
       label: 'Back',
       child: InkResponse(
+        key: Key(
+          isPreview ? 'preview_back_button' : 'article_reader_back_button',
+        ),
         onTap: onBack ?? () => Navigator.maybePop(context),
         child: Container(
           width: 44,

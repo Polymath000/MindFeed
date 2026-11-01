@@ -299,6 +299,16 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
   - Added migration `supabase/migrations/20261101114500_support_custom_tags_and_auto_catalog.sql` granting authenticated users INSERT policy on `fixed_tags` and upgrading `check_article_tags()` trigger to auto-catalog custom tags into `public.fixed_tags`.
   - Added `_ensureTagsExist` in `ArticlesRemoteDataSourceImpl.saveDraft` and `updateArticle` to synchronize tags with `fixed_tags`.
 
+## 9. Article Preview Page Unification (`ArticleView(isPreview: true)`)
+- **Canonical Article Layout Reuse (`lib/features/add_article/presentation/views/article_preview_view.dart`)**:
+  - Replaced the bespoke preview screen with the canonical `ArticleView(isPreview: true)`, giving writers an authentic rendering of their story using the exact same typography, markdown styling, cover image presentation, and metadata layout.
+- **Preview Mode Adjustments (`lib/features/article/presentation/`)**:
+  - Added `isPreview: true` support to `ArticleView`, `ArticleViewContent`, `ArticleReaderScrollView`, and `ArticleReaderTopBar`.
+  - In preview mode:
+    - Provides a clean top bar with only the Back button (`_BackButton`, `preview_back_button`) to return directly to the editor or drafts list.
+    - Omit engagement action bars (`ArticleActionBarSection` for likes, bookmarks, and downloads) and floating auto-scroll controls (`ArticleSlowScrollBarSection`), preventing extraneous interactions on draft content.
+
+
 
 
 
