@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
@@ -14,6 +16,7 @@ import 'package:mind_feed/core/articles/domain/usecases/get_fixed_tags_use_case.
 import 'package:mind_feed/features/add_article/domain/usecases/publish_article_use_case.dart';
 import 'package:mind_feed/features/add_article/domain/usecases/save_draft_use_case.dart';
 import 'package:mind_feed/features/add_article/domain/usecases/update_article_use_case.dart';
+import 'package:mind_feed/features/add_article/domain/usecases/upload_article_cover_image_use_case.dart';
 
 class FakeArticlesRepository implements ArticlesRepository {
   final List<CategoryEntity> categories = [
@@ -204,6 +207,15 @@ class FakeArticlesRepository implements ArticlesRepository {
 
   @override
   Future<void> clearDownloadedArticles() async {}
+
+  @override
+  Future<ApiResult<String>> uploadArticleCoverImage({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousCoverUrl,
+  }) async =>
+      Success('https://example.com/storage/v1/object/public/article-media/$userId/cover.jpg');
 }
 
 void main() {
@@ -397,4 +409,60 @@ void main() {
       expect(cubit.state.selectedTags.contains('tag6'), isFalse);
     },
   );
+
+  group('uploadCoverImage', () {
+    test('rejects portrait cover image and sets form error', () async {
+      final uploadUseCase = UploadArticleCoverImageUseCase(repo);
+      final customCubit = AddArticleCubit(
+        getCategoriesUseCase: GetCategoriesUseCase(repo),
+        getFixedTagsUseCase: GetFixedTagsUseCase(repo),
+        saveDraftUseCase: SaveDraftUseCase(repo),
+        publishArticleUseCase: PublishArticleUseCase(repo),
+        updateArticleUseCase: UpdateArticleUseCase(repo),
+        uploadArticleCoverImageUseCase: uploadUseCase,
+        userResolver: () => testUser,
+        bytesDimensionResolver: (bytes) async => (width: 600.0, height: 900.0),
+      );
+
+      final dummyBytes = Uint8List.fromList([1, 2, 3, 4]);
+      final result = await customCubit.uploadCoverImage(
+        bytes: dummyBytes,
+        fileName: 'portrait.jpg',
+      );
+
+      expect(result, isNull);
+      expect(customCubit.state.formErrors.coverImageUrlError, contains('Cover image must be landscape'));
+      expect(customCubit.state.coverImageUrl, isEmpty);
+      expect(customCubit.state.isUploadingCoverImage, isFalse);
+
+      await customCubit.close();
+    });
+
+    test('successfully uploads landscape cover image and updates state', () async {
+      final uploadUseCase = UploadArticleCoverImageUseCase(repo);
+      final customCubit = AddArticleCubit(
+        getCategoriesUseCase: GetCategoriesUseCase(repo),
+        getFixedTagsUseCase: GetFixedTagsUseCase(repo),
+        saveDraftUseCase: SaveDraftUseCase(repo),
+        publishArticleUseCase: PublishArticleUseCase(repo),
+        updateArticleUseCase: UpdateArticleUseCase(repo),
+        uploadArticleCoverImageUseCase: uploadUseCase,
+        userResolver: () => testUser,
+        bytesDimensionResolver: (bytes) async => (width: 1200.0, height: 600.0),
+      );
+
+      final dummyBytes = Uint8List.fromList([1, 2, 3, 4]);
+      final result = await customCubit.uploadCoverImage(
+        bytes: dummyBytes,
+        fileName: 'landscape.png',
+      );
+
+      expect(result, equals('https://example.com/storage/v1/object/public/article-media/user-42/cover.jpg'));
+      expect(customCubit.state.formErrors.coverImageUrlError, isNull);
+      expect(customCubit.state.coverImageUrl, equals('https://example.com/storage/v1/object/public/article-media/user-42/cover.jpg'));
+      expect(customCubit.state.isUploadingCoverImage, isFalse);
+
+      await customCubit.close();
+    });
+  });
 }

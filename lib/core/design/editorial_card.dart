@@ -7,6 +7,7 @@ import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/borders.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/widgets/editorial_avatar.dart';
 
 class EditorialCard extends StatelessWidget {
   const EditorialCard({
@@ -88,20 +89,11 @@ class EditorialCard extends StatelessWidget {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  ClipOval(
-                    child: Image.asset(
-                      item.authorAvatar,
-                      width: 38,
-                      height: 38,
-                      cacheWidth: 114,
-                      cacheHeight: 114,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => const CircleAvatar(
-                        radius: 19,
-                        backgroundColor: AppColors.blush,
-                        child: Icon(AppIcons.personAlt, color: AppColors.ink),
-                      ),
-                    ),
+                  EditorialAvatar(
+                    avatarUrl: item.authorAvatar,
+                    avatarBytes: item.authorAvatarBytes,
+                    size: 38,
+                    fallbackName: item.authorName,
                   ),
                 const SizedBox(width: 10),
                 Expanded(

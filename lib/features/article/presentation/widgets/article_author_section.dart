@@ -28,6 +28,7 @@ class ArticleAuthorSection extends StatelessWidget {
           authorName: article.authorName,
           authorRole: article.authorRole,
           authorAvatar: article.authorAvatar,
+          authorAvatarBytes: article.authorAvatarBytes,
           authorRatingAvg: ratings.avg,
           authorRatingCount: ratings.count,
           userAuthorStars: ratings.stars,

@@ -1,4 +1,6 @@
 import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
+import 'package:mind_feed/core/constants/constants.dart';
+import 'package:mind_feed/core/services/supabase_storage_service.dart';
 
 class ArticleModel extends ArticleEntity {
   const ArticleModel({
@@ -38,6 +40,15 @@ class ArticleModel extends ArticleEntity {
   });
 
   factory ArticleModel.fromJson(Map<String, dynamic> json) {
+    final profileMap = json['profiles'] is Map
+        ? Map<String, dynamic>.from(json['profiles'] as Map)
+        : null;
+    final rawAvatar =
+        (profileMap?['avatar_url'] as String?) ??
+        (json['author_avatar'] as String?);
+    final rawAuthorName = json['author_name'] as String?;
+    final profileDisplayName = profileMap?['display_name'] as String?;
+
     return ArticleModel(
       id: json['id'] as String? ?? '',
       legacyId: json['legacy_id'] as String?,
@@ -45,9 +56,12 @@ class ArticleModel extends ArticleEntity {
       slug: json['slug'] as String? ?? '',
       excerpt: json['excerpt'] as String? ?? '',
       content: json['content'] as String?,
-      authorName: json['author_name'] as String? ?? 'Editorial Staff',
+      authorName: (rawAuthorName != null && rawAuthorName.trim().isNotEmpty)
+          ? rawAuthorName
+          : (profileDisplayName ?? 'Editorial Staff'),
       authorRole: json['author_role'] as String? ?? 'Writer',
-      authorAvatar: json['author_avatar'] as String?,
+      authorAvatar: SupabaseStorageService.resolveAvatarUrl(rawAvatar) ??
+          AppConstants.defaultAvatarUrl,
       authorId: json['author_id'] as String?,
       categoryId: json['category_id'] as String?,
       categorySlug: json['category_slug'] as String?,
@@ -55,8 +69,14 @@ class ArticleModel extends ArticleEntity {
       badgeColor: json['badge_color'] as String? ?? '#FFF1C6',
       cardColor: json['card_color'] as String? ?? '#FFF1C6',
       isLive: json['is_live'] as bool? ?? false,
-      heroImageUrl: json['hero_image_url'] as String?,
-      coverImageUrl: json['cover_image_url'] as String?,
+      heroImageUrl: SupabaseStorageService.resolveArticleMediaUrl(
+        (json['hero_image_url'] as String?) ??
+            (json['cover_image_url'] as String?),
+      ),
+      coverImageUrl: SupabaseStorageService.resolveArticleMediaUrl(
+        (json['hero_image_url'] as String?) ??
+            (json['cover_image_url'] as String?),
+      ),
       likesCount: (json['likes_count'] as num?)?.toInt() ?? 0,
       savesCount: (json['saves_count'] as num?)?.toInt() ?? 0,
       starCount: (json['star_count'] as num?)?.toInt() ?? 0,

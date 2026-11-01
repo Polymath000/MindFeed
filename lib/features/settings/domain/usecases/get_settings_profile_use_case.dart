@@ -1,6 +1,8 @@
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
+import 'package:mind_feed/core/services/supabase_storage_service.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/profile/domain/repos/profile_repo.dart';
 import 'package:mind_feed/features/settings/domain/entities/settings_profile_summary.dart';
@@ -32,7 +34,12 @@ class GetSettingsProfileUseCase {
               displayName = remoteName;
             }
             if (remoteAvatar != null && remoteAvatar.isNotEmpty) {
-              avatarUrl = remoteAvatar;
+              final resolved =
+                  SupabaseStorageService.resolveAvatarUrl(remoteAvatar);
+              if (resolved != null && resolved.isNotEmpty) {
+                avatarUrl = resolved;
+                CurrentUserSession.cacheUserAvatarUrl(avatarUrl!);
+              }
             }
           },
           failure: (_) {},
@@ -57,6 +64,11 @@ class GetSettingsProfileUseCase {
           failure: (_) {},
         );
       }
+
+      final resolvedAvatar = SupabaseStorageService.resolveAvatarUrl(avatarUrl) ??
+          AppConstants.defaultAvatarUrl;
+      avatarUrl = resolvedAvatar;
+      CurrentUserSession.cacheUserAvatarUrl(avatarUrl!);
 
       return Success(
         SettingsProfileSummary(

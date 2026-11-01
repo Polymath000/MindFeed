@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
 import 'package:mind_feed/core/articles/domain/entities/author_rating_summary.dart';
@@ -59,6 +61,14 @@ abstract class ArticlesRepository {
   );
   Future<ApiResult<void>> deleteArticle(String articleId);
   Future<void> clearDownloadedArticles();
+  Future<ApiResult<String>> uploadArticleCoverImage({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousCoverUrl,
+  }) {
+    throw UnimplementedError();
+  }
 }
 
 abstract class ArticleEngagementRepository {

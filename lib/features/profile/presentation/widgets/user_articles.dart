@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_cubit.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_state.dart';
 import 'package:mind_feed/core/widgets/article_card.dart';
@@ -54,11 +55,13 @@ class _UserArticlesBody extends StatelessWidget {
     if (confirmed != true || !context.mounted) return;
     final success = await context.read<ProfileArticlesCubit>().deleteArticle(item.id);
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    customShowSnackBar(
+      context: context,
       duration: const Duration(seconds: 2),
-      content: Text(success ? 'Removed: ${item.title.split('\n').first}' : 'Failed to delete article. Please try again.'),
-    ));
+      message: success
+          ? 'Removed: ${item.title.split('\n').first}'
+          : 'Failed to delete article. Please try again.',
+    );
   }
 
   Future<void> _openAddArticle(BuildContext context) async {

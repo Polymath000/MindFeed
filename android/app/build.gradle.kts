@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.mind_feed"
+    namespace = "mind.feed.pol4b"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -15,7 +15,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.mind_feed"
+        applicationId = "mind.feed.pol4b"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

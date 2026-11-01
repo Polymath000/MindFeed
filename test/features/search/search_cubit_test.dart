@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
@@ -237,6 +238,15 @@ class FakeArticlesRepository implements ArticlesRepository {
 
   @override
   Future<void> clearDownloadedArticles() async {}
+
+  @override
+  Future<ApiResult<String>> uploadArticleCoverImage({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousCoverUrl,
+  }) async =>
+      const Success('https://example.com/cover.jpg');
 }
 
 void main() {

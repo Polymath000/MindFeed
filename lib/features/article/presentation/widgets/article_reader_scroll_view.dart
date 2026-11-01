@@ -50,6 +50,7 @@ class ArticleReaderScrollView extends StatelessWidget {
         const SizedBox(height: 20),
         ArticleReaderCoverImage(
           coverImageUrl: article.coverImageUrl,
+          coverImageBytes: article.coverImageBytes,
           overlay: ArticleActionBarSection(title: article.title),
         ),
         const SizedBox(height: 24),

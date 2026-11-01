@@ -118,7 +118,7 @@ void main() {
       content: 'Full editorial content for offline reading without network images.',
       authorName: 'Jane Doe',
       authorRole: 'Tech Journalist',
-      authorAvatar: '',
+      authorAvatar: 'https://images.unsplash.com/jane.jpg',
       categoryId: 'cat_tech',
       categorySlug: slug,
       tags: const ['AI', 'Mobile'],

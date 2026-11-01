@@ -2,9 +2,9 @@ import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
 import 'package:mind_feed/core/articles/domain/entities/category_entity.dart';
 import 'package:mind_feed/core/articles/domain/entities/tag_entity.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/features/add_article/domain/helpers/article_payload_builder.dart';
 import 'package:mind_feed/features/add_article/domain/helpers/article_validator.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_state.dart';
-import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/article_payload_builder.dart';
 
 sealed class ArticleStateTransformers {
   static AddArticleState authError(AddArticleState state) => state.copyWith(
@@ -130,7 +130,9 @@ sealed class ArticleStateTransformers {
       availableTags: mergedAvailable,
       title: editingItem?.title ?? state.title,
       content: editingItem?.content ?? state.content,
-      coverImageUrl: editingItem?.coverImageUrl ?? state.coverImageUrl,
+      coverImageUrl: editingItem?.heroImageUrl ??
+          editingItem?.coverImageUrl ??
+          state.coverImageUrl,
       selectedCategoryId: categoryId,
       selectedTags: editingItem != null
           ? List<String>.from(editingItem.tags)

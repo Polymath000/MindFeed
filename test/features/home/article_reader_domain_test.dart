@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
@@ -118,6 +120,14 @@ class MockArticlesRepo implements ArticlesRepository {
   Future<ApiResult<ArticleEntity>> updateArticle(
           String articleId, Map<String, dynamic> updates) async =>
       FailureResult(const ServerFailure('stub'));
+  @override
+  Future<ApiResult<String>> uploadArticleCoverImage({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousCoverUrl,
+  }) async =>
+      const Success('https://example.com/cover.jpg');
 }
 
 class MockEngagementRepo implements ArticleEngagementRepository {

@@ -1,6 +1,11 @@
+import 'dart:typed_data';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+
+import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_info_cubit.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_info_state.dart';
@@ -52,9 +57,59 @@ class PersonalInfromation extends StatelessWidget {
 class _PersonalInformationContent extends StatelessWidget {
   const _PersonalInformationContent();
 
+  Future<void> _pickAndUploadAvatar(BuildContext context) async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        withData: true,
+      );
+      if (result != null && result.files.isNotEmpty) {
+        final file = result.files.first;
+        Uint8List? bytes = file.bytes;
+        if (bytes == null) {
+          try {
+            bytes = await file.xFile.readAsBytes();
+          } catch (_) {}
+        }
+        if (bytes != null && context.mounted) {
+          if (bytes.lengthInBytes > 10 * 1024 * 1024) {
+            final mb = (bytes.lengthInBytes / (1024 * 1024)).toStringAsFixed(1);
+            customShowSnackBar(
+              context: context,
+              message: 'Avatar size must be 10 MB or less (selected: $mb MB)',
+            );
+            return;
+          }
+          context.read<ProfileInfoCubit>().uploadAvatar(
+                bytes: bytes,
+                fileName: file.name,
+              );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        customShowSnackBar(
+          context: context,
+          message: 'Failed to pick image: $e',
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileInfoCubit, ProfileInfoState>(
+    return BlocConsumer<ProfileInfoCubit, ProfileInfoState>(
+      listenWhen: (prev, curr) =>
+          curr.avatarErrorMessage != null &&
+          curr.avatarErrorMessage != prev.avatarErrorMessage,
+      listener: (context, state) {
+        if (state.avatarErrorMessage != null) {
+          customShowSnackBar(
+            context: context,
+            message: state.avatarErrorMessage!,
+          );
+        }
+      },
       builder: (context, state) {
         return ProfileAvatarAndStats(
           avatarUrl: state.avatarUrl,
@@ -62,6 +117,8 @@ class _PersonalInformationContent extends StatelessWidget {
           userSubtitle: state.userSubtitle,
           articlesCount: state.articlesCount,
           followingCount: state.followingCount,
+          isUploadingAvatar: state.isUploadingAvatar,
+          onTapAvatar: () => _pickAndUploadAvatar(context),
         );
       },
     );

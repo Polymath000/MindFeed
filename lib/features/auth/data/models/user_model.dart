@@ -6,6 +6,7 @@ class UserModel extends UserEntity {
     required super.email,
     required super.favoriteCategories,
     required super.token,
+    super.avatarUrl,
   });
 
   factory UserModel.fromEntity(final UserEntity userEntity) => UserModel(
@@ -13,6 +14,7 @@ class UserModel extends UserEntity {
     email: userEntity.email,
     userName: userEntity.userName,
     token: userEntity.token,
+    avatarUrl: userEntity.avatarUrl,
   );
 
   UserEntity toUserEntity() => UserEntity(
@@ -20,6 +22,7 @@ class UserModel extends UserEntity {
     email: email,
     userName: userName,
     token: token,
+    avatarUrl: avatarUrl,
   );
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -28,6 +31,7 @@ class UserModel extends UserEntity {
       userName: json['userName'] ?? '',
       favoriteCategories: json['favoriteCategories'] ?? [],
       token: json['token'] ?? '',
+      avatarUrl: (json['avatar_url'] ?? json['avatarUrl']) as String?,
     );
   }
 
@@ -37,6 +41,7 @@ class UserModel extends UserEntity {
       'email': email,
       'favoriteCategories': favoriteCategories,
       'token': token,
+      if (avatarUrl != null) 'avatarUrl': avatarUrl,
     };
   }
 }

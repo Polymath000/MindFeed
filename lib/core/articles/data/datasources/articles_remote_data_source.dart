@@ -1,8 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mind_feed/core/articles/data/models/article_model.dart';
 import 'package:mind_feed/core/articles/data/models/category_model.dart';
 import 'package:mind_feed/core/articles/data/models/tag_model.dart';
 import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
+import 'package:mind_feed/core/services/supabase_storage_service.dart';
 
 abstract class ArticlesRemoteDataSource {
   Future<List<ArticleModel>> getHomeFeed({
@@ -61,16 +64,43 @@ abstract class ArticlesRemoteDataSource {
     Map<String, dynamic> updates,
   );
   Future<void> deleteArticle(String articleId);
+  Future<String> uploadArticleCoverImage({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousCoverUrl,
+  });
 }
 
 class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
-  static const String _articleSelectQuery = '*';
+  static const String _articleSelectQuery =
+      '*, profiles!articles_author_id_fkey(avatar_url, display_name)';
   final SupabaseClient? _supabaseClient;
+  final SupabaseStorageService _storageService;
 
-  ArticlesRemoteDataSourceImpl({SupabaseClient? supabaseClient})
-      : _supabaseClient = supabaseClient;
+  ArticlesRemoteDataSourceImpl({
+    SupabaseClient? supabaseClient,
+    SupabaseStorageService? storageService,
+  })  : _supabaseClient = supabaseClient,
+        _storageService = storageService ??
+            SupabaseStorageService(supabaseClient: supabaseClient);
 
   SupabaseClient get _client => _supabaseClient ?? Supabase.instance.client;
+
+  @override
+  Future<String> uploadArticleCoverImage({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousCoverUrl,
+  }) {
+    return _storageService.uploadArticleCover(
+      userId: userId,
+      bytes: bytes,
+      fileExtension: fileExtension,
+      previousCoverUrl: previousCoverUrl,
+    );
+  }
 
   @override
   Future<List<ArticleModel>> getHomeFeed({
@@ -81,7 +111,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
     if (preferredCategoryIds != null && preferredCategoryIds.isNotEmpty) {
       final preferredResponse = await _client
           .from('articles')
-          .select()
+          .select(_articleSelectQuery)
           .eq('status', 'published')
           .inFilter('category_id', preferredCategoryIds)
           .order('published_at', ascending: false, nullsFirst: false)
@@ -98,7 +128,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
       final remainingLimit = limit - preferredArticles.length;
       final remainingResponse = await _client
           .from('articles')
-          .select()
+          .select(_articleSelectQuery)
           .eq('status', 'published')
           .not('category_id', 'in', '(${preferredCategoryIds.join(",")})')
           .order('published_at', ascending: false, nullsFirst: false)
@@ -113,7 +143,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
 
     final response = await _client
         .from('articles')
-        .select()
+        .select(_articleSelectQuery)
         .eq('status', 'published')
         .order('published_at', ascending: false, nullsFirst: false)
         .range(offset, offset + limit - 1);
@@ -127,7 +157,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
   Future<ArticleModel> getArticleById(String id) async {
     final response = await _client
         .from('articles')
-        .select()
+        .select(_articleSelectQuery)
         .eq('id', id)
         .single();
     return ArticleModel.fromJson(Map<String, dynamic>.from(response));
@@ -141,7 +171,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
   }) async {
     final response = await _client
         .from('articles')
-        .select()
+        .select(_articleSelectQuery)
         .eq('status', 'published')
         .eq('category_id', categoryId)
         .order('published_at', ascending: false, nullsFirst: false)
@@ -160,7 +190,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
   }) async {
     final response = await _client
         .from('articles')
-        .select()
+        .select(_articleSelectQuery)
         .eq('author_id', authorId)
         .order('created_at', ascending: false)
         .range(offset, offset + limit - 1);
@@ -178,7 +208,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
   }) async {
     final response = await _client
         .from('articles')
-        .select()
+        .select(_articleSelectQuery)
         .eq('status', 'published')
         .or('title.ilike.%$query%,excerpt.ilike.%$query%,content.ilike.%$query%')
         .order('published_at', ascending: false, nullsFirst: false)
@@ -197,7 +227,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
   }) async {
     final response = await _client
         .from('articles')
-        .select()
+        .select(_articleSelectQuery)
         .eq('status', 'published')
         .contains('tags', [tag])
         .order('published_at', ascending: false, nullsFirst: false)
@@ -368,7 +398,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
   Future<List<ArticleModel>> getSavedArticles(String userId) async {
     final response = await _client
         .from('saved_articles')
-        .select('article:articles(*)')
+        .select('article:articles($_articleSelectQuery)')
         .eq('user_id', userId)
         .order('created_at', ascending: false);
 
@@ -431,7 +461,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
         .from('articles')
         .update({'status': 'published'})
         .eq('id', articleId)
-        .select()
+        .select(_articleSelectQuery)
         .single();
 
     return ArticleModel.fromJson(Map<String, dynamic>.from(response));
@@ -453,7 +483,7 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
         .from('articles')
         .update(payload)
         .eq('id', articleId)
-        .select()
+        .select(_articleSelectQuery)
         .single();
 
     return ArticleModel.fromJson(Map<String, dynamic>.from(response));

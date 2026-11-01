@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/widgets/article_card.dart';
 import 'package:mind_feed/features/author/presentation/controllers/author_cubit/author_cubit.dart';
@@ -69,24 +71,35 @@ class _AuthorViewBody extends StatelessWidget {
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 600),
-          child: CustomScrollView(
-            slivers: [
-              const AuthorAppBar(),
-              AuthorPersonalInfo(
-                authorName: authorName,
-                authorRole: authorRole,
-                authorAvatar: authorAvatar,
-              ),
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-                sliver: SliverToBoxAdapter(
-                  child: BlocBuilder<AuthorCubit, AuthorState>(
-                    builder: (context, state) {
-                      final authorArticles = state is AuthorLoaded
-                          ? state.articles
-                          : const <EditorialNewsItem>[];
+          child: BlocBuilder<AuthorCubit, AuthorState>(
+            builder: (context, state) {
+              final authorArticles = state is AuthorLoaded
+                  ? state.articles
+                  : const <EditorialNewsItem>[];
 
-                      return Column(
+              String? effectiveAvatar = authorAvatar;
+              if ((effectiveAvatar == null || effectiveAvatar.trim().isEmpty) &&
+                  state is AuthorLoaded &&
+                  state.articles.isNotEmpty) {
+                effectiveAvatar = state.articles.first.authorAvatar;
+              }
+              if (effectiveAvatar == null || effectiveAvatar.trim().isEmpty) {
+                effectiveAvatar = AppConstants.defaultAvatarUrl;
+              }
+
+              return CustomScrollView(
+                slivers: [
+                  const AuthorAppBar(),
+                  AuthorPersonalInfo(
+                    authorName: authorName,
+                    authorRole: authorRole,
+                    authorAvatar: effectiveAvatar,
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 8.0),
+                    sliver: SliverToBoxAdapter(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
@@ -119,12 +132,12 @@ class _AuthorViewBody extends StatelessWidget {
                           ),
                           const SizedBox(height: 80),
                         ],
-                      );
-                    },
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ],
+                ],
+              );
+            },
           ),
         ),
       ),

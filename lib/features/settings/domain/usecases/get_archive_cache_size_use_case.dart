@@ -16,7 +16,9 @@ class GetArchiveCacheSizeUseCase {
             acc +
             item.title.length +
             item.content.length +
-            item.excerpt.length,
+            item.excerpt.length +
+            (item.coverImageBytes?.length ?? 0) +
+            (item.authorAvatarBytes?.length ?? 0),
       );
       final megabytes = bytes / (1024 * 1024);
       return Success(megabytes);

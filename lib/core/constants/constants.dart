@@ -28,6 +28,8 @@ class AppConstants {
     defaultValue:
         'https://tsqruoqiajkbrdhprfxa.supabase.co/functions/v1/auth-confirm',
   );
+  static const String defaultAvatarUrl =
+      'https://tsqruoqiajkbrdhprfxa.supabase.co/storage/v1/object/public/avatars/defaultAvatar.png';
 }
 
 const String isOnboardingSeenKey = AppConstants.isOnboardingSeenKey;

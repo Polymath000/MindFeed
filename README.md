@@ -102,10 +102,10 @@ lib/
 
 ```bash
 # Debug build
-flutter build apk --debug
+flutter build apk --debug --dart-define-from-file=.env
 
-# Release build
-flutter build apk --release
+# Release build (with obfuscation, split debug info & environment config)
+flutter build apk --release --dart-define-from-file=.env --obfuscate --split-debug-info=build/app/outputs/symbols
 ```
 
 ## Recent Changes

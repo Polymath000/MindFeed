@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:mind_feed/core/constants/app_colors.dart';
-import 'package:mind_feed/core/constants/app_icons.dart';
-import 'package:mind_feed/core/constants/app_images.dart';
+import 'package:mind_feed/core/widgets/editorial_avatar.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_cubit.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_state.dart';
 
@@ -12,6 +12,8 @@ class ProfileAvatarAndStats extends StatelessWidget {
   final String userSubtitle;
   final int articlesCount;
   final int followingCount;
+  final bool isUploadingAvatar;
+  final VoidCallback? onTapAvatar;
 
   const ProfileAvatarAndStats({
     super.key,
@@ -20,6 +22,8 @@ class ProfileAvatarAndStats extends StatelessWidget {
     required this.userSubtitle,
     required this.articlesCount,
     required this.followingCount,
+    this.isUploadingAvatar = false,
+    this.onTapAvatar,
   });
 
   @override
@@ -27,40 +31,61 @@ class ProfileAvatarAndStats extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          padding: const EdgeInsets.all(3),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.cream, width: 2),
-          ),
-          child: ClipOval(
-            child: avatarUrl != null && avatarUrl!.isNotEmpty
-                ? Image.network(
-                    avatarUrl!,
-                    width: 96,
-                    height: 96,
-                    cacheWidth: 288,
-                    cacheHeight: 288,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) => const CircleAvatar(
-                      radius: 48,
-                      backgroundColor: AppColors.blush,
-                      child: Icon(AppIcons.personAlt, size: 48, color: AppColors.ink),
+        GestureDetector(
+          onTap: isUploadingAvatar ? null : onTapAvatar,
+          behavior: HitTestBehavior.opaque,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppColors.cream, width: 2),
+                ),
+                child: EditorialAvatar(
+                  avatarUrl: avatarUrl,
+                  size: 96,
+                  fallbackName: displayName,
+                ),
+              ),
+              if (isUploadingAvatar)
+                Positioned.fill(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.blackAlpha115,
                     ),
-                  )
-                : Image.asset(
-                    Assets.assetsImagesWadeAvatar,
-                    width: 96,
-                    height: 96,
-                    cacheWidth: 288,
-                    cacheHeight: 288,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) => const CircleAvatar(
-                      radius: 48,
-                      backgroundColor: AppColors.blush,
-                      child: Icon(AppIcons.personAlt, size: 48, color: AppColors.ink),
+                    alignment: Alignment.center,
+                    child: const SizedBox(
+                      width: 28,
+                      height: 28,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(AppColors.cream),
+                      ),
                     ),
                   ),
+                ),
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: AppColors.charcoal,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.cream, width: 2),
+                  ),
+                  child: const Icon(
+                    Icons.camera_alt_rounded,
+                    size: 16,
+                    color: AppColors.cream,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         if (displayName.isNotEmpty) ...[
