@@ -261,8 +261,9 @@ class ArticleValidator {
       return 'Tags must be unique';
     }
     if (allowedTagNames.isNotEmpty) {
+      final allowedSet = allowedTagNames.map((t) => t.toLowerCase()).toSet();
       for (final tag in tags) {
-        if (!allowedTagNames.contains(tag)) {
+        if (!allowedSet.contains(tag.toLowerCase())) {
           return "Tag '$tag' is not in the allowed tags list";
         }
       }

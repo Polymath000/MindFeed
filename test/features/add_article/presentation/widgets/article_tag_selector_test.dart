@@ -48,16 +48,104 @@ void main() {
     );
   }
 
-  testWidgets('renders add_tag_button and available tags', (tester) async {
+  testWidgets('renders tag_search_field and add_tag_button', (tester) async {
     await cubit.initialize();
     await tester.pumpWidget(buildTestWidget());
     await tester.pumpAndSettle();
 
+    expect(find.byKey(const Key('tag_search_field')), findsOneWidget);
     expect(find.byKey(const Key('add_tag_button')), findsOneWidget);
     expect(find.text('Add Tag'), findsOneWidget);
+    expect(
+      find.text('No tags selected yet (select between 1 and 5 tags).'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('typing in tag_search_field displays filtered suggestions and selects tag', (
+    tester,
+  ) async {
+    await cubit.initialize();
+    await tester.pumpWidget(buildTestWidget());
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const Key('tag_search_field')),
+      'flut',
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('suggested_tag_flutter')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('suggested_tag_flutter')));
+    await tester.pumpAndSettle();
+
     expect(find.byKey(const Key('tag_chip_flutter')), findsOneWidget);
-    expect(find.byKey(const Key('tag_chip_dart')), findsOneWidget);
-    expect(find.byKey(const Key('tag_chip_ai')), findsOneWidget);
+    expect(cubit.state.selectedTags, contains('flutter'));
+  });
+
+  testWidgets('typing a new tag in search field allows adding via new tag chip', (
+    tester,
+  ) async {
+    await cubit.initialize();
+    await tester.pumpWidget(buildTestWidget());
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const Key('tag_search_field')),
+      'cybersecurity',
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('add_new_tag_chip')), findsOneWidget);
+    expect(find.text('Add "#cybersecurity"'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('add_new_tag_chip')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('tag_chip_cybersecurity')), findsOneWidget);
+    expect(cubit.state.selectedTags, contains('cybersecurity'));
+  });
+
+  testWidgets('submitting search field directly adds tag', (tester) async {
+    await cubit.initialize();
+    await tester.pumpWidget(buildTestWidget());
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const Key('tag_search_field')),
+      'neuroscience',
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('submit_tag_search_button')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('tag_chip_neuroscience')), findsOneWidget);
+    expect(cubit.state.selectedTags, contains('neuroscience'));
+  });
+
+  testWidgets('can remove a selected tag by tapping its delete icon', (
+    tester,
+  ) async {
+    await cubit.initialize();
+    cubit.onTagToggled('flutter');
+    await tester.pumpWidget(buildTestWidget());
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('tag_chip_flutter')), findsOneWidget);
+    expect(cubit.state.selectedTags, contains('flutter'));
+
+    // Find the close delete icon within the tag chip
+    final deleteIcon = find.descendant(
+      of: find.byKey(const Key('tag_chip_flutter')),
+      matching: find.byType(Icon),
+    );
+    await tester.tap(deleteIcon);
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('tag_chip_flutter')), findsNothing);
+    expect(cubit.state.selectedTags.contains('flutter'), isFalse);
   });
 
   testWidgets('tapping add_tag_button opens AddTagDialog and creates new tag', (
@@ -76,14 +164,14 @@ void main() {
 
     await tester.enterText(
       find.byKey(const Key('add_tag_text_field')),
-      'cybersecurity',
+      'robotics',
     );
     await tester.tap(find.byKey(const Key('add_tag_confirm_button')));
     await tester.pumpAndSettle();
 
     expect(find.text('Add New Tag'), findsNothing);
-    expect(find.byKey(const Key('tag_chip_cybersecurity')), findsOneWidget);
-    expect(cubit.state.selectedTags, contains('cybersecurity'));
+    expect(find.byKey(const Key('tag_chip_robotics')), findsOneWidget);
+    expect(cubit.state.selectedTags, contains('robotics'));
   });
 
   testWidgets('cancelling AddTagDialog does not add a tag', (tester) async {
