@@ -308,6 +308,19 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
     - Provides a clean top bar with only the Back button (`_BackButton`, `preview_back_button`) to return directly to the editor or drafts list.
     - Omit engagement action bars (`ArticleActionBarSection` for likes, bookmarks, and downloads) and floating auto-scroll controls (`ArticleSlowScrollBarSection`), preventing extraneous interactions on draft content.
 
+## 10. Production IndexedStack Navigation & Shell Hardening (`MainView`)
+- **System / Hardware Back Button Navigation (`PopScope`)**:
+  - Integrated `PopScope(canPop: _selectedIndex == 0)` so that pressing the Android back button / predictive back gesture from any non-home tab (`Search`, `Saved`, `Profile`) navigates directly back to `Home` (`_selectedIndex = 0`). Exiting the app only occurs when pressing back while on `Home`.
+- **Ghost Input / Keyboard Dismissal**:
+  - Added `FocusScope.of(context).unfocus()` on tab transition so open keyboards (e.g., from `SearchView`) do not remain visible across different tabs.
+- **Widget Tree Caching**:
+  - Replaced ad-hoc `builder()` invocations in `build()` with an instantiated cache (`_cachedTabs[index] ??= ...`), preventing widget reconstruction and unnecessary sub-tree churn on each rebuild.
+- **Active Tab Re-selection Handling**:
+  - Added `_handleSameTabTapped(index)` to handle re-tapping the active tab (refreshing saved articles and supporting future scroll-to-top behaviors).
+- **GPU & Animation Performance**:
+  - Preserved lazy mounting (`_visitedTabs`), `TickerMode(enabled: isSelected)` to freeze hidden tab tickers, and `RepaintBoundary` to prevent cross-layer redraws.
+
+
 
 
 

@@ -408,6 +408,11 @@ void main() {
     await tester.tap(profileNavFinder);
     await tester.pump();
     expect(find.byType(ProfileView), findsOneWidget);
+
+    // System back navigates from Profile tab back to Home tab via PopScope history
+    await tester.binding.handlePopRoute();
+    await tester.pump();
+    expect(find.byType(HomeView), findsOneWidget);
   });
 
   testWidgets('settings renders paper aesthetic sections and preferences', (
