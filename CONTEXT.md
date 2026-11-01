@@ -282,5 +282,10 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
      graphify cluster-only .
      ```
 
+## 7. Android Release Configuration & Network Permissions
+- **Release Manifest Internet Permissions (`android/app/src/main/AndroidManifest.xml`)**:
+  - Added `android.permission.INTERNET` and `android.permission.ACCESS_NETWORK_STATE` to `android/app/src/main/AndroidManifest.xml`.
+  - While Flutter's template includes `INTERNET` in `android/app/src/debug/AndroidManifest.xml` and `android/app/src/profile/AndroidManifest.xml` for debug tools, release builds only merge the `main` manifest. Declaring these permissions in `main` ensures release builds (`flutter build apk --release`) can perform DNS lookups, authenticate via Supabase Auth endpoints, and query network status.
+
 
 
