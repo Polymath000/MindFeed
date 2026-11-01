@@ -156,14 +156,22 @@ sealed class ArticleStateTransformers {
   }
 
   static AddArticleState applyCustomTag(AddArticleState state, String rawTag) {
-    final normalized = rawTag
-        .trim()
-        .toLowerCase()
-        .replaceAll(RegExp(r'^#+'), '')
-        .replaceAll(RegExp(r'\s+'), '-');
+    final cleaned = rawTag.trim().replaceAll(RegExp(r'^#+'), '').trim();
+    final normalized = cleaned.toLowerCase().replaceAll(RegExp(r'\s+'), '-');
     if (normalized.isEmpty || normalized.length > 30) return state;
+
     final updatedAvailable = List<TagEntity>.from(state.availableTags);
-    if (!updatedAvailable.any((t) => t.name.toLowerCase() == normalized)) {
+    final match = updatedAvailable
+        .where(
+          (t) =>
+              t.name.toLowerCase() == normalized ||
+              t.slug.toLowerCase() == normalized,
+        )
+        .firstOrNull;
+
+    final tagName = match?.name ?? normalized;
+
+    if (match == null) {
       updatedAvailable.add(
         TagEntity(
           id: 'custom_${DateTime.now().millisecondsSinceEpoch}_$normalized',
@@ -173,8 +181,8 @@ sealed class ArticleStateTransformers {
       );
     }
     final updatedSelected = List<String>.from(state.selectedTags);
-    if (!updatedSelected.contains(normalized) && updatedSelected.length < 5) {
-      updatedSelected.add(normalized);
+    if (!updatedSelected.contains(tagName) && updatedSelected.length < 5) {
+      updatedSelected.add(tagName);
     }
     return state.copyWith(
       availableTags: updatedAvailable,

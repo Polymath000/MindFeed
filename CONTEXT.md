@@ -287,5 +287,18 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
   - Added `android.permission.INTERNET` and `android.permission.ACCESS_NETWORK_STATE` to `android/app/src/main/AndroidManifest.xml`.
   - While Flutter's template includes `INTERNET` in `android/app/src/debug/AndroidManifest.xml` and `android/app/src/profile/AndroidManifest.xml` for debug tools, release builds only merge the `main` manifest. Declaring these permissions in `main` ensures release builds (`flutter build apk --release`) can perform DNS lookups, authenticate via Supabase Auth endpoints, and query network status.
 
+## 8. Publishing Tags Refactor & Custom Tag Creation (`refactor/publish-article`)
+- **Tags Search Bar & Autocomplete (`lib/features/add_article/presentation/widgets/article_tag_selector.dart`)**:
+  - Replaced static cloud of chip selections with a reactive tag search bar (`tag_search_field`) with real-time matching against available tags.
+  - Selected tags are presented as removable chips with close buttons (`InputChip`, `tag_chip_$tag`), showing active counter `$count / 5 selected`.
+  - Added inline custom tag creation (`add_new_tag_chip`, submit button, and keyboard done action) directly from the search bar, alongside dialog fallback.
+- **Tag Validation & State Transformation (`lib/features/add_article/domain/helpers/`)**:
+  - Updated `ArticleStateTransformers.applyCustomTag` to match existing tags across name and slug without duplication.
+  - Updated `ArticleValidator.validateTags` to perform case-insensitive validation against `allowedTagNames`.
+- **Backend & Remote Data Source Integration**:
+  - Added migration `supabase/migrations/20261101114500_support_custom_tags_and_auto_catalog.sql` granting authenticated users INSERT policy on `fixed_tags` and upgrading `check_article_tags()` trigger to auto-catalog custom tags into `public.fixed_tags`.
+  - Added `_ensureTagsExist` in `ArticlesRemoteDataSourceImpl.saveDraft` and `updateArticle` to synchronize tags with `fixed_tags`.
+
+
 
 

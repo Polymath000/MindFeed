@@ -426,6 +426,26 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
     return response != null;
   }
 
+  Future<void> _ensureTagsExist(List<dynamic>? tags) async {
+    if (tags == null || tags.isEmpty) return;
+    try {
+      for (final raw in tags) {
+        final tag = raw.toString().trim();
+        if (tag.isEmpty) continue;
+        final slug = tag
+            .toLowerCase()
+            .replaceAll(RegExp(r'[^a-z0-9]+'), '-')
+            .replaceAll(RegExp(r'^-+|-+$'), '');
+        await _client.from('fixed_tags').upsert(
+          {'name': tag, 'slug': slug},
+          onConflict: 'name',
+        );
+      }
+    } catch (_) {
+      // Ignored: database triggers or policies may handle or restrict direct inserts
+    }
+  }
+
   @override
   Future<ArticleModel> saveDraft(Map<String, dynamic> draftData) async {
     final payload = Map<String, dynamic>.from(draftData);
@@ -435,6 +455,8 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
     payload.remove('likes_count');
     payload.remove('author_rating_avg');
     payload.remove('author_rating_count');
+
+    await _ensureTagsExist(payload['tags'] as List?);
 
     try {
       final response = await _client
@@ -478,6 +500,8 @@ class ArticlesRemoteDataSourceImpl implements ArticlesRemoteDataSource {
     payload.remove('likes_count');
     payload.remove('author_rating_avg');
     payload.remove('author_rating_count');
+
+    await _ensureTagsExist(payload['tags'] as List?);
 
     final response = await _client
         .from('articles')
