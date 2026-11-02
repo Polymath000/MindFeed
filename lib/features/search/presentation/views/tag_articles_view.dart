@@ -10,6 +10,8 @@ import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/features/search/presentation/controllers/tag_articles_cubit/tag_articles_cubit.dart';
 import 'package:mind_feed/features/search/presentation/controllers/tag_articles_cubit/tag_articles_state.dart';
 
+import '../widgets/search_results_view.dart';
+
 class TagArticlesView extends StatelessWidget {
   final TagArticlesCubit? cubit;
   final String tag;
@@ -68,8 +70,9 @@ class _TagArticlesBody extends StatelessWidget {
           child: BlocBuilder<TagArticlesCubit, TagArticlesState>(
             builder: (context, state) {
               if (state is TagArticlesLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(color: AppColors.cream),
+                return ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                  children: const [SearchLoadingView()],
                 );
               }
 

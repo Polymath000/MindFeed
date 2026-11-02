@@ -1,16 +1,60 @@
 import 'package:flutter/material.dart';
+
+import 'package:skeletonizer/skeletonizer.dart';
+
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/design/editorial_shimmer.dart';
+import 'package:mind_feed/features/profile/presentation/widgets/custom_article_card_of_profile.dart';
 
 class ProfileArticlesLoadingView extends StatelessWidget {
   const ProfileArticlesLoadingView({super.key});
 
+  static final List<EditorialNewsItem> _placeholderArticles = [
+    EditorialNewsItem(
+      id: 'profile_skeleton_1',
+      badge: 'ESSAY',
+      badgeColor: AppColors.creamDark,
+      title: 'Exploring the architecture of modular systems and structured thought',
+      updated: 'Updated recently',
+      authorName: 'MindFeed Author',
+      authorRole: 'Editorial Contributor',
+      authorAvatar: '',
+      excerpt:
+          'A comprehensive investigation into cognitive workflows, intentional reading, and sustainable publishing habits.',
+      color: AppColors.cream,
+      status: 'published',
+      readingTimeMinutes: 5,
+    ),
+    EditorialNewsItem(
+      id: 'profile_skeleton_2',
+      badge: 'CULTURE',
+      badgeColor: AppColors.creamDark,
+      title: 'Reflections on deliberate writing and typographical craftsmanship',
+      updated: 'Updated today',
+      authorName: 'MindFeed Author',
+      authorRole: 'Columnist',
+      authorAvatar: '',
+      excerpt:
+          'Examining the quiet resonance between editorial typography, digital clarity, and disciplined prose.',
+      color: AppColors.sand,
+      status: 'published',
+      readingTimeMinutes: 4,
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 32.0),
-      child: Center(
-        child: CircularProgressIndicator(color: AppColors.cream),
+    return Skeletonizer(
+      enabled: true,
+      effect: EditorialShimmer.paperEffect,
+      child: IgnorePointer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: _placeholderArticles
+              .map((item) => CustomArticleCardOfProfile(item: item))
+              .toList(),
+        ),
       ),
     );
   }

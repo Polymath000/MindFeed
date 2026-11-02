@@ -65,6 +65,20 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
       return;
     }
 
+    if (!isClosed) {
+      emit(ProfileInfoLoading(
+        displayName: state.displayName,
+        userSubtitle: state.userSubtitle,
+        avatarUrl: state.avatarUrl,
+        followingCount: state.followingCount,
+        followersCount: state.followersCount,
+        followingAuthorsCount: state.followingAuthorsCount,
+        articlesCount: state.articlesCount,
+        isUploadingAvatar: state.isUploadingAvatar,
+        avatarErrorMessage: null,
+      ));
+    }
+
     var currentName = state.displayName;
     var currentBio = state.userSubtitle;
     var currentAvatar = state.avatarUrl;

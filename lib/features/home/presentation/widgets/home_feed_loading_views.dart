@@ -7,16 +7,15 @@ import 'package:mind_feed/core/constants/app_text_styles.dart';
 import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/design/editorial_card_stack.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/design/editorial_shimmer.dart';
 
 import 'home_lead_story_section.dart';
 
 class HomeFeedLoadingView extends StatelessWidget {
   const HomeFeedLoadingView({super.key});
 
-  static const ShimmerEffect editorialShimmerEffect = ShimmerEffect(
-    baseColor: AppColors.greyBrown,
-    highlightColor: AppColors.creamDark,
-  );
+  static const ShimmerEffect editorialShimmerEffect =
+      EditorialShimmer.paperEffect;
 
   static final List<EditorialNewsItem> _placeholderStories = [
     EditorialNewsItem(

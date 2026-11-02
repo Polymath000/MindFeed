@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/design/editorial_shimmer.dart';
 import 'package:mind_feed/features/author/presentation/controllers/author_cubit/author_cubit.dart';
 import 'package:mind_feed/features/author/presentation/controllers/author_cubit/author_state.dart';
 import 'package:mind_feed/features/author/presentation/widgets/article_card_of_author.dart';
@@ -132,6 +134,7 @@ class _AuthorViewBody extends StatelessWidget {
 
   Widget _buildHeaderSliver(BuildContext context, AuthorState state) {
     final cubit = context.read<AuthorCubit>();
+    final isLoading = state is AuthorLoading;
 
     final (
       displayName,
@@ -178,6 +181,23 @@ class _AuthorViewBody extends StatelessWidget {
           state.isFollowLoading,
           state.canRate,
         ),
+      AuthorLoading() => (
+          authorName.isNotEmpty ? authorName : 'MindFeed Columnist',
+          (authorRole != null && authorRole!.isNotEmpty)
+              ? authorRole!
+              : 'Editorial columnist covering technology, science, and culture.',
+          '',
+          0,
+          0,
+          0.0,
+          0,
+          0,
+          const ['Technology', 'Editorial'],
+          false,
+          false,
+          false,
+          false,
+        ),
       _ => (
           authorName.isNotEmpty ? authorName : 'MindFeed Author',
           authorRole ?? '',
@@ -196,22 +216,29 @@ class _AuthorViewBody extends StatelessWidget {
     };
 
     return SliverToBoxAdapter(
-      child: AuthorDossierHeader(
-        displayName: displayName,
-        bio: bio,
-        avatarUrl: avatarUrl,
-        storiesCount: storiesCount,
-        followersCount: followersCount,
-        ratingAvg: ratingAvg,
-        ratingCount: ratingCount,
-        userStars: userStars,
-        topics: topics,
-        canFollow: canFollow,
-        isFollowing: isFollowing,
-        isFollowLoading: isFollowLoading,
-        canRate: canRate,
-        onToggleFollow: () => cubit.toggleFollow(),
-        onRate: (stars) => cubit.rateAuthor(stars),
+      child: Skeletonizer(
+        enabled: isLoading,
+        effect: EditorialShimmer.darkEffect,
+        child: IgnorePointer(
+          ignoring: isLoading,
+          child: AuthorDossierHeader(
+            displayName: displayName,
+            bio: bio,
+            avatarUrl: avatarUrl,
+            storiesCount: storiesCount,
+            followersCount: followersCount,
+            ratingAvg: ratingAvg,
+            ratingCount: ratingCount,
+            userStars: userStars,
+            topics: topics,
+            canFollow: canFollow,
+            isFollowing: isFollowing,
+            isFollowLoading: isFollowLoading,
+            canRate: canRate,
+            onToggleFollow: () => cubit.toggleFollow(),
+            onRate: (stars) => cubit.rateAuthor(stars),
+          ),
+        ),
       ),
     );
   }

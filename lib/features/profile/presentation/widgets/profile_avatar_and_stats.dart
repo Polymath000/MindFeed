@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/design/editorial_shimmer.dart';
 import 'package:mind_feed/core/widgets/editorial_avatar.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_cubit.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_state.dart';
@@ -43,37 +45,22 @@ class ProfileAvatarAndStats extends StatelessWidget {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              Container(
-                padding: const EdgeInsets.all(3),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.cream, width: 2),
-                ),
-                child: EditorialAvatar(
-                  avatarUrl: avatarUrl,
-                  size: 96,
-                  fallbackName: displayName,
-                ),
-              ),
-              if (isUploadingAvatar)
-                Positioned.fill(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.blackAlpha115,
-                    ),
-                    alignment: Alignment.center,
-                    child: const SizedBox(
-                      width: 28,
-                      height: 28,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(AppColors.cream),
-                      ),
-                    ),
+              Skeletonizer(
+                enabled: isUploadingAvatar,
+                effect: EditorialShimmer.darkEffect,
+                child: Container(
+                  padding: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.cream, width: 2),
+                  ),
+                  child: EditorialAvatar(
+                    avatarUrl: avatarUrl,
+                    size: 96,
+                    fallbackName: displayName,
                   ),
                 ),
+              ),
               Positioned(
                 right: 0,
                 bottom: 0,

@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
+import 'package:mind_feed/core/design/editorial_shimmer.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_info_cubit.dart';
@@ -112,16 +114,28 @@ class _PersonalInformationContent extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        return ProfileAvatarAndStats(
-          avatarUrl: state.avatarUrl,
-          displayName: state.displayName,
-          userSubtitle: state.userSubtitle,
-          articlesCount: state.articlesCount,
-          followingCount: state.followingCount,
-          followersCount: state.followersCount,
-          followingAuthorsCount: state.followingAuthorsCount,
-          isUploadingAvatar: state.isUploadingAvatar,
-          onTapAvatar: () => _pickAndUploadAvatar(context),
+        final isLoading = state is ProfileInfoLoading;
+        return Skeletonizer(
+          enabled: isLoading,
+          effect: EditorialShimmer.darkEffect,
+          child: IgnorePointer(
+            ignoring: isLoading,
+            child: ProfileAvatarAndStats(
+              avatarUrl: isLoading ? '' : state.avatarUrl,
+              displayName: isLoading && state.displayName.isEmpty
+                  ? 'MindFeed Writer'
+                  : state.displayName,
+              userSubtitle: isLoading && state.userSubtitle.isEmpty
+                  ? 'Editorial contributor and essayist'
+                  : state.userSubtitle,
+              articlesCount: state.articlesCount,
+              followingCount: state.followingCount,
+              followersCount: state.followersCount,
+              followingAuthorsCount: state.followingAuthorsCount,
+              isUploadingAvatar: state.isUploadingAvatar,
+              onTapAvatar: () => _pickAndUploadAvatar(context),
+            ),
+          ),
         );
       },
     );

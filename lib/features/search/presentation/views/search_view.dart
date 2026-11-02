@@ -162,12 +162,7 @@ class _SearchResultsSection extends StatelessWidget {
     return BlocBuilder<SearchCubit, SearchState>(
       builder: (context, state) {
         if (state is SearchLoading) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 48),
-            child: Center(
-              child: CircularProgressIndicator(color: AppColors.cream),
-            ),
-          );
+          return const SearchLoadingView();
         }
         if (state is SearchError) {
           return SearchErrorView(

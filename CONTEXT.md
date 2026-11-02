@@ -358,6 +358,13 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
   - Added `applyFilters`, `clearFilters`, and `GetArticlesByTagUseCase` support in `SearchCubit` so users can filter by category, tags alone, or combined category + tags directly from the dialog.
 - **Unified Black Category Badges Across All Article Cards**:
   - Standardized category badge backgrounds to pure black (`AppColors.black`) with high-contrast white labels (`AppColors.white`) and centralized `AppBorders` tokens across `EditorialCard`, `HomeSecondaryStoryTile`, `CustomArticleCardOfProfile`, `ArticleCardOfAuthor`, and `DownloadedArticleCardTile`, while preserving `EditorialNewsItem.badgeColor` data mapping for non-card surfaces.
+- **Skeletonizer Shimmer Loading Across Saved Articles, Profile, Search & Author Pages**:
+  - Created centralized `EditorialShimmer` (`paperEffect` & `darkEffect` in `lib/core/design/editorial_shimmer.dart`) shared across `HomeFeedLoadingView` and all loading surfaces.
+  - Replaced `CircularProgressIndicator` loading spinners with `Skeletonizer` shimmer views matching each screen's real editorial layout:
+    - **Saved Articles (`ArticlesSaved`)**: `SavedArticlesLoadingView` skeletonizing `EditorialSavedStack`.
+    - **Profile (`ProfileView`)**: `ProfileInfoLoading` emission in `ProfileInfoCubit.loadProfileData`, `Skeletonizer` wrapping `ProfileAvatarAndStats` (and avatar upload state) in `PersonalInfromation`, and `ProfileArticlesLoadingView` skeletonizing `CustomArticleCardOfProfile` cards.
+    - **Search (`SearchView` & `TagArticlesView`)**: `SearchLoadingView` skeletonizing `EditorialCard` results.
+    - **Author (`AuthorView`)**: `Skeletonizer` wrapping `AuthorDossierHeader` during `AuthorLoading` and `AuthorLoadingView` skeletonizing the `'Published Stories'` header and `ArticleCardOfAuthor` cards.
 
 
 
