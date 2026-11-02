@@ -205,6 +205,36 @@ void main() {
       expect(unfollowedState.followersCount, equals(10));
     });
 
+    test('toggleFollow works on seeded editorial authors without UUID authorId',
+        () async {
+      const seededArticle = ArticleEntity(
+        id: 'seed-1',
+        authorId: null,
+        title: 'James Webb Space Telescope Detects Water',
+        slug: 'jwst-water',
+        excerpt: 'Spectroscopic observations...',
+        authorName: 'Dr. Elena Rostova',
+        badge: 'SPACE',
+        status: 'published',
+      );
+      fakeArticlesRepo.feedArticles = [seededArticle];
+      fakeFollowRepo.followersCount = 4;
+      fakeFollowRepo.isFollowing = false;
+
+      await cubit.loadAuthorArticles('Dr. Elena Rostova');
+      final initialState = cubit.state as AuthorLoaded;
+      expect(initialState.canFollow, isTrue);
+      expect(initialState.authorId, isNull);
+      expect(initialState.authorKey, equals('dr. elena rostova'));
+
+      await cubit.toggleFollow();
+      final followedState = cubit.state as AuthorLoaded;
+      expect(followedState.isFollowing, isTrue);
+      expect(followedState.followersCount, equals(5));
+      expect(followedState.feedbackMessage, equals('Following Dr. Elena Rostova'));
+      expect(fakeFollowRepo.lastAuthorKey, equals('dr. elena rostova'));
+    });
+
     test('rateAuthor updates userStars, ratingAvg, and ratingCount live',
         () async {
       fakeArticlesRepo.feedArticles = [publishedArticle1];

@@ -79,23 +79,36 @@ class LoadAuthorProfileDossierUseCase {
       }
     }
 
+    final hasConcreteIdentity =
+        (resolvedAuthorId != null && resolvedAuthorId.isNotEmpty) ||
+        authorName.trim().isNotEmpty ||
+        publishedArticles.isNotEmpty;
+
+    final authorKey = hasConcreteIdentity
+        ? AuthorFollowValidator.resolveAuthorKey(
+            authorId: resolvedAuthorId,
+            authorName: displayName,
+          )
+        : '';
+
     final followSummary = await _fetchFollowSummary(
       targetUserId: resolvedAuthorId,
+      authorKey: authorKey,
+      authorName: displayName,
       viewerUserId: viewerUserId,
     );
 
     final canFollow = AuthorFollowValidator.canShowFollowButton(
       authorId: resolvedAuthorId,
+      authorKey: authorKey,
       viewerUserId: viewerUserId,
     );
-    final canRate = !AuthorFollowValidator.isSelf(
-      authorId: resolvedAuthorId,
-      viewerUserId: viewerUserId,
-    );
-
-    final authorKey = (resolvedAuthorId != null && resolvedAuthorId.isNotEmpty)
-        ? resolvedAuthorId
-        : displayName.trim().toLowerCase();
+    final canRate = hasConcreteIdentity &&
+        !AuthorFollowValidator.isSelf(
+          authorId: resolvedAuthorId,
+          authorKey: authorKey,
+          viewerUserId: viewerUserId,
+        );
 
     final ratingSummary = await _fetchRatingSummary(
       authorKey: authorKey,
@@ -214,15 +227,25 @@ class LoadAuthorProfileDossierUseCase {
 
   Future<AuthorFollowSummary> _fetchFollowSummary({
     String? targetUserId,
+    String? authorKey,
+    String? authorName,
     String? viewerUserId,
   }) async {
+    final resolvedKey = AuthorFollowValidator.resolveAuthorKey(
+      authorId: targetUserId,
+      authorKey: authorKey,
+      authorName: authorName,
+    );
     if (_getAuthorFollowSummaryUseCase == null ||
-        !AuthorFollowValidator.isValidUuid(targetUserId)) {
+        (resolvedKey.isEmpty &&
+            !AuthorFollowValidator.isValidUuid(targetUserId))) {
       return const AuthorFollowSummary();
     }
 
     final res = await _getAuthorFollowSummaryUseCase(
       targetUserId: targetUserId,
+      authorKey: resolvedKey,
+      authorName: authorName,
       viewerUserId: viewerUserId,
     );
     return res.when(

@@ -77,6 +77,7 @@ final class AuthorLoaded extends AuthorState {
     int? ratingCount,
     int? userStars,
     String? feedbackMessage,
+    bool clearFeedbackMessage = false,
   }) {
     return AuthorLoaded(
       articles: articles ?? this.articles,
@@ -97,7 +98,9 @@ final class AuthorLoaded extends AuthorState {
       ratingAvg: ratingAvg ?? this.ratingAvg,
       ratingCount: ratingCount ?? this.ratingCount,
       userStars: userStars ?? this.userStars,
-      feedbackMessage: feedbackMessage ?? this.feedbackMessage,
+      feedbackMessage: clearFeedbackMessage
+          ? null
+          : (feedbackMessage ?? this.feedbackMessage),
     );
   }
 
@@ -185,6 +188,7 @@ final class AuthorEmpty extends AuthorState {
     int? ratingCount,
     int? userStars,
     String? feedbackMessage,
+    bool clearFeedbackMessage = false,
   }) {
     return AuthorEmpty(
       articles: articles ?? this.articles,
@@ -205,7 +209,9 @@ final class AuthorEmpty extends AuthorState {
       ratingAvg: ratingAvg ?? this.ratingAvg,
       ratingCount: ratingCount ?? this.ratingCount,
       userStars: userStars ?? this.userStars,
-      feedbackMessage: feedbackMessage ?? this.feedbackMessage,
+      feedbackMessage: clearFeedbackMessage
+          ? null
+          : (feedbackMessage ?? this.feedbackMessage),
     );
   }
 

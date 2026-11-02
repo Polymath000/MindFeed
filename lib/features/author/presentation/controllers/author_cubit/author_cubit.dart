@@ -165,27 +165,45 @@ class AuthorCubit extends Cubit<AuthorState> {
 
   Future<void> toggleFollow() async {
     final s = state;
-    final (canFollow, isFollowLoading, authorId, isFollowing) = switch (s) {
+    final (
+      canFollow,
+      isFollowLoading,
+      authorId,
+      authorKey,
+      displayName,
+      isFollowing,
+    ) = switch (s) {
       AuthorLoaded() => (
           s.canFollow,
           s.isFollowLoading,
           s.authorId,
+          s.authorKey,
+          s.displayName,
           s.isFollowing,
         ),
       AuthorEmpty() => (
           s.canFollow,
           s.isFollowLoading,
           s.authorId,
+          s.authorKey,
+          s.displayName,
           s.isFollowing,
         ),
-      _ => (false, false, null, false),
+      _ => (false, false, null, '', '', false),
     };
 
-    if (!canFollow || isFollowLoading || authorId == null) return;
+    final resolvedKey = AuthorFollowValidator.resolveAuthorKey(
+      authorId: authorId,
+      authorKey: authorKey,
+      authorName: displayName,
+    );
+    if (!canFollow || isFollowLoading || resolvedKey.isEmpty) return;
 
     _updateState(
-      (loaded) => loaded.copyWith(isFollowLoading: true),
-      (empty) => empty.copyWith(isFollowLoading: true),
+      (loaded) =>
+          loaded.copyWith(isFollowLoading: true, clearFeedbackMessage: true),
+      (empty) =>
+          empty.copyWith(isFollowLoading: true, clearFeedbackMessage: true),
     );
 
     if (_toggleAuthorFollowUseCase == null) {
@@ -199,6 +217,8 @@ class AuthorCubit extends Cubit<AuthorState> {
     final result = await _toggleAuthorFollowUseCase(
       followerId: _resolveViewerUserId(),
       authorId: authorId,
+      authorKey: resolvedKey,
+      authorName: displayName,
       currentlyFollowing: isFollowing,
     );
 
@@ -221,16 +241,21 @@ class AuthorCubit extends Cubit<AuthorState> {
       },
       success: (summary) {
         if (!isClosed) {
+          final label = displayName.isNotEmpty ? displayName : 'author';
+          final message =
+              summary.isFollowing ? 'Following $label' : 'Unfollowed $label';
           _updateState(
             (loaded) => loaded.copyWith(
               isFollowLoading: false,
               isFollowing: summary.isFollowing,
               followersCount: summary.followersCount,
+              feedbackMessage: message,
             ),
             (empty) => empty.copyWith(
               isFollowLoading: false,
               isFollowing: summary.isFollowing,
               followersCount: summary.followersCount,
+              feedbackMessage: message,
             ),
           );
         }

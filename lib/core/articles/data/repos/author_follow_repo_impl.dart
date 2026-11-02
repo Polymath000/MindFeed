@@ -17,7 +17,8 @@ class AuthorFollowRepositoryImpl implements AuthorFollowRepository {
 
   @override
   Future<ApiResult<AuthorFollowSummary>> getFollowSummary({
-    required String targetUserId,
+    String? targetUserId,
+    String? authorKey,
     String? viewerUserId,
   }) async {
     if (!await networkInfo.isConnected) {
@@ -26,6 +27,7 @@ class AuthorFollowRepositoryImpl implements AuthorFollowRepository {
     try {
       final summary = await remoteDataSource.getFollowSummary(
         targetUserId: targetUserId,
+        authorKey: authorKey,
         viewerUserId: viewerUserId,
       );
       return Success(summary);
@@ -37,7 +39,9 @@ class AuthorFollowRepositoryImpl implements AuthorFollowRepository {
   @override
   Future<ApiResult<void>> followAuthor({
     required String followerId,
-    required String authorId,
+    required String authorKey,
+    String? authorId,
+    String? authorName,
   }) async {
     if (!await networkInfo.isConnected) {
       return const FailureResult(ServerFailure('You are Offline'));
@@ -45,7 +49,9 @@ class AuthorFollowRepositoryImpl implements AuthorFollowRepository {
     try {
       await remoteDataSource.followAuthor(
         followerId: followerId,
+        authorKey: authorKey,
         authorId: authorId,
+        authorName: authorName,
       );
       return const Success(null);
     } catch (e) {
@@ -56,7 +62,8 @@ class AuthorFollowRepositoryImpl implements AuthorFollowRepository {
   @override
   Future<ApiResult<void>> unfollowAuthor({
     required String followerId,
-    required String authorId,
+    required String authorKey,
+    String? authorId,
   }) async {
     if (!await networkInfo.isConnected) {
       return const FailureResult(ServerFailure('You are Offline'));
@@ -64,6 +71,7 @@ class AuthorFollowRepositoryImpl implements AuthorFollowRepository {
     try {
       await remoteDataSource.unfollowAuthor(
         followerId: followerId,
+        authorKey: authorKey,
         authorId: authorId,
       );
       return const Success(null);

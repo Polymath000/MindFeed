@@ -29,7 +29,8 @@ class _FakeFollowRepo implements AuthorFollowRepository {
 
   @override
   Future<ApiResult<AuthorFollowSummary>> getFollowSummary({
-    required String targetUserId,
+    String? targetUserId,
+    String? authorKey,
     String? viewerUserId,
   }) async {
     if (shouldFail) {
@@ -45,7 +46,9 @@ class _FakeFollowRepo implements AuthorFollowRepository {
   @override
   Future<ApiResult<void>> followAuthor({
     required String followerId,
-    required String authorId,
+    required String authorKey,
+    String? authorId,
+    String? authorName,
   }) async {
     if (shouldFail) {
       return const FailureResult(ServerFailure('Follow request failed'));
@@ -58,7 +61,8 @@ class _FakeFollowRepo implements AuthorFollowRepository {
   @override
   Future<ApiResult<void>> unfollowAuthor({
     required String followerId,
-    required String authorId,
+    required String authorKey,
+    String? authorId,
   }) async {
     if (shouldFail) {
       return const FailureResult(ServerFailure('Unfollow request failed'));
@@ -302,15 +306,22 @@ void main() {
       expect(cubit.state.isFollowingAuthor, isFalse);
     });
 
-    test('initArticle with seeded/non-UUID author sets canFollowAuthor to false', () async {
-      final followRepo = _FakeFollowRepo();
+    test('initArticle with seeded editorial author (null authorId) enables follow via authorKey', () async {
+      final followRepo = _FakeFollowRepo()..isFollowing = false;
       final cubit = _createCubit(followRepo: followRepo);
-      final item = _createItem(authorId: 'seed-author-123');
+      final item = _createItem(
+        authorId: null,
+        authorName: 'Dr. Elena Rostova',
+      );
 
       await cubit.initArticle(item);
 
-      expect(cubit.state.canFollowAuthor, isFalse);
+      expect(cubit.state.canFollowAuthor, isTrue);
       expect(cubit.state.isFollowingAuthor, isFalse);
+
+      await cubit.toggleFollowAuthor();
+      expect(cubit.state.isFollowingAuthor, isTrue);
+      expect(cubit.state.userFeedback, 'Following Dr. Elena Rostova');
     });
 
     test('toggleFollowAuthor follows author and emits success feedback', () async {

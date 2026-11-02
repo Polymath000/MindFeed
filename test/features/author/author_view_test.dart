@@ -180,6 +180,56 @@ void main() {
     await cubitViewingSelf.close();
   });
 
+  testWidgets(
+      'shows follow button and toggles Follow -> Following on seeded editorial author (null authorId)',
+      (tester) async {
+    const seededArticle = ArticleEntity(
+      id: 'seed-elena-1',
+      authorId: null,
+      title: 'Quantum Coherence Achieved at Room Temperature',
+      slug: 'quantum-coherence',
+      excerpt: 'Physicists sustained quantum entanglement...',
+      authorName: 'Dr. Elena Rostova',
+      status: 'published',
+      badge: 'SCIENCE',
+    );
+    fakeArticlesRepo.feedArticles = [seededArticle];
+    fakeFollowRepo.followersCount = 3;
+    fakeFollowRepo.isFollowing = false;
+
+    final dossierUseCase = LoadAuthorProfileDossierUseCase(
+      getHomeFeedUseCase: getHomeFeedUseCase,
+      getAuthorFollowSummaryUseCase: getAuthorFollowSummaryUseCase,
+    );
+    final cubit = AuthorCubit(
+      loadAuthorProfileDossierUseCase: dossierUseCase,
+      toggleAuthorFollowUseCase: toggleAuthorFollowUseCase,
+      viewerUserId: viewerUuid,
+    );
+
+    await tester.pumpWidget(
+      buildTestWidget(
+        cubit,
+        authorName: 'Dr. Elena Rostova',
+        authorRole: 'Astrophysics Lead',
+        authorId: null,
+      ),
+    );
+    await cubit.loadAuthorArticles('Dr. Elena Rostova');
+    await tester.pumpAndSettle();
+
+    expect(find.text('Follow'), findsOneWidget);
+    expect(find.text('3'), findsOneWidget);
+
+    await tester.tap(find.text('Follow'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Following'), findsOneWidget);
+    expect(find.text('4'), findsOneWidget);
+
+    await cubit.close();
+  });
+
   testWidgets('renders dynamic author details properly and share is absent',
       (tester) async {
     final cubit = AuthorCubit(getHomeFeedUseCase: getHomeFeedUseCase);

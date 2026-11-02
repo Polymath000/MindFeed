@@ -140,6 +140,8 @@ class ArticleReaderCubit extends Cubit<ArticleReaderState> {
     );
     final canFollow = AuthorFollowValidator.canShowFollowButton(
       authorId: item.authorId,
+      authorKey: item.authorKey,
+      authorName: item.authorName,
       viewerUserId: _getUserId(),
     );
     emit(ArticleReaderLoaded(
@@ -241,9 +243,18 @@ class ArticleReaderCubit extends Cubit<ArticleReaderState> {
     );
   }
 
+  Future<void> refreshAuthorEngagement() async {
+    final item = state.item;
+    if (item == null || isClosed) return;
+    await _fetchAuthorRating(item);
+    await _fetchAuthorFollowState(item);
+  }
+
   Future<void> _fetchAuthorFollowState(EditorialNewsItem item) async {
     final canFollow = AuthorFollowValidator.canShowFollowButton(
       authorId: item.authorId,
+      authorKey: item.authorKey,
+      authorName: item.authorName,
       viewerUserId: _getUserId(),
     );
     if (isClosed || state is! ArticleReaderLoaded) return;
@@ -255,6 +266,8 @@ class ArticleReaderCubit extends Cubit<ArticleReaderState> {
 
     final res = await _getAuthorFollowSummaryUseCase.call(
       targetUserId: item.authorId,
+      authorKey: item.authorKey,
+      authorName: item.authorName,
       viewerUserId: _getUserId(),
     );
 
@@ -297,12 +310,13 @@ class ArticleReaderCubit extends Cubit<ArticleReaderState> {
   Future<void> toggleFollowAuthor() async {
     if (state is! ArticleReaderLoaded) return;
     final current = state as ArticleReaderLoaded;
-    final authorId = current.article?.authorId;
+    final article = current.article;
     final viewerId = _getUserId();
 
     if (_toggleAuthorFollowUseCase == null ||
         !current.canFollowAuthor ||
-        current.isFollowLoading) {
+        current.isFollowLoading ||
+        article == null) {
       return;
     }
 
@@ -310,7 +324,9 @@ class ArticleReaderCubit extends Cubit<ArticleReaderState> {
 
     final res = await _toggleAuthorFollowUseCase.call(
       followerId: viewerId,
-      authorId: authorId,
+      authorId: article.authorId,
+      authorKey: article.authorKey,
+      authorName: article.authorName,
       currentlyFollowing: current.isFollowingAuthor,
     );
 

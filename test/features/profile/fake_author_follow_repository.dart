@@ -11,7 +11,8 @@ class FakeAuthorFollowRepository extends Fake implements AuthorFollowRepository 
 
   @override
   Future<ApiResult<AuthorFollowSummary>> getFollowSummary({
-    required String targetUserId,
+    String? targetUserId,
+    String? authorKey,
     String? viewerUserId,
   }) async {
     if (!shouldSucceed) {
@@ -23,7 +24,9 @@ class FakeAuthorFollowRepository extends Fake implements AuthorFollowRepository 
   @override
   Future<ApiResult<void>> followAuthor({
     required String followerId,
-    required String authorId,
+    required String authorKey,
+    String? authorId,
+    String? authorName,
   }) async {
     if (!shouldSucceed) {
       return const FailureResult(ServerFailure('Follow failed'));
@@ -34,7 +37,8 @@ class FakeAuthorFollowRepository extends Fake implements AuthorFollowRepository 
   @override
   Future<ApiResult<void>> unfollowAuthor({
     required String followerId,
-    required String authorId,
+    required String authorKey,
+    String? authorId,
   }) async {
     if (!shouldSucceed) {
       return const FailureResult(ServerFailure('Unfollow failed'));

@@ -47,8 +47,8 @@ class ArticleAuthorSection extends StatelessWidget {
           isFollowLoading: barState.isFollowLoading,
           onToggleFollow: cubit.toggleFollowAuthor,
           onRateAuthor: cubit.rateAuthor,
-          onAuthorTap: () {
-            Navigator.pushNamed(
+          onAuthorTap: () async {
+            await Navigator.pushNamed(
               context,
               AppRoutes.author,
               arguments: AuthorProfileArgs(
@@ -58,6 +58,9 @@ class ArticleAuthorSection extends StatelessWidget {
                 authorId: article.authorId,
               ),
             );
+            if (context.mounted) {
+              await cubit.refreshAuthorEngagement();
+            }
           },
         );
       },

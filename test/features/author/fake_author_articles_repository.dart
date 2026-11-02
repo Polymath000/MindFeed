@@ -57,10 +57,14 @@ class FakeAuthorFollowRepository extends Fake implements AuthorFollowRepository 
   int followersCount = 10;
   bool isFollowing = false;
   bool shouldSucceed = true;
+  String? lastAuthorKey;
+  String? lastAuthorId;
+  String? lastAuthorName;
 
   @override
   Future<ApiResult<AuthorFollowSummary>> getFollowSummary({
-    required String targetUserId,
+    String? targetUserId,
+    String? authorKey,
     String? viewerUserId,
   }) async {
     if (!shouldSucceed) {
@@ -77,11 +81,16 @@ class FakeAuthorFollowRepository extends Fake implements AuthorFollowRepository 
   @override
   Future<ApiResult<void>> followAuthor({
     required String followerId,
-    required String authorId,
+    required String authorKey,
+    String? authorId,
+    String? authorName,
   }) async {
     if (!shouldSucceed) {
       return const FailureResult(ServerFailure('Follow failed'));
     }
+    lastAuthorKey = authorKey;
+    lastAuthorId = authorId;
+    lastAuthorName = authorName;
     isFollowing = true;
     followersCount++;
     return const Success(null);
@@ -90,11 +99,14 @@ class FakeAuthorFollowRepository extends Fake implements AuthorFollowRepository 
   @override
   Future<ApiResult<void>> unfollowAuthor({
     required String followerId,
-    required String authorId,
+    required String authorKey,
+    String? authorId,
   }) async {
     if (!shouldSucceed) {
       return const FailureResult(ServerFailure('Unfollow failed'));
     }
+    lastAuthorKey = authorKey;
+    lastAuthorId = authorId;
     isFollowing = false;
     followersCount = (followersCount > 0) ? followersCount - 1 : 0;
     return const Success(null);

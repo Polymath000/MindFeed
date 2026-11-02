@@ -127,6 +127,35 @@ void main() {
     expect(dossier.canRate, isFalse);
   });
 
+  test('enables canFollow via canonical authorKey for seeded authors without authorId',
+      () async {
+    const seeded = ArticleEntity(
+      id: 'seed-1',
+      authorId: null,
+      authorName: 'Dr. Elena Rostova',
+      title: 'Deep Space Survey',
+      slug: 'deep-space',
+      excerpt: 'JWST findings.',
+      badge: 'SPACE',
+      status: 'published',
+    );
+    fakeArticlesRepo.feedArticles = [seeded];
+    fakeFollowRepo.followersCount = 8;
+
+    final result = await useCase(
+      authorName: 'Dr. Elena Rostova',
+      authorId: null,
+      viewerUserId: viewerUuid,
+    );
+
+    expect(result, isA<Success>());
+    final dossier = (result as Success).data;
+    expect(dossier.authorId, isNull);
+    expect(dossier.authorKey, equals('dr. elena rostova'));
+    expect(dossier.canFollow, isTrue);
+    expect(dossier.followSummary.followersCount, equals(8));
+  });
+
   test('returns FailureResult when fetching articles fails', () async {
     fakeArticlesRepo.shouldSucceed = false;
     fakeArticlesRepo.errorMessage = 'Database down';

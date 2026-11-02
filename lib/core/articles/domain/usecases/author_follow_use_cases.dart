@@ -13,22 +13,55 @@ sealed class AuthorFollowValidator {
     return _uuidPattern.hasMatch(value.trim());
   }
 
+  static String resolveAuthorKey({
+    String? authorId,
+    String? authorKey,
+    String? authorName,
+  }) {
+    if (isValidUuid(authorId)) {
+      return authorId!.trim().toLowerCase();
+    }
+    final trimmedKey = authorKey?.trim().toLowerCase() ?? '';
+    if (trimmedKey.isNotEmpty) return trimmedKey;
+    final trimmedName = authorName?.trim().toLowerCase() ?? '';
+    return trimmedName;
+  }
+
   static bool isSelf({
-    required String? authorId,
+    String? authorId,
+    String? authorKey,
     required String? viewerUserId,
   }) {
-    final trimmedAuthor = authorId?.trim() ?? '';
-    final trimmedViewer = viewerUserId?.trim() ?? '';
-    if (trimmedAuthor.isEmpty || trimmedViewer.isEmpty) return false;
-    return trimmedAuthor.toLowerCase() == trimmedViewer.toLowerCase();
+    final trimmedViewer = viewerUserId?.trim().toLowerCase() ?? '';
+    if (trimmedViewer.isEmpty) return false;
+    final trimmedAuthor = authorId?.trim().toLowerCase() ?? '';
+    if (trimmedAuthor.isNotEmpty && trimmedAuthor == trimmedViewer) {
+      return true;
+    }
+    final trimmedKey = authorKey?.trim().toLowerCase() ?? '';
+    if (trimmedKey.isNotEmpty && trimmedKey == trimmedViewer) {
+      return true;
+    }
+    return false;
   }
 
   static bool canShowFollowButton({
-    required String? authorId,
+    String? authorId,
+    String? authorKey,
+    String? authorName,
     required String? viewerUserId,
   }) {
-    if (!isValidUuid(authorId)) return false;
-    return !isSelf(authorId: authorId, viewerUserId: viewerUserId);
+    final resolvedKey = resolveAuthorKey(
+      authorId: authorId,
+      authorKey: authorKey,
+      authorName: authorName,
+    );
+    if (resolvedKey.isEmpty) return false;
+    return !isSelf(
+      authorId: authorId,
+      authorKey: resolvedKey,
+      viewerUserId: viewerUserId,
+    );
   }
 }
 
@@ -38,14 +71,27 @@ class GetAuthorFollowSummaryUseCase {
   const GetAuthorFollowSummaryUseCase(this.repository);
 
   Future<ApiResult<AuthorFollowSummary>> call({
-    required String? targetUserId,
+    String? targetUserId,
+    String? authorKey,
+    String? authorName,
     String? viewerUserId,
   }) async {
-    if (!AuthorFollowValidator.isValidUuid(targetUserId)) {
+    final resolvedKey = AuthorFollowValidator.resolveAuthorKey(
+      authorId: targetUserId,
+      authorKey: authorKey,
+      authorName: authorName,
+    );
+    final validTargetUuid = AuthorFollowValidator.isValidUuid(targetUserId)
+        ? targetUserId!.trim()
+        : null;
+
+    if (resolvedKey.isEmpty && validTargetUuid == null) {
       return const Success(AuthorFollowSummary());
     }
+
     return repository.getFollowSummary(
-      targetUserId: targetUserId!.trim(),
+      targetUserId: validTargetUuid,
+      authorKey: resolvedKey.isNotEmpty ? resolvedKey : null,
       viewerUserId: AuthorFollowValidator.isValidUuid(viewerUserId)
           ? viewerUserId!.trim()
           : null,
@@ -60,7 +106,9 @@ class ToggleAuthorFollowUseCase {
 
   Future<ApiResult<AuthorFollowSummary>> call({
     required String? followerId,
-    required String? authorId,
+    String? authorId,
+    String? authorKey,
+    String? authorName,
     required bool currentlyFollowing,
   }) async {
     if (!AuthorFollowValidator.isValidUuid(followerId)) {
@@ -68,13 +116,21 @@ class ToggleAuthorFollowUseCase {
         ValidationFailure('Please sign in to follow authors'),
       );
     }
-    if (!AuthorFollowValidator.isValidUuid(authorId)) {
+
+    final resolvedKey = AuthorFollowValidator.resolveAuthorKey(
+      authorId: authorId,
+      authorKey: authorKey,
+      authorName: authorName,
+    );
+    if (resolvedKey.isEmpty) {
       return const FailureResult(
         ValidationFailure('Author profile cannot be followed'),
       );
     }
+
     if (AuthorFollowValidator.isSelf(
       authorId: authorId,
+      authorKey: resolvedKey,
       viewerUserId: followerId,
     )) {
       return const FailureResult(
@@ -83,22 +139,29 @@ class ToggleAuthorFollowUseCase {
     }
 
     final cleanFollower = followerId!.trim();
-    final cleanAuthor = authorId!.trim();
+    final cleanAuthorId = AuthorFollowValidator.isValidUuid(authorId)
+        ? authorId!.trim()
+        : (AuthorFollowValidator.isValidUuid(resolvedKey) ? resolvedKey : null);
+    final cleanAuthorName = authorName?.trim();
 
     final toggleResult = currentlyFollowing
         ? await repository.unfollowAuthor(
             followerId: cleanFollower,
-            authorId: cleanAuthor,
+            authorKey: resolvedKey,
+            authorId: cleanAuthorId,
           )
         : await repository.followAuthor(
             followerId: cleanFollower,
-            authorId: cleanAuthor,
+            authorKey: resolvedKey,
+            authorId: cleanAuthorId,
+            authorName: cleanAuthorName,
           );
 
     return switch (toggleResult) {
       FailureResult(:final failure) => FailureResult(failure),
       Success() => repository.getFollowSummary(
-          targetUserId: cleanAuthor,
+          targetUserId: cleanAuthorId,
+          authorKey: resolvedKey,
           viewerUserId: cleanFollower,
         ),
     };
