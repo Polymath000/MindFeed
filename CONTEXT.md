@@ -320,6 +320,13 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
 - **GPU & Animation Performance**:
   - Preserved lazy mounting (`_visitedTabs`), `TickerMode(enabled: isSelected)` to freeze hidden tab tickers, and `RepaintBoundary` to prevent cross-layer redraws.
 
+## 11. Share Article & Author Profile UI Removal
+- **Removed Placeholder Share Sheet, Article Share Controls & Author Profile Share Button**:
+  - Removed `showEditorialShareSheet` and `_buildShareAction` from `lib/core/design/editorial_design.dart`.
+  - Removed `onShare` callbacks and `'Share article'` action buttons across `EditorialCard`, `EditorialCardStack`, `HomeLeadStoryCard`, `ArticleCard`, `ArticleCardOfAuthor`, `ArticleReaderActionBar`, and `ArticleActionBarSection` (simplifying `ArticleActionBarSection` to a `const` constructor inside `ArticleReaderScrollView`).
+  - Removed the `'Share profile'` action button and mock clipboard `SnackBar` from `AuthorAppBar` (`lib/features/author/presentation/widgets/author_app_bar.dart`).
+  - Updated `test/features/reader/article_view_widget_test.dart` and `test/features/author/author_view_test.dart` to assert that `'Share article'` and `'Share profile'` are no longer rendered.
+
 
 
 

@@ -1,8 +1,9 @@
-import 'package:mind_feed/core/constants/borders.dart';
-import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
+
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/borders.dart';
 
 class ArticleCardOfAuthor extends StatelessWidget {
   const ArticleCardOfAuthor({
@@ -77,14 +78,6 @@ class ArticleCardOfAuthor extends StatelessWidget {
                           isFav
                               ? AppIcons.bookmark
                               : AppIcons.bookmarkBorderRounded,
-                          size: 18,
-                          color: AppColors.softCream,
-                        ),
-                        onPressed: () {},
-                      ),
-                      IconButton(
-                        icon: const Icon(
-                          AppIcons.iosShareRounded,
                           size: 18,
                           color: AppColors.softCream,
                         ),

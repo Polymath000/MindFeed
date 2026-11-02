@@ -164,15 +164,6 @@ class CustomArticleCardOfProfile extends StatelessWidget {
                       onPressed: onDelete,
                     ),
                   ],
-                  IconButton(
-                    icon: const Icon(AppIcons.iosShareRounded, size: 18, color: AppColors.ink),
-                    tooltip: 'Share article',
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Share link copied to clipboard')),
-                      );
-                    },
-                  ),
                 ],
               ),
             ],

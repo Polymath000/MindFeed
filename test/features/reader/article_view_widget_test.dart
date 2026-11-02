@@ -204,7 +204,7 @@ void main() {
     expect(find.bySemanticsLabel('Like article'), findsOneWidget);
     expect(find.bySemanticsLabel('Save article'), findsOneWidget);
     expect(find.bySemanticsLabel('Download article'), findsOneWidget);
-    expect(find.bySemanticsLabel('Share article'), findsOneWidget);
+    expect(find.bySemanticsLabel('Share article'), findsNothing);
   });
 
   testWidgets('ArticleView tapping author star triggers rateAuthor optimistic update', (tester) async {

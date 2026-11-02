@@ -16,14 +16,12 @@ class HomeLeadStoryCard extends StatelessWidget {
     this.onOpen,
     this.onLike,
     this.onSave,
-    this.onShare,
   });
 
   final EditorialNewsItem item;
   final VoidCallback? onOpen;
   final VoidCallback? onLike;
   final VoidCallback? onSave;
-  final VoidCallback? onShare;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +30,6 @@ class HomeLeadStoryCard extends StatelessWidget {
       onOpen: onOpen,
       onLike: onLike,
       onSave: onSave,
-      onShare: onShare,
     );
   }
 }

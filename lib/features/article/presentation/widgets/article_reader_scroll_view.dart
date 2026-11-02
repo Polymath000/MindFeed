@@ -58,7 +58,7 @@ class ArticleReaderScrollView extends StatelessWidget {
           coverImageBytes: article.coverImageBytes,
           overlay: isPreview
               ? null
-              : ArticleActionBarSection(title: article.title),
+              : const ArticleActionBarSection(),
         ),
         const SizedBox(height: 24),
         ArticleReaderMarkdownBody(

@@ -19,7 +19,6 @@ class ArticleReaderActionBar extends StatelessWidget {
     required this.isDownloaded,
     required this.onBookmarkToggle,
     required this.onDownload,
-    required this.onShare,
   });
 
   final bool? isLiked;
@@ -32,7 +31,6 @@ class ArticleReaderActionBar extends StatelessWidget {
   final bool isDownloaded;
   final VoidCallback onBookmarkToggle;
   final VoidCallback onDownload;
-  final VoidCallback onShare;
 
   @override
   Widget build(BuildContext context) {
@@ -73,12 +71,6 @@ class ArticleReaderActionBar extends StatelessWidget {
             icon: isDownloaded ? AppIcons.checkRounded : AppIcons.download,
             label: isDownloaded ? 'Article downloaded' : 'Download article',
             onPressed: onDownload,
-          ),
-          const SizedBox(width: 4),
-          EditorialIconButton(
-            icon: AppIcons.iosShareRounded,
-            label: 'Share article',
-            onPressed: onShare,
           ),
         ],
       ),

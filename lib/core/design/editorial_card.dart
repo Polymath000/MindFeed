@@ -16,7 +16,6 @@ class EditorialCard extends StatelessWidget {
     this.onOpen,
     this.onLike,
     this.onSave,
-    this.onShare,
     this.showActions = true,
     this.backgroundColor,
   });
@@ -25,7 +24,6 @@ class EditorialCard extends StatelessWidget {
   final VoidCallback? onOpen;
   final VoidCallback? onLike;
   final VoidCallback? onSave;
-  final VoidCallback? onShare;
   final bool showActions;
   final Color? backgroundColor;
 
@@ -138,13 +136,6 @@ class EditorialCard extends StatelessWidget {
                     label: 'Save article',
                     light: true,
                     onPressed: onSave,
-                  ),
-                  const SizedBox(width: 6),
-                  EditorialIconButton(
-                    icon: AppIcons.iosShareRounded,
-                    label: 'Share article',
-                    light: true,
-                    onPressed: onShare ?? () => showEditorialShareSheet(context, title: item.title),
                   ),
                 ],
               ),

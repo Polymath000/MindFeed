@@ -77,6 +77,7 @@ void main() {
 
     expect(find.text('Ada Lovelace'), findsOneWidget);
     expect(find.text('Chief Pioneer'), findsOneWidget);
+    expect(find.bySemanticsLabel('Share profile'), findsNothing);
 
     await cubit.close();
   });

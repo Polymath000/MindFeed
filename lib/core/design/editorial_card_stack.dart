@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_card.dart';
-import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 
 class EditorialCardStack extends StatefulWidget {
@@ -15,13 +15,12 @@ class EditorialCardStack extends StatefulWidget {
     this.onSwipeLeft,
     this.onToggleSave,
     this.onToggleLike,
-    this.onShare,
     this.height = 570,
   });
 
   final List<EditorialNewsItem> items;
   final ValueChanged<EditorialNewsItem> onOpenArticle;
-  final ValueChanged<EditorialNewsItem>? onDismiss, onSwipeRight, onSwipeLeft, onToggleSave, onToggleLike, onShare;
+  final ValueChanged<EditorialNewsItem>? onDismiss, onSwipeRight, onSwipeLeft, onToggleSave, onToggleLike;
   final double height;
 
   @override
@@ -213,9 +212,6 @@ class _EditorialCardStackState extends State<EditorialCardStack> with SingleTick
                             widget.onToggleSave?.call(top);
                             _notify(top.isSaved ? 'Saved to reading list' : 'Removed from reading list');
                           },
-                          onShare: () => (widget.onShare != null)
-                              ? widget.onShare!(_cards.first)
-                              : showEditorialShareSheet(context, title: _cards.first.title),
                         ),
                         _buildFeedbackBadge(),
                       ],
