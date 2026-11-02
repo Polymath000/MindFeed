@@ -384,6 +384,7 @@ void setupServiceLocator() {
       getArticlesByCategoryUseCase: getIt<GetArticlesByCategoryUseCase>(),
       getCategoriesUseCase: getIt<GetCategoriesUseCase>(),
       getFixedTagsUseCase: getIt<GetFixedTagsUseCase>(),
+      getArticlesByTagUseCase: getIt<GetArticlesByTagUseCase>(),
     ),
   );
   getIt.registerLazySingleton<GetUserProfileUseCase>(

@@ -13,7 +13,7 @@ class SearchInitialPromptView extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 36),
       child: Center(
         child: Text(
-          'Search for stories or select a topic above.',
+          'Search for stories or tap Filter to choose categories and tags.',
           style: TextStyle(
             color: AppColors.greyText,
             fontSize: 14.5,

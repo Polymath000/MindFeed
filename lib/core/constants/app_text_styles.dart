@@ -327,4 +327,91 @@ sealed class AppTextStyles {
     fontSize: 12,
     fontWeight: FontWeight.w700,
   );
+
+  // Search & Editorial Filter Dialog Styles
+  static const TextStyle searchHeaderTitle = TextStyle(
+    color: AppColors.softCream,
+    fontSize: 32,
+    fontWeight: FontWeight.w800,
+    letterSpacing: -1,
+  );
+
+  static const TextStyle filterDialogTitle = TextStyle(
+    color: AppColors.softCream,
+    fontSize: 19,
+    fontWeight: FontWeight.w800,
+    letterSpacing: -0.4,
+  );
+
+  static const TextStyle filterDialogSectionTitle = TextStyle(
+    color: AppColors.softCream,
+    fontSize: 14.5,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const TextStyle filterDialogSubtitle = TextStyle(
+    color: AppColors.greyText,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+  );
+
+  static const TextStyle filterDialogResetAction = TextStyle(
+    color: AppColors.cream,
+    fontSize: 13,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const TextStyle filterDialogInput = TextStyle(
+    color: AppColors.softCream,
+    fontSize: 13.5,
+    fontWeight: FontWeight.w500,
+  );
+
+  static const TextStyle filterDialogHint = TextStyle(
+    color: AppColors.greyText,
+    fontSize: 13.5,
+    fontWeight: FontWeight.w500,
+  );
+
+  static const TextStyle filterTriggerLabel = TextStyle(
+    color: AppColors.softCream,
+    fontSize: 13.5,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const TextStyle filterTriggerActiveLabel = TextStyle(
+    color: AppColors.ink,
+    fontSize: 13.5,
+    fontWeight: FontWeight.w800,
+  );
+
+  static const TextStyle filterBadgeCount = TextStyle(
+    color: AppColors.ink,
+    fontSize: 11.5,
+    fontWeight: FontWeight.w800,
+  );
+
+  static const TextStyle filterChipCategorySelected = TextStyle(
+    color: AppColors.ink,
+    fontSize: 13,
+    fontWeight: FontWeight.w800,
+  );
+
+  static const TextStyle filterChipCategoryUnselected = TextStyle(
+    color: AppColors.softCream,
+    fontSize: 13,
+    fontWeight: FontWeight.w600,
+  );
+
+  static const TextStyle filterChipTagSelected = TextStyle(
+    color: AppColors.ink,
+    fontSize: 12,
+    fontWeight: FontWeight.w800,
+  );
+
+  static const TextStyle filterChipTagUnselected = TextStyle(
+    color: AppColors.greyText,
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+  );
 }
