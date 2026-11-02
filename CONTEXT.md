@@ -327,6 +327,21 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
   - Removed the `'Share profile'` action button and mock clipboard `SnackBar` from `AuthorAppBar` (`lib/features/author/presentation/widgets/author_app_bar.dart`).
   - Updated `test/features/reader/article_view_widget_test.dart` and `test/features/author/author_view_test.dart` to assert that `'Share article'` and `'Share profile'` are no longer rendered.
 
+## 12. Author Dossier Redesign, Article Card Separation, Real Supabase `author_follows` & Profile `Drafts` Entry
+- **Real Supabase `public.author_follows` Domain & Data Layer (`lib/core/articles/`)**:
+  - Created `AuthorFollowSummary`, `AuthorFollowRepository`, `AuthorFollowRemoteDataSourceImpl`, `AuthorFollowRepositoryImpl`, `AuthorFollowValidator`, `GetAuthorFollowSummaryUseCase`, and `ToggleAuthorFollowUseCase` backed by `public.author_follows` (`follower_id`, `author_id`).
+  - Converted `EditorialFollowButton` into a stateless, Cubit-driven widget, removed it from `EditorialCard` feed cards, and wired real Follow / Unfollow into `AuthorView` and `ArticleReaderAuthorBar` (automatically hidden on own articles/profiles and seeded non-UUID authors).
+- **Article Card Separation (`Profile` vs. `Author` vs. `TagArticles`)**:
+  - Relocated creator-only `CustomArticleCardOfProfile` (`PUBLISHED`/`DRAFT`, `Archived · locked`, `Edit`, `Delete`) to `lib/features/profile/presentation/widgets/custom_article_card_of_profile.dart` and deleted `lib/core/widgets/article_card.dart`.
+  - Replaced `ArticleCardOfAuthor` (`lib/features/author/presentation/widgets/article_card_of_author.dart`) with a dark-editorial reader dossier card (category pill, publish date, reading time, title, excerpt, optional cached cover thumbnail, `#tag` pills, and zero owner controls).
+  - Updated `TagArticlesView` to render `EditorialCard` (layout-safe in unbounded scroll views).
+- **Creator `ProfileView` Enhancements (`Drafts (N)` Button & 4 Real Stats)**:
+  - Replaced hardcoded `'0' 'Followers'` in `ProfileAvatarAndStats` with 4 real database stats: `Articles` (published count) · `Followers` (`author_follows.author_id`) · `Following` (`author_follows.follower_id`) · `Topics` (`favorite_categories`).
+  - Filtered `My Articles` in `UserArticles` to show **only published articles** and added a dedicated **`Drafts` / `Drafts (N)` button** navigating directly to `AppRoutes.drafts` (`DraftsView`) with automatic profile reload on return.
+- **Public Editorial Columnist Dossier (`AuthorView`)**:
+  - Created `AuthorDossierEntity` and `LoadAuthorProfileDossierUseCase` enforcing `status == 'published'` filtering and aggregating real profile bio/avatar, `AuthorFollowSummary`, `AuthorRatingSummary`, and distinct category `topics`.
+  - Replaced `AuthorPersonalInfo` (and all hardcoded `'Wade Warren'` / `'86'` / `'48.2K'` / `'192'` mock values) with left-aligned `AuthorDossierHeader`, `AuthorTopicFilterBar`, `AuthorStatusViews`, and a virtualized `SliverList.builder` in `AuthorView`.
+
 
 
 

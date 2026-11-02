@@ -63,6 +63,10 @@ import 'package:mind_feed/features/settings/domain/usecases/get_settings_profile
 import 'package:mind_feed/features/settings/presentation/controllers/settings_cubit/settings_cubit.dart';
 import 'package:mind_feed/features/splash/domain/usecases/check_app_startup_use_case.dart';
 import 'package:mind_feed/features/splash/presentation/controllers/splash_cubit/splash_cubit.dart';
+import 'package:mind_feed/core/articles/data/datasources/author_follow_remote_data_source.dart';
+import 'package:mind_feed/core/articles/data/repos/author_follow_repo_impl.dart';
+import 'package:mind_feed/core/articles/domain/repos/author_follow_repo.dart';
+import 'package:mind_feed/core/articles/domain/usecases/author_follow_use_cases.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_author_use_case.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_tag_use_case.dart';
 import 'package:mind_feed/core/services/supabase_storage_service.dart';
@@ -71,6 +75,7 @@ import 'package:mind_feed/features/add_article/presentation/controllers/add_arti
 import 'package:mind_feed/features/add_article/presentation/controllers/drafts_cubit/drafts_cubit.dart';
 import 'package:mind_feed/features/search/presentation/controllers/search_cubit.dart';
 import 'package:mind_feed/features/search/presentation/controllers/tag_articles_cubit/tag_articles_cubit.dart';
+import 'package:mind_feed/features/author/domain/usecases/load_author_profile_dossier_use_case.dart';
 import 'package:mind_feed/features/author/presentation/controllers/author_cubit/author_cubit.dart';
 import 'package:mind_feed/features/profile/domain/usecases/get_favorite_categories_use_case.dart';
 import 'package:mind_feed/features/profile/domain/usecases/get_user_profile_use_case.dart';
@@ -263,6 +268,23 @@ void setupServiceLocator() {
   getIt.registerLazySingleton<GetAuthorRatingUseCase>(
     () => GetAuthorRatingUseCase(getIt<ArticleEngagementRepository>()),
   );
+  getIt.registerLazySingleton<AuthorFollowRemoteDataSource>(
+    () => AuthorFollowRemoteDataSourceImpl(
+      supabaseClient: getIt<SupabaseClient>(),
+    ),
+  );
+  getIt.registerLazySingleton<AuthorFollowRepository>(
+    () => AuthorFollowRepositoryImpl(
+      remoteDataSource: getIt<AuthorFollowRemoteDataSource>(),
+      networkInfo: getIt<NetworkInfo>(),
+    ),
+  );
+  getIt.registerLazySingleton<GetAuthorFollowSummaryUseCase>(
+    () => GetAuthorFollowSummaryUseCase(getIt<AuthorFollowRepository>()),
+  );
+  getIt.registerLazySingleton<ToggleAuthorFollowUseCase>(
+    () => ToggleAuthorFollowUseCase(getIt<AuthorFollowRepository>()),
+  );
   getIt.registerLazySingleton<GetUserFeedTopicsUseCase>(
     () => GetUserFeedTopicsUseCase(profileRepository: getIt<ProfileRepository>()),
   );
@@ -302,6 +324,8 @@ void setupServiceLocator() {
       toggleBookmarkUseCase: getIt<ToggleBookmarkUseCase>(),
       rateAuthorUseCase: getIt<RateAuthorUseCase>(),
       getAuthorRatingUseCase: getIt<GetAuthorRatingUseCase>(),
+      getAuthorFollowSummaryUseCase: getIt<GetAuthorFollowSummaryUseCase>(),
+      toggleAuthorFollowUseCase: getIt<ToggleAuthorFollowUseCase>(),
       toggleStarUseCase: getIt<ToggleStarUseCase>(),
       isArticleStarredUseCase: getIt<IsArticleStarredUseCase>(),
     ),
@@ -382,6 +406,7 @@ void setupServiceLocator() {
       getUserProfileUseCase: getIt<GetUserProfileUseCase>(),
       getFavoriteCategoriesUseCase: getIt<GetFavoriteCategoriesUseCase>(),
       getArticlesByAuthorUseCase: getIt<GetArticlesByAuthorUseCase>(),
+      getAuthorFollowSummaryUseCase: getIt<GetAuthorFollowSummaryUseCase>(),
       uploadProfileAvatarUseCase: getIt<UploadProfileAvatarUseCase>(),
     ),
   );
@@ -393,10 +418,20 @@ void setupServiceLocator() {
       getArticlesByTagUseCase: getIt<GetArticlesByTagUseCase>(),
     ),
   );
-  getIt.registerFactory<AuthorCubit>(
-    () => AuthorCubit(
+  getIt.registerLazySingleton<LoadAuthorProfileDossierUseCase>(
+    () => LoadAuthorProfileDossierUseCase(
       getHomeFeedUseCase: getIt<GetHomeFeedUseCase>(),
       getArticlesByAuthorUseCase: getIt<GetArticlesByAuthorUseCase>(),
+      getUserProfileUseCase: getIt<GetUserProfileUseCase>(),
+      getAuthorFollowSummaryUseCase: getIt<GetAuthorFollowSummaryUseCase>(),
+      getAuthorRatingUseCase: getIt<GetAuthorRatingUseCase>(),
+    ),
+  );
+  getIt.registerFactory<AuthorCubit>(
+    () => AuthorCubit(
+      loadAuthorProfileDossierUseCase: getIt<LoadAuthorProfileDossierUseCase>(),
+      toggleAuthorFollowUseCase: getIt<ToggleAuthorFollowUseCase>(),
+      rateAuthorUseCase: getIt<RateAuthorUseCase>(),
     ),
   );
 }
