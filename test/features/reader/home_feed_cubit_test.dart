@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/errors/failures.dart';
@@ -174,6 +176,8 @@ void main() {
     ToggleBookmarkUseCase? customBookmarkUseCase,
     ToggleStarUseCase? customStarUseCase,
     ToggleArticleLikeUseCase? customLikeUseCase,
+    bool randomizeFeed = false,
+    Random? random,
   }) {
     return HomeFeedCubit(
       getHomeFeedUseCase: customFeedUseCase ?? feedUseCase,
@@ -184,6 +188,8 @@ void main() {
       toggleArticleLikeUseCase: customLikeUseCase ?? toggleArticleLikeUseCase,
       currentUserId: currentUserId,
       userIdResolver: userIdResolver,
+      randomizeFeed: randomizeFeed,
+      random: random,
     );
   }
 
@@ -346,5 +352,103 @@ void main() {
     expect(item.starCount, equals(1));
 
     cubit.close();
+  });
+
+  test('GetHomeFeedUseCase fetches latest articles and randomizes order when randomize is true', () async {
+    final latestSix = List.generate(
+      6,
+      (i) => ArticleEntity(
+        id: 'latest_${i + 1}',
+        title: 'Latest Article ${i + 1}',
+        slug: 'latest-article-${i + 1}',
+        excerpt: 'Excerpt ${i + 1}',
+        badge: 'TECH',
+        tags: const ['Tech'],
+      ),
+    );
+    fakeArticlesRepo.articles = List.of(latestSix);
+
+    final orderedRes = await feedUseCase.call(randomize: false);
+    orderedRes.when(
+      success: (list) {
+        expect(
+          list.map((a) => a.id).toList(),
+          equals(['latest_1', 'latest_2', 'latest_3', 'latest_4', 'latest_5', 'latest_6']),
+        );
+      },
+      failure: (f) => fail(f.message),
+    );
+
+    final randomizedRes = await feedUseCase.call(
+      randomize: true,
+      random: Random(7),
+    );
+    randomizedRes.when(
+      success: (list) {
+        final ids = list.map((a) => a.id).toList();
+        expect(ids.toSet(), equals(latestSix.map((a) => a.id).toSet()));
+        expect(
+          ids,
+          isNot(equals(['latest_1', 'latest_2', 'latest_3', 'latest_4', 'latest_5', 'latest_6'])),
+        );
+      },
+      failure: (f) => fail(f.message),
+    );
+
+    // Ensure repository source list was not mutated in place
+    expect(
+      fakeArticlesRepo.articles.map((a) => a.id).toList(),
+      equals(['latest_1', 'latest_2', 'latest_3', 'latest_4', 'latest_5', 'latest_6']),
+    );
+  });
+
+  test('HomeFeedCubit randomizes latest articles by default on fetchFeed', () async {
+    final latestSix = List.generate(
+      6,
+      (i) => ArticleEntity(
+        id: 'open_${i + 1}',
+        title: 'Opening Story ${i + 1}',
+        slug: 'opening-story-${i + 1}',
+        excerpt: 'Excerpt ${i + 1}',
+        badge: 'TECH',
+        tags: const ['Tech'],
+      ),
+    );
+    fakeArticlesRepo.articles = List.of(latestSix);
+
+    final cubitSessionA = HomeFeedCubit(
+      getHomeFeedUseCase: feedUseCase,
+      getUserFeedTopicsUseCase: topicsUseCase,
+      getSavedArticlesUseCase: savedArticlesUseCase,
+      toggleBookmarkUseCase: toggleBookmarkUseCase,
+      toggleStarUseCase: toggleStarUseCase,
+      toggleArticleLikeUseCase: toggleArticleLikeUseCase,
+      currentUserId: 'user_rand',
+      random: Random(7),
+    );
+    await cubitSessionA.fetchFeed();
+    final orderA = cubitSessionA.state.allArticles.map((a) => a.id).toList();
+
+    final cubitSessionB = HomeFeedCubit(
+      getHomeFeedUseCase: feedUseCase,
+      getUserFeedTopicsUseCase: topicsUseCase,
+      getSavedArticlesUseCase: savedArticlesUseCase,
+      toggleBookmarkUseCase: toggleBookmarkUseCase,
+      toggleStarUseCase: toggleStarUseCase,
+      toggleArticleLikeUseCase: toggleArticleLikeUseCase,
+      currentUserId: 'user_rand',
+      random: Random(42),
+    );
+    await cubitSessionB.fetchFeed();
+    final orderB = cubitSessionB.state.allArticles.map((a) => a.id).toList();
+
+    final chronological = ['open_1', 'open_2', 'open_3', 'open_4', 'open_5', 'open_6'];
+    expect(orderA.toSet(), equals(chronological.toSet()));
+    expect(orderB.toSet(), equals(chronological.toSet()));
+    expect(orderA, isNot(equals(chronological)));
+    expect(orderA, isNot(equals(orderB)));
+
+    await cubitSessionA.close();
+    await cubitSessionB.close();
   });
 }

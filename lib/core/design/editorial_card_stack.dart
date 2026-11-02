@@ -47,7 +47,31 @@ class _EditorialCardStackState extends State<EditorialCardStack> with SingleTick
   @override
   void didUpdateWidget(covariant EditorialCardStack oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.items != oldWidget.items) _cards = List.from(widget.items);
+    if (_hasSameOrderedIds(oldWidget.items, widget.items)) {
+      _syncCardsInPlace(widget.items);
+    } else if (widget.items != oldWidget.items) {
+      _cards = List<EditorialNewsItem>.of(widget.items);
+    }
+  }
+
+  bool _hasSameOrderedIds(
+    List<EditorialNewsItem> previous,
+    List<EditorialNewsItem> next,
+  ) {
+    if (previous.length != next.length) return false;
+    for (var i = 0; i < previous.length; i++) {
+      if (previous[i].id != next[i].id) return false;
+    }
+    return true;
+  }
+
+  void _syncCardsInPlace(List<EditorialNewsItem> updatedItems) {
+    final byId = <String, EditorialNewsItem>{
+      for (final item in updatedItems) item.id: item,
+    };
+    _cards = [
+      for (final card in _cards) byId[card.id] ?? card,
+    ];
   }
 
   @override
@@ -200,18 +224,8 @@ class _EditorialCardStackState extends State<EditorialCardStack> with SingleTick
                         EditorialCard(
                           item: _cards.first,
                           onOpen: () => widget.onOpenArticle(_cards.first),
-                          onLike: () {
-                            final top = _cards.first;
-                            setState(() => top.isLiked = !top.isLiked);
-                            widget.onToggleLike?.call(top);
-                            _notify(top.isLiked ? 'Liked "${top.title.split('\n').first}"' : 'Unliked story');
-                          },
-                          onSave: () {
-                            final top = _cards.first;
-                            setState(() => top.isSaved = !top.isSaved);
-                            widget.onToggleSave?.call(top);
-                            _notify(top.isSaved ? 'Saved to reading list' : 'Removed from reading list');
-                          },
+                          onLike: _handleLikeTap,
+                          onSave: _handleSaveTap,
                         ),
                         _buildFeedbackBadge(),
                       ],
@@ -224,5 +238,29 @@ class _EditorialCardStackState extends State<EditorialCardStack> with SingleTick
         ),
       ),
     );
+  }
+
+  void _handleLikeTap() {
+    final top = _cards.first;
+    final nextLiked = !top.isLiked;
+    if (widget.onToggleLike != null) {
+      widget.onToggleLike!(top);
+    } else {
+      setState(() => top.isLiked = nextLiked);
+    }
+    _notify(
+      nextLiked ? 'Liked "${top.title.split('\n').first}"' : 'Unliked story',
+    );
+  }
+
+  void _handleSaveTap() {
+    final top = _cards.first;
+    final nextSaved = !top.isSaved;
+    if (widget.onToggleSave != null) {
+      widget.onToggleSave!(top);
+    } else {
+      setState(() => top.isSaved = nextSaved);
+    }
+    _notify(nextSaved ? 'Saved to reading list' : 'Removed from reading list');
   }
 }

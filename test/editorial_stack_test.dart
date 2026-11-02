@@ -204,4 +204,183 @@ void main() {
 
     expect(deletedItem?.id, equals('test_1'));
   });
+
+  testWidgets(
+    'EditorialCardStack preserves rotated deck position when parent rebuilds on swipe-right save',
+    (tester) async {
+      var parentItems = [
+        EditorialNewsItem(
+          id: 'deck_1',
+          badge: 'LIVE',
+          badgeColor: Colors.red,
+          title: 'Deck Card One',
+          updated: 'Just now',
+          authorName: 'Author 1',
+          authorRole: 'Writer',
+          authorAvatar: '',
+          excerpt: 'Excerpt 1',
+          color: Colors.amber,
+        ),
+        EditorialNewsItem(
+          id: 'deck_2',
+          badge: 'TECH',
+          badgeColor: Colors.blue,
+          title: 'Deck Card Two',
+          updated: '10m ago',
+          authorName: 'Author 2',
+          authorRole: 'Writer',
+          authorAvatar: '',
+          excerpt: 'Excerpt 2',
+          color: Colors.cyan,
+        ),
+        EditorialNewsItem(
+          id: 'deck_3',
+          badge: 'SCIENCE',
+          badgeColor: Colors.green,
+          title: 'Deck Card Three',
+          updated: '20m ago',
+          authorName: 'Author 3',
+          authorRole: 'Writer',
+          authorAvatar: '',
+          excerpt: 'Excerpt 3',
+          color: Colors.orange,
+        ),
+      ];
+      EditorialNewsItem? openedTopCard;
+
+      await tester.pumpWidget(
+        harness(
+          StatefulBuilder(
+            builder: (context, setParentState) {
+              return EditorialCardStack(
+                items: List<EditorialNewsItem>.of(parentItems),
+                onOpenArticle: (item) => openedTopCard = item,
+                onSwipeRight: (savedItem) {
+                  setParentState(() {
+                    parentItems = parentItems
+                        .map(
+                          (item) => item.id == savedItem.id
+                              ? item.copyWith(isSaved: true)
+                              : item,
+                        )
+                        .toList();
+                  });
+                },
+              );
+            },
+          ),
+        ),
+      );
+
+      // 1. Swipe left past Card One -> Card Two becomes top card
+      await tester.drag(find.text('Deck Card One'), const Offset(-200, 0));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump();
+
+      // 2. Swipe right on Card Two to save it (triggers parent rebuild with new list)
+      await tester.drag(find.text('Deck Card Two'), const Offset(200, 0));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump();
+
+      // 3. Top card must now be Card Three (NOT reset back to Card One!)
+      await tester.drag(find.text('Deck Card Three'), const Offset(0, -120));
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(openedTopCard?.id, equals('deck_3'));
+    },
+  );
+
+  testWidgets(
+    'EditorialCardStack preserves rotated deck position and passes unmutated item on Save button tap',
+    (tester) async {
+      var parentItems = [
+        EditorialNewsItem(
+          id: 'btn_1',
+          badge: 'LIVE',
+          badgeColor: Colors.red,
+          title: 'Button Card One',
+          updated: 'Just now',
+          authorName: 'Author 1',
+          authorRole: 'Writer',
+          authorAvatar: '',
+          excerpt: 'Excerpt 1',
+          color: Colors.amber,
+        ),
+        EditorialNewsItem(
+          id: 'btn_2',
+          badge: 'TECH',
+          badgeColor: Colors.blue,
+          title: 'Button Card Two',
+          updated: '10m ago',
+          authorName: 'Author 2',
+          authorRole: 'Writer',
+          authorAvatar: '',
+          excerpt: 'Excerpt 2',
+          color: Colors.cyan,
+        ),
+        EditorialNewsItem(
+          id: 'btn_3',
+          badge: 'SCIENCE',
+          badgeColor: Colors.green,
+          title: 'Button Card Three',
+          updated: '20m ago',
+          authorName: 'Author 3',
+          authorRole: 'Writer',
+          authorAvatar: '',
+          excerpt: 'Excerpt 3',
+          color: Colors.orange,
+        ),
+      ];
+      bool? wasSavedBeforeCallback;
+      EditorialNewsItem? openedTopCard;
+
+      await tester.pumpWidget(
+        harness(
+          StatefulBuilder(
+            builder: (context, setParentState) {
+              return EditorialCardStack(
+                items: List<EditorialNewsItem>.of(parentItems),
+                onOpenArticle: (item) => openedTopCard = item,
+                onToggleSave: (item) {
+                  wasSavedBeforeCallback = item.isSaved;
+                  final nextSaved = !item.isSaved;
+                  item.isSaved = nextSaved;
+                  setParentState(() {
+                    parentItems = parentItems
+                        .map(
+                          (a) => a.id == item.id
+                              ? a.copyWith(isSaved: nextSaved)
+                              : a,
+                        )
+                        .toList();
+                  });
+                },
+              );
+            },
+          ),
+        ),
+      );
+
+      // 1. Swipe left past Card One -> Card Two becomes top card
+      await tester.drag(find.text('Button Card One'), const Offset(-200, 0));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump();
+
+      // 2. Tap Bookmark button on Card Two
+      await tester.tap(find.bySemanticsLabel('Save article'));
+      await tester.pump();
+
+      expect(wasSavedBeforeCallback, isFalse);
+
+      // 3. Swipe up to open current top card -> must still be Card Two (now saved), NOT Card One!
+      await tester.drag(find.text('Button Card Two'), const Offset(0, -120));
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(openedTopCard?.id, equals('btn_2'));
+      expect(openedTopCard?.isSaved, isTrue);
+    },
+  );
 }

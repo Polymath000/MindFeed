@@ -343,8 +343,12 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
   - Created `AuthorDossierEntity` and `LoadAuthorProfileDossierUseCase` enforcing `status == 'published'` filtering and aggregating real profile bio/avatar, `AuthorFollowSummary`, `AuthorRatingSummary`, and distinct category `topics`.
   - Replaced `AuthorPersonalInfo` (and all hardcoded `'Wade Warren'` / `'86'` / `'48.2K'` / `'192'` mock values) with left-aligned `AuthorDossierHeader`, `AuthorTopicFilterBar`, `AuthorStatusViews`, and a virtualized `SliverList.builder` in `AuthorView`.
 
-
-
-
+## 13. Home Feed Deck Position Preservation & Latest Articles Randomization
+- **Card Stack Rotation Preservation & Save/Like State Sync (`lib/core/design/editorial_card_stack.dart`)**:
+  - Updated `_EditorialCardStackState.didUpdateWidget` to check `_hasSameOrderedIds(oldWidget.items, widget.items)`: when `HomeFeedCubit._syncArticleInState` emits an updated `EditorialNewsItem` list for an in-place bookmark or like update, `_cards` preserves its current rotated deck order and updates matching items in place (`_syncCardsInPlace`) instead of resetting back to card `0`.
+  - Fixed `_handleSaveTap` and `_handleLikeTap` in `EditorialCardStack` so `top.isSaved` and `top.isLiked` are not prematurely mutated before invoking `widget.onToggleSave` / `widget.onToggleLike` (`HomeFeedCubit.toggleBookmark` / `toggleStar`), eliminating double-flip cancellation when saving from the card button.
+- **Latest Home Feed Articles Randomization (`lib/features/home/`)**:
+  - Extended `GetHomeFeedUseCase.call(...)` with pure-Dart `bool randomize = false` and optional `Random? random`, copying and shuffling the latest fetched published articles (`limit = 20`) when enabled without mutating repository data or affecting chronological callers (`LoadAuthorProfileDossierUseCase`).
+  - Enabled `randomizeFeed = true` by default in `HomeFeedCubit` (with injectable `Random?` for deterministic unit tests) so each app launch / feed load presents a fresh randomized ordering of the latest published stories.
 
 
