@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/design/editorial_card.dart';
 import 'package:mind_feed/core/design/editorial_card_stack.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/design/editorial_saved_stack.dart';
@@ -439,6 +441,34 @@ void main() {
       await tester.pump();
 
       expect(openedItem?.id, equals('saved_5'));
+    },
+  );
+
+  testWidgets(
+    'EditorialCard renders category badge background as black regardless of item.badgeColor',
+    (tester) async {
+      await tester.pumpWidget(
+        harness(
+          EditorialCard(item: testItems.first),
+        ),
+      );
+
+      final badgeContainer = tester.widget<Container>(
+        find
+            .ancestor(
+              of: find.text('LIVE'),
+              matching: find.byType(Container),
+            )
+            .first,
+      );
+      expect(
+        (badgeContainer.decoration as BoxDecoration).color,
+        AppColors.black,
+      );
+      expect(
+        tester.widget<Text>(find.text('LIVE')).style?.color,
+        AppColors.white,
+      );
     },
   );
 }

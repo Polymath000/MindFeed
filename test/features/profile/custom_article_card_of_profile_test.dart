@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/features/profile/presentation/widgets/custom_article_card_of_profile.dart';
@@ -61,6 +62,16 @@ void main() {
 
     expect(find.text('PUBLISHED'), findsOneWidget);
     expect(find.text('TECH'), findsOneWidget);
+    final badgeContainer = tester.widget<Container>(
+      find
+          .ancestor(
+            of: find.text('TECH'),
+            matching: find.byType(Container),
+          )
+          .first,
+    );
+    expect((badgeContainer.decoration as BoxDecoration).color, AppColors.black);
+    expect(tester.widget<Text>(find.text('TECH')).style?.color, AppColors.white);
   });
 
   testWidgets('article published 5 days ago shows Edit/Delete and no locked indicator', (tester) async {

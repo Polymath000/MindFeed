@@ -51,14 +51,14 @@ class CustomArticleCardOfProfile extends StatelessWidget {
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: item.badgeColor,
-                          borderRadius: BorderRadius.circular(12),
+                        decoration: const BoxDecoration(
+                          color: AppColors.black,
+                          borderRadius: AppBorders.tag,
                         ),
                         child: Text(
                           item.badge,
                           style: const TextStyle(
-                            color: Colors.white,
+                            color: AppColors.white,
                             fontSize: 10,
                             fontWeight: FontWeight.w800,
                             letterSpacing: 0.5,

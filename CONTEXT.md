@@ -356,6 +356,8 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
   - Extracted reusable `EditorialFilterDialog` (`showEditorialFilterDialog`) into `lib/core/widgets/editorial_filter_dialog.dart` using `ValueNotifier` state for instant in-dialog search, single-select category chips, multi-select `#tag` chips, `Reset`, and `Apply Filters (N)`.
   - Replaced the full inline `Categories` and `Filter by tags` chip clouds on `SearchView` with a compact `SearchFilterTriggerButton` beside `CustomSearchBar` and `SearchActiveFiltersBar` displaying only the user's currently active category and `#tag` chips (each individually removable via `×` or `Clear all`).
   - Added `applyFilters`, `clearFilters`, and `GetArticlesByTagUseCase` support in `SearchCubit` so users can filter by category, tags alone, or combined category + tags directly from the dialog.
+- **Unified Black Category Badges Across All Article Cards**:
+  - Standardized category badge backgrounds to pure black (`AppColors.black`) with high-contrast white labels (`AppColors.white`) and centralized `AppBorders` tokens across `EditorialCard`, `HomeSecondaryStoryTile`, `CustomArticleCardOfProfile`, `ArticleCardOfAuthor`, and `DownloadedArticleCardTile`, while preserving `EditorialNewsItem.badgeColor` data mapping for non-card surfaces.
 
 
 

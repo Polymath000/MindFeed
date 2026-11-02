@@ -86,9 +86,16 @@ class _StoryTileTextContent extends StatelessWidget {
           spacing: 8,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            Text(
-              item.badge,
-              style: AppTextStyles.homeStoryBadge(item.badgeColor),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: const BoxDecoration(
+                color: AppColors.black,
+                borderRadius: AppBorders.tag,
+              ),
+              child: Text(
+                item.badge,
+                style: AppTextStyles.homeStoryBadge(AppColors.white),
+              ),
             ),
             Text(
               '${item.readingTimeMinutes} min read',

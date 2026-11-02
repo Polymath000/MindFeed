@@ -56,14 +56,14 @@ class ArticleCardOfAuthor extends StatelessWidget {
       children: [
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-          decoration: BoxDecoration(
-            color: item.badgeColor,
+          decoration: const BoxDecoration(
+            color: AppColors.black,
             borderRadius: AppBorders.tag,
           ),
           child: Text(
             item.badge,
             style: const TextStyle(
-              color: AppColors.ink,
+              color: AppColors.white,
               fontSize: 11,
               fontWeight: FontWeight.w800,
             ),

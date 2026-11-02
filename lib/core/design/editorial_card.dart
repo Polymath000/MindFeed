@@ -61,7 +61,10 @@ class EditorialCard extends StatelessWidget {
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(color: item.badgeColor, borderRadius: BorderRadius.circular(16)),
+                        decoration: const BoxDecoration(
+                          color: AppColors.black,
+                          borderRadius: AppBorders.xxs,
+                        ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -70,10 +73,10 @@ class EditorialCard extends StatelessWidget {
                                 width: 6,
                                 height: 6,
                                 margin: const EdgeInsets.only(right: 6),
-                                decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                                decoration: const BoxDecoration(color: AppColors.white, shape: BoxShape.circle),
                               ),
                             ],
-                            Text(item.badge, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 0.6)),
+                            Text(item.badge, style: const TextStyle(color: AppColors.white, fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 0.6)),
                           ],
                         ),
                       ),

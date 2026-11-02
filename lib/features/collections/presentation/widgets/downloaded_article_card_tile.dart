@@ -4,6 +4,7 @@ import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/borders.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 
 class DownloadedArticleCardTile extends StatelessWidget {
@@ -137,16 +138,16 @@ class DownloadedArticleCardTile extends StatelessWidget {
                               horizontal: 8,
                               vertical: 3,
                             ),
-                            decoration: BoxDecoration(
-                              color: AppColors.ink,
-                              borderRadius: BorderRadius.circular(8),
+                            decoration: const BoxDecoration(
+                              color: AppColors.black,
+                              borderRadius: AppBorders.tag,
                             ),
                             child: Text(
                               article.categorySlug.isNotEmpty
                                   ? article.categorySlug.toUpperCase()
                                   : 'OFFLINE',
                               style: const TextStyle(
-                                color: AppColors.softCream,
+                                color: AppColors.white,
                                 fontSize: 10,
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: 0.5,

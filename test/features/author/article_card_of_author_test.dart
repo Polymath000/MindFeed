@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/config/routes/app_routes.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/features/author/presentation/widgets/article_card_of_author.dart';
 
@@ -33,6 +34,16 @@ void main() {
     );
 
     expect(find.text('TECH'), findsOneWidget);
+    final badgeContainer = tester.widget<Container>(
+      find
+          .ancestor(
+            of: find.text('TECH'),
+            matching: find.byType(Container),
+          )
+          .first,
+    );
+    expect((badgeContainer.decoration as BoxDecoration).color, AppColors.black);
+    expect(tester.widget<Text>(find.text('TECH')).style?.color, AppColors.white);
     expect(find.text('Quantum Computing Breakthrough'), findsOneWidget);
     expect(find.text('A quantum jump into computing history.'), findsOneWidget);
     expect(find.text('4 min read'), findsOneWidget);
