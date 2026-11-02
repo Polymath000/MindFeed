@@ -18,6 +18,10 @@ class ArticleReaderAuthorBar extends StatelessWidget {
     this.authorRatingAvg = 0.0,
     this.authorRatingCount = 0,
     this.userAuthorStars = 0,
+    this.canFollowAuthor = false,
+    this.isFollowingAuthor = false,
+    this.isFollowLoading = false,
+    this.onToggleFollow,
     this.onRateAuthor,
     this.onAuthorTap,
   });
@@ -29,6 +33,10 @@ class ArticleReaderAuthorBar extends StatelessWidget {
   final double authorRatingAvg;
   final int authorRatingCount;
   final int userAuthorStars;
+  final bool canFollowAuthor;
+  final bool isFollowingAuthor;
+  final bool isFollowLoading;
+  final VoidCallback? onToggleFollow;
   final ValueChanged<int>? onRateAuthor;
   final VoidCallback? onAuthorTap;
 
@@ -89,8 +97,15 @@ class ArticleReaderAuthorBar extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 8),
-        EditorialFollowButton(authorName: authorName),
+        if (canFollowAuthor) ...[
+          const SizedBox(width: 8),
+          EditorialFollowButton(
+            authorName: authorName,
+            isFollowing: isFollowingAuthor,
+            isLoading: isFollowLoading,
+            onPressed: onToggleFollow,
+          ),
+        ],
       ],
     );
   }
