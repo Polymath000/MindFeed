@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mind_feed/core/constants/app_icons.dart';
+
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
 import 'package:mind_feed/core/articles/domain/usecases/delete_article_use_case.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_author_use_case.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_cubit.dart';
 import 'package:mind_feed/features/profile/presentation/widgets/user_articles.dart';
+
 import 'fake_articles_repository.dart';
 
 void main() {
@@ -46,8 +49,17 @@ void main() {
     deleteUseCase = DeleteArticleUseCase(fakeRepo);
   });
 
-  Widget buildTestWidget(ProfileArticlesCubit cubit) {
+  Widget buildTestWidget(
+    ProfileArticlesCubit cubit, {
+    Map<String, WidgetBuilder>? routes,
+  }) {
     return MaterialApp(
+      routes: routes ??
+          {
+            AppRoutes.drafts: (context) => const Scaffold(
+                  body: Text('Drafts Screen'),
+                ),
+          },
       home: Scaffold(
         body: CustomScrollView(
           slivers: [
@@ -58,7 +70,9 @@ void main() {
     );
   }
 
-  testWidgets('renders accurate published and draft count badge for mixed articles', (tester) async {
+  testWidgets(
+      'renders only published stories in My Articles and shows draft count in drafts button',
+      (tester) async {
     fakeRepo.authorArticles = [publishedItem1, publishedItem2, draftItem1];
     final cubit = ProfileArticlesCubit(
       getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
@@ -70,16 +84,43 @@ void main() {
     await cubit.loadArticles();
     await tester.pumpAndSettle();
 
-    expect(find.text('2 published · 1 draft'), findsOneWidget);
-    expect(find.text('3 published'), findsNothing);
+    expect(find.text('2 published'), findsOneWidget);
+    expect(find.byKey(const Key('profile_drafts_button')), findsOneWidget);
+    expect(find.text('Drafts (1)'), findsOneWidget);
+    expect(find.byKey(const Key('profile_write_button')), findsOneWidget);
+    expect(find.text('Write'), findsOneWidget);
+
     expect(find.text('First Story'), findsOneWidget);
     expect(find.text('Second Story'), findsOneWidget);
-    expect(find.text('Working Title Draft'), findsOneWidget);
+    expect(find.text('Working Title Draft'), findsNothing);
 
     await cubit.close();
   });
 
-  testWidgets('renders empty placeholder when no articles exist', (tester) async {
+  testWidgets('tapping drafts button navigates to AppRoutes.drafts',
+      (tester) async {
+    fakeRepo.authorArticles = [publishedItem1, draftItem1];
+    final cubit = ProfileArticlesCubit(
+      getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
+      deleteArticleUseCase: deleteUseCase,
+      userId: 'author-123',
+    );
+
+    await tester.pumpWidget(buildTestWidget(cubit));
+    await cubit.loadArticles();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('profile_drafts_button')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('profile_drafts_button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Drafts Screen'), findsOneWidget);
+
+    await cubit.close();
+  });
+
+  testWidgets('renders empty placeholder when no articles exist',
+      (tester) async {
     fakeRepo.authorArticles = [];
     final cubit = ProfileArticlesCubit(
       getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
@@ -93,11 +134,14 @@ void main() {
 
     expect(find.text('No published articles yet'), findsOneWidget);
     expect(find.text('0 published'), findsOneWidget);
+    expect(find.text('Drafts'), findsOneWidget);
 
     await cubit.close();
   });
 
-  testWidgets('delete button prompts confirmation dialog and removes on confirm', (tester) async {
+  testWidgets(
+      'delete button prompts confirmation dialog and removes on confirm',
+      (tester) async {
     fakeRepo.authorArticles = [publishedItem1];
     final cubit = ProfileArticlesCubit(
       getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
@@ -137,7 +181,8 @@ void main() {
     await cubit.close();
   });
 
-  testWidgets('delete failure keeps item and shows error snackbar', (tester) async {
+  testWidgets('delete failure keeps item and shows error snackbar',
+      (tester) async {
     fakeRepo.authorArticles = [publishedItem1];
     fakeRepo.shouldDeleteSucceed = false;
     final cubit = ProfileArticlesCubit(
@@ -158,7 +203,8 @@ void main() {
 
     expect(cubit.articles.length, 1);
     expect(find.text('First Story'), findsOneWidget);
-    expect(find.text('Failed to delete article. Please try again.'), findsOneWidget);
+    expect(find.text('Failed to delete article. Please try again.'),
+        findsOneWidget);
 
     await cubit.close();
   });

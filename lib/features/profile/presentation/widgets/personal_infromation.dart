@@ -1,7 +1,8 @@
 import 'dart:typed_data';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
@@ -117,6 +118,8 @@ class _PersonalInformationContent extends StatelessWidget {
           userSubtitle: state.userSubtitle,
           articlesCount: state.articlesCount,
           followingCount: state.followingCount,
+          followersCount: state.followersCount,
+          followingAuthorsCount: state.followingAuthorsCount,
           isUploadingAvatar: state.isUploadingAvatar,
           onTapAvatar: () => _pickAndUploadAvatar(context),
         );
@@ -144,6 +147,8 @@ class _PersonalInformationFallback extends StatelessWidget {
       userSubtitle: initialSubtitle,
       articlesCount: 0,
       followingCount: localUser?.favoriteCategories?.length ?? 0,
+      followersCount: 0,
+      followingAuthorsCount: 0,
     );
   }
 }

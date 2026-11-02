@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/design/editorial_card.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
-import 'package:mind_feed/core/widgets/article_card.dart';
 import 'package:mind_feed/features/search/presentation/controllers/tag_articles_cubit/tag_articles_cubit.dart';
 import 'package:mind_feed/features/search/presentation/controllers/tag_articles_cubit/tag_articles_state.dart';
 
@@ -46,7 +50,7 @@ class _TagArticlesBody extends StatelessWidget {
         backgroundColor: AppColors.ink,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.softCream),
+          icon: const Icon(AppIcons.arrowBackRounded, color: AppColors.softCream),
           onPressed: () => Navigator.maybePop(context),
         ),
         title: Text(
@@ -107,7 +111,18 @@ class _TagArticlesBody extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
                   itemCount: state.articles.length,
                   itemBuilder: (context, index) {
-                    return CustomArticleCardOfProfile(item: state.articles[index]);
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: EditorialCard(
+                        item: state.articles[index],
+                        showActions: false,
+                        onOpen: () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.article,
+                          arguments: state.articles[index],
+                        ),
+                      ),
+                    );
                   },
                 );
               }

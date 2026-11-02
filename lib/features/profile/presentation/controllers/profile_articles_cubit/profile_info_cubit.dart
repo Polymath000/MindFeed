@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:mind_feed/core/articles/domain/usecases/author_follow_use_cases.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_author_use_case.dart';
 import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
@@ -14,6 +15,7 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
   final GetUserProfileUseCase _getUserProfileUseCase;
   final GetFavoriteCategoriesUseCase _getFavoriteCategoriesUseCase;
   final GetArticlesByAuthorUseCase _getArticlesByAuthorUseCase;
+  final GetAuthorFollowSummaryUseCase? _getAuthorFollowSummaryUseCase;
   final UploadProfileAvatarUseCase? _uploadProfileAvatarUseCase;
   final String? _configuredUserId;
 
@@ -21,11 +23,13 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
     required GetUserProfileUseCase getUserProfileUseCase,
     required GetFavoriteCategoriesUseCase getFavoriteCategoriesUseCase,
     required GetArticlesByAuthorUseCase getArticlesByAuthorUseCase,
+    GetAuthorFollowSummaryUseCase? getAuthorFollowSummaryUseCase,
     UploadProfileAvatarUseCase? uploadProfileAvatarUseCase,
     String? userId,
   })  : _getUserProfileUseCase = getUserProfileUseCase,
         _getFavoriteCategoriesUseCase = getFavoriteCategoriesUseCase,
         _getArticlesByAuthorUseCase = getArticlesByAuthorUseCase,
+        _getAuthorFollowSummaryUseCase = getAuthorFollowSummaryUseCase,
         _uploadProfileAvatarUseCase = uploadProfileAvatarUseCase,
         _configuredUserId = userId,
         super(_createInitialState());
@@ -44,6 +48,8 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
       userSubtitle: initialSubtitle,
       avatarUrl: sessionUser?.avatarUrl ?? AppConstants.defaultAvatarUrl,
       followingCount: localUser?.favoriteCategories?.length ?? 0,
+      followersCount: 0,
+      followingAuthorsCount: 0,
       articlesCount: 0,
     );
   }
@@ -63,6 +69,8 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
     var currentBio = state.userSubtitle;
     var currentAvatar = state.avatarUrl;
     var currentFollowing = state.followingCount;
+    var currentFollowers = state.followersCount;
+    var currentFollowingAuthors = state.followingAuthorsCount;
     var currentArticles = state.articlesCount;
 
     // 1. Fetch remote profile
@@ -88,7 +96,7 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
       );
     } catch (_) {}
 
-    // 2. Fetch favorite categories
+    // 2. Fetch favorite categories (topics)
     try {
       final favsResult = await _getFavoriteCategoriesUseCase(targetUserId);
       if (isClosed) return;
@@ -100,13 +108,31 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
       );
     } catch (_) {}
 
-    // 3. Fetch articles count
+    // 3. Fetch author follow summary (followers & following authors)
+    if (_getAuthorFollowSummaryUseCase != null) {
+      try {
+        final followResult = await _getAuthorFollowSummaryUseCase(
+          targetUserId: targetUserId,
+        );
+        if (isClosed) return;
+        followResult.when(
+          success: (summary) {
+            currentFollowers = summary.followersCount;
+            currentFollowingAuthors = summary.followingCount;
+          },
+          failure: (_) {},
+        );
+      } catch (_) {}
+    }
+
+    // 4. Fetch articles count (published only)
     try {
       final articlesResult = await _getArticlesByAuthorUseCase(targetUserId);
       if (isClosed) return;
       articlesResult.when(
         success: (articles) {
-          currentArticles = articles.length;
+          currentArticles =
+              articles.where((a) => a.status == 'published').length;
         },
         failure: (_) {},
       );
@@ -118,6 +144,8 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
         userSubtitle: currentBio,
         avatarUrl: currentAvatar,
         followingCount: currentFollowing,
+        followersCount: currentFollowers,
+        followingAuthorsCount: currentFollowingAuthors,
         articlesCount: currentArticles,
         isUploadingAvatar: false,
         avatarErrorMessage: null,
@@ -146,6 +174,8 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
       userSubtitle: state.userSubtitle,
       avatarUrl: state.avatarUrl,
       followingCount: state.followingCount,
+      followersCount: state.followersCount,
+      followingAuthorsCount: state.followingAuthorsCount,
       articlesCount: state.articlesCount,
       isUploadingAvatar: true,
       avatarErrorMessage: null,
@@ -167,6 +197,8 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
           userSubtitle: state.userSubtitle,
           avatarUrl: newUrl,
           followingCount: state.followingCount,
+          followersCount: state.followersCount,
+          followingAuthorsCount: state.followingAuthorsCount,
           articlesCount: state.articlesCount,
           isUploadingAvatar: false,
           avatarErrorMessage: null,
@@ -178,6 +210,8 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
           userSubtitle: state.userSubtitle,
           avatarUrl: state.avatarUrl,
           followingCount: state.followingCount,
+          followersCount: state.followersCount,
+          followingAuthorsCount: state.followingAuthorsCount,
           articlesCount: state.articlesCount,
           isUploadingAvatar: false,
           avatarErrorMessage: failure.message,

@@ -66,6 +66,9 @@ void main() {
       await cubit.loadArticles();
 
       expect(cubit.articles.length, 2);
+      final loaded = cubit.state as ProfileArticlesLoaded;
+      expect(loaded.publishedArticles.length, 1);
+      expect(loaded.publishedArticles.first.id, 'pub-1');
     });
 
     test('emits [ProfileArticlesLoading, ProfileArticlesEmpty] when author has no articles', () async {

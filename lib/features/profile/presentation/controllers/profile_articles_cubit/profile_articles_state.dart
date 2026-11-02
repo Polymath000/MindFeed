@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import 'package:mind_feed/core/design/editorial_models.dart';
 
 sealed class ProfileArticlesState extends Equatable {
@@ -26,6 +27,9 @@ final class ProfileArticlesLoaded extends ProfileArticlesState {
 
   int get draftCount =>
       articles.where((item) => item.status == 'draft').length;
+
+  List<EditorialNewsItem> get publishedArticles =>
+      articles.where((item) => item.status == 'published').toList();
 
   @override
   List<Object?> get props => [articles];
