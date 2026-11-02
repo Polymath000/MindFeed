@@ -86,6 +86,8 @@ class AppIcons {
   static const IconData chevronRightRounded = Icons.chevron_right_rounded;
   static const IconData playArrowRounded = Icons.play_arrow_rounded;
   static const IconData pauseRounded = Icons.pause_rounded;
+  static const IconData draftsOutlined = Icons.edit_note_rounded;
+  static const IconData cameraAltRounded = Icons.camera_alt_rounded;
 
   // Category Icons
   static const IconData technology = Icons.memory_rounded;
