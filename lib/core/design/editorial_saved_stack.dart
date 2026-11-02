@@ -1,8 +1,9 @@
-import 'package:mind_feed/core/constants/borders.dart';
-import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:mind_feed/core/design/editorial_models.dart';
+
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/design/editorial_models.dart';
 
 class EditorialSavedStack extends StatefulWidget {
   const EditorialSavedStack({
@@ -141,56 +142,48 @@ class _EditorialSavedStackState extends State<EditorialSavedStack> {
           ),
         ),
         onDismissed: (_) => _deleteItem(index, item),
-        child: GestureDetector(
-          onVerticalDragEnd: (details) {
-            if (details.primaryVelocity != null &&
-                details.primaryVelocity! < -200) {
-              widget.onOpenArticle(item);
-            }
-          },
-          child: InkWell(
-            onTap: () => widget.onOpenArticle(item),
-            borderRadius: AppBorders.card,
-            child: Container(
-              width: double.infinity,
-              margin: const EdgeInsets.only(bottom: 4),
-              padding: const EdgeInsets.fromLTRB(20, 24, 20, 26),
-              decoration: BoxDecoration(
-                color: item.color,
-                borderRadius: AppBorders.card,
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 12,
-                    offset: Offset(0, -4),
+        child: InkWell(
+          onTap: () => widget.onOpenArticle(item),
+          borderRadius: AppBorders.card,
+          child: Container(
+            width: double.infinity,
+            margin: const EdgeInsets.only(bottom: 4),
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 26),
+            decoration: BoxDecoration(
+              color: item.color,
+              borderRadius: AppBorders.card,
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 12,
+                  offset: Offset(0, -4),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.title,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    height: 1.18,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.8,
+                    color: AppColors.ink,
                   ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.title,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      height: 1.18,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.8,
-                      color: AppColors.ink,
-                    ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  item.excerpt,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    height: 1.4,
+                    color: AppColors.ink,
                   ),
-                  const SizedBox(height: 10),
-                  Text(
-                    item.excerpt,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      height: 1.4,
-                      color: AppColors.ink,
-                    ),
-                  ),
-                  if (isFirst) const SizedBox(height: 14),
-                ],
-              ),
+                ),
+                if (isFirst) const SizedBox(height: 14),
+              ],
             ),
           ),
         ),

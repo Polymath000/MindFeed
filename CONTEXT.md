@@ -350,5 +350,8 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
 - **Latest Home Feed Articles Randomization (`lib/features/home/`)**:
   - Extended `GetHomeFeedUseCase.call(...)` with pure-Dart `bool randomize = false` and optional `Random? random`, copying and shuffling the latest fetched published articles (`limit = 20`) when enabled without mutating repository data or affecting chronological callers (`LoadAuthorProfileDossierUseCase`).
   - Enabled `randomizeFeed = true` by default in `HomeFeedCubit` (with injectable `Random?` for deterministic unit tests) so each app launch / feed load presents a fresh randomized ordering of the latest published stories.
+- **Saved Articles Vertical Scroll Unblocking (`lib/core/design/editorial_saved_stack.dart`)**:
+  - Removed the inner `GestureDetector(onVerticalDragEnd: ...)` wrapper around cards in `EditorialSavedStack`, which previously won Flutter's vertical drag Gesture Arena over the parent `ListView` in `ArticlesSaved` and accidentally triggered `onOpenArticle` during upward scroll gestures. Vertical drags anywhere over saved cards now scroll `ListView` smoothly, while single taps (`InkWell.onTap`) open the article and horizontal swipes (`Dismissible`) delete with undo.
+
 
 

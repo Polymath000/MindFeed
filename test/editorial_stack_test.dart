@@ -383,4 +383,62 @@ void main() {
       expect(openedTopCard?.isSaved, isTrue);
     },
   );
+
+  testWidgets(
+    'EditorialSavedStack allows vertical scrolling directly over cards without accidentally opening an article',
+    (tester) async {
+      final scrollController = ScrollController();
+      addTearDown(scrollController.dispose);
+      EditorialNewsItem? openedItem;
+
+      final savedItems = List.generate(
+        10,
+        (index) => EditorialNewsItem(
+          id: 'saved_$index',
+          badge: 'SAVED',
+          badgeColor: Colors.red,
+          title: 'Saved Story $index',
+          updated: 'Today',
+          authorName: 'Author $index',
+          authorRole: 'Writer',
+          authorAvatar: '',
+          excerpt: 'Saved article excerpt line for item $index to ensure scrollable height.',
+          color: Colors.amber,
+        ),
+      );
+
+      await tester.pumpWidget(
+        harness(
+          ListView(
+            controller: scrollController,
+            children: [
+              EditorialSavedStack(
+                items: savedItems,
+                onOpenArticle: (item) => openedItem = item,
+              ),
+            ],
+          ),
+        ),
+      );
+
+      expect(scrollController.offset, equals(0));
+
+      // Fast upward fling directly in the middle of a saved article card
+      await tester.fling(
+        find.text('Saved Story 1'),
+        const Offset(0, -280),
+        1200,
+      );
+      await tester.pumpAndSettle();
+
+      expect(scrollController.offset, greaterThan(0));
+      expect(openedItem, isNull);
+
+      // Explicit tap on a visible card still opens that article
+      await tester.tap(find.text('Saved Story 5'));
+      await tester.pump();
+
+      expect(openedItem?.id, equals('saved_5'));
+    },
+  );
 }

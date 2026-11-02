@@ -648,15 +648,15 @@
     "semantic_hash": ""
   },
   "lib/core/design/editorial_saved_stack.dart": {
-    "mtime": 1792333589.2920463,
-    "seen": 1792955121.8393736,
-    "ast_hash": "b2fc81fc2f8e933df9bd06ece1ea5def",
+    "mtime": 1793617711.3856516,
+    "seen": 1793617758.990112,
+    "ast_hash": "5271b45ba91ad2647d4817fbe08c3cda",
     "semantic_hash": ""
   },
   "test/editorial_stack_test.dart": {
-    "mtime": 1793616994.6003194,
-    "seen": 1793617058.6713874,
-    "ast_hash": "3c8efb2e6d15f85591faff474e380c36",
+    "mtime": 1793617737.27004,
+    "seen": 1793617759.1567264,
+    "ast_hash": "b2cc29224481dd2c7dfbc1f673778b8e",
     "semantic_hash": ""
   },
   "docs/UI_SPECIFICATION.md": {
@@ -774,9 +774,9 @@
     "semantic_hash": ""
   },
   "CONTEXT.md": {
-    "mtime": 1793617038.765476,
-    "seen": 1793617058.7013044,
-    "ast_hash": "e4d682bbef90e5be3a61a10c1ed7af12",
+    "mtime": 1793617738.6054935,
+    "seen": 1793617759.1887298,
+    "ast_hash": "f787b260aefc9f9c4e474a603f78a3f1",
     "semantic_hash": ""
   },
   "SPEC.md": {
