@@ -367,6 +367,22 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
     - **Search (`SearchView` & `TagArticlesView`)**: `SearchLoadingView` skeletonizing `EditorialCard` results.
     - **Author (`AuthorView`)**: `Skeletonizer` wrapping `AuthorDossierHeader` during `AuthorLoading` and `AuthorLoadingView` skeletonizing the `'Published Stories'` header and `ArticleCardOfAuthor` cards.
 
+## 14. Settings Page Clean Architecture & Functional Refactoring (`refactor/settings-page`)
+- **Pruned Dead Code & Unbacked Placebo Controls (`db0bf78`)**:
+  - Deleted unreferenced `lib/features/settings/presentation/widgets/settings_menu.dart` and removed unused `showDigestPickerSheet`, `showEditProfileSheet`, `SettingsValueTile`, `SettingsSliderTile`, and legacy `PaperSettings*` typedefs.
+  - Removed unbacked placebo toggles (`Morning Edition Briefing`, `Investigative Breaking Alerts`, `Audio Narration Cadence`, `Bionic Reading Guide`, `Data Preservation Mode`, `Download on Wi-Fi Only`) and their 5 unused fields/setters from `SettingsState`, `SettingsCubit`, `SettingsReadingSection`, and `SettingsArchiveSection`.
+- **Extracted Settings Data & Domain Layer & Fixed `ThemeModeCubit` (`b2f5de3`)**:
+  - Created `ReaderPreferencesEntity`, `SettingsRepository`, `SettingsLocalDataSource`, `SettingsRepositoryImpl`, `GetReaderPreferencesUseCase`, and `UpdateReaderPreferencesUseCase`, removing direct `SharedPreferencesSingleton` access from `SettingsCubit`.
+  - Added `SettingsState.toLoaded(...)` helper to eliminate repetitive constructor calls across `SettingsCubit`.
+  - Updated `ThemeModeCubit` to emit `ThemeModeSystem` (registered in `setup_service_locator.dart`) and updated `MyApp` (`lib/main_app.dart`) to pattern-match `ThemeModeState` directly instead of reading `SharedPreferencesSingleton` inside `build()`.
+- **Wired Reader Typography Preferences & Fixed In-Session Navigation (`7492402`)**:
+  - Wired `fontScale` (`Compact` 0.90x, `Standard` 1.0x, `Editorial` 1.08x, `Large` 1.18x) and `serifMode` (`true` -> serif body/blockquote, `false` -> sans-serif) into `ArticleReaderMarkdownBody` with cached `(scale, isSerif)` `MarkdownStyleSheet` lookup.
+  - Added `isFromSettings` support to `CategoriesView` / `CategoriesViewBody` and `ChangePasswordView` / `ChangePasswordForm` / `AppRoutes` so editing categories or changing password from Settings pops cleanly back to Settings instead of resetting the navigation stack to `'/'` or `/login`.
+- **Reusable `EditorialConfirmDialog`, Rebuild Isolation & Test Suite (`477ff08`, `1a18412`)**:
+  - Extracted `EditorialConfirmDialog` (`showEditorialConfirmDialog`) into `lib/core/widgets/editorial_confirm_dialog.dart`, decomposed `ThemeWidget` into `_ThemeOptionCard`, and scoped `BlocSelector`s per section in `SettingsViewBody`.
+  - Added 23 new unit and widget tests in `test/features/settings/` (`36/36` Settings tests passing; `435/435` total tests passing, `0` analyzer issues).
+
+
 
 
 

@@ -506,12 +506,21 @@ Future<void> setFontScale(String val) async {
 | **`SettingsState` Tracked Fields** | 12 fields (5 unused by app) | 7 fields (all actively consumed) | **-41.7% state surface area** |
 | **`SettingsCubit` Lines of Code** | 321 lines | ~155 lines | **-51.7% boilerplate reduction** |
 | **Presentation Direct Storage Calls** | 8 calls to `SharedPreferencesSingleton` | 0 calls (100% via UseCases & Repository) | **100% Clean Architecture compliance** |
-| **Existing Settings Unit Tests** | 13 passing tests | ~24 passing unit + widget tests | **+84.6% test coverage** |
-| **Static Analyzer Status** | 0 errors, 0 warnings | 0 errors, 0 warnings | **Zero regressions** |
+| **Existing Settings Unit Tests** | 13 passing tests | **36 passing unit + widget tests (`435/435` total)** | **+176.9% settings test coverage** |
+| **Static Analyzer Status** | 0 errors, 0 warnings | **0 errors, 0 warnings** | **Zero regressions** |
 
 ---
 
-## 7. Phased Refactoring Execution Plan
+## 7. Phased Refactoring Execution & Commit Ledger
+
+| Phase | Commit Hash | Commit Message | Summary |
+| :--- | :--- | :--- | :--- |
+| **Docs** | `4d3cd68` | `docs(reports): add settings feature architectural audit and refactoring blueprint` | Initial 4-pillar architectural audit report and `CONTEXT.md` index entry. |
+| **Phase 1** | `db0bf78` | `refactor(settings): remove dead widgets and unbacked placebo settings controls` | Deleted `settings_menu.dart`, unused sheets/tiles, and 5 unbacked placebo toggles (`-525` net lines). |
+| **Phase 2** | `b2f5de3` | `feat(settings): extract settings data layer, reader preferences use cases, and fix ThemeModeCubit` | Added `ReaderPreferencesEntity`, `SettingsRepository`, `SettingsLocalDataSource`, `Get/UpdateReaderPreferencesUseCase`, `SettingsState.toLoaded`, and `ThemeModeSystem` emission + DI. |
+| **Phase 3** | `7492402` | `feat(settings): wire reader typography preferences and fix settings navigation flows` | Connected `fontScale` and `serifMode` to `ArticleReaderMarkdownBody` and added `isFromSettings` stack preservation to `CategoriesView` & `ChangePasswordView`. |
+| **Phase 4A** | `477ff08` | `refactor(settings): extract EditorialConfirmDialog, decompose ThemeWidget, and scope BlocSelectors` | Extracted reusable `EditorialConfirmDialog`, split `_ThemeOptionCard`, and scoped `BlocSelector`s in `SettingsViewBody`. |
+| **Phase 4B** | `1a18412` | `test(settings): add unit and widget tests for reader preferences, ThemeModeCubit, and SettingsCubit` | Added 23 unit and widget tests across Settings data/domain/presentation and reader typography (`435/435` total tests passing). |
 
 ```mermaid
 flowchart LR
