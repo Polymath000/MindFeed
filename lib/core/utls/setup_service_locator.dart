@@ -57,10 +57,16 @@ import 'package:mind_feed/features/profile/domain/usecases/check_user_has_catego
 import 'package:mind_feed/features/profile/domain/usecases/reconcile_category_sync_use_case.dart';
 import 'package:mind_feed/features/profile/domain/usecases/save_favorite_categories_use_case.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/categories_cubit/categories_cubit.dart';
+import 'package:mind_feed/features/settings/data/datasources/settings_local_data_source.dart';
+import 'package:mind_feed/features/settings/data/repos/settings_repo_impl.dart';
+import 'package:mind_feed/features/settings/domain/repos/settings_repo.dart';
 import 'package:mind_feed/features/settings/domain/usecases/clear_downloaded_articles_use_case.dart';
 import 'package:mind_feed/features/settings/domain/usecases/get_archive_cache_size_use_case.dart';
+import 'package:mind_feed/features/settings/domain/usecases/get_reader_preferences_use_case.dart';
 import 'package:mind_feed/features/settings/domain/usecases/get_settings_profile_use_case.dart';
+import 'package:mind_feed/features/settings/domain/usecases/update_reader_preferences_use_case.dart';
 import 'package:mind_feed/features/settings/presentation/controllers/settings_cubit/settings_cubit.dart';
+import 'package:mind_feed/features/settings/presentation/controllers/theme_mode_cubit/theme_mode_cubit.dart';
 import 'package:mind_feed/features/splash/domain/usecases/check_app_startup_use_case.dart';
 import 'package:mind_feed/features/splash/presentation/controllers/splash_cubit/splash_cubit.dart';
 import 'package:mind_feed/core/articles/data/datasources/author_follow_remote_data_source.dart';
@@ -342,6 +348,21 @@ void setupServiceLocator() {
       toggleBookmarkUseCase: getIt<ToggleBookmarkUseCase>(),
     ),
   );
+  getIt.registerLazySingleton<SettingsLocalDataSource>(
+    () => const SettingsLocalDataSourceImpl(),
+  );
+  getIt.registerLazySingleton<SettingsRepository>(
+    () => SettingsRepositoryImpl(getIt<SettingsLocalDataSource>()),
+  );
+  getIt.registerLazySingleton<GetReaderPreferencesUseCase>(
+    () => GetReaderPreferencesUseCase(getIt<SettingsRepository>()),
+  );
+  getIt.registerLazySingleton<UpdateReaderPreferencesUseCase>(
+    () => UpdateReaderPreferencesUseCase(getIt<SettingsRepository>()),
+  );
+  getIt.registerLazySingleton<ThemeModeCubit>(
+    () => ThemeModeCubit(),
+  );
   getIt.registerLazySingleton<GetSettingsProfileUseCase>(
     () => GetSettingsProfileUseCase(getIt<ProfileRepository>()),
   );
@@ -357,6 +378,8 @@ void setupServiceLocator() {
       getArchiveCacheSizeUseCase: getIt<GetArchiveCacheSizeUseCase>(),
       clearDownloadedArticlesUseCase: getIt<ClearDownloadedArticlesUseCase>(),
       logoutUseCase: getIt<LogoutUseCase>(),
+      getReaderPreferencesUseCase: getIt<GetReaderPreferencesUseCase>(),
+      updateReaderPreferencesUseCase: getIt<UpdateReaderPreferencesUseCase>(),
     ),
   );
   getIt.registerLazySingleton<GetArticlesByAuthorUseCase>(

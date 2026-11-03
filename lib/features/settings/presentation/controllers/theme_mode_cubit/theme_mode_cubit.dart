@@ -13,15 +13,18 @@ class ThemeModeCubit extends Cubit<ThemeModeState> {
   void getThemeMode() {
     try {
       final theme = SharedPreferencesSingleton.getString(AppConstants.themeModeKey);
+      if (isClosed) return;
       if (theme == ThemeMode.light.name) {
         emit(const ThemeModeLight());
       } else if (theme == ThemeMode.dark.name) {
         emit(const ThemeModeDark());
       } else {
-        emit(const ThemeModeInitial());
+        emit(const ThemeModeSystem());
       }
     } catch (_) {
-      emit(const ThemeModeInitial());
+      if (!isClosed) {
+        emit(const ThemeModeSystem());
+      }
     }
   }
 
@@ -29,12 +32,13 @@ class ThemeModeCubit extends Cubit<ThemeModeState> {
     try {
       await SharedPreferencesSingleton.setString(AppConstants.themeModeKey, themeMode.name);
     } catch (_) {}
+    if (isClosed) return;
     if (themeMode == ThemeMode.light) {
       emit(const ThemeModeLight());
     } else if (themeMode == ThemeMode.dark) {
       emit(const ThemeModeDark());
     } else {
-      emit(const ThemeModeInitial());
+      emit(const ThemeModeSystem());
     }
   }
 }

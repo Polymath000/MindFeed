@@ -19,6 +19,26 @@ sealed class SettingsState {
     this.serifMode = true,
     this.cachedMegabytes = 0.0,
   });
+
+  SettingsLoaded toLoaded({
+    String? displayName,
+    String? userEmail,
+    String? avatarUrl,
+    UserEntity? currentUserEntity,
+    String? fontScale,
+    bool? serifMode,
+    double? cachedMegabytes,
+  }) {
+    return SettingsLoaded(
+      displayName: displayName ?? this.displayName,
+      userEmail: userEmail ?? this.userEmail,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      currentUserEntity: currentUserEntity ?? this.currentUserEntity,
+      fontScale: fontScale ?? this.fontScale,
+      serifMode: serifMode ?? this.serifMode,
+      cachedMegabytes: cachedMegabytes ?? this.cachedMegabytes,
+    );
+  }
 }
 
 final class SettingsInitial extends SettingsState {
@@ -65,14 +85,14 @@ final class SettingsLoaded extends SettingsState {
     bool? serifMode,
     double? cachedMegabytes,
   }) {
-    return SettingsLoaded(
-      displayName: displayName ?? this.displayName,
-      userEmail: userEmail ?? this.userEmail,
-      avatarUrl: avatarUrl ?? this.avatarUrl,
-      currentUserEntity: currentUserEntity ?? this.currentUserEntity,
-      fontScale: fontScale ?? this.fontScale,
-      serifMode: serifMode ?? this.serifMode,
-      cachedMegabytes: cachedMegabytes ?? this.cachedMegabytes,
+    return toLoaded(
+      displayName: displayName,
+      userEmail: userEmail,
+      avatarUrl: avatarUrl,
+      currentUserEntity: currentUserEntity,
+      fontScale: fontScale,
+      serifMode: serifMode,
+      cachedMegabytes: cachedMegabytes,
     );
   }
 }

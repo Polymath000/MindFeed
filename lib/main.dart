@@ -42,7 +42,10 @@ void main() async {
   await Hive.openBox<UserEntity>(AppConstants.userKey);
   setupServiceLocator();
   runApp(
-    BlocProvider(create: (context) => ThemeModeCubit(), child: const MyApp()),
+    BlocProvider(
+      create: (context) => getIt<ThemeModeCubit>(),
+      child: const MyApp(),
+    ),
   );
 }
 
