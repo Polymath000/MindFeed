@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/widgets/editorial_confirm_dialog.dart';
 
 Future<void> showPrivacyManifestDialog(BuildContext context) {
   return showModalBottomSheet(
@@ -53,32 +55,16 @@ Future<void> showPrivacyManifestDialog(BuildContext context) {
   );
 }
 
-Future<void> showSignOutDialog(BuildContext context, Future<void> Function() onConfirm) {
-  return showDialog(
-    context: context,
-    builder: (dialogCtx) => AlertDialog(
-      backgroundColor: AppColors.whiteLight,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: const Text('Sign Out', style: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w800)),
-      content: const Text(
-        'Are you sure you want to sign out of MindFeed on this device?',
-        style: TextStyle(color: AppColors.mutedInk, fontSize: 14),
-      ),
-      actions: [
-        TextButton(onPressed: () => Navigator.pop(dialogCtx), child: const Text('Cancel', style: TextStyle(color: AppColors.greyText))),
-        FilledButton(
-          style: FilledButton.styleFrom(
-            backgroundColor: AppColors.ink,
-            foregroundColor: AppColors.cream,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-          onPressed: () async {
-            Navigator.pop(dialogCtx);
-            await onConfirm();
-          },
-          child: const Text('Sign Out'),
-        ),
-      ],
-    ),
+Future<void> showSignOutDialog(
+  BuildContext context,
+  Future<void> Function() onConfirm,
+) {
+  return showEditorialConfirmDialog(
+    context,
+    title: 'Sign Out',
+    message: 'Are you sure you want to sign out of MindFeed on this device?',
+    confirmLabel: 'Sign Out',
+    onConfirm: onConfirm,
   );
 }
+
