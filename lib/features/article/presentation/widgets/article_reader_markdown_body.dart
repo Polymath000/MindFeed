@@ -5,6 +5,8 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_text_styles.dart';
 import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/constants/constants.dart';
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
 
 export 'article_reader_tags_wrap.dart';
@@ -29,17 +31,20 @@ class ArticleReaderMarkdownBody extends StatelessWidget {
 
   static String _readStoredFontScale() {
     try {
-      return SharedPreferencesSingleton.getString('pref_font_scale') ??
-          'Standard';
+      return SharedPreferencesSingleton.getString(AppConstants.fontScaleKey) ??
+          AppConstants.defaultFontScale;
     } catch (_) {
-      return 'Standard';
+      debugPrint(const CacheFailure(AppConstants.genericErrorMessage).message);
+      return AppConstants.defaultFontScale;
     }
   }
 
   static bool _readStoredSerifMode() {
     try {
-      return SharedPreferencesSingleton.getBool('pref_serif_mode') ?? true;
+      return SharedPreferencesSingleton.getBool(AppConstants.serifModeKey) ??
+          true;
     } catch (_) {
+      debugPrint(const CacheFailure(AppConstants.genericErrorMessage).message);
       return true;
     }
   }

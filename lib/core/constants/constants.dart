@@ -30,6 +30,11 @@ class AppConstants {
   );
   static const String defaultAvatarUrl =
       'https://tsqruoqiajkbrdhprfxa.supabase.co/storage/v1/object/public/avatars/defaultAvatar.png';
+  static const String fontScaleKey = 'pref_font_scale';
+  static const String serifModeKey = 'pref_serif_mode';
+  static const String defaultFontScale = 'Standard';
+  static const String genericErrorMessage =
+      "there's an error, Please try again later";
 }
 
 const String isOnboardingSeenKey = AppConstants.isOnboardingSeenKey;

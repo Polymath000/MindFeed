@@ -7,6 +7,8 @@ sealed class SharedPreferencesSingleton {
   const SharedPreferencesSingleton();
   static SharedPreferences? _instance;
 
+  static bool get isInitialized => _instance != null;
+
   static Future<SharedPreferences> init() async =>
       _instance = await SharedPreferences.getInstance();
 

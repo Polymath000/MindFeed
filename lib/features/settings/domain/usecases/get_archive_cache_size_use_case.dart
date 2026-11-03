@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_downloaded_articles_use_case.dart';
@@ -23,7 +24,13 @@ class GetArchiveCacheSizeUseCase {
       final megabytes = bytes / (1024 * 1024);
       return Success(megabytes);
     } catch (e) {
-      return FailureResult(CacheFailure(e.toString()));
+      return FailureResult(
+        CacheFailure(
+          e.toString().isNotEmpty
+              ? e.toString()
+              : AppConstants.genericErrorMessage,
+        ),
+      );
     }
   }
 }

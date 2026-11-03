@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/auth/domain/usecases/logout_use_case.dart';
@@ -58,9 +59,13 @@ class SettingsCubit extends Cubit<SettingsState> {
           ));
         }
       },
-      failure: (_) {
+      failure: (failure) {
         if (!isClosed) {
-          emit(state.toLoaded());
+          emit(state.toError(
+            failure.message.isNotEmpty
+                ? failure.message
+                : AppConstants.genericErrorMessage,
+          ));
         }
       },
     );
@@ -80,7 +85,15 @@ class SettingsCubit extends Cubit<SettingsState> {
           ));
         }
       },
-      failure: (_) {},
+      failure: (failure) {
+        if (!isClosed) {
+          emit(state.toError(
+            failure.message.isNotEmpty
+                ? failure.message
+                : AppConstants.genericErrorMessage,
+          ));
+        }
+      },
     );
   }
 
@@ -95,7 +108,15 @@ class SettingsCubit extends Cubit<SettingsState> {
           ));
         }
       },
-      failure: (_) {},
+      failure: (failure) {
+        if (!isClosed) {
+          emit(state.toError(
+            failure.message.isNotEmpty
+                ? failure.message
+                : AppConstants.genericErrorMessage,
+          ));
+        }
+      },
     );
   }
 
@@ -110,7 +131,15 @@ class SettingsCubit extends Cubit<SettingsState> {
           ));
         }
       },
-      failure: (_) {},
+      failure: (failure) {
+        if (!isClosed) {
+          emit(state.toError(
+            failure.message.isNotEmpty
+                ? failure.message
+                : AppConstants.genericErrorMessage,
+          ));
+        }
+      },
     );
   }
 
@@ -122,13 +151,39 @@ class SettingsCubit extends Cubit<SettingsState> {
     if (!isClosed) {
       emit(state.toLoaded(fontScale: val));
     }
-    await updateReaderPreferencesUseCase(fontScale: val);
+    final result = await updateReaderPreferencesUseCase(fontScale: val);
+    if (isClosed) return;
+    result.when(
+      success: (_) {},
+      failure: (failure) {
+        if (!isClosed) {
+          emit(state.toError(
+            failure.message.isNotEmpty
+                ? failure.message
+                : AppConstants.genericErrorMessage,
+          ));
+        }
+      },
+    );
   }
 
   Future<void> setSerifMode(bool value) async {
     if (!isClosed) {
       emit(state.toLoaded(serifMode: value));
     }
-    await updateReaderPreferencesUseCase(serifMode: value);
+    final result = await updateReaderPreferencesUseCase(serifMode: value);
+    if (isClosed) return;
+    result.when(
+      success: (_) {},
+      failure: (failure) {
+        if (!isClosed) {
+          emit(state.toError(
+            failure.message.isNotEmpty
+                ? failure.message
+                : AppConstants.genericErrorMessage,
+          ));
+        }
+      },
+    );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
@@ -42,7 +43,13 @@ class GetSettingsProfileUseCase {
               }
             }
           },
-          failure: (_) {},
+          failure: (failure) {
+            debugPrint(
+              failure.message.isNotEmpty
+                  ? failure.message
+                  : AppConstants.genericErrorMessage,
+            );
+          },
         );
 
         final favsResult = await profileRepository.getFavoriteCategories(userId);
@@ -61,7 +68,13 @@ class GetSettingsProfileUseCase {
                     ))
                 .copyWith(categories: cats);
           },
-          failure: (_) {},
+          failure: (failure) {
+            debugPrint(
+              failure.message.isNotEmpty
+                  ? failure.message
+                  : AppConstants.genericErrorMessage,
+            );
+          },
         );
       }
 
@@ -79,7 +92,13 @@ class GetSettingsProfileUseCase {
         ),
       );
     } catch (e) {
-      return FailureResult(ServerFailure(e.toString()));
+      return FailureResult(
+        CacheFailure(
+          e.toString().isNotEmpty
+              ? e.toString()
+              : AppConstants.genericErrorMessage,
+        ),
+      );
     }
   }
 }

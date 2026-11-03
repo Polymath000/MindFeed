@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
@@ -12,7 +13,13 @@ class ClearDownloadedArticlesUseCase {
       await offlineArticlesRepository.clearAllDownloadedArticles();
       return const Success(null);
     } catch (e) {
-      return FailureResult(CacheFailure(e.toString()));
+      return FailureResult(
+        CacheFailure(
+          e.toString().isNotEmpty
+              ? e.toString()
+              : AppConstants.genericErrorMessage,
+        ),
+      );
     }
   }
 }

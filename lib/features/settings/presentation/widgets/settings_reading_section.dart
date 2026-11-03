@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/settings_tile_primitives.dart';
-import 'package:mind_feed/features/settings/presentation/widgets/theme_widget.dart';
 
 class SettingsReadingSection extends StatelessWidget {
   final String fontScale;
@@ -29,7 +28,6 @@ class SettingsReadingSection extends StatelessWidget {
           title: 'Reading Experience & Surface',
           kicker: 'CANVAS & TYPE',
           children: [
-            const ThemeWidget(),
             SettingsActionTile(
               icon: AppIcons.gridViewRounded,
               stampColor: AppColors.butter,

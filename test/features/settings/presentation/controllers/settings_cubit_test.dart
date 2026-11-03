@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
 import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_downloaded_articles_use_case.dart';
+import 'package:mind_feed/core/constants/constants.dart';
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
 import 'package:mind_feed/features/auth/domain/repos/auth_repo.dart';
@@ -85,6 +87,25 @@ class _MockUpdateReaderPreferencesUseCase extends Fake implements UpdateReaderPr
   }
 }
 
+class _FailingUpdateReaderPreferencesUseCase extends Fake
+    implements UpdateReaderPreferencesUseCase {
+  @override
+  Future<ApiResult<ReaderPreferencesEntity>> call({
+    String? fontScale,
+    bool? serifMode,
+  }) async {
+    return const FailureResult(CacheFailure('Failed to update reader preferences'));
+  }
+}
+
+class _FailingClearDownloadedArticlesUseCase extends Fake
+    implements ClearDownloadedArticlesUseCase {
+  @override
+  Future<ApiResult<void>> call() async {
+    return const FailureResult(CacheFailure('Failed to clear cache'));
+  }
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -95,8 +116,8 @@ void main() {
 
   setUpAll(() async {
     SharedPreferences.setMockInitialValues({
-      'pref_font_scale': 'Editorial',
-      'pref_serif_mode': false,
+      AppConstants.fontScaleKey: 'Editorial',
+      AppConstants.serifModeKey: false,
     });
     await SharedPreferencesSingleton.init();
   });
@@ -143,17 +164,17 @@ void main() {
     test('setFontScale persists and updates state', () {
       cubit.setFontScale('Large');
       expect(cubit.state.fontScale, equals('Large'));
-      expect(SharedPreferencesSingleton.getString('pref_font_scale'), equals('Large'));
+      expect(SharedPreferencesSingleton.getString(AppConstants.fontScaleKey), equals('Large'));
     });
 
     test('setSerifMode persists and updates state', () {
       cubit.setSerifMode(true);
       expect(cubit.state.serifMode, isTrue);
-      expect(SharedPreferencesSingleton.getBool('pref_serif_mode'), isTrue);
+      expect(SharedPreferencesSingleton.getBool(AppConstants.serifModeKey), isTrue);
 
       cubit.setSerifMode(false);
       expect(cubit.state.serifMode, isFalse);
-      expect(SharedPreferencesSingleton.getBool('pref_serif_mode'), isFalse);
+      expect(SharedPreferencesSingleton.getBool(AppConstants.serifModeKey), isFalse);
     });
 
     test('clearCache resets cachedMegabytes to 0.0 and delegates to use case', () async {
@@ -241,6 +262,47 @@ void main() {
       expect(mockUpdatePrefsUseCase.callCount, equals(2));
       expect(mockUpdatePrefsUseCase.lastSerifMode, isTrue);
       expect(injectedCubit.state.serifMode, isTrue);
+    });
+
+    test('emits SettingsError when updateReaderPreferencesUseCase fails on setFontScale and setSerifMode', () async {
+      final failingUpdateUseCase = _FailingUpdateReaderPreferencesUseCase();
+      final cubitWithFailingUpdate = SettingsCubit(
+        getSettingsProfileUseCase: GetSettingsProfileUseCase(profileRepo),
+        getArchiveCacheSizeUseCase: GetArchiveCacheSizeUseCase(GetDownloadedArticlesUseCase(offlineRepo)),
+        clearDownloadedArticlesUseCase: ClearDownloadedArticlesUseCase(offlineRepo),
+        logoutUseCase: LogoutUseCase(authRepo: authRepo),
+        getReaderPreferencesUseCase: mockGetPrefsUseCase,
+        updateReaderPreferencesUseCase: failingUpdateUseCase,
+      );
+
+      await cubitWithFailingUpdate.setFontScale('Large');
+      expect(cubitWithFailingUpdate.state, isA<SettingsError>());
+      expect((cubitWithFailingUpdate.state as SettingsError).message,
+          equals('Failed to update reader preferences'));
+
+      await cubitWithFailingUpdate.setSerifMode(true);
+      expect(cubitWithFailingUpdate.state, isA<SettingsError>());
+      expect((cubitWithFailingUpdate.state as SettingsError).message,
+          equals('Failed to update reader preferences'));
+
+      cubitWithFailingUpdate.close();
+    });
+
+    test('emits SettingsError when clearCache fails', () async {
+      final failingClearUseCase = _FailingClearDownloadedArticlesUseCase();
+      final cubitWithFailingClear = SettingsCubit(
+        getSettingsProfileUseCase: GetSettingsProfileUseCase(profileRepo),
+        getArchiveCacheSizeUseCase: GetArchiveCacheSizeUseCase(GetDownloadedArticlesUseCase(offlineRepo)),
+        clearDownloadedArticlesUseCase: failingClearUseCase,
+        logoutUseCase: LogoutUseCase(authRepo: authRepo),
+      );
+
+      await cubitWithFailingClear.clearCache();
+      expect(cubitWithFailingClear.state, isA<SettingsError>());
+      expect((cubitWithFailingClear.state as SettingsError).message,
+          equals('Failed to clear cache'));
+
+      cubitWithFailingClear.close();
     });
   });
 }

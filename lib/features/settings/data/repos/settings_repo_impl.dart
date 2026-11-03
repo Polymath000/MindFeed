@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 
@@ -15,8 +16,13 @@ class SettingsRepositoryImpl implements SettingsRepository {
     try {
       final preferences = await localDataSource.getReaderPreferences();
       return Success(preferences);
+    } on Failure catch (failure) {
+      return FailureResult(failure);
     } catch (e) {
-      return FailureResult(CacheFailure(e.toString()));
+      final msg = e.toString().trim();
+      return FailureResult(
+        CacheFailure(msg.isNotEmpty ? msg : AppConstants.genericErrorMessage),
+      );
     }
   }
 
@@ -31,8 +37,13 @@ class SettingsRepositoryImpl implements SettingsRepository {
         serifMode: serifMode,
       );
       return Success(updated);
+    } on Failure catch (failure) {
+      return FailureResult(failure);
     } catch (e) {
-      return FailureResult(CacheFailure(e.toString()));
+      final msg = e.toString().trim();
+      return FailureResult(
+        CacheFailure(msg.isNotEmpty ? msg : AppConstants.genericErrorMessage),
+      );
     }
   }
 }

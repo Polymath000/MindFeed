@@ -15,7 +15,7 @@ sealed class SettingsState {
     this.userEmail = '',
     this.avatarUrl,
     this.currentUserEntity,
-    this.fontScale = 'Standard',
+    this.fontScale = AppConstants.defaultFontScale,
     this.serifMode = true,
     this.cachedMegabytes = 0.0,
   });
@@ -37,6 +37,19 @@ sealed class SettingsState {
       fontScale: fontScale ?? this.fontScale,
       serifMode: serifMode ?? this.serifMode,
       cachedMegabytes: cachedMegabytes ?? this.cachedMegabytes,
+    );
+  }
+
+  SettingsError toError(String message) {
+    return SettingsError(
+      message,
+      displayName: displayName,
+      userEmail: userEmail,
+      avatarUrl: avatarUrl,
+      currentUserEntity: currentUserEntity,
+      fontScale: fontScale,
+      serifMode: serifMode,
+      cachedMegabytes: cachedMegabytes,
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'package:mind_feed/core/constants/constants.dart';
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
 
 import '../../domain/entities/reader_preferences_entity.dart';
@@ -13,10 +15,7 @@ abstract class SettingsLocalDataSource {
 class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
   const SettingsLocalDataSourceImpl();
 
-  static const String _fontScaleKey = 'pref_font_scale';
-  static const String _serifModeKey = 'pref_serif_mode';
-
-  static String _fallbackFontScale = 'Standard';
+  static String _fallbackFontScale = AppConstants.defaultFontScale;
   static bool _fallbackSerifMode = true;
 
   @override
@@ -24,19 +23,23 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
     String fontScale = _fallbackFontScale;
     bool serifMode = _fallbackSerifMode;
 
-    try {
-      final storedScale = SharedPreferencesSingleton.getString(_fontScaleKey);
-      if (storedScale != null) {
-        fontScale = storedScale;
-        _fallbackFontScale = storedScale;
+    if (SharedPreferencesSingleton.isInitialized) {
+      try {
+        final storedScale =
+            SharedPreferencesSingleton.getString(AppConstants.fontScaleKey);
+        if (storedScale != null) {
+          fontScale = storedScale;
+          _fallbackFontScale = storedScale;
+        }
+        final storedSerif =
+            SharedPreferencesSingleton.getBool(AppConstants.serifModeKey);
+        if (storedSerif != null) {
+          serifMode = storedSerif;
+          _fallbackSerifMode = storedSerif;
+        }
+      } catch (_) {
+        throw const CacheFailure(AppConstants.genericErrorMessage);
       }
-      final storedSerif = SharedPreferencesSingleton.getBool(_serifModeKey);
-      if (storedSerif != null) {
-        serifMode = storedSerif;
-        _fallbackSerifMode = storedSerif;
-      }
-    } catch (_) {
-      // In-memory fallback if SharedPreferencesSingleton is uninitialized
     }
 
     return ReaderPreferencesEntity(
@@ -52,16 +55,30 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
   }) async {
     if (fontScale != null) {
       _fallbackFontScale = fontScale;
-      try {
-        await SharedPreferencesSingleton.setString(_fontScaleKey, fontScale);
-      } catch (_) {}
+      if (SharedPreferencesSingleton.isInitialized) {
+        try {
+          await SharedPreferencesSingleton.setString(
+            AppConstants.fontScaleKey,
+            fontScale,
+          );
+        } catch (_) {
+          throw const CacheFailure(AppConstants.genericErrorMessage);
+        }
+      }
     }
 
     if (serifMode != null) {
       _fallbackSerifMode = serifMode;
-      try {
-        await SharedPreferencesSingleton.setBool(_serifModeKey, value: serifMode);
-      } catch (_) {}
+      if (SharedPreferencesSingleton.isInitialized) {
+        try {
+          await SharedPreferencesSingleton.setBool(
+            AppConstants.serifModeKey,
+            value: serifMode,
+          );
+        } catch (_) {
+          throw const CacheFailure(AppConstants.genericErrorMessage);
+        }
+      }
     }
 
     return getReaderPreferences();

@@ -53,12 +53,12 @@ void main() {
 
   setUp(() async {
     SharedPreferences.setMockInitialValues({
-      'pref_font_scale': 'Standard',
-      'pref_serif_mode': true,
+      AppConstants.fontScaleKey: AppConstants.defaultFontScale,
+      AppConstants.serifModeKey: true,
     });
     await SharedPreferencesSingleton.init();
     await const SettingsLocalDataSourceImpl().updateReaderPreferences(
-      fontScale: 'Standard',
+      fontScale: AppConstants.defaultFontScale,
       serifMode: true,
     );
   });
@@ -89,8 +89,8 @@ void main() {
       final fetched = await localDataSource.getReaderPreferences();
       expect(fetched.fontScale, equals('Large'));
       expect(fetched.serifMode, isFalse);
-      expect(SharedPreferencesSingleton.getString('pref_font_scale'), equals('Large'));
-      expect(SharedPreferencesSingleton.getBool('pref_serif_mode'), isFalse);
+      expect(SharedPreferencesSingleton.getString(AppConstants.fontScaleKey), equals('Large'));
+      expect(SharedPreferencesSingleton.getBool(AppConstants.serifModeKey), isFalse);
     });
 
     test('repository getReaderPreferences returns Success<ReaderPreferencesEntity>', () async {
@@ -121,8 +121,8 @@ void main() {
         failure: (f) => fail('Expected Success but got $f'),
       );
 
-      final storedScale = SharedPreferencesSingleton.getString('pref_font_scale');
-      final storedSerif = SharedPreferencesSingleton.getBool('pref_serif_mode');
+      final storedScale = SharedPreferencesSingleton.getString(AppConstants.fontScaleKey);
+      final storedSerif = SharedPreferencesSingleton.getBool(AppConstants.serifModeKey);
       expect(storedScale, equals('Editorial'));
       expect(storedSerif, isFalse);
     });
@@ -215,9 +215,9 @@ void main() {
   });
 
   group('ThemeModeCubit', () {
-    test('initializes with ThemeModeSystem when preference is unset', () {
+    test('initializes with ThemeModeLight when preference is unset', () {
       final cubit = ThemeModeCubit();
-      expect(cubit.state, isA<ThemeModeSystem>());
+      expect(cubit.state, isA<ThemeModeLight>());
       cubit.close();
     });
 

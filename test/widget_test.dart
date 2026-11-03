@@ -440,8 +440,6 @@ void main() {
     );
 
     expect(find.text('Settings & Preferences'), findsOneWidget);
-    expect(find.text('Warm Paper'), findsOneWidget);
-    expect(find.text('Midnight Ink'), findsOneWidget);
     expect(find.text('Reader'), findsOneWidget);
     expect(find.text('Reading Experience & Surface'), findsOneWidget);
     expect(find.text('Typeface Scale'), findsOneWidget);

@@ -1,9 +1,11 @@
+import 'package:mind_feed/core/constants/constants.dart';
+
 class ReaderPreferencesEntity {
   final String fontScale;
   final bool serifMode;
 
   const ReaderPreferencesEntity({
-    this.fontScale = 'Standard',
+    this.fontScale = AppConstants.defaultFontScale,
     this.serifMode = true,
   });
 

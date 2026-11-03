@@ -15,11 +15,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ThemeModeCubit, ThemeModeState>(
       builder: (context, state) {
-        final themeMode = switch (state) {
-          ThemeModeDark() => ThemeMode.dark,
-          ThemeModeLight() => ThemeMode.light,
-          ThemeModeSystem() || ThemeModeInitial() => ThemeMode.system,
-        };
+        final themeMode =
+            state is ThemeModeDark ? ThemeMode.dark : ThemeMode.light;
 
         return MaterialApp(
           title: AppConstants.appName,
