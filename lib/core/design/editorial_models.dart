@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
 import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/category_items.dart';
 import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/services/supabase_storage_service.dart';
 
@@ -138,13 +139,24 @@ class EditorialNewsItem {
 
 extension ArticleEntityEditorialMapper on ArticleEntity {
   EditorialNewsItem toEditorialNewsItem() {
+    final categoryKey = (categorySlug != null && categorySlug!.isNotEmpty)
+        ? categorySlug!
+        : badge;
+    final cleanBadgeColor = badgeColor.trim().toUpperCase();
+    final isDefaultOrEmpty = cleanBadgeColor.isEmpty ||
+        cleanBadgeColor == '#FFF1C6' ||
+        cleanBadgeColor == 'FFF1C6';
+    final resolvedBadgeColor = isDefaultOrEmpty
+        ? getCategoryColor(categoryKey)
+        : _parseHexColor(
+            badgeColor,
+            defaultColor: getCategoryColor(categoryKey),
+          );
+
     return EditorialNewsItem(
       id: id,
       badge: badge,
-      badgeColor: _parseHexColor(
-        badgeColor,
-        defaultColor: AppColors.redHighlight,
-      ),
+      badgeColor: resolvedBadgeColor,
       title: title,
       updated: _formatUpdatedTime(publishedAt ?? updatedAt),
       authorName: authorName,
@@ -216,7 +228,7 @@ extension DownloadedArticleEntityEditorialMapper on DownloadedArticleEntity {
     return EditorialNewsItem(
       id: id,
       badge: categorySlug.isNotEmpty ? categorySlug.toUpperCase() : 'OFFLINE',
-      badgeColor: AppColors.ink,
+      badgeColor: getCategoryColor(categorySlug),
       title: title,
       updated: '$readingTimeMinutes min read',
       authorName: authorName.isNotEmpty ? authorName : 'Unknown',

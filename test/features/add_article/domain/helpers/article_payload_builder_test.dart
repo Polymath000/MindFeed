@@ -94,6 +94,7 @@ void main() {
       );
 
       expect(payload['badge'], 'SCIENCE & COSMOS');
+      expect(payload['badge_color'], '#065F46');
       expect(payload['category_id'], 'cat-sci');
       expect(payload['category_slug'], 'science');
       expect(payload['author_id'], 'user-builder-test');

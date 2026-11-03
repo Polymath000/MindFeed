@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/constants/category_items.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/features/add_article/domain/helpers/article_validator.dart';
@@ -80,6 +81,7 @@ sealed class ArticlePayloadBuilder {
       'category_id': category.id,
       'category_slug': category.slug,
       'badge': category.name.toUpperCase(),
+      'badge_color': getCategoryColorHex(category.slug),
       'hero_image_url': state.coverImageUrl.trim(),
       'cover_image_url': state.coverImageUrl.trim(),
       'tags': state.selectedTags,
