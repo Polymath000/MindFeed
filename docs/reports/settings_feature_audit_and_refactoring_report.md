@@ -523,6 +523,7 @@ Future<void> setFontScale(String val) async {
 | **Phase 4B** | `1a18412` | `test(settings): add unit and widget tests for reader preferences, ThemeModeCubit, and SettingsCubit` | Added unit and widget tests across Settings data/domain/presentation and reader typography. |
 | **Phase 5A** | `a176b26` | `refactor(settings): centralize preference keys in AppConstants, remove Reading Surface Contrast, and default to Warm Paper` | Centralized `fontScaleKey`, `serifModeKey`, `defaultFontScale`, and `genericErrorMessage` in `AppConstants`; removed `ThemeWidget`; set Warm Paper (`ThemeMode.light`) as app default; mapped Settings failures to `CacheFailure` / `SettingsError`. |
 | **Phase 5B** | `37a23ff` | `fix(core): replace empty catch blocks across features with CacheFailure error handling` | Eliminated all remaining empty `catch (_) {}` blocks across 16 non-settings files using `CacheFailure("there's an error, Please try again later")` (`437/437` total tests passing). |
+| **Phase 6** | `18c553d` | `refactor(settings): remove Serif Literary Immersion typography toggle across codebase` | Completely removed `serifModeKey`, `Serif Literary Immersion` toggle, state/cubit references, and simplified `ArticleReaderMarkdownBody` styling to standard clean typography. |
 
 ```mermaid
 flowchart LR
