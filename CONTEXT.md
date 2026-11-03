@@ -379,8 +379,11 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
   - Wired `fontScale` (`Compact` 0.90x, `Standard` 1.0x, `Editorial` 1.08x, `Large` 1.18x) and `serifMode` (`true` -> serif body/blockquote, `false` -> sans-serif) into `ArticleReaderMarkdownBody` with cached `(scale, isSerif)` `MarkdownStyleSheet` lookup.
   - Added `isFromSettings` support to `CategoriesView` / `CategoriesViewBody` and `ChangePasswordView` / `ChangePasswordForm` / `AppRoutes` so editing categories or changing password from Settings pops cleanly back to Settings instead of resetting the navigation stack to `'/'` or `/login`.
 - **Reusable `EditorialConfirmDialog`, Rebuild Isolation & Test Suite (`477ff08`, `1a18412`)**:
-  - Extracted `EditorialConfirmDialog` (`showEditorialConfirmDialog`) into `lib/core/widgets/editorial_confirm_dialog.dart`, decomposed `ThemeWidget` into `_ThemeOptionCard`, and scoped `BlocSelector`s per section in `SettingsViewBody`.
-  - Added 23 new unit and widget tests in `test/features/settings/` (`36/36` Settings tests passing; `435/435` total tests passing, `0` analyzer issues).
+  - Extracted `EditorialConfirmDialog` (`showEditorialConfirmDialog`) into `lib/core/widgets/editorial_confirm_dialog.dart` and scoped `BlocSelector`s per section in `SettingsViewBody`.
+- **Centralized `AppConstants` Keys, Warm Paper Default Theme & App-Wide `CacheFailure` Handling (`a176b26`, `37a23ff`)**:
+  - Centralized `AppConstants.fontScaleKey` (`'pref_font_scale'`), `AppConstants.serifModeKey` (`'pref_serif_mode'`), `AppConstants.defaultFontScale` (`'Standard'`), and `AppConstants.genericErrorMessage` (`"there's an error, Please try again later"`).
+  - Removed the `Reading Surface Contrast` (`ThemeWidget`) selector from `SettingsReadingSection` (deleting `theme_widget.dart`) and configured **Warm Paper (`ThemeMode.light`)** as the default theme across `ThemeModeCubit` and `MyApp`.
+  - Replaced all empty `catch (_) {}` and silent `failure: (_) {}` blocks across `lib/` (42 occurrences across 24 files) with `CacheFailure` / `FailureResult` error propagation and `SettingsError` state emissions (`38/38` Settings tests passing; `437/437` total tests passing, `0` analyzer issues).
 
 
 
