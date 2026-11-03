@@ -8,6 +8,7 @@ import 'package:get_it/get_it.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:mind_feed/core/design/editorial_shimmer.dart';
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_info_cubit.dart';
@@ -44,7 +45,10 @@ class PersonalInfromation extends StatelessWidget {
     try {
       BlocProvider.of<ProfileInfoCubit>(context);
       return const _PersonalInformationContent();
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
 
     if (GetIt.instance.isRegistered<ProfileInfoCubit>()) {
       return BlocProvider(
@@ -72,7 +76,10 @@ class _PersonalInformationContent extends StatelessWidget {
         if (bytes == null) {
           try {
             bytes = await file.xFile.readAsBytes();
-          } catch (_) {}
+          } catch (_) {
+            const failure = CacheFailure("there's an error, Please try again later");
+            debugPrint(failure.message);
+          }
         }
         if (bytes != null && context.mounted) {
           if (bytes.lengthInBytes > 10 * 1024 * 1024) {

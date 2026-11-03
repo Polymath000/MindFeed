@@ -1,7 +1,8 @@
-import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/core/services/supabase_storage_service.dart';
 
@@ -63,7 +64,10 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         if (existing != null && existing['avatar_url'] != null) {
           effectivePreviousUrl = existing['avatar_url']?.toString();
         }
-      } catch (_) {}
+      } catch (_) {
+        const failure = CacheFailure("there's an error, Please try again later");
+        debugPrint(failure.message);
+      }
     }
 
     final newUrl = await _storageService.uploadAvatar(
@@ -78,18 +82,27 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     try {
       await _client.auth
           .updateUser(UserAttributes(data: {'avatar_url': newUrl}));
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
 
     try {
       await _client
           .from('articles')
           .update({'author_avatar': newUrl})
           .eq('author_id', userId);
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
 
     try {
       await CurrentUserSession.cacheUserAvatarUrl(newUrl);
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
 
     return newUrl;
   }
@@ -155,7 +168,10 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         if (currentAuthId != null && currentAuthId.isNotEmpty) {
           effectiveId = currentAuthId;
         }
-      } catch (_) {}
+      } catch (_) {
+        const failure = CacheFailure("there's an error, Please try again later");
+        debugPrint(failure.message);
+      }
     }
 
     if (effectiveId.isEmpty) {
@@ -183,7 +199,10 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         // Profile exists and favorite_categories is empty or null: user has no categories
         return [];
       }
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
 
     return [];
   }
@@ -215,7 +234,10 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         if (currentAuthId != null && currentAuthId.isNotEmpty) {
           effectiveId = currentAuthId;
         }
-      } catch (_) {}
+      } catch (_) {
+        const failure = CacheFailure("there's an error, Please try again later");
+        debugPrint(failure.message);
+      }
     }
 
     if (effectiveId.isEmpty) return;

@@ -1,10 +1,11 @@
-import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mind_feed/core/articles/domain/usecases/author_follow_use_cases.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_author_use_case.dart';
 import 'package:mind_feed/core/constants/constants.dart';
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/features/profile/domain/usecases/get_favorite_categories_use_case.dart';
 import 'package:mind_feed/features/profile/domain/usecases/get_user_profile_use_case.dart';
@@ -108,7 +109,10 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
         },
         failure: (_) {},
       );
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
 
     // 2. Fetch favorite categories (topics)
     try {
@@ -120,7 +124,10 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
         },
         failure: (_) {},
       );
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
 
     // 3. Fetch author follow summary (followers & following authors)
     if (_getAuthorFollowSummaryUseCase != null) {
@@ -136,7 +143,10 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
           },
           failure: (_) {},
         );
-      } catch (_) {}
+      } catch (_) {
+        const failure = CacheFailure("there's an error, Please try again later");
+        debugPrint(failure.message);
+      }
     }
 
     // 4. Fetch articles count (published only)
@@ -150,7 +160,10 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
         },
         failure: (_) {},
       );
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
 
     if (!isClosed) {
       emit(ProfileInfoLoaded(

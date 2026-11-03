@@ -1,8 +1,9 @@
-import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:mind_feed/core/constants/constants.dart';
+import 'package:mind_feed/core/errors/failures.dart';
 
 class SupabaseStorageService {
   static const String avatarsBucket = 'avatars';
@@ -164,7 +165,10 @@ class SupabaseStorageService {
           !oldPath.endsWith('/$defaultAvatarFileName')) {
         try {
           await client.storage.from(avatarsBucket).remove([oldPath]);
-        } catch (_) {}
+        } catch (_) {
+          const failure = CacheFailure("there's an error, Please try again later");
+          debugPrint(failure.message);
+        }
       }
     }
 
@@ -202,7 +206,10 @@ class SupabaseStorageService {
       if (oldPath != null && oldPath.startsWith('$userId/')) {
         try {
           await client.storage.from(articleMediaBucket).remove([oldPath]);
-        } catch (_) {}
+        } catch (_) {
+          const failure = CacheFailure("there's an error, Please try again later");
+          debugPrint(failure.message);
+        }
       }
     }
 

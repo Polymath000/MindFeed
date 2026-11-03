@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/features/add_article/domain/helpers/article_validator.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
@@ -65,7 +66,10 @@ class ArticleCoverImageField extends StatelessWidget {
                           if (bytes == null) {
                             try {
                               bytes = await file.xFile.readAsBytes();
-                            } catch (_) {}
+                            } catch (_) {
+                              const failure = CacheFailure("there's an error, Please try again later");
+                              debugPrint(failure.message);
+                            }
                           }
                           if (bytes == null) {
                             if (context.mounted) {

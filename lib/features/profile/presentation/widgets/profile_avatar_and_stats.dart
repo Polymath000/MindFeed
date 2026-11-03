@@ -6,6 +6,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_shimmer.dart';
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/widgets/editorial_avatar.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_cubit.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_state.dart';
@@ -117,7 +118,10 @@ class ProfileAvatarAndStats extends StatelessWidget {
                     ProfileArticlesCubit? cubit;
                     try {
                       cubit = BlocProvider.of<ProfileArticlesCubit>(ctx);
-                    } catch (_) {}
+                    } catch (_) {
+                      const failure = CacheFailure("there's an error, Please try again later");
+                      debugPrint(failure.message);
+                    }
                     if (cubit != null) {
                       return BlocBuilder<ProfileArticlesCubit,
                           ProfileArticlesState>(

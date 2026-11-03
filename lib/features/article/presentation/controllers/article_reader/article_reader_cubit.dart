@@ -1,6 +1,9 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/core/articles/domain/entities/author_rating_summary.dart';
@@ -166,7 +169,10 @@ class ArticleReaderCubit extends Cubit<ArticleReaderState> {
       if (isDownloaded && !isClosed && state is ArticleReaderLoaded) {
         emit((state as ArticleReaderLoaded).copyWith(isDownloaded: true));
       }
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
   }
 
   Future<void> _checkUserEngagement(String articleId) async {

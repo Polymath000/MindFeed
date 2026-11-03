@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:hive/hive.dart';
 import 'package:mind_feed/core/constants/constants.dart' show AppConstants;
 import 'package:mind_feed/core/database/cache/cache_helper.dart';
@@ -162,11 +164,17 @@ class AuthRepoImpl extends AuthRepository {
             await box.clear();
           }
         }
-      } catch (_) {}
+      } catch (_) {
+        const failure = CacheFailure("there's an error, Please try again later");
+        debugPrint(failure.message);
+      }
       try {
         await SharedPreferencesSingleton.remove(AppConstants.tokenKey);
         await SharedPreferencesSingleton.remove(AppConstants.hasCompletedCategoriesKey);
-      } catch (_) {}
+      } catch (_) {
+        const failure = CacheFailure("there's an error, Please try again later");
+        debugPrint(failure.message);
+      }
       try {
         final allKeys = SharedPreferencesSingleton.getKeys();
         for (final k in allKeys) {
@@ -174,7 +182,10 @@ class AuthRepoImpl extends AuthRepository {
             await SharedPreferencesSingleton.remove(k);
           }
         }
-      } catch (_) {}
+      } catch (_) {
+        const failure = CacheFailure("there's an error, Please try again later");
+        debugPrint(failure.message);
+      }
     }
     return const Success(null);
   }

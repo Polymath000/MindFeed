@@ -7,6 +7,7 @@ import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_cubit.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_state.dart';
@@ -34,7 +35,10 @@ class UserArticles extends StatelessWidget {
     try {
       BlocProvider.of<ProfileArticlesCubit>(context);
       return const _UserArticlesBody();
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
     return BlocProvider(
       create: (_) => GetIt.instance<ProfileArticlesCubit>()..loadArticles(),
       child: const _UserArticlesBody(),
@@ -49,7 +53,10 @@ class _UserArticlesBody extends StatelessWidget {
     context.read<ProfileArticlesCubit>().loadArticles();
     try {
       BlocProvider.of<ProfileInfoCubit>(context).loadProfileData();
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
   }
 
   Future<void> _handleDelete(BuildContext context, EditorialNewsItem item) async {
@@ -60,7 +67,10 @@ class _UserArticlesBody extends StatelessWidget {
     if (success) {
       try {
         BlocProvider.of<ProfileInfoCubit>(context).loadProfileData();
-      } catch (_) {}
+      } catch (_) {
+        const failure = CacheFailure("there's an error, Please try again later");
+        debugPrint(failure.message);
+      }
     }
     customShowSnackBar(
       context: context,

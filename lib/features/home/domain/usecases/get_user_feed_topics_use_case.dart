@@ -1,3 +1,6 @@
+import 'package:flutter/foundation.dart';
+
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/features/profile/domain/repos/profile_repo.dart';
 
 class UserFeedTopicsResult {
@@ -72,7 +75,10 @@ class GetUserFeedTopicsUseCase {
         success: (favs) => _parseFavoriteMaps(favs, preferredIds, dynamicTopics),
         failure: (_) {},
       );
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
   }
 
   void _parseFavoriteMaps(
@@ -126,7 +132,10 @@ class GetUserFeedTopicsUseCase {
         success: (allCats) => _matchCategoryIds(allCats, dynamicTopics, preferredIds),
         failure: (_) {},
       );
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
   }
 
   void _matchCategoryIds(

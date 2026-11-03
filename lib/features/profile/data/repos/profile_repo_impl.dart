@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:hive/hive.dart';
@@ -31,7 +31,10 @@ class ProfileRepoImpl implements ProfileRepository {
       if (getIt.isRegistered<NetworkInfo>()) {
         return getIt<NetworkInfo>();
       }
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
     return NetworkInfoImpl(Connectivity());
   }
 
@@ -108,7 +111,10 @@ class ProfileRepoImpl implements ProfileRepository {
           AppConstants.hasCompletedCategoriesKey,
           value: favorites.isNotEmpty,
         );
-      } catch (_) {}
+      } catch (_) {
+        const failure = CacheFailure("there's an error, Please try again later");
+        debugPrint(failure.message);
+      }
       return Success(favorites);
     } catch (e) {
       return FailureResult(ServerFailure(e.toString()));
@@ -150,7 +156,10 @@ class ProfileRepoImpl implements ProfileRepository {
     try {
       await SharedPreferencesSingleton.setBool(syncKey, value: true);
       await SharedPreferencesSingleton.setBool('pending_category_sync', value: true);
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
 
     try {
       // 1. Primary: Save directly to profiles.favorite_categories
@@ -159,7 +168,10 @@ class ProfileRepoImpl implements ProfileRepository {
           userId: userId,
           categories: categoryNames,
         );
-      } catch (_) {}
+      } catch (_) {
+        const failure = CacheFailure("there's an error, Please try again later");
+        debugPrint(failure.message);
+      }
 
       // 2. Also sync to junction table via RPC if available
       final categoryRows = await remoteDataSource.getCategories();
@@ -188,7 +200,10 @@ class ProfileRepoImpl implements ProfileRepository {
           AppConstants.hasCompletedCategoriesKey,
           value: categoryNames.isNotEmpty,
         );
-      } catch (_) {}
+      } catch (_) {
+        const failure = CacheFailure("there's an error, Please try again later");
+        debugPrint(failure.message);
+      }
 
       return const Success(null);
     } catch (e) {

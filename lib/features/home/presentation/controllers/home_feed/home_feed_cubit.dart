@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
@@ -8,6 +10,7 @@ import 'package:mind_feed/core/articles/domain/usecases/toggle_article_like_use_
 import 'package:mind_feed/core/articles/domain/usecases/toggle_bookmark_use_case.dart';
 import 'package:mind_feed/core/articles/domain/usecases/toggle_star_use_case.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_home_feed_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_user_feed_topics_use_case.dart';
@@ -130,7 +133,10 @@ class HomeFeedCubit extends Cubit<HomeFeedState> {
         success: (saved) => savedIds.addAll(saved.map((a) => a.id)),
         failure: (_) {},
       );
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
     return savedIds;
   }
 

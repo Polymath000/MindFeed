@@ -1,9 +1,12 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:hive/hive.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:mind_feed/core/constants/constants.dart';
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/services/supabase_storage_service.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 
@@ -75,7 +78,10 @@ sealed class CurrentUserSession {
         return Hive.box<UserEntity>(AppConstants.userKey)
             .get(AppConstants.userKey);
       }
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
     return null;
   }
 
@@ -91,7 +97,10 @@ sealed class CurrentUserSession {
           );
         }
       }
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
   }
 
   static Future<void> cacheUserAvatarUrl(String avatarUrl) async {
@@ -106,6 +115,9 @@ sealed class CurrentUserSession {
           );
         }
       }
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
   }
 }

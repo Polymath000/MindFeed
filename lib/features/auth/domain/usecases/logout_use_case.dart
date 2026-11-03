@@ -1,6 +1,9 @@
+import 'package:flutter/foundation.dart';
+
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/features/auth/domain/repos/auth_repo.dart';
-import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
 
 class LogoutUseCase {
   final AuthRepository authRepo;
@@ -20,7 +23,10 @@ class LogoutUseCase {
       } else if (localDataSource != null) {
         await localDataSource!.clearAllDownloadedArticles();
       }
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
     return authRepo.logout();
   }
 }
