@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
 import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_downloaded_articles_use_case.dart';
@@ -7,11 +9,13 @@ import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
 import 'package:mind_feed/features/auth/domain/repos/auth_repo.dart';
 import 'package:mind_feed/features/auth/domain/usecases/logout_use_case.dart';
 import 'package:mind_feed/features/profile/domain/repos/profile_repo.dart';
+import 'package:mind_feed/features/settings/domain/entities/reader_preferences_entity.dart';
 import 'package:mind_feed/features/settings/domain/usecases/clear_downloaded_articles_use_case.dart';
 import 'package:mind_feed/features/settings/domain/usecases/get_archive_cache_size_use_case.dart';
+import 'package:mind_feed/features/settings/domain/usecases/get_reader_preferences_use_case.dart';
 import 'package:mind_feed/features/settings/domain/usecases/get_settings_profile_use_case.dart';
+import 'package:mind_feed/features/settings/domain/usecases/update_reader_preferences_use_case.dart';
 import 'package:mind_feed/features/settings/presentation/controllers/settings_cubit/settings_cubit.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class _FakeProfileRepository extends Fake implements ProfileRepository {
   @override
@@ -42,6 +46,42 @@ class _FakeAuthRepository extends Fake implements AuthRepository {
   Future<ApiResult<void>> logout() async {
     loggedOut = true;
     return const Success(null);
+  }
+}
+
+class _MockGetReaderPreferencesUseCase extends Fake implements GetReaderPreferencesUseCase {
+  int callCount = 0;
+  ReaderPreferencesEntity preferences = const ReaderPreferencesEntity(
+    fontScale: 'Compact',
+    serifMode: false,
+  );
+
+  @override
+  Future<ApiResult<ReaderPreferencesEntity>> call() async {
+    callCount++;
+    return Success(preferences);
+  }
+}
+
+class _MockUpdateReaderPreferencesUseCase extends Fake implements UpdateReaderPreferencesUseCase {
+  int callCount = 0;
+  String? lastFontScale;
+  bool? lastSerifMode;
+  ReaderPreferencesEntity current = const ReaderPreferencesEntity();
+
+  @override
+  Future<ApiResult<ReaderPreferencesEntity>> call({
+    String? fontScale,
+    bool? serifMode,
+  }) async {
+    callCount++;
+    lastFontScale = fontScale;
+    lastSerifMode = serifMode;
+    current = current.copyWith(
+      fontScale: fontScale,
+      serifMode: serifMode,
+    );
+    return Success(current);
   }
 }
 
@@ -145,6 +185,62 @@ void main() {
       final result = await cubit.signOut();
       expect(result, isA<Success<void>>());
       expect(authRepo.loggedOut, isTrue);
+    });
+  });
+
+  group('SettingsCubit with injected ReaderPreferences use cases', () {
+    late _MockGetReaderPreferencesUseCase mockGetPrefsUseCase;
+    late _MockUpdateReaderPreferencesUseCase mockUpdatePrefsUseCase;
+    late SettingsCubit injectedCubit;
+
+    setUp(() {
+      mockGetPrefsUseCase = _MockGetReaderPreferencesUseCase();
+      mockUpdatePrefsUseCase = _MockUpdateReaderPreferencesUseCase();
+
+      injectedCubit = SettingsCubit(
+        getSettingsProfileUseCase: GetSettingsProfileUseCase(profileRepo),
+        getArchiveCacheSizeUseCase: GetArchiveCacheSizeUseCase(GetDownloadedArticlesUseCase(offlineRepo)),
+        clearDownloadedArticlesUseCase: ClearDownloadedArticlesUseCase(offlineRepo),
+        logoutUseCase: LogoutUseCase(authRepo: authRepo),
+        getReaderPreferencesUseCase: mockGetPrefsUseCase,
+        updateReaderPreferencesUseCase: mockUpdatePrefsUseCase,
+      );
+    });
+
+    tearDown(() {
+      injectedCubit.close();
+    });
+
+    test('loadSettings uses injected GetReaderPreferencesUseCase and updates state', () async {
+      await injectedCubit.loadSettings();
+
+      expect(mockGetPrefsUseCase.callCount, equals(1));
+      expect(injectedCubit.state, isA<SettingsLoaded>());
+      final state = injectedCubit.state as SettingsLoaded;
+      expect(state.fontScale, equals('Compact'));
+      expect(state.serifMode, isFalse);
+    });
+
+    test('setFontScale uses injected UpdateReaderPreferencesUseCase', () async {
+      await injectedCubit.setFontScale('Large');
+
+      expect(mockUpdatePrefsUseCase.callCount, equals(1));
+      expect(mockUpdatePrefsUseCase.lastFontScale, equals('Large'));
+      expect(injectedCubit.state.fontScale, equals('Large'));
+    });
+
+    test('setSerifMode uses injected UpdateReaderPreferencesUseCase', () async {
+      await injectedCubit.setSerifMode(false);
+
+      expect(mockUpdatePrefsUseCase.callCount, equals(1));
+      expect(mockUpdatePrefsUseCase.lastSerifMode, isFalse);
+      expect(injectedCubit.state.serifMode, isFalse);
+
+      await injectedCubit.setSerifMode(true);
+
+      expect(mockUpdatePrefsUseCase.callCount, equals(2));
+      expect(mockUpdatePrefsUseCase.lastSerifMode, isTrue);
+      expect(injectedCubit.state.serifMode, isTrue);
     });
   });
 }
