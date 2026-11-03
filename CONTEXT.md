@@ -386,6 +386,16 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
   - Removed the `Reading Surface Contrast` (`ThemeWidget`) selector from `SettingsReadingSection` (deleting `theme_widget.dart`) and configured **Warm Paper (`ThemeMode.light`)** as the default theme across `ThemeModeCubit` and `MyApp`.
   - Replaced all empty `catch (_) {}` and silent `failure: (_) {}` blocks across `lib/` (42 occurrences across 24 files) with `CacheFailure` / `FailureResult` error propagation and `SettingsError` state emissions (`38/38` Settings tests passing; `437/437` total tests passing, `0` analyzer issues).
 
+## 15. Article Category Badge Dynamic Topic Color Resolution
+- **Category Color Mapping (`lib/core/constants/category_items.dart`)**:
+  - Implemented `getCategoryColor(slugOrNameOrBadge)` mapping each category to distinct, high-contrast background colors: Science (`#065F46`), Space (`#7C3AED`), Technology (`#2563EB`), Business (`#4338CA`), Personal Development (`#D97706`), Health & Wellness (`#0D9488`), Education (`#4F46E5`), News (`#EF4444`), Finance (`#0E7490`), Lifestyle (`#C026D3`), Travel & Culture (`#EA580C`), Food & Cooking (`#E11D48`), Sports (`#0F172A`), Entertainment (`#DB2777`), Art & Design (`#B45309`), History (`#78350F`), Psychology (`#6D28D9`), Environment (`#047857`), and default Ink (`#171614`).
+  - Added `getCategoryColorHex(slugOrNameOrBadge)` returning formatted `#RRGGBB` strings.
+- **Top Bar Badge Resolution & Publishing Payload**:
+  - In `ArticleEntityEditorialMapper.toEditorialNewsItem`, resolved `badgeColor` so that if `badgeColor` is empty, null, or `#FFF1C6` (the schema default that previously matched the paper background), it resolves to `getCategoryColor(categorySlug.isNotEmpty ? categorySlug : badge)`, preventing the badge from blending into the page background.
+  - In `DownloadedArticleEntityEditorialMapper.toEditorialNewsItem`, assigned `badgeColor: getCategoryColor(categorySlug)`.
+  - In `ArticlePayloadBuilder.buildPublishPayload`, stored `'badge_color': getCategoryColorHex(category.slug)` for newly published articles.
+  - Added unit and widget tests in `test/core/constants/category_items_test.dart`, `test/core/design/editorial_models_category_color_test.dart`, and `test/features/article/presentation/widgets/article_reader_top_bar_test.dart` (446/446 tests passing, 0 analyzer issues).
+
 
 
 
