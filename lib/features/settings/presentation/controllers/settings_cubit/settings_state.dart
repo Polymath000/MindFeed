@@ -8,11 +8,6 @@ sealed class SettingsState {
   final UserEntity? currentUserEntity;
   final String fontScale;
   final bool serifMode;
-  final bool bionicGuide;
-  final bool morningBriefing;
-  final bool breakingAlerts;
-  final bool dataPreservation;
-  final bool wifiOnly;
   final double cachedMegabytes;
 
   const SettingsState({
@@ -22,11 +17,6 @@ sealed class SettingsState {
     this.currentUserEntity,
     this.fontScale = 'Standard',
     this.serifMode = true,
-    this.bionicGuide = false,
-    this.morningBriefing = true,
-    this.breakingAlerts = true,
-    this.dataPreservation = false,
-    this.wifiOnly = true,
     this.cachedMegabytes = 0.0,
   });
 }
@@ -39,11 +29,6 @@ final class SettingsInitial extends SettingsState {
     super.currentUserEntity,
     super.fontScale,
     super.serifMode,
-    super.bionicGuide,
-    super.morningBriefing,
-    super.breakingAlerts,
-    super.dataPreservation,
-    super.wifiOnly,
     super.cachedMegabytes,
   });
 }
@@ -56,11 +41,6 @@ final class SettingsLoading extends SettingsState {
     super.currentUserEntity,
     super.fontScale,
     super.serifMode,
-    super.bionicGuide,
-    super.morningBriefing,
-    super.breakingAlerts,
-    super.dataPreservation,
-    super.wifiOnly,
     super.cachedMegabytes,
   });
 }
@@ -73,11 +53,6 @@ final class SettingsLoaded extends SettingsState {
     super.currentUserEntity,
     super.fontScale,
     super.serifMode,
-    super.bionicGuide,
-    super.morningBriefing,
-    super.breakingAlerts,
-    super.dataPreservation,
-    super.wifiOnly,
     super.cachedMegabytes,
   });
 
@@ -88,11 +63,6 @@ final class SettingsLoaded extends SettingsState {
     UserEntity? currentUserEntity,
     String? fontScale,
     bool? serifMode,
-    bool? bionicGuide,
-    bool? morningBriefing,
-    bool? breakingAlerts,
-    bool? dataPreservation,
-    bool? wifiOnly,
     double? cachedMegabytes,
   }) {
     return SettingsLoaded(
@@ -102,11 +72,6 @@ final class SettingsLoaded extends SettingsState {
       currentUserEntity: currentUserEntity ?? this.currentUserEntity,
       fontScale: fontScale ?? this.fontScale,
       serifMode: serifMode ?? this.serifMode,
-      bionicGuide: bionicGuide ?? this.bionicGuide,
-      morningBriefing: morningBriefing ?? this.morningBriefing,
-      breakingAlerts: breakingAlerts ?? this.breakingAlerts,
-      dataPreservation: dataPreservation ?? this.dataPreservation,
-      wifiOnly: wifiOnly ?? this.wifiOnly,
       cachedMegabytes: cachedMegabytes ?? this.cachedMegabytes,
     );
   }
@@ -123,11 +88,6 @@ final class SettingsError extends SettingsState {
     super.currentUserEntity,
     super.fontScale,
     super.serifMode,
-    super.bionicGuide,
-    super.morningBriefing,
-    super.breakingAlerts,
-    super.dataPreservation,
-    super.wifiOnly,
     super.cachedMegabytes,
   });
 }

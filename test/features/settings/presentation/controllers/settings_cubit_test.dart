@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
+import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_downloaded_articles_use_case.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
 import 'package:mind_feed/features/auth/domain/repos/auth_repo.dart';
 import 'package:mind_feed/features/auth/domain/usecases/logout_use_case.dart';
-import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
-import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
-import 'package:mind_feed/core/articles/domain/usecases/get_downloaded_articles_use_case.dart';
 import 'package:mind_feed/features/profile/domain/repos/profile_repo.dart';
 import 'package:mind_feed/features/settings/domain/usecases/clear_downloaded_articles_use_case.dart';
 import 'package:mind_feed/features/settings/domain/usecases/get_archive_cache_size_use_case.dart';
@@ -57,11 +57,6 @@ void main() {
     SharedPreferences.setMockInitialValues({
       'pref_font_scale': 'Editorial',
       'pref_serif_mode': false,
-      'pref_bionic_guide': true,
-      'pref_morning_briefing': false,
-      'pref_breaking_alerts': true,
-      'pref_data_preservation': true,
-      'pref_wifi_only': false,
     });
     await SharedPreferencesSingleton.init();
   });
@@ -93,6 +88,7 @@ void main() {
       expect(cubit.state, isA<SettingsInitial>());
       expect(cubit.state.cachedMegabytes, equals(0.0));
       expect(cubit.state.fontScale, equals('Standard'));
+      expect(cubit.state.serifMode, isTrue);
     });
 
     test('loadSettings reads shared preferences and updates state to SettingsLoaded', () async {
@@ -102,11 +98,6 @@ void main() {
       final s = cubit.state as SettingsLoaded;
       expect(s.fontScale, equals('Editorial'));
       expect(s.serifMode, isFalse);
-      expect(s.bionicGuide, isTrue);
-      expect(s.morningBriefing, isFalse);
-      expect(s.breakingAlerts, isTrue);
-      expect(s.dataPreservation, isTrue);
-      expect(s.wifiOnly, isFalse);
     });
 
     test('setFontScale persists and updates state', () {
@@ -115,30 +106,14 @@ void main() {
       expect(SharedPreferencesSingleton.getString('pref_font_scale'), equals('Large'));
     });
 
-    test('toggle toggles and persists preference boolean values', () {
+    test('setSerifMode persists and updates state', () {
       cubit.setSerifMode(true);
       expect(cubit.state.serifMode, isTrue);
+      expect(SharedPreferencesSingleton.getBool('pref_serif_mode'), isTrue);
 
-      cubit.setBionicGuide(false);
-      expect(cubit.state.bionicGuide, isFalse);
-
-      cubit.setMorningBriefing(true);
-      expect(cubit.state.morningBriefing, isTrue);
-
-      cubit.setBreakingAlerts(false);
-      expect(cubit.state.breakingAlerts, isFalse);
-
-      cubit.setDataPreservation(false);
-      expect(cubit.state.dataPreservation, isFalse);
-
-      cubit.setWifiOnly(true);
-      expect(cubit.state.wifiOnly, isTrue);
-
-      cubit.toggleDataPreservation(true);
-      expect(cubit.state.dataPreservation, isTrue);
-
-      cubit.toggleWifiOnly(false);
-      expect(cubit.state.wifiOnly, isFalse);
+      cubit.setSerifMode(false);
+      expect(cubit.state.serifMode, isFalse);
+      expect(SharedPreferencesSingleton.getBool('pref_serif_mode'), isFalse);
     });
 
     test('clearCache resets cachedMegabytes to 0.0 and delegates to use case', () async {

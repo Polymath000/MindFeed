@@ -69,8 +69,6 @@ class SettingsViewBody extends StatelessWidget {
                   },
                   serifMode: state.serifMode,
                   onSerifModeChanged: cubit.setSerifMode,
-                  bionicGuide: state.bionicGuide,
-                  onBionicGuideChanged: cubit.setBionicGuide,
                   onTapPreferredCategories: () async {
                     await Navigator.pushNamed(
                       context,
@@ -81,18 +79,10 @@ class SettingsViewBody extends StatelessWidget {
                       cubit.loadUserData();
                     }
                   },
-                  morningBriefing: state.morningBriefing,
-                  onMorningBriefingChanged: cubit.setMorningBriefing,
-                  breakingAlerts: state.breakingAlerts,
-                  onBreakingAlertsChanged: cubit.setBreakingAlerts,
                 ),
                 SettingsArchiveSection(
                   cachedMegabytes: state.cachedMegabytes,
                   onClearCache: () => _handleClearCache(context),
-                  dataPreservation: state.dataPreservation,
-                  onDataPreservationChanged: cubit.setDataPreservation,
-                  wifiOnly: state.wifiOnly,
-                  onWifiOnlyChanged: cubit.setWifiOnly,
                   userEmail: state.userEmail,
                   onSignOut: () => _handleSignOut(context),
                 ),

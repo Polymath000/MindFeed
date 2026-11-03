@@ -8,10 +8,6 @@ import 'package:mind_feed/features/settings/presentation/widgets/settings_tile_p
 class SettingsArchiveSection extends StatelessWidget {
   final double cachedMegabytes;
   final VoidCallback onClearCache;
-  final bool dataPreservation;
-  final ValueChanged<bool> onDataPreservationChanged;
-  final bool wifiOnly;
-  final ValueChanged<bool> onWifiOnlyChanged;
   final String userEmail;
   final VoidCallback onSignOut;
 
@@ -19,10 +15,6 @@ class SettingsArchiveSection extends StatelessWidget {
     super.key,
     required this.cachedMegabytes,
     required this.onClearCache,
-    required this.dataPreservation,
-    required this.onDataPreservationChanged,
-    required this.wifiOnly,
-    required this.onWifiOnlyChanged,
     required this.userEmail,
     required this.onSignOut,
   });
@@ -56,22 +48,6 @@ class SettingsArchiveSection extends StatelessWidget {
                   style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700),
                 ),
               ),
-            ),
-            SettingsToggleTile(
-              icon: AppIcons.networkCheckRounded,
-              stampColor: AppColors.powder,
-              title: 'Data Preservation Mode',
-              subtitle: 'Load compressed imagery when connected to cellular data',
-              value: dataPreservation,
-              onChanged: onDataPreservationChanged,
-            ),
-            SettingsToggleTile(
-              icon: AppIcons.wifiRounded,
-              stampColor: AppColors.cream,
-              title: 'Download on Wi-Fi Only',
-              subtitle: 'Save high-fidelity offline articles only on Wi-Fi',
-              value: wifiOnly,
-              onChanged: onWifiOnlyChanged,
             ),
           ],
         ),
