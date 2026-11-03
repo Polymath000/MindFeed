@@ -55,7 +55,6 @@ class SettingsCubit extends Cubit<SettingsState> {
         if (!isClosed) {
           emit(state.toLoaded(
             fontScale: prefs.fontScale,
-            serifMode: prefs.serifMode,
           ));
         }
       },
@@ -167,23 +166,4 @@ class SettingsCubit extends Cubit<SettingsState> {
     );
   }
 
-  Future<void> setSerifMode(bool value) async {
-    if (!isClosed) {
-      emit(state.toLoaded(serifMode: value));
-    }
-    final result = await updateReaderPreferencesUseCase(serifMode: value);
-    if (isClosed) return;
-    result.when(
-      success: (_) {},
-      failure: (failure) {
-        if (!isClosed) {
-          emit(state.toError(
-            failure.message.isNotEmpty
-                ? failure.message
-                : AppConstants.genericErrorMessage,
-          ));
-        }
-      },
-    );
-  }
 }

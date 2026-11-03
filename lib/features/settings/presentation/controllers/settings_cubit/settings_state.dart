@@ -7,7 +7,6 @@ sealed class SettingsState {
   final String? avatarUrl;
   final UserEntity? currentUserEntity;
   final String fontScale;
-  final bool serifMode;
   final double cachedMegabytes;
 
   const SettingsState({
@@ -16,7 +15,6 @@ sealed class SettingsState {
     this.avatarUrl,
     this.currentUserEntity,
     this.fontScale = AppConstants.defaultFontScale,
-    this.serifMode = true,
     this.cachedMegabytes = 0.0,
   });
 
@@ -26,7 +24,6 @@ sealed class SettingsState {
     String? avatarUrl,
     UserEntity? currentUserEntity,
     String? fontScale,
-    bool? serifMode,
     double? cachedMegabytes,
   }) {
     return SettingsLoaded(
@@ -35,7 +32,6 @@ sealed class SettingsState {
       avatarUrl: avatarUrl ?? this.avatarUrl,
       currentUserEntity: currentUserEntity ?? this.currentUserEntity,
       fontScale: fontScale ?? this.fontScale,
-      serifMode: serifMode ?? this.serifMode,
       cachedMegabytes: cachedMegabytes ?? this.cachedMegabytes,
     );
   }
@@ -48,7 +44,6 @@ sealed class SettingsState {
       avatarUrl: avatarUrl,
       currentUserEntity: currentUserEntity,
       fontScale: fontScale,
-      serifMode: serifMode,
       cachedMegabytes: cachedMegabytes,
     );
   }
@@ -61,7 +56,6 @@ final class SettingsInitial extends SettingsState {
     super.avatarUrl,
     super.currentUserEntity,
     super.fontScale,
-    super.serifMode,
     super.cachedMegabytes,
   });
 }
@@ -73,7 +67,6 @@ final class SettingsLoading extends SettingsState {
     super.avatarUrl,
     super.currentUserEntity,
     super.fontScale,
-    super.serifMode,
     super.cachedMegabytes,
   });
 }
@@ -85,7 +78,6 @@ final class SettingsLoaded extends SettingsState {
     super.avatarUrl,
     super.currentUserEntity,
     super.fontScale,
-    super.serifMode,
     super.cachedMegabytes,
   });
 
@@ -95,7 +87,6 @@ final class SettingsLoaded extends SettingsState {
     String? avatarUrl,
     UserEntity? currentUserEntity,
     String? fontScale,
-    bool? serifMode,
     double? cachedMegabytes,
   }) {
     return toLoaded(
@@ -104,7 +95,6 @@ final class SettingsLoaded extends SettingsState {
       avatarUrl: avatarUrl,
       currentUserEntity: currentUserEntity,
       fontScale: fontScale,
-      serifMode: serifMode,
       cachedMegabytes: cachedMegabytes,
     );
   }
@@ -120,7 +110,6 @@ final class SettingsError extends SettingsState {
     super.avatarUrl,
     super.currentUserEntity,
     super.fontScale,
-    super.serifMode,
     super.cachedMegabytes,
   });
 }

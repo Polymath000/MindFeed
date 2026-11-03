@@ -8,7 +8,6 @@ abstract class SettingsLocalDataSource {
   Future<ReaderPreferencesEntity> getReaderPreferences();
   Future<ReaderPreferencesEntity> updateReaderPreferences({
     String? fontScale,
-    bool? serifMode,
   });
 }
 
@@ -16,12 +15,10 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
   const SettingsLocalDataSourceImpl();
 
   static String _fallbackFontScale = AppConstants.defaultFontScale;
-  static bool _fallbackSerifMode = true;
 
   @override
   Future<ReaderPreferencesEntity> getReaderPreferences() async {
     String fontScale = _fallbackFontScale;
-    bool serifMode = _fallbackSerifMode;
 
     if (SharedPreferencesSingleton.isInitialized) {
       try {
@@ -31,12 +28,6 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
           fontScale = storedScale;
           _fallbackFontScale = storedScale;
         }
-        final storedSerif =
-            SharedPreferencesSingleton.getBool(AppConstants.serifModeKey);
-        if (storedSerif != null) {
-          serifMode = storedSerif;
-          _fallbackSerifMode = storedSerif;
-        }
       } catch (_) {
         throw const CacheFailure(AppConstants.genericErrorMessage);
       }
@@ -44,14 +35,12 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
 
     return ReaderPreferencesEntity(
       fontScale: fontScale,
-      serifMode: serifMode,
     );
   }
 
   @override
   Future<ReaderPreferencesEntity> updateReaderPreferences({
     String? fontScale,
-    bool? serifMode,
   }) async {
     if (fontScale != null) {
       _fallbackFontScale = fontScale;
@@ -60,20 +49,6 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
           await SharedPreferencesSingleton.setString(
             AppConstants.fontScaleKey,
             fontScale,
-          );
-        } catch (_) {
-          throw const CacheFailure(AppConstants.genericErrorMessage);
-        }
-      }
-    }
-
-    if (serifMode != null) {
-      _fallbackSerifMode = serifMode;
-      if (SharedPreferencesSingleton.isInitialized) {
-        try {
-          await SharedPreferencesSingleton.setBool(
-            AppConstants.serifModeKey,
-            value: serifMode,
           );
         } catch (_) {
           throw const CacheFailure(AppConstants.genericErrorMessage);

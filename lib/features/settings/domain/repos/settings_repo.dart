@@ -6,6 +6,5 @@ abstract class SettingsRepository {
   Future<ApiResult<ReaderPreferencesEntity>> getReaderPreferences();
   Future<ApiResult<ReaderPreferencesEntity>> updateReaderPreferences({
     String? fontScale,
-    bool? serifMode,
   });
 }

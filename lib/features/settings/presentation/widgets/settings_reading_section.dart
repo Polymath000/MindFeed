@@ -6,16 +6,12 @@ import 'package:mind_feed/features/settings/presentation/widgets/settings_tile_p
 class SettingsReadingSection extends StatelessWidget {
   final String fontScale;
   final ValueChanged<String> onFontScaleChanged;
-  final bool serifMode;
-  final ValueChanged<bool> onSerifModeChanged;
   final VoidCallback onTapPreferredCategories;
 
   const SettingsReadingSection({
     super.key,
     required this.fontScale,
     required this.onFontScaleChanged,
-    required this.serifMode,
-    required this.onSerifModeChanged,
     required this.onTapPreferredCategories,
   });
 
@@ -43,14 +39,6 @@ class SettingsReadingSection extends StatelessWidget {
               selectedOption: fontScale,
               onChanged: onFontScaleChanged,
               labelBuilder: (s) => s,
-            ),
-            SettingsToggleTile(
-              icon: AppIcons.menuBookOutlined,
-              stampColor: AppColors.lilac,
-              title: 'Serif Literary Immersion',
-              subtitle: 'Render longform stories in classic editorial serif typography',
-              value: serifMode,
-              onChanged: onSerifModeChanged,
             ),
           ],
         ),

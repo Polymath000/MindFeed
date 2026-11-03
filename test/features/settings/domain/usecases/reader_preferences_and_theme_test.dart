@@ -27,7 +27,6 @@ class _ThrowingSettingsLocalDataSource implements SettingsLocalDataSource {
   @override
   Future<ReaderPreferencesEntity> updateReaderPreferences({
     String? fontScale,
-    bool? serifMode,
   }) async {
     throw Exception('Local storage write failure');
   }
@@ -42,7 +41,6 @@ class _FailingSettingsRepository implements SettingsRepository {
   @override
   Future<ApiResult<ReaderPreferencesEntity>> updateReaderPreferences({
     String? fontScale,
-    bool? serifMode,
   }) async {
     return const FailureResult(CacheFailure('Repository update failed'));
   }
@@ -54,12 +52,10 @@ void main() {
   setUp(() async {
     SharedPreferences.setMockInitialValues({
       AppConstants.fontScaleKey: AppConstants.defaultFontScale,
-      AppConstants.serifModeKey: true,
     });
     await SharedPreferencesSingleton.init();
     await const SettingsLocalDataSourceImpl().updateReaderPreferences(
       fontScale: AppConstants.defaultFontScale,
-      serifMode: true,
     );
   });
 
@@ -75,33 +71,27 @@ void main() {
     test('localDataSource gets fallback reader preferences when cache is empty', () async {
       final prefs = await localDataSource.getReaderPreferences();
       expect(prefs.fontScale, equals('Standard'));
-      expect(prefs.serifMode, isTrue);
     });
 
-    test('localDataSource updates fontScale and serifMode and persists to storage', () async {
+    test('localDataSource updates fontScale and persists to storage', () async {
       final updated = await localDataSource.updateReaderPreferences(
         fontScale: 'Large',
-        serifMode: false,
       );
       expect(updated.fontScale, equals('Large'));
-      expect(updated.serifMode, isFalse);
 
       final fetched = await localDataSource.getReaderPreferences();
       expect(fetched.fontScale, equals('Large'));
-      expect(fetched.serifMode, isFalse);
       expect(SharedPreferencesSingleton.getString(AppConstants.fontScaleKey), equals('Large'));
-      expect(SharedPreferencesSingleton.getBool(AppConstants.serifModeKey), isFalse);
     });
 
     test('repository getReaderPreferences returns Success<ReaderPreferencesEntity>', () async {
-      await localDataSource.updateReaderPreferences(fontScale: 'Compact', serifMode: true);
+      await localDataSource.updateReaderPreferences(fontScale: 'Compact');
 
       final result = await repository.getReaderPreferences();
       expect(result, isA<Success<ReaderPreferencesEntity>>());
       result.when(
         success: (prefs) {
           expect(prefs.fontScale, equals('Compact'));
-          expect(prefs.serifMode, isTrue);
         },
         failure: (f) => fail('Expected Success but got $f'),
       );
@@ -110,21 +100,17 @@ void main() {
     test('repository updateReaderPreferences returns Success<ReaderPreferencesEntity>', () async {
       final result = await repository.updateReaderPreferences(
         fontScale: 'Editorial',
-        serifMode: false,
       );
       expect(result, isA<Success<ReaderPreferencesEntity>>());
       result.when(
         success: (prefs) {
           expect(prefs.fontScale, equals('Editorial'));
-          expect(prefs.serifMode, isFalse);
         },
         failure: (f) => fail('Expected Success but got $f'),
       );
 
       final storedScale = SharedPreferencesSingleton.getString(AppConstants.fontScaleKey);
-      final storedSerif = SharedPreferencesSingleton.getBool(AppConstants.serifModeKey);
       expect(storedScale, equals('Editorial'));
-      expect(storedSerif, isFalse);
     });
 
     test('repository returns FailureResult when local data source throws on get', () async {
@@ -173,19 +159,17 @@ void main() {
       result.when(
         success: (prefs) {
           expect(prefs.fontScale, equals('Standard'));
-          expect(prefs.serifMode, isTrue);
         },
         failure: (f) => fail('Expected Success but got $f'),
       );
     });
 
-    test('UpdateReaderPreferencesUseCase propagates fontScale and serifMode updates', () async {
-      final updateResult = await updateUseCase(fontScale: 'Large', serifMode: false);
+    test('UpdateReaderPreferencesUseCase propagates fontScale updates', () async {
+      final updateResult = await updateUseCase(fontScale: 'Large');
       expect(updateResult, isA<Success<ReaderPreferencesEntity>>());
       updateResult.when(
         success: (prefs) {
           expect(prefs.fontScale, equals('Large'));
-          expect(prefs.serifMode, isFalse);
         },
         failure: (f) => fail('Expected Success but got $f'),
       );
@@ -195,7 +179,6 @@ void main() {
       getResult.when(
         success: (prefs) {
           expect(prefs.fontScale, equals('Large'));
-          expect(prefs.serifMode, isFalse);
         },
         failure: (f) => fail('Expected Success but got $f'),
       );
@@ -276,7 +259,6 @@ void main() {
 
     Widget createTestArticle({
       required String fontScale,
-      required bool serifMode,
       String? content,
       String excerpt = 'Editorial excerpt summary text',
       String title = 'Typography Testing Title',
@@ -289,18 +271,16 @@ void main() {
               excerpt: excerpt,
               title: title,
               fontScale: fontScale,
-              serifMode: serifMode,
             ),
           ),
         ),
       );
     }
 
-    testWidgets('renders markdown with custom fontScale Large and serifMode true', (tester) async {
+    testWidgets('renders markdown with custom fontScale Large', (tester) async {
       await tester.pumpWidget(
         createTestArticle(
           fontScale: 'Large',
-          serifMode: true,
           content: 'Markdown paragraph text content.',
           excerpt: 'Editorial excerpt summary text',
         ),
@@ -314,19 +294,18 @@ void main() {
       final excerptText = tester.widget<Text>(find.text('Editorial excerpt summary text'));
       final expectedExcerptSize = (AppTextStyles.readerExcerpt.fontSize ?? 16.0) * 1.18;
       expect(excerptText.style?.fontSize, closeTo(expectedExcerptSize, 0.001));
-      expect(excerptText.style?.fontFamily, equals('serif'));
+      expect(excerptText.style?.fontFamily, isNull);
 
       final markdownWidget = tester.widget<MarkdownBody>(find.byType(MarkdownBody));
       final expectedBodySize = (AppTextStyles.readerBodyParagraph.fontSize ?? 16.0) * 1.18;
       expect(markdownWidget.styleSheet?.p?.fontSize, closeTo(expectedBodySize, 0.001));
-      expect(markdownWidget.styleSheet?.p?.fontFamily, equals('serif'));
+      expect(markdownWidget.styleSheet?.p?.fontFamily, isNull);
     });
 
-    testWidgets('renders markdown with custom fontScale Compact and serifMode false', (tester) async {
+    testWidgets('renders markdown with custom fontScale Compact', (tester) async {
       await tester.pumpWidget(
         createTestArticle(
           fontScale: 'Compact',
-          serifMode: false,
           content: 'Markdown paragraph text content.',
           excerpt: 'Editorial excerpt summary text',
         ),
@@ -351,7 +330,6 @@ void main() {
       await tester.pumpWidget(
         createTestArticle(
           fontScale: 'Editorial',
-          serifMode: true,
           content: 'Editorial mode content.',
           excerpt: 'Editorial summary',
         ),
@@ -361,14 +339,13 @@ void main() {
       final markdownWidget = tester.widget<MarkdownBody>(find.byType(MarkdownBody));
       final expectedBodySize = (AppTextStyles.readerBodyParagraph.fontSize ?? 16.0) * 1.08;
       expect(markdownWidget.styleSheet?.p?.fontSize, closeTo(expectedBodySize, 0.001));
-      expect(markdownWidget.styleSheet?.p?.fontFamily, equals('serif'));
+      expect(markdownWidget.styleSheet?.p?.fontFamily, isNull);
     });
 
     testWidgets('renders markdown using Standard font scale', (tester) async {
       await tester.pumpWidget(
         createTestArticle(
           fontScale: 'Standard',
-          serifMode: false,
           content: 'Standard mode content.',
           excerpt: 'Standard summary',
         ),

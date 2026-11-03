@@ -29,12 +29,10 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<ApiResult<ReaderPreferencesEntity>> updateReaderPreferences({
     String? fontScale,
-    bool? serifMode,
   }) async {
     try {
       final updated = await localDataSource.updateReaderPreferences(
         fontScale: fontScale,
-        serifMode: serifMode,
       );
       return Success(updated);
     } on Failure catch (failure) {

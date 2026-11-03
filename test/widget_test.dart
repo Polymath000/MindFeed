@@ -443,7 +443,6 @@ void main() {
     expect(find.text('Reader'), findsOneWidget);
     expect(find.text('Reading Experience & Surface'), findsOneWidget);
     expect(find.text('Typeface Scale'), findsOneWidget);
-    expect(find.text('Serif Literary Immersion'), findsOneWidget);
   });
 
   testWidgets(

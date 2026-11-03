@@ -55,7 +55,6 @@ class _MockGetReaderPreferencesUseCase extends Fake implements GetReaderPreferen
   int callCount = 0;
   ReaderPreferencesEntity preferences = const ReaderPreferencesEntity(
     fontScale: 'Compact',
-    serifMode: false,
   );
 
   @override
@@ -68,20 +67,16 @@ class _MockGetReaderPreferencesUseCase extends Fake implements GetReaderPreferen
 class _MockUpdateReaderPreferencesUseCase extends Fake implements UpdateReaderPreferencesUseCase {
   int callCount = 0;
   String? lastFontScale;
-  bool? lastSerifMode;
   ReaderPreferencesEntity current = const ReaderPreferencesEntity();
 
   @override
   Future<ApiResult<ReaderPreferencesEntity>> call({
     String? fontScale,
-    bool? serifMode,
   }) async {
     callCount++;
     lastFontScale = fontScale;
-    lastSerifMode = serifMode;
     current = current.copyWith(
       fontScale: fontScale,
-      serifMode: serifMode,
     );
     return Success(current);
   }
@@ -92,7 +87,6 @@ class _FailingUpdateReaderPreferencesUseCase extends Fake
   @override
   Future<ApiResult<ReaderPreferencesEntity>> call({
     String? fontScale,
-    bool? serifMode,
   }) async {
     return const FailureResult(CacheFailure('Failed to update reader preferences'));
   }
@@ -117,7 +111,6 @@ void main() {
   setUpAll(() async {
     SharedPreferences.setMockInitialValues({
       AppConstants.fontScaleKey: 'Editorial',
-      AppConstants.serifModeKey: false,
     });
     await SharedPreferencesSingleton.init();
   });
@@ -149,7 +142,6 @@ void main() {
       expect(cubit.state, isA<SettingsInitial>());
       expect(cubit.state.cachedMegabytes, equals(0.0));
       expect(cubit.state.fontScale, equals('Standard'));
-      expect(cubit.state.serifMode, isTrue);
     });
 
     test('loadSettings reads shared preferences and updates state to SettingsLoaded', () async {
@@ -158,23 +150,12 @@ void main() {
       expect(cubit.state, isA<SettingsLoaded>());
       final s = cubit.state as SettingsLoaded;
       expect(s.fontScale, equals('Editorial'));
-      expect(s.serifMode, isFalse);
     });
 
     test('setFontScale persists and updates state', () {
       cubit.setFontScale('Large');
       expect(cubit.state.fontScale, equals('Large'));
       expect(SharedPreferencesSingleton.getString(AppConstants.fontScaleKey), equals('Large'));
-    });
-
-    test('setSerifMode persists and updates state', () {
-      cubit.setSerifMode(true);
-      expect(cubit.state.serifMode, isTrue);
-      expect(SharedPreferencesSingleton.getBool(AppConstants.serifModeKey), isTrue);
-
-      cubit.setSerifMode(false);
-      expect(cubit.state.serifMode, isFalse);
-      expect(SharedPreferencesSingleton.getBool(AppConstants.serifModeKey), isFalse);
     });
 
     test('clearCache resets cachedMegabytes to 0.0 and delegates to use case', () async {
@@ -239,7 +220,6 @@ void main() {
       expect(injectedCubit.state, isA<SettingsLoaded>());
       final state = injectedCubit.state as SettingsLoaded;
       expect(state.fontScale, equals('Compact'));
-      expect(state.serifMode, isFalse);
     });
 
     test('setFontScale uses injected UpdateReaderPreferencesUseCase', () async {
@@ -250,21 +230,7 @@ void main() {
       expect(injectedCubit.state.fontScale, equals('Large'));
     });
 
-    test('setSerifMode uses injected UpdateReaderPreferencesUseCase', () async {
-      await injectedCubit.setSerifMode(false);
-
-      expect(mockUpdatePrefsUseCase.callCount, equals(1));
-      expect(mockUpdatePrefsUseCase.lastSerifMode, isFalse);
-      expect(injectedCubit.state.serifMode, isFalse);
-
-      await injectedCubit.setSerifMode(true);
-
-      expect(mockUpdatePrefsUseCase.callCount, equals(2));
-      expect(mockUpdatePrefsUseCase.lastSerifMode, isTrue);
-      expect(injectedCubit.state.serifMode, isTrue);
-    });
-
-    test('emits SettingsError when updateReaderPreferencesUseCase fails on setFontScale and setSerifMode', () async {
+    test('emits SettingsError when updateReaderPreferencesUseCase fails on setFontScale', () async {
       final failingUpdateUseCase = _FailingUpdateReaderPreferencesUseCase();
       final cubitWithFailingUpdate = SettingsCubit(
         getSettingsProfileUseCase: GetSettingsProfileUseCase(profileRepo),
@@ -276,11 +242,6 @@ void main() {
       );
 
       await cubitWithFailingUpdate.setFontScale('Large');
-      expect(cubitWithFailingUpdate.state, isA<SettingsError>());
-      expect((cubitWithFailingUpdate.state as SettingsError).message,
-          equals('Failed to update reader preferences'));
-
-      await cubitWithFailingUpdate.setSerifMode(true);
       expect(cubitWithFailingUpdate.state, isA<SettingsError>());
       expect((cubitWithFailingUpdate.state as SettingsError).message,
           equals('Failed to update reader preferences'));

@@ -10,11 +10,9 @@ class UpdateReaderPreferencesUseCase {
 
   Future<ApiResult<ReaderPreferencesEntity>> call({
     String? fontScale,
-    bool? serifMode,
   }) async {
     return await repository.updateReaderPreferences(
       fontScale: fontScale,
-      serifMode: serifMode,
     );
   }
 }

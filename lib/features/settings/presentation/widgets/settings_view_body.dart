@@ -79,16 +79,14 @@ class SettingsViewBody extends StatelessWidget {
   }
 
   Widget _buildReadingSection(BuildContext context) {
-    return BlocSelector<SettingsCubit, SettingsState, (String, bool, UserEntity?)>(
-      selector: (state) => (state.fontScale, state.serifMode, state.currentUserEntity),
+    return BlocSelector<SettingsCubit, SettingsState, (String, UserEntity?)>(
+      selector: (state) => (state.fontScale, state.currentUserEntity),
       builder: (context, data) {
-        final (fontScale, serifMode, userEntity) = data;
+        final (fontScale, userEntity) = data;
         final cubit = context.read<SettingsCubit>();
         return SettingsReadingSection(
           fontScale: fontScale,
           onFontScaleChanged: (val) => _onFontScaleChanged(context, cubit, val),
-          serifMode: serifMode,
-          onSerifModeChanged: cubit.setSerifMode,
           onTapPreferredCategories: () => _openPreferredCategories(
             context,
             cubit,

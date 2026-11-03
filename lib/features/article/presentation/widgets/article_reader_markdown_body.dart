@@ -18,16 +18,14 @@ class ArticleReaderMarkdownBody extends StatelessWidget {
     required this.excerpt,
     required this.title,
     this.fontScale,
-    this.serifMode,
   });
 
   final String? content;
   final String excerpt;
   final String title;
   final String? fontScale;
-  final bool? serifMode;
 
-  static final Map<(String, bool), MarkdownStyleSheet> _styleSheetCache = {};
+  static final Map<String, MarkdownStyleSheet> _styleSheetCache = {};
 
   static String _readStoredFontScale() {
     try {
@@ -36,16 +34,6 @@ class ArticleReaderMarkdownBody extends StatelessWidget {
     } catch (_) {
       debugPrint(const CacheFailure(AppConstants.genericErrorMessage).message);
       return AppConstants.defaultFontScale;
-    }
-  }
-
-  static bool _readStoredSerifMode() {
-    try {
-      return SharedPreferencesSingleton.getBool(AppConstants.serifModeKey) ??
-          true;
-    } catch (_) {
-      debugPrint(const CacheFailure(AppConstants.genericErrorMessage).message);
-      return true;
     }
   }
 
@@ -60,14 +48,11 @@ class ArticleReaderMarkdownBody extends StatelessWidget {
 
   static MarkdownStyleSheet _buildStyleSheet({
     required String scale,
-    required bool isSerif,
   }) {
     final factor = resolveFontSizeFactor(scale);
-    final String? fontFamily = isSerif ? 'serif' : null;
 
     final pStyle = AppTextStyles.readerBodyParagraph.copyWith(
       fontSize: (AppTextStyles.readerBodyParagraph.fontSize ?? 16.0) * factor,
-      fontFamily: fontFamily,
     );
 
     return MarkdownStyleSheet(
@@ -103,11 +88,10 @@ class ArticleReaderMarkdownBody extends StatelessWidget {
     final hasContent = content != null && content!.trim().isNotEmpty;
     final markdownData = hasContent ? content! : excerpt;
     final scale = fontScale ?? _readStoredFontScale();
-    final isSerif = serifMode ?? _readStoredSerifMode();
     final factor = resolveFontSizeFactor(scale);
     final styleSheet = _styleSheetCache.putIfAbsent(
-      (scale, isSerif),
-      () => _buildStyleSheet(scale: scale, isSerif: isSerif),
+      scale,
+      () => _buildStyleSheet(scale: scale),
     );
 
     return Column(
@@ -118,7 +102,6 @@ class ArticleReaderMarkdownBody extends StatelessWidget {
             excerpt,
             style: AppTextStyles.readerExcerpt.copyWith(
               fontSize: (AppTextStyles.readerExcerpt.fontSize ?? 16.0) * factor,
-              fontFamily: isSerif ? 'serif' : null,
             ),
           ),
           const SizedBox(height: 20),
