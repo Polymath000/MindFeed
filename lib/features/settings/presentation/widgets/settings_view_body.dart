@@ -73,7 +73,10 @@ class SettingsViewBody extends StatelessWidget {
                     await Navigator.pushNamed(
                       context,
                       AppRoutes.categories,
-                      arguments: state.currentUserEntity,
+                      arguments: {
+                        'user': state.currentUserEntity,
+                        'isFromSettings': true,
+                      },
                     );
                     if (context.mounted) {
                       cubit.loadUserData();

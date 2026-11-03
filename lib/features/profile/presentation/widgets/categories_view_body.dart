@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/app_text_styles.dart';
+import 'package:mind_feed/core/constants/category_items.dart';
+import 'package:mind_feed/core/design/editorial_design.dart';
 import 'package:mind_feed/core/helpers/custom_show_snack_bar.dart';
 import 'package:mind_feed/core/widgets/custom_button.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
@@ -9,27 +12,32 @@ import 'package:mind_feed/features/auth/presentation/widgets/auth_background.dar
 import 'package:mind_feed/features/profile/presentation/controllers/categories_cubit/categories_cubit.dart';
 import 'package:mind_feed/features/profile/presentation/widgets/category_card.dart';
 
-import 'package:mind_feed/core/constants/category_items.dart';
 export 'package:mind_feed/core/constants/category_items.dart';
 
 class CategoriesViewBody extends StatelessWidget {
   const CategoriesViewBody({
     super.key,
     this.userEntity,
+    this.isFromSettings = false,
   });
 
   final UserEntity? userEntity;
+  final bool isFromSettings;
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CategoriesCubit, CategoriesState>(
       listener: (context, state) {
         if (state is CategoriesSuccess) {
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            '/',
-            (route) => false,
-          );
+          if (isFromSettings) {
+            Navigator.pop(context, true);
+          } else {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              '/',
+              (route) => false,
+            );
+          }
         } else if (state is CategoriesFailure) {
           customShowSnackBar(
             context: context,
@@ -53,6 +61,14 @@ class CategoriesViewBody extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          if (isFromSettings) ...[
+                            EditorialIconButton(
+                              icon: AppIcons.arrowBackRounded,
+                              label: 'Back',
+                              onPressed: () => Navigator.maybePop(context),
+                            ),
+                            const SizedBox(height: 16),
+                          ],
                           Text(
                             'Choose Your Favorite Categories',
                             style: AppTextStyles.headlineMedium!.copyWith(
@@ -97,7 +113,7 @@ class CategoriesViewBody extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16.0, vertical: 12.0),
                     child: CustomButton(
-                      buttonText: 'Continue',
+                      buttonText: isFromSettings ? 'Save Preferences' : 'Continue',
                       isLoading: isLoading,
                       onTap: isLoading
                           ? null

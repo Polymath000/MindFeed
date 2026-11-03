@@ -63,7 +63,10 @@ class SettingsArchiveSection extends StatelessWidget {
               onTap: () => Navigator.pushNamed(
                 context,
                 AppRoutes.changePassword,
-                arguments: userEmail,
+                arguments: {
+                  'email': userEmail,
+                  'isFromSettings': true,
+                },
               ),
             ),
             SettingsActionTile(

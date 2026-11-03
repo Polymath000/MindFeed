@@ -185,10 +185,28 @@ sealed class AppRoutes {
           settings: settings,
         );
       case AppRoutes.changePassword:
-        final email = settings.arguments as String;
-        return MaterialPageRoute(builder: (_) => ChangePasswordView(email: email), settings: settings);
+        final args = settings.arguments;
+        final String email = args is Map<String, dynamic>
+            ? (args['email'] as String? ?? '')
+            : (args as String? ?? '');
+        final bool isFromSettings = args is Map<String, dynamic>
+            ? (args['isFromSettings'] as bool? ?? false)
+            : false;
+        return MaterialPageRoute(
+          builder: (_) => ChangePasswordView(
+            email: email,
+            isFromSettings: isFromSettings,
+          ),
+          settings: settings,
+        );
       case AppRoutes.categories:
-        final user = settings.arguments as UserEntity?;
+        final args = settings.arguments;
+        final UserEntity? user = args is Map<String, dynamic>
+            ? args['user'] as UserEntity?
+            : args as UserEntity?;
+        final bool isFromSettings = args is Map<String, dynamic>
+            ? (args['isFromSettings'] as bool? ?? false)
+            : false;
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (_) {
@@ -198,7 +216,10 @@ sealed class AppRoutes {
               }
               return cubit;
             },
-            child: CategoriesView(userEntity: user),
+            child: CategoriesView(
+              userEntity: user,
+              isFromSettings: isFromSettings,
+            ),
           ),
           settings: settings,
         );

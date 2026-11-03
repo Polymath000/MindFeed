@@ -7,8 +7,13 @@ import 'package:mind_feed/features/auth/presentation/widgets/security_tip_text.d
 import 'package:mind_feed/core/constants/app_colors.dart';
 
 class ChangePasswordViewBody extends StatelessWidget {
-  const ChangePasswordViewBody({super.key, required this.email});
+  const ChangePasswordViewBody({
+    super.key,
+    required this.email,
+    this.isFromSettings = false,
+  });
   final String email;
+  final bool isFromSettings;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +62,10 @@ class ChangePasswordViewBody extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 28),
-                    ChangePasswordForm(email: email),
+                    ChangePasswordForm(
+                      email: email,
+                      isFromSettings: isFromSettings,
+                    ),
                     const SizedBox(height: 24),
                     const SecurityTipText(),
                   ],

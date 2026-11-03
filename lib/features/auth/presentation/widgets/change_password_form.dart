@@ -9,8 +9,13 @@ import 'package:mind_feed/features/auth/presentation/widgets/password_requiremen
 import 'package:mind_feed/features/auth/presentation/widgets/password_text_field.dart';
 
 class ChangePasswordForm extends StatefulWidget {
-  const ChangePasswordForm({super.key, required this.email});
+  const ChangePasswordForm({
+    super.key,
+    required this.email,
+    this.isFromSettings = false,
+  });
   final String email;
+  final bool isFromSettings;
 
   @override
   State<ChangePasswordForm> createState() => _ChangePasswordFormState();
@@ -32,15 +37,23 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
 
   void _handleState(BuildContext context, ChangePasswordState state) {
     if (state is ChangePasswordSuccess) {
-      customShowSnackBar(
-        message: 'Password updated successfully. Please sign in.',
-        context: context,
-      );
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        AppRoutes.login,
-        (route) => false,
-      );
+      if (widget.isFromSettings) {
+        customShowSnackBar(
+          message: 'Password updated successfully.',
+          context: context,
+        );
+        Navigator.pop(context, true);
+      } else {
+        customShowSnackBar(
+          message: 'Password updated successfully. Please sign in.',
+          context: context,
+        );
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.login,
+          (route) => false,
+        );
+      }
     } else if (state is ChangePasswordFailure) {
       customShowSnackBar(
         message: state.errorMessage,
