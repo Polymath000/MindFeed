@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:hive/hive.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -25,17 +24,15 @@ class ProfileRepoImpl implements ProfileRepository {
     this.networkInfo,
   });
 
-  NetworkInfo get _effectiveNetworkInfo {
-    if (networkInfo != null) return networkInfo!;
+  Future<bool> _isOnline() async {
+    final info = networkInfo ??
+        (getIt.isRegistered<NetworkInfo>() ? getIt<NetworkInfo>() : null);
+    if (info == null) return true;
     try {
-      if (getIt.isRegistered<NetworkInfo>()) {
-        return getIt<NetworkInfo>();
-      }
+      return await info.isConnected;
     } catch (_) {
-      const failure = CacheFailure("there's an error, Please try again later");
-      debugPrint(failure.message);
+      return true;
     }
-    return NetworkInfoImpl(Connectivity());
   }
 
   @override
@@ -45,7 +42,7 @@ class ProfileRepoImpl implements ProfileRepository {
     required String fileExtension,
     String? previousAvatarUrl,
   }) async {
-    if (await _effectiveNetworkInfo.isConnected) {
+    if (await _isOnline()) {
       try {
         final result = await remoteDataSource.uploadAvatar(
           userId: userId,
@@ -64,8 +61,13 @@ class ProfileRepoImpl implements ProfileRepository {
 
   @override
   Future<ApiResult<Map<String, dynamic>>> getProfile(String userId) async {
+    if (!await _isOnline()) {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
     try {
-      final profile = await remoteDataSource.getProfile(userId);
+      final profile = await remoteDataSource
+          .getProfile(userId)
+          .timeout(const Duration(seconds: 6));
       return Success(profile);
     } catch (e) {
       return FailureResult(ServerFailure(e.toString()));
@@ -79,6 +81,9 @@ class ProfileRepoImpl implements ProfileRepository {
     String? bio,
     String? avatarUrl,
   }) async {
+    if (!await _isOnline()) {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
     try {
       final updated = await remoteDataSource.updateProfile(
         userId: userId,
@@ -94,8 +99,13 @@ class ProfileRepoImpl implements ProfileRepository {
 
   @override
   Future<ApiResult<List<Map<String, dynamic>>>> getCategories() async {
+    if (!await _isOnline()) {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
     try {
-      final categories = await remoteDataSource.getCategories();
+      final categories = await remoteDataSource
+          .getCategories()
+          .timeout(const Duration(seconds: 6));
       return Success(categories);
     } catch (e) {
       return FailureResult(ServerFailure(e.toString()));
@@ -104,8 +114,13 @@ class ProfileRepoImpl implements ProfileRepository {
 
   @override
   Future<ApiResult<List<Map<String, dynamic>>>> getFavoriteCategories(String userId) async {
+    if (!await _isOnline()) {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
     try {
-      final favorites = await remoteDataSource.getFavoriteCategories(userId);
+      final favorites = await remoteDataSource
+          .getFavoriteCategories(userId)
+          .timeout(const Duration(seconds: 6));
       try {
         await SharedPreferencesSingleton.setBool(
           AppConstants.hasCompletedCategoriesKey,
@@ -159,6 +174,10 @@ class ProfileRepoImpl implements ProfileRepository {
     } catch (_) {
       const failure = CacheFailure("there's an error, Please try again later");
       debugPrint(failure.message);
+    }
+
+    if (!await _isOnline()) {
+      return const FailureResult(ServerFailure('You are Offline'));
     }
 
     try {
@@ -236,6 +255,8 @@ class ProfileRepoImpl implements ProfileRepository {
       if (desiredCategories == null) {
         return false;
       }
+
+      if (!await _isOnline()) return false;
 
       final syncResult = await syncFavoriteCategories(
         userId: userId,

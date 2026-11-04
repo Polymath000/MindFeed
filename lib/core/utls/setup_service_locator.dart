@@ -163,7 +163,10 @@ void setupServiceLocator() {
     ),
   );
   getIt.registerLazySingleton<ProfileRepository>(
-    () => ProfileRepoImpl(remoteDataSource: getIt<ProfileRemoteDataSource>()),
+    () => ProfileRepoImpl(
+      remoteDataSource: getIt<ProfileRemoteDataSource>(),
+      networkInfo: getIt<NetworkInfo>(),
+    ),
   );
   getIt.registerLazySingleton<CheckAppStartupUseCase>(
     () => CheckAppStartupUseCase(authRepository: getIt<AuthRepository>()),

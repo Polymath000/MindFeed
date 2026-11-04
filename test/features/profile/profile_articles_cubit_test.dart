@@ -100,6 +100,21 @@ void main() {
       await cubit.loadArticles();
     });
 
+    test('emits formatted offline error message when offline', () async {
+      fakeRepo.shouldLoadSucceed = false;
+      fakeRepo.failureMessage = 'You are Offline';
+
+      final expectedStates = [
+        const ProfileArticlesLoading(),
+        const ProfileArticlesError(
+            'You are currently offline. Please check your internet connection.'),
+      ];
+
+      expectLater(cubit.stream, emitsInOrder(expectedStates));
+
+      await cubit.loadArticles();
+    });
+
     test('emits ProfileArticlesEmpty when target user id is missing', () async {
       final unauthenticatedCubit = ProfileArticlesCubit(
         getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,

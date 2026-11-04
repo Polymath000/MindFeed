@@ -31,11 +31,13 @@ class ArticlesRepositoryImpl implements ArticlesRepository, ArticleEngagementRep
   }) async {
     if (await networkInfo.isConnected) {
       try {
-        final result = await remoteDataSource.getHomeFeed(
-          preferredCategoryIds: preferredCategoryIds,
-          limit: limit,
-          offset: offset,
-        );
+        final result = await remoteDataSource
+            .getHomeFeed(
+              preferredCategoryIds: preferredCategoryIds,
+              limit: limit,
+              offset: offset,
+            )
+            .timeout(const Duration(seconds: 6));
         return Success(result);
       } catch (e) {
         return FailureResult(ApiErrorHandler.handle(e).toFailure());
@@ -89,11 +91,13 @@ class ArticlesRepositoryImpl implements ArticlesRepository, ArticleEngagementRep
   }) async {
     if (await networkInfo.isConnected) {
       try {
-        final result = await remoteDataSource.getArticlesByAuthor(
-          authorId,
-          limit: limit,
-          offset: offset,
-        );
+        final result = await remoteDataSource
+            .getArticlesByAuthor(
+              authorId,
+              limit: limit,
+              offset: offset,
+            )
+            .timeout(const Duration(seconds: 6));
         return Success(result);
       } catch (e) {
         return FailureResult(ApiErrorHandler.handle(e).toFailure());

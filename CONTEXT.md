@@ -462,6 +462,16 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
 - **Testing & Verification**:
   - Created `test/features/collections/presentation/views/downloaded_article_reader_view_test.dart` verifying all offline rendering rules, absent widgets (author, rating, cover image, action bar), slow-scroll controls, and null-article empty state handling (`6/6` tests passing, `0` analyzer issues).
 
+## 21. Fast-Fail Offline Resolution & Unified Offline Error UI Across Home & Profile
+- **Root-Cause Fix for Offline Delays (`ProfileRepoImpl`, `GetUserFeedTopicsUseCase`, `ProfileInfoCubit`, `ArticlesRepositoryImpl`)**:
+  - Added fast-fail `_isOnline()` connectivity checks across `ProfileRepoImpl` (`getProfile`, `updateProfile`, `getCategories`, `getFavoriteCategories`, `syncFavoriteCategories`, `reconcilePendingCategorySync`) and injected `NetworkInfo` via `setup_service_locator.dart`. Previously, `ProfileRepoImpl` attempted unguarded remote Supabase requests when offline, causing both `HomeFeedCubit.fetchFeed()` (via `GetUserFeedTopicsUseCase`) and `ProfileInfoCubit.loadProfileData()` to wait for TCP socket timeouts.
+  - Updated `GetUserFeedTopicsUseCase` to skip secondary `getCategories()` lookups if `_loadRemoteFavorites()` fails.
+  - Parallelized the 4 remote queries in `ProfileInfoCubit.loadProfileData()` using `Future.wait([...])` instead of 4 sequential `await` calls, and added 6-second request timeouts in `ProfileRepoImpl` and `ArticlesRepositoryImpl` (`getHomeFeed`, `getArticlesByAuthor`).
+- **Unified Offline Error State & View on Profile (`ProfileArticlesCubit` & `ProfileArticlesErrorView`)**:
+  - Updated `ProfileArticlesCubit` to map offline/network/socket/timeout errors to `'You are currently offline. Please check your internet connection.'`, matching `HomeFeedCubit`.
+  - Updated `ProfileArticlesErrorView` (`lib/features/profile/presentation/widgets/profile_articles_status_views.dart`) to render `AppIcons.wifiOffRounded`, `AppTextStyles.homeErrorMessage`, and `CustomButton` (`Retry`), matching `HomeFeedErrorView`, and wired `onRetry` in `UserArticles` to refresh both `ProfileArticlesCubit` and `ProfileInfoCubit`.
+
+
 
 
 

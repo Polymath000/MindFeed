@@ -66,6 +66,8 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
       return;
     }
 
+    final resolvedUserId = targetUserId;
+
     if (!isClosed) {
       emit(ProfileInfoLoading(
         displayName: state.displayName,
@@ -88,82 +90,19 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
     var currentFollowingAuthors = state.followingAuthorsCount;
     var currentArticles = state.articlesCount;
 
-    // 1. Fetch remote profile
-    try {
-      final profileResult = await _getUserProfileUseCase(targetUserId);
-      if (isClosed) return;
-      profileResult.when(
-        success: (profile) {
-          final remoteName = profile['display_name'] as String?;
-          final remoteBio = profile['bio'] as String?;
-          final remoteAvatar = profile['avatar_url'] as String?;
-          if (remoteName != null && remoteName.isNotEmpty) {
-            currentName = remoteName;
-          }
-          if (remoteBio != null && remoteBio.isNotEmpty) {
-            currentBio = remoteBio;
-          }
-          if (remoteAvatar != null && remoteAvatar.isNotEmpty) {
-            currentAvatar = remoteAvatar;
-          }
-        },
-        failure: (_) {},
-      );
-    } catch (_) {
-      const failure = CacheFailure("there's an error, Please try again later");
-      debugPrint(failure.message);
-    }
-
-    // 2. Fetch favorite categories (topics)
-    try {
-      final favsResult = await _getFavoriteCategoriesUseCase(targetUserId);
-      if (isClosed) return;
-      favsResult.when(
-        success: (favs) {
-          currentFollowing = favs.length;
-        },
-        failure: (_) {},
-      );
-    } catch (_) {
-      const failure = CacheFailure("there's an error, Please try again later");
-      debugPrint(failure.message);
-    }
-
-    // 3. Fetch author follow summary (followers & following authors)
-    if (_getAuthorFollowSummaryUseCase != null) {
-      try {
-        final followResult = await _getAuthorFollowSummaryUseCase(
-          targetUserId: targetUserId,
-        );
-        if (isClosed) return;
-        followResult.when(
-          success: (summary) {
-            currentFollowers = summary.followersCount;
-            currentFollowingAuthors = summary.followingCount;
-          },
-          failure: (_) {},
-        );
-      } catch (_) {
-        const failure = CacheFailure("there's an error, Please try again later");
-        debugPrint(failure.message);
-      }
-    }
-
-    // 4. Fetch articles count (published only)
-    try {
-      final articlesResult = await _getArticlesByAuthorUseCase(targetUserId);
-      if (isClosed) return;
-      articlesResult.when(
-        success: (articles) {
-          currentArticles =
-              articles.where((a) => a.status == 'published').length;
-        },
-        failure: (_) {},
-      );
-    } catch (_) {
-      const failure = CacheFailure("there's an error, Please try again later");
-      debugPrint(failure.message);
-    }
+    await Future.wait([
+      _fetchProfile(resolvedUserId, (name, bio, avatar) {
+        if (name != null && name.isNotEmpty) currentName = name;
+        if (bio != null && bio.isNotEmpty) currentBio = bio;
+        if (avatar != null && avatar.isNotEmpty) currentAvatar = avatar;
+      }),
+      _fetchCategories(resolvedUserId, (count) => currentFollowing = count),
+      _fetchFollowSummary(resolvedUserId, (followers, following) {
+        currentFollowers = followers;
+        currentFollowingAuthors = following;
+      }),
+      _fetchArticles(resolvedUserId, (count) => currentArticles = count),
+    ]);
 
     if (!isClosed) {
       emit(ProfileInfoLoaded(
@@ -177,6 +116,80 @@ class ProfileInfoCubit extends Cubit<ProfileInfoState> {
         isUploadingAvatar: false,
         avatarErrorMessage: null,
       ));
+    }
+  }
+
+  Future<void> _fetchProfile(
+    String userId,
+    void Function(String?, String?, String?) onLoaded,
+  ) async {
+    try {
+      final profileResult = await _getUserProfileUseCase(userId);
+      profileResult.when(
+        success: (profile) => onLoaded(
+          profile['display_name'] as String?,
+          profile['bio'] as String?,
+          profile['avatar_url'] as String?,
+        ),
+        failure: (_) {},
+      );
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
+  }
+
+  Future<void> _fetchCategories(
+    String userId,
+    void Function(int) onLoaded,
+  ) async {
+    try {
+      final favsResult = await _getFavoriteCategoriesUseCase(userId);
+      favsResult.when(
+        success: (favs) => onLoaded(favs.length),
+        failure: (_) {},
+      );
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
+  }
+
+  Future<void> _fetchFollowSummary(
+    String userId,
+    void Function(int, int) onLoaded,
+  ) async {
+    if (_getAuthorFollowSummaryUseCase == null) return;
+    try {
+      final followResult = await _getAuthorFollowSummaryUseCase(
+        targetUserId: userId,
+      );
+      followResult.when(
+        success: (summary) =>
+            onLoaded(summary.followersCount, summary.followingCount),
+        failure: (_) {},
+      );
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
+  }
+
+  Future<void> _fetchArticles(
+    String userId,
+    void Function(int) onLoaded,
+  ) async {
+    try {
+      final articlesResult = await _getArticlesByAuthorUseCase(userId);
+      articlesResult.when(
+        success: (articles) => onLoaded(
+          articles.where((a) => a.status == 'published').length,
+        ),
+        failure: (_) {},
+      );
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
     }
   }
 

@@ -217,8 +217,7 @@ class _UserArticlesBody extends StatelessWidget {
             else if (state is ProfileArticlesError)
               ProfileArticlesErrorView(
                 message: state.message,
-                onRetry: () =>
-                    context.read<ProfileArticlesCubit>().loadArticles(),
+                onRetry: () => _refreshProfile(context),
               )
             else if (state is ProfileArticlesEmpty ||
                 (state is ProfileArticlesLoaded &&

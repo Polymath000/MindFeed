@@ -145,7 +145,9 @@ class HomeFeedCubit extends Cubit<HomeFeedState> {
     final isOffline = msg.contains('offline') ||
         msg.contains('network') ||
         msg.contains('connection') ||
-        msg.contains('socket');
+        msg.contains('socket') ||
+        msg.contains('timeout') ||
+        msg.contains('timed out');
     final err = isOffline
         ? 'You are currently offline. Please check your internet connection.'
         : (rawMessage.isNotEmpty ? rawMessage : 'Failed to load stories.');

@@ -208,4 +208,30 @@ void main() {
 
     await cubit.close();
   });
+
+  testWidgets(
+      'renders offline error view with wifi icon and retry button when offline',
+      (tester) async {
+    fakeRepo.shouldLoadSucceed = false;
+    fakeRepo.failureMessage = 'You are Offline';
+    final cubit = ProfileArticlesCubit(
+      getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
+      deleteArticleUseCase: deleteUseCase,
+      userId: 'author-123',
+    );
+
+    await tester.pumpWidget(buildTestWidget(cubit));
+    await cubit.loadArticles();
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(
+          'You are currently offline. Please check your internet connection.'),
+      findsOneWidget,
+    );
+    expect(find.byIcon(AppIcons.wifiOffRounded), findsOneWidget);
+    expect(find.text('Retry'), findsOneWidget);
+
+    await cubit.close();
+  });
 }
