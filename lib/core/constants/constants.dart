@@ -31,6 +31,10 @@ class AppConstants {
   );
   static const String defaultAvatarUrl =
       'https://tsqruoqiajkbrdhprfxa.supabase.co/storage/v1/object/public/avatars/defaultAvatar.png';
+  static const String privacyPolicyUrl = String.fromEnvironment(
+    'PRIVACY_POLICY_URL',
+    defaultValue: 'https://polymath000.github.io/MindFeed/privacy-policy/',
+  );
   static const String fontScaleKey = 'pref_font_scale';
   static const String defaultFontScale = 'Standard';
   static const String genericErrorMessage =

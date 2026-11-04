@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/settings_dialogs.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/settings_footer.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/settings_tile_primitives.dart';
@@ -20,6 +23,23 @@ class SettingsArchiveSection extends StatelessWidget {
     required this.userEmail,
     required this.onSignOut,
   });
+
+  Future<void> _openPrivacyPolicy(BuildContext context) async {
+    final uri = Uri.parse(AppConstants.privacyPolicyUrl);
+    try {
+      final launched = await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
+      if (!launched && context.mounted) {
+        await showPrivacyManifestDialog(context);
+      }
+    } catch (_) {
+      if (context.mounted) {
+        await showPrivacyManifestDialog(context);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +96,7 @@ class SettingsArchiveSection extends StatelessWidget {
               stampColor: AppColors.mint,
               title: 'Editorial Ethics & Privacy Charter',
               subtitle: 'MindFeed independent journalism charter and zero-tracker guarantee',
-              onTap: () => showPrivacyManifestDialog(context),
+              onTap: () => _openPrivacyPolicy(context),
             ),
             SettingsActionTile(
               icon: AppIcons.logout,

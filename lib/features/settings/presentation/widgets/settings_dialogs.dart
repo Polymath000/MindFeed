@@ -27,7 +27,7 @@ Future<void> showPrivacyManifestDialog(BuildContext context) {
           ),
           const SizedBox(height: 12),
           const Text(
-            '1. Zero Ad-Trackers: Your reading habits are never logged or auctioned to advertising exchanges.\n2. Verified Byline Integrity: Every piece is verified by human editors before syndication.\n3. Reader Sovereignty: Offline archives and cached journals remain entirely on your personal device.',
+            '1. Zero Ad-Trackers: Your reading habits are never logged or auctioned to advertising exchanges.\n2. Author Sovereignty: Creators retain 100% of their intellectual property.\n3. Reader Sovereignty: Offline archives and cached journals remain entirely on your personal device.',
             style: TextStyle(
               fontSize: 13.5,
               height: 1.5,

@@ -410,3 +410,27 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
   - Migrated all app-wide references (`MyApp.title`, `SettingsFooter`, `HomeMastheadAnimatedTitle`, and `AppConstants.mastheadRotatingWords`) to read `AppInfoService.appName` dynamically.
 - **Testing & Verification**:
   - Added unit tests in `test/core/services/app_info_service_test.dart` and widget tests in `test/features/settings/presentation/widgets/settings_footer_test.dart` (452/452 tests passing, 0 analyzer issues).
+
+## 17. GitHub Pages Editorial Ethics & Privacy Policy Website
+- **Stand-alone Web Portal (`/media/windows/workspace/My_Apps/Mind_Feed/privacy-policy/`)**:
+  - Created a responsive static web application designed for GitHub Pages hosting containing MindFeed's full Editorial Ethics Charter and Privacy Policy.
+  - Aligned with MindFeed's warm paper design system:
+    - **Palette**: Warm Paper (`#F6F0E4` canvas / `#FFFDF8` card) and Night Edition (`#141311` canvas / `#1E1D19` card) with refined hairline borders (`#E5DECE`).
+    - **Typography**: Google Fonts pairing of `Newsreader` (editorial serif) and `Plus Jakarta Sans` (modern sans).
+    - **Animations**: Live reading progress bar, smooth scroll-triggered section reveal (`IntersectionObserver`), active section scrollspy tracking, and animated theme switcher.
+    - **Responsive Architecture**: Sticky table of contents and focused reading well on PC; horizontal scrollable pill navigation on smartphones.
+  - Tailored policy content addressing:
+    - Author sovereignty & non-exclusive intellectual property retention.
+    - Constructive community standards and abuse prevention.
+    - Zero ad-trackers guarantee (no advertising exchanges, profiling, or data selling).
+    - Necessary encrypted account credentials and on-device storage sovereignty (instant cache clearing).
+    - Clear reader rights to access and complete account/data deletion.
+
+## 18. In-App Integration with Policy Website via `url_launcher`
+- **Settings Screen Action Tile Launch (`lib/features/settings/presentation/widgets/settings_archive_section.dart`)**:
+  - Configured `AppConstants.privacyPolicyUrl` (defaulting to `https://polymath000.github.io/MindFeed/privacy-policy/` with configurable `PRIVACY_POLICY_URL` environment override).
+  - Wired the "Editorial Ethics & Privacy Charter" tile in the Settings screen to launch the external web page directly in the device's browser using `url_launcher`.
+  - Added robust fallback to `showPrivacyManifestDialog` if the platform browser cannot be launched or when running in restricted environments.
+  - Updated `showPrivacyManifestDialog` copy in `lib/features/settings/presentation/widgets/settings_dialogs.dart` to match the refined charter (Author Sovereignty, Zero-Trackers, Reader Sovereignty).
+
+
