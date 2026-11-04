@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
@@ -58,6 +60,15 @@ class _FakeProfileRepository implements ProfileRepository {
     String? bio,
     String? avatarUrl,
   }) async => const Success({});
+
+  @override
+  Future<ApiResult<String>> uploadAvatar({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousAvatarUrl,
+  }) async =>
+      const Success('https://example.com/storage/v1/object/public/avatars/avatar.jpg');
 }
 
 void main() {

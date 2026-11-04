@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
@@ -7,6 +8,7 @@ import 'package:mind_feed/core/articles/domain/entities/category_entity.dart';
 import 'package:mind_feed/core/articles/domain/entities/tag_entity.dart';
 import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
 import 'package:mind_feed/features/search/domain/usecases/get_articles_by_category_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_tag_use_case.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_categories_use_case.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_fixed_tags_use_case.dart';
 import 'package:mind_feed/features/search/domain/usecases/search_articles_use_case.dart';
@@ -70,6 +72,8 @@ class FakeArticlesRepository implements ArticlesRepository {
   Future<ApiResult<List<ArticleEntity>>> Function(String query)? onSearchArticles;
   Future<ApiResult<List<ArticleEntity>>> Function(String categoryId)?
       onGetArticlesByCategory;
+  Future<ApiResult<List<ArticleEntity>>> Function(String tag)?
+      onGetArticlesByTag;
   Future<ApiResult<List<CategoryEntity>>> Function()? onGetCategories;
   Future<ApiResult<List<TagEntity>>> Function()? onGetFixedTags;
   Future<ApiResult<List<ArticleEntity>>> Function({
@@ -102,6 +106,9 @@ class FakeArticlesRepository implements ArticlesRepository {
     int limit = 20,
     int offset = 0,
   }) async {
+    if (onGetArticlesByTag != null) {
+      return onGetArticlesByTag!(tag);
+    }
     return const Success([]);
   }
 
@@ -237,6 +244,15 @@ class FakeArticlesRepository implements ArticlesRepository {
 
   @override
   Future<void> clearDownloadedArticles() async {}
+
+  @override
+  Future<ApiResult<String>> uploadArticleCoverImage({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousCoverUrl,
+  }) async =>
+      const Success('https://example.com/cover.jpg');
 }
 
 void main() {
@@ -245,6 +261,7 @@ void main() {
   late GetArticlesByCategoryUseCase getArticlesByCategoryUseCase;
   late GetCategoriesUseCase getCategoriesUseCase;
   late GetFixedTagsUseCase getFixedTagsUseCase;
+  late GetArticlesByTagUseCase getArticlesByTagUseCase;
 
   setUp(() {
     fakeRepo = FakeArticlesRepository();
@@ -252,6 +269,7 @@ void main() {
     getArticlesByCategoryUseCase = GetArticlesByCategoryUseCase(fakeRepo);
     getCategoriesUseCase = GetCategoriesUseCase(fakeRepo);
     getFixedTagsUseCase = GetFixedTagsUseCase(fakeRepo);
+    getArticlesByTagUseCase = GetArticlesByTagUseCase(fakeRepo);
   });
 
   SearchCubit createCubit() {
@@ -260,6 +278,7 @@ void main() {
       getArticlesByCategoryUseCase: getArticlesByCategoryUseCase,
       getCategoriesUseCase: getCategoriesUseCase,
       getFixedTagsUseCase: getFixedTagsUseCase,
+      getArticlesByTagUseCase: getArticlesByTagUseCase,
     );
   }
 
@@ -460,6 +479,59 @@ void main() {
     cubit.retry();
     await Future<void>.delayed(const Duration(milliseconds: 50));
     expect(cubit.state, isA<SearchLoaded>());
+
+    await cubit.close();
+  });
+
+  test('applyFilters with category and tags fetches category articles and filters by tags', () async {
+    fakeRepo.onGetArticlesByCategory = (catId) async {
+      expect(catId, equals('cat_1'));
+      return const Success([sampleArticle1, sampleArticle2]);
+    };
+
+    final cubit = createCubit();
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+
+    await cubit.applyFilters(
+      category: sampleCategory1,
+      tags: const ['ai'],
+    );
+
+    expect(cubit.state, isA<SearchLoaded>());
+    final loaded = cubit.state as SearchLoaded;
+    expect(loaded.selectedCategory?.id, equals('cat_1'));
+    expect(loaded.selectedTags, equals(['ai']));
+    expect(loaded.results.length, equals(1));
+    expect(loaded.results.first.id, equals('art_2'));
+
+    await cubit.clearFilters();
+    expect(cubit.state, isA<SearchInitial>());
+    expect(cubit.state.selectedCategory, isNull);
+    expect(cubit.state.selectedTags, isEmpty);
+
+    await cubit.close();
+  });
+
+  test('applyFilters with tags only fetches articles by primary tag when query and category are empty', () async {
+    fakeRepo.onGetArticlesByTag = (tag) async {
+      expect(tag, equals('flutter'));
+      return const Success([sampleArticle1]);
+    };
+
+    final cubit = createCubit();
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+
+    await cubit.applyFilters(
+      category: null,
+      tags: const ['flutter'],
+    );
+
+    expect(cubit.state, isA<SearchLoaded>());
+    final loaded = cubit.state as SearchLoaded;
+    expect(loaded.selectedCategory, isNull);
+    expect(loaded.selectedTags, equals(['flutter']));
+    expect(loaded.results.length, equals(1));
+    expect(loaded.results.first.id, equals('art_1'));
 
     await cubit.close();
   });

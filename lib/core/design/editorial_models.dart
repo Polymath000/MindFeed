@@ -1,9 +1,13 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
-import 'package:mind_feed/core/constants/app_colors.dart';
-import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
 import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/category_items.dart';
+import 'package:mind_feed/core/constants/constants.dart';
+import 'package:mind_feed/core/services/supabase_storage_service.dart';
 
 class EditorialNewsItem {
   final String id;
@@ -22,11 +26,13 @@ class EditorialNewsItem {
   final List<String> tags;
   final String? content;
   final String? coverImageUrl;
+  String? get heroImageUrl => coverImageUrl;
+  final Uint8List? coverImageBytes;
+  final Uint8List? authorAvatarBytes;
   final String? authorId;
   final DateTime? publishedAt;
   final int readingTimeMinutes;
   final String status;
-  final bool isLocalDraft;
   int starCount;
   bool isStarred;
   bool isLiked;
@@ -53,11 +59,12 @@ class EditorialNewsItem {
     this.tags = const [],
     this.content,
     this.coverImageUrl,
+    this.coverImageBytes,
+    this.authorAvatarBytes,
     this.authorId,
     this.publishedAt,
     this.readingTimeMinutes = 3,
     this.status = 'published',
-    this.isLocalDraft = false,
     this.starCount = 0,
     this.isStarred = false,
     this.isLiked = false,
@@ -81,14 +88,16 @@ class EditorialNewsItem {
   }
 
   EditorialNewsItem copyWith({
-    String? authorId,
-    bool? isLocalDraft,
     bool? isSaved,
     bool? isLiked,
     bool? isStarred,
     int? likesCount,
     int? starCount,
     String? content,
+    String? coverImageUrl,
+    Uint8List? coverImageBytes,
+    Uint8List? authorAvatarBytes,
+    String? authorAvatar,
     double? authorRatingAvg,
     int? authorRatingCount,
     int? userAuthorStars,
@@ -101,7 +110,7 @@ class EditorialNewsItem {
       updated: updated,
       authorName: authorName,
       authorRole: authorRole,
-      authorAvatar: authorAvatar,
+      authorAvatar: authorAvatar ?? this.authorAvatar,
       excerpt: excerpt,
       color: color,
       isLive: isLive,
@@ -109,12 +118,13 @@ class EditorialNewsItem {
       categorySlug: categorySlug,
       tags: tags,
       content: content ?? this.content,
-      coverImageUrl: coverImageUrl,
-      authorId: authorId ?? this.authorId,
+      coverImageUrl: coverImageUrl ?? this.coverImageUrl,
+      coverImageBytes: coverImageBytes ?? this.coverImageBytes,
+      authorAvatarBytes: authorAvatarBytes ?? this.authorAvatarBytes,
+      authorId: authorId,
       publishedAt: publishedAt,
       readingTimeMinutes: readingTimeMinutes,
       status: status,
-      isLocalDraft: isLocalDraft ?? this.isLocalDraft,
       starCount: starCount ?? this.starCount,
       isStarred: isStarred ?? this.isStarred,
       isLiked: isLiked ?? this.isLiked,
@@ -129,20 +139,30 @@ class EditorialNewsItem {
 
 extension ArticleEntityEditorialMapper on ArticleEntity {
   EditorialNewsItem toEditorialNewsItem() {
+    final categoryKey = (categorySlug != null && categorySlug!.isNotEmpty)
+        ? categorySlug!
+        : badge;
+    final cleanBadgeColor = badgeColor.trim().toUpperCase();
+    final isDefaultOrEmpty = cleanBadgeColor.isEmpty ||
+        cleanBadgeColor == '#FFF1C6' ||
+        cleanBadgeColor == 'FFF1C6';
+    final resolvedBadgeColor = isDefaultOrEmpty
+        ? getCategoryColor(categoryKey)
+        : _parseHexColor(
+            badgeColor,
+            defaultColor: getCategoryColor(categoryKey),
+          );
+
     return EditorialNewsItem(
       id: id,
       badge: badge,
-      badgeColor: _parseHexColor(
-        badgeColor,
-        defaultColor: AppColors.redHighlight,
-      ),
+      badgeColor: resolvedBadgeColor,
       title: title,
       updated: _formatUpdatedTime(publishedAt ?? updatedAt),
       authorName: authorName,
       authorRole: authorRole,
-      authorAvatar: (authorAvatar != null && authorAvatar!.trim().isNotEmpty)
-          ? authorAvatar!
-          : Assets.assetsImagesWadeAvatar,
+      authorAvatar: SupabaseStorageService.resolveAvatarUrl(authorAvatar) ??
+          AppConstants.defaultAvatarUrl,
       excerpt: excerpt,
       color: _parseHexColor(cardColor, defaultColor: AppColors.cream),
       isLive: isLive,
@@ -150,12 +170,15 @@ extension ArticleEntityEditorialMapper on ArticleEntity {
       categorySlug: categorySlug,
       tags: tags,
       content: content,
-      coverImageUrl: coverImageUrl ?? heroImageUrl,
+      coverImageUrl: SupabaseStorageService.resolveArticleMediaUrl(
+        (heroImageUrl != null && heroImageUrl!.trim().isNotEmpty)
+            ? heroImageUrl
+            : coverImageUrl,
+      ),
       authorId: authorId,
       publishedAt: publishedAt,
       readingTimeMinutes: readingTimeMinutes,
       status: status,
-      isLocalDraft: false,
       starCount: starCount,
       isStarred: isStarred,
       isLiked: isLiked,
@@ -167,21 +190,17 @@ extension ArticleEntityEditorialMapper on ArticleEntity {
     );
   }
 
-  static Color _parseHexColor(
-    String? hexString, {
-    required Color defaultColor,
-  }) {
+  static Color _parseHexColor(String? hexString, {required Color defaultColor}) {
     if (hexString == null || hexString.trim().isEmpty) return defaultColor;
     final clean = hexString.replaceAll('#', '').trim();
-    final val = switch (clean.length) {
-      6 => int.tryParse('FF$clean', radix: 16),
-      8 => int.tryParse(clean, radix: 16),
-      _ => null,
-    };
-    return switch (val != null) {
-      true => Color(val!),
-      false => defaultColor,
-    };
+    if (clean.length == 6) {
+      final val = int.tryParse('FF$clean', radix: 16);
+      return val != null ? Color(val) : defaultColor;
+    } else if (clean.length == 8) {
+      final val = int.tryParse(clean, radix: 16);
+      return val != null ? Color(val) : defaultColor;
+    }
+    return defaultColor;
   }
 
   static String _formatUpdatedTime(DateTime? dateTime) {
@@ -209,25 +228,26 @@ extension DownloadedArticleEntityEditorialMapper on DownloadedArticleEntity {
     return EditorialNewsItem(
       id: id,
       badge: categorySlug.isNotEmpty ? categorySlug.toUpperCase() : 'OFFLINE',
-      badgeColor: AppColors.ink,
+      badgeColor: getCategoryColor(categorySlug),
       title: title,
       updated: '$readingTimeMinutes min read',
       authorName: authorName.isNotEmpty ? authorName : 'Unknown',
       authorRole: authorRole.isNotEmpty ? authorRole : 'Published by',
-      authorAvatar: authorAvatar.isNotEmpty
-          ? authorAvatar
-          : Assets.assetsImagesWadeAvatar,
+      authorAvatar: SupabaseStorageService.resolveAvatarUrl(authorAvatar) ??
+          AppConstants.defaultAvatarUrl,
       excerpt: excerpt.isNotEmpty
           ? excerpt
           : (content.length > 150
                 ? '${content.substring(0, 150)}...'
                 : content),
       content: content,
+      coverImageUrl: null,
+      coverImageBytes: null,
+      authorAvatarBytes: authorAvatarBytes,
       tags: tags,
       publishedAt: publishedAt,
       readingTimeMinutes: readingTimeMinutes,
       status: 'published',
-      isLocalDraft: false,
       color: AppColors.cream,
       isLive: false,
       isLiked: false,

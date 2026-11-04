@@ -7,7 +7,6 @@ import 'package:mind_feed/features/settings/presentation/widgets/settings_view_b
 class SettingsView extends StatelessWidget {
   final SettingsCubit? cubit;
   const SettingsView({super.key, this.cubit});
-  static const String routeName = 'settings';
 
   @override
   Widget build(BuildContext context) {

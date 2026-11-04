@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:mind_feed/config/routes/app_routes.dart';
+import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
-import 'package:mind_feed/config/routes/app_routes.dart';
-import 'package:mind_feed/core/design/editorial_models.dart';
-import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
+import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/features/collections/presentation/controllers/downloads/downloads_cubit.dart';
 
 class DownloadedArticleCardTile extends StatelessWidget {
   final DownloadedArticleEntity article;
@@ -56,10 +59,10 @@ class DownloadedArticleCardTile extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkTile : AppColors.lightGray,
+          color: isDark ? AppColors.darkTile : AppColors.cream,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isDark ? AppColors.borderDark : Colors.black12,
+            color: isDark ? AppColors.borderDark : AppColors.creamBorder,
           ),
           boxShadow: [
             BoxShadow(
@@ -73,12 +76,15 @@ class DownloadedArticleCardTile extends StatelessWidget {
           color: Colors.transparent,
           child: InkWell(
             borderRadius: BorderRadius.circular(16),
-            onTap: () {
-              Navigator.pushNamed(
+            onTap: () async {
+              await Navigator.pushNamed(
                 context,
-                AppRoutes.article,
-                arguments: article.toEditorialNewsItem(),
+                AppRoutes.downloadedArticleReader,
+                arguments: article,
               );
+              if (context.mounted) {
+                context.read<DownloadsCubit?>()?.loadDownloads();
+              }
             },
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -94,8 +100,8 @@ class DownloadedArticleCardTile extends StatelessWidget {
                           vertical: 3,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.ink,
-                          borderRadius: BorderRadius.circular(8),
+                          color: isDark ? AppColors.black : AppColors.ink,
+                          borderRadius: AppBorders.tag,
                         ),
                         child: Text(
                           article.categorySlug.isNotEmpty
@@ -110,10 +116,11 @@ class DownloadedArticleCardTile extends StatelessWidget {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(
+                        icon: Icon(
                           AppIcons.delete,
                           size: 20,
-                          color: AppColors.mutedInk,
+                          color:
+                              isDark ? AppColors.greyText : AppColors.mutedInk,
                         ),
                         tooltip: 'Delete downloaded article',
                         onPressed: onDelete,
@@ -127,49 +134,75 @@ class DownloadedArticleCardTile extends StatelessWidget {
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
                       height: 1.25,
-                      color: isDark ? AppColors.white : AppColors.ink,
+                      color: isDark ? AppColors.softCream : AppColors.ink,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  if (article.excerpt.isNotEmpty) ...[
+                    const SizedBox(height: 6),
+                    Text(
+                      article.excerpt,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 13,
+                        height: 1.35,
+                        color:
+                            isDark ? AppColors.greyText : AppColors.mutedInk,
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 10),
                   Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Text(
                         '${article.readingTimeMinutes} min read',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.mutedInk,
+                          color:
+                              isDark ? AppColors.greyText : AppColors.mutedInk,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 6),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: Text(
                           '•',
-                          style: TextStyle(color: AppColors.mutedInk),
+                          style: TextStyle(
+                            color: isDark
+                                ? AppColors.greyText
+                                : AppColors.mutedInk,
+                          ),
                         ),
                       ),
                       Text(
                         'Downloaded ${_formatDate(article.downloadedAt)}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.mutedInk,
+                          color:
+                              isDark ? AppColors.greyText : AppColors.mutedInk,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                       if (article.authorName.isNotEmpty) ...[
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 6),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
                           child: Text(
                             '•',
-                            style: TextStyle(color: AppColors.mutedInk),
+                            style: TextStyle(
+                              color: isDark
+                                  ? AppColors.greyText
+                                  : AppColors.mutedInk,
+                            ),
                           ),
                         ),
                         Text(
                           article.authorName,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
-                            color: AppColors.mutedInk,
+                            color: isDark
+                                ? AppColors.greyText
+                                : AppColors.mutedInk,
                             fontWeight: FontWeight.w600,
                           ),
                         ),

@@ -7,6 +7,7 @@ import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/constants/app_text_styles.dart';
 import 'package:mind_feed/core/constants/borders.dart';
 import 'package:mind_feed/core/constants/constants.dart';
+import 'package:mind_feed/core/services/app_info_service.dart';
 
 class HomeMastheadHeader extends StatelessWidget {
   const HomeMastheadHeader({super.key});
@@ -61,14 +62,17 @@ class _MastheadBrandLogo extends StatelessWidget {
 class HomeMastheadAnimatedTitle extends StatelessWidget {
   const HomeMastheadAnimatedTitle({
     super.key,
-    this.words = AppConstants.mastheadRotatingWords,
+    this.words,
   });
 
-  final List<String> words;
+  final List<String>? words;
 
   List<AnimatedText> _buildAnimatedTexts() {
-    final effectiveWords =
-        words.isEmpty ? const [AppConstants.appName] : words;
+    final effectiveWords = (words != null && words!.isNotEmpty)
+        ? words!
+        : (words != null && words!.isEmpty)
+            ? [AppInfoService.appName]
+            : AppConstants.mastheadRotatingWords;
     final style = AppTextStyles.homeMastheadTitle;
     return [
       for (final word in effectiveWords)

@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
-import 'package:flutter/material.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
 
 class AuthorAppBar extends StatelessWidget {
@@ -22,20 +23,6 @@ class AuthorAppBar extends StatelessWidget {
           onPressed: () => Navigator.maybePop(context),
         ),
       ),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 16.0),
-          child: EditorialIconButton(
-            icon: AppIcons.iosShareRounded,
-            label: 'Share profile',
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Profile link copied to clipboard')),
-              );
-            },
-          ),
-        ),
-      ],
       title: const Text(
         'Author Profile',
         style: TextStyle(

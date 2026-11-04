@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -232,6 +234,15 @@ class _FakeArticlesRepository
 
   @override
   Future<void> clearAllDownloadedArticles() async {}
+
+  @override
+  Future<ApiResult<String>> uploadArticleCoverImage({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousCoverUrl,
+  }) async =>
+      const Success('https://example.com/cover.jpg');
 }
 
 void main() {
@@ -397,6 +408,11 @@ void main() {
     await tester.tap(profileNavFinder);
     await tester.pump();
     expect(find.byType(ProfileView), findsOneWidget);
+
+    // System back navigates from Profile tab back to Home tab via PopScope history
+    await tester.binding.handlePopRoute();
+    await tester.pump();
+    expect(find.byType(HomeView), findsOneWidget);
   });
 
   testWidgets('settings renders paper aesthetic sections and preferences', (
@@ -424,12 +440,9 @@ void main() {
     );
 
     expect(find.text('Settings & Preferences'), findsOneWidget);
-    expect(find.text('Warm Paper'), findsOneWidget);
-    expect(find.text('Midnight Ink'), findsOneWidget);
     expect(find.text('Reader'), findsOneWidget);
     expect(find.text('Reading Experience & Surface'), findsOneWidget);
     expect(find.text('Typeface Scale'), findsOneWidget);
-    expect(find.text('Serif Literary Immersion'), findsOneWidget);
   });
 
   testWidgets(

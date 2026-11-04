@@ -1,7 +1,8 @@
-import 'package:mind_feed/core/constants/borders.dart';
-import 'package:mind_feed/core/constants/app_icons.dart';
-import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+
+import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/borders.dart';
 
 class EditorialIconButton extends StatelessWidget {
   const EditorialIconButton({
@@ -37,238 +38,71 @@ class EditorialIconButton extends StatelessWidget {
   );
 }
 
-class EditorialFollowButton extends StatefulWidget {
+class EditorialFollowButton extends StatelessWidget {
   const EditorialFollowButton({
     super.key,
     this.authorName = 'Author',
-    this.initialFollowing = false,
-    this.onChanged,
+    this.isFollowing = false,
+    this.isLoading = false,
+    this.onPressed,
+    this.darkSurface = false,
   });
 
   final String authorName;
-  final bool initialFollowing;
-  final ValueChanged<bool>? onChanged;
+  final bool isFollowing;
+  final bool isLoading;
+  final VoidCallback? onPressed;
+  final bool darkSurface;
 
   @override
-  State<EditorialFollowButton> createState() => _EditorialFollowButtonState();
-}
+  Widget build(BuildContext context) {
+    final backgroundColor = isFollowing
+        ? AppColors.cream
+        : (darkSurface ? AppColors.inkDark : AppColors.ink);
+    final foregroundColor = isFollowing ? AppColors.ink : AppColors.softCream;
 
-class _EditorialFollowButtonState extends State<EditorialFollowButton> {
-  late bool _isFollowing;
-
-  @override
-  void initState() {
-    super.initState();
-    _isFollowing = widget.initialFollowing;
-  }
-
-  @override
-  Widget build(BuildContext context) => SizedBox(
-    height: 40,
-    child: AnimatedContainer(
-      duration: const Duration(milliseconds: 220),
-      curve: Curves.easeOut,
-      child: FilledButton.icon(
-        onPressed: () {
-          setState(() {
-            _isFollowing = !_isFollowing;
-          });
-          widget.onChanged?.call(_isFollowing);
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              duration: const Duration(seconds: 2),
-              content: Text(
-                _isFollowing
-                    ? 'You are now following ${widget.authorName}'
-                    : 'Unfollowed ${widget.authorName}',
-              ),
-            ),
-          );
-        },
-        icon: Icon(
-          _isFollowing ? AppIcons.checkRounded : AppIcons.add,
-          size: 16,
-          color: _isFollowing ? AppColors.ink : AppColors.softCream,
-        ),
-        label: Text(
-          _isFollowing ? 'Following' : 'Follow',
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
-            color: _isFollowing ? AppColors.ink : AppColors.softCream,
-          ),
-        ),
-        style: FilledButton.styleFrom(
-          backgroundColor: _isFollowing ? AppColors.cream : AppColors.ink,
-          elevation: _isFollowing ? 1 : 0,
-          minimumSize: const Size(82, 40),
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          shape: const RoundedRectangleBorder(borderRadius: AppBorders.control),
-        ),
-      ),
-    ),
-  );
-}
-
-void showEditorialShareSheet(
-  BuildContext context, {
-  required String title,
-  String? url,
-}) {
-  final shareUrl =
-      url ??
-      'https://mindfeed.app/stories/${Uri.encodeComponent(title.split('\n').first)}';
-
-  showModalBottomSheet(
-    context: context,
-    backgroundColor: Colors.transparent,
-    isScrollControlled: true,
-    builder: (ctx) => Container(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
-      decoration: const BoxDecoration(
-        color: AppColors.inkDark,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-        border: Border(
-          top: BorderSide(color: AppColors.borderDark, width: 1.5),
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Container(
-              width: 36,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.mutedInk,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          const Row(
-            children: [
-              Icon(AppIcons.iosShareRounded, color: AppColors.cream, size: 20),
-              SizedBox(width: 8),
-              Text(
-                'Share Story',
-                style: TextStyle(
-                  color: AppColors.softCream,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.4,
+    return Semantics(
+      button: true,
+      label: isFollowing ? 'Unfollow $authorName' : 'Follow $authorName',
+      child: SizedBox(
+        height: 38,
+        child: FilledButton.icon(
+          onPressed: isLoading ? null : onPressed,
+          icon: isLoading
+              ? SizedBox(
+                  width: 14,
+                  height: 14,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(foregroundColor),
+                  ),
+                )
+              : Icon(
+                  isFollowing ? AppIcons.checkRounded : AppIcons.add,
+                  size: 16,
+                  color: foregroundColor,
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            title.replaceAll('\n', ' '),
-            style: const TextStyle(
-              color: Color(0xFFAAA49B),
-              fontSize: 13.5,
-              height: 1.3,
+          label: Text(
+            isFollowing ? 'Following' : 'Follow',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: foregroundColor,
             ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildShareAction(
-                ctx,
-                icon: AppIcons.linkRounded,
-                label: 'Copy Link',
-                onTap: () {
-                  Navigator.pop(ctx);
-                  ScaffoldMessenger.of(context).clearSnackBars();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      duration: const Duration(seconds: 2),
-                      content: Text('Link copied: $shareUrl'),
-                    ),
-                  );
-                },
-              ),
-              _buildShareAction(
-                ctx,
-                icon: AppIcons.chatBubbleOutlineRounded,
-                label: 'Message',
-                onTap: () {
-                  Navigator.pop(ctx);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Opening messaging apps...')),
-                  );
-                },
-              ),
-              _buildShareAction(
-                ctx,
-                icon: AppIcons.alternateEmailRounded,
-                label: 'Post to X',
-                onTap: () {
-                  Navigator.pop(ctx);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Composing story share...')),
-                  );
-                },
-              ),
-              _buildShareAction(
-                ctx,
-                icon: AppIcons.bookmarkAddOutlined,
-                label: 'Bookmark',
-                onTap: () {
-                  Navigator.pop(ctx);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Story saved to collection')),
-                  );
-                },
-              ),
-            ],
+          style: FilledButton.styleFrom(
+            backgroundColor: backgroundColor,
+            disabledBackgroundColor: backgroundColor,
+            elevation: isFollowing ? 1 : 0,
+            minimumSize: const Size(82, 38),
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            shape: const RoundedRectangleBorder(
+              borderRadius: AppBorders.control,
+              side: BorderSide(color: AppColors.borderDark),
+            ),
           ),
-        ],
+        ),
       ),
-    ),
-  );
-}
-
-Widget _buildShareAction(
-  BuildContext context, {
-  required IconData icon,
-  required String label,
-  required VoidCallback onTap,
-}) {
-  return InkWell(
-    onTap: onTap,
-    borderRadius: BorderRadius.circular(16),
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              color: AppColors.darkTile,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.borderDark),
-            ),
-            child: Icon(icon, color: AppColors.cream, size: 22),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: const TextStyle(
-              color: AppColors.softCream,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
+    );
+  }
 }

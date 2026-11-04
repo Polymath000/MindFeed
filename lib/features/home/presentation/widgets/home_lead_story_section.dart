@@ -16,14 +16,12 @@ class HomeLeadStoryCard extends StatelessWidget {
     this.onOpen,
     this.onLike,
     this.onSave,
-    this.onShare,
   });
 
   final EditorialNewsItem item;
   final VoidCallback? onOpen;
   final VoidCallback? onLike;
   final VoidCallback? onSave;
-  final VoidCallback? onShare;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +30,6 @@ class HomeLeadStoryCard extends StatelessWidget {
       onOpen: onOpen,
       onLike: onLike,
       onSave: onSave,
-      onShare: onShare,
     );
   }
 }
@@ -89,9 +86,16 @@ class _StoryTileTextContent extends StatelessWidget {
           spacing: 8,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            Text(
-              item.badge,
-              style: AppTextStyles.homeStoryBadge(item.badgeColor),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: const BoxDecoration(
+                color: AppColors.black,
+                borderRadius: AppBorders.tag,
+              ),
+              child: Text(
+                item.badge,
+                style: AppTextStyles.homeStoryBadge(AppColors.white),
+              ),
             ),
             Text(
               '${item.readingTimeMinutes} min read',

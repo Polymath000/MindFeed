@@ -66,6 +66,9 @@ void main() {
       await cubit.loadArticles();
 
       expect(cubit.articles.length, 2);
+      final loaded = cubit.state as ProfileArticlesLoaded;
+      expect(loaded.publishedArticles.length, 1);
+      expect(loaded.publishedArticles.first.id, 'pub-1');
     });
 
     test('emits [ProfileArticlesLoading, ProfileArticlesEmpty] when author has no articles', () async {
@@ -90,6 +93,21 @@ void main() {
       final expectedStates = [
         const ProfileArticlesLoading(),
         const ProfileArticlesError('Database connection lost'),
+      ];
+
+      expectLater(cubit.stream, emitsInOrder(expectedStates));
+
+      await cubit.loadArticles();
+    });
+
+    test('emits formatted offline error message when offline', () async {
+      fakeRepo.shouldLoadSucceed = false;
+      fakeRepo.failureMessage = 'You are Offline';
+
+      final expectedStates = [
+        const ProfileArticlesLoading(),
+        const ProfileArticlesError(
+            'You are currently offline. Please check your internet connection.'),
       ];
 
       expectLater(cubit.stream, emitsInOrder(expectedStates));

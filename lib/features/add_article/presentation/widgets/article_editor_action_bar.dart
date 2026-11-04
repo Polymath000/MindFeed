@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
-import 'package:mind_feed/core/constants/app_images.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/features/add_article/domain/helpers/article_validator.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_state.dart';
@@ -134,7 +134,7 @@ class ArticleEditorActionBar extends StatelessWidget {
       updated: 'Draft',
       authorName: 'You',
       authorRole: 'Writer',
-      authorAvatar: Assets.assetsImagesWadeAvatar,
+      authorAvatar: CurrentUserSession.resolveCurrentUser()?.avatarUrl ?? '',
       excerpt: ArticleValidator.generateExcerpt(state.content),
       color: AppColors.cream,
       tags: state.selectedTags,

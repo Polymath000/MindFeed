@@ -1,23 +1,73 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:hive/hive.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/core/errors/failures.dart';
+import 'package:mind_feed/core/networking/api_error_handler.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
+import 'package:mind_feed/core/networking/network_info.dart';
 import 'package:mind_feed/core/services/shared_preferences_singleton.dart';
+import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/features/auth/domain/entities/user_entity.dart';
 import 'package:mind_feed/features/profile/data/datasources/profile_remote_data_source.dart';
 import 'package:mind_feed/features/profile/domain/repos/profile_repo.dart';
 
 class ProfileRepoImpl implements ProfileRepository {
   final ProfileRemoteDataSource remoteDataSource;
+  final NetworkInfo? networkInfo;
   bool _isReconciling = false;
 
-  ProfileRepoImpl({required this.remoteDataSource});
+  ProfileRepoImpl({
+    required this.remoteDataSource,
+    this.networkInfo,
+  });
+
+  Future<bool> _isOnline() async {
+    final info = networkInfo ??
+        (getIt.isRegistered<NetworkInfo>() ? getIt<NetworkInfo>() : null);
+    if (info == null) return true;
+    try {
+      return await info.isConnected;
+    } catch (_) {
+      return true;
+    }
+  }
+
+  @override
+  Future<ApiResult<String>> uploadAvatar({
+    required String userId,
+    required Uint8List bytes,
+    required String fileExtension,
+    String? previousAvatarUrl,
+  }) async {
+    if (await _isOnline()) {
+      try {
+        final result = await remoteDataSource.uploadAvatar(
+          userId: userId,
+          bytes: bytes,
+          fileExtension: fileExtension,
+          previousAvatarUrl: previousAvatarUrl,
+        );
+        return Success(result);
+      } catch (e) {
+        return FailureResult(ApiErrorHandler.handle(e).toFailure());
+      }
+    } else {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
+  }
 
   @override
   Future<ApiResult<Map<String, dynamic>>> getProfile(String userId) async {
+    if (!await _isOnline()) {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
     try {
-      final profile = await remoteDataSource.getProfile(userId);
+      final profile = await remoteDataSource
+          .getProfile(userId)
+          .timeout(const Duration(seconds: 6));
       return Success(profile);
     } catch (e) {
       return FailureResult(ServerFailure(e.toString()));
@@ -31,6 +81,9 @@ class ProfileRepoImpl implements ProfileRepository {
     String? bio,
     String? avatarUrl,
   }) async {
+    if (!await _isOnline()) {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
     try {
       final updated = await remoteDataSource.updateProfile(
         userId: userId,
@@ -46,8 +99,13 @@ class ProfileRepoImpl implements ProfileRepository {
 
   @override
   Future<ApiResult<List<Map<String, dynamic>>>> getCategories() async {
+    if (!await _isOnline()) {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
     try {
-      final categories = await remoteDataSource.getCategories();
+      final categories = await remoteDataSource
+          .getCategories()
+          .timeout(const Duration(seconds: 6));
       return Success(categories);
     } catch (e) {
       return FailureResult(ServerFailure(e.toString()));
@@ -56,14 +114,22 @@ class ProfileRepoImpl implements ProfileRepository {
 
   @override
   Future<ApiResult<List<Map<String, dynamic>>>> getFavoriteCategories(String userId) async {
+    if (!await _isOnline()) {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
     try {
-      final favorites = await remoteDataSource.getFavoriteCategories(userId);
+      final favorites = await remoteDataSource
+          .getFavoriteCategories(userId)
+          .timeout(const Duration(seconds: 6));
       try {
         await SharedPreferencesSingleton.setBool(
           AppConstants.hasCompletedCategoriesKey,
           value: favorites.isNotEmpty,
         );
-      } catch (_) {}
+      } catch (_) {
+        const failure = CacheFailure("there's an error, Please try again later");
+        debugPrint(failure.message);
+      }
       return Success(favorites);
     } catch (e) {
       return FailureResult(ServerFailure(e.toString()));
@@ -105,7 +171,14 @@ class ProfileRepoImpl implements ProfileRepository {
     try {
       await SharedPreferencesSingleton.setBool(syncKey, value: true);
       await SharedPreferencesSingleton.setBool('pending_category_sync', value: true);
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
+
+    if (!await _isOnline()) {
+      return const FailureResult(ServerFailure('You are Offline'));
+    }
 
     try {
       // 1. Primary: Save directly to profiles.favorite_categories
@@ -114,7 +187,10 @@ class ProfileRepoImpl implements ProfileRepository {
           userId: userId,
           categories: categoryNames,
         );
-      } catch (_) {}
+      } catch (_) {
+        const failure = CacheFailure("there's an error, Please try again later");
+        debugPrint(failure.message);
+      }
 
       // 2. Also sync to junction table via RPC if available
       final categoryRows = await remoteDataSource.getCategories();
@@ -143,7 +219,10 @@ class ProfileRepoImpl implements ProfileRepository {
           AppConstants.hasCompletedCategoriesKey,
           value: categoryNames.isNotEmpty,
         );
-      } catch (_) {}
+      } catch (_) {
+        const failure = CacheFailure("there's an error, Please try again later");
+        debugPrint(failure.message);
+      }
 
       return const Success(null);
     } catch (e) {
@@ -176,6 +255,8 @@ class ProfileRepoImpl implements ProfileRepository {
       if (desiredCategories == null) {
         return false;
       }
+
+      if (!await _isOnline()) return false;
 
       final syncResult = await syncFavoriteCategories(
         userId: userId,

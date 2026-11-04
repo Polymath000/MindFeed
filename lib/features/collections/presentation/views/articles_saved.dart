@@ -9,6 +9,8 @@ import 'package:mind_feed/core/widgets/search_bar.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/features/collections/presentation/controllers/collections_cubit.dart';
 
+import '../widgets/saved_articles_loading_view.dart';
+
 class ArticlesSaved extends StatelessWidget {
   const ArticlesSaved({super.key, this.refreshSeed = 0, this.cubit});
   static const String routeName = 'articlesSaved';
@@ -107,10 +109,7 @@ class _ArticlesSavedContentState extends State<_ArticlesSavedContent> {
               BlocBuilder<CollectionsCubit, CollectionsState>(
                 builder: (context, state) {
                   if (state is CollectionsLoading) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 48),
-                      child: Center(child: CircularProgressIndicator(color: AppColors.cream)),
-                    );
+                    return const SavedArticlesLoadingView();
                   } else if (state is CollectionsError) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 16),

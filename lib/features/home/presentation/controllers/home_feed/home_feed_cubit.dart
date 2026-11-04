@@ -1,14 +1,19 @@
+import 'dart:math';
+
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:mind_feed/core/design/editorial_models.dart';
-import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_saved_articles_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/toggle_article_like_use_case.dart';
 import 'package:mind_feed/core/articles/domain/usecases/toggle_bookmark_use_case.dart';
 import 'package:mind_feed/core/articles/domain/usecases/toggle_star_use_case.dart';
+import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/errors/failures.dart';
+import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_home_feed_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_user_feed_topics_use_case.dart';
-import 'package:mind_feed/core/articles/domain/usecases/toggle_article_like_use_case.dart';
 
 import 'home_feed_state.dart';
 
@@ -21,6 +26,8 @@ class HomeFeedCubit extends Cubit<HomeFeedState> {
   final ToggleArticleLikeUseCase _toggleArticleLikeUseCase;
   final String? _currentUserId;
   final String? Function()? _userIdResolver;
+  final bool _randomizeFeed;
+  final Random? _random;
 
   HomeFeedCubit({
     required GetHomeFeedUseCase getHomeFeedUseCase,
@@ -31,6 +38,8 @@ class HomeFeedCubit extends Cubit<HomeFeedState> {
     required ToggleArticleLikeUseCase toggleArticleLikeUseCase,
     String? currentUserId,
     String? Function()? userIdResolver,
+    bool randomizeFeed = true,
+    Random? random,
   })  : _getHomeFeedUseCase = getHomeFeedUseCase,
         _getUserFeedTopicsUseCase = getUserFeedTopicsUseCase,
         _getSavedArticlesUseCase = getSavedArticlesUseCase,
@@ -39,6 +48,8 @@ class HomeFeedCubit extends Cubit<HomeFeedState> {
         _toggleArticleLikeUseCase = toggleArticleLikeUseCase,
         _currentUserId = currentUserId,
         _userIdResolver = userIdResolver,
+        _randomizeFeed = randomizeFeed,
+        _random = random,
         super(HomeFeedInitial(topics: _resolveInitialTopics()));
 
   static List<String> _resolveInitialTopics() {
@@ -66,6 +77,8 @@ class HomeFeedCubit extends Cubit<HomeFeedState> {
       preferredCategoryIds: topicsResult.preferredCategoryIds.isNotEmpty
           ? topicsResult.preferredCategoryIds
           : null,
+      randomize: _randomizeFeed,
+      random: _random,
     );
 
     await result.when(
@@ -120,7 +133,10 @@ class HomeFeedCubit extends Cubit<HomeFeedState> {
         success: (saved) => savedIds.addAll(saved.map((a) => a.id)),
         failure: (_) {},
       );
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
     return savedIds;
   }
 
@@ -129,7 +145,9 @@ class HomeFeedCubit extends Cubit<HomeFeedState> {
     final isOffline = msg.contains('offline') ||
         msg.contains('network') ||
         msg.contains('connection') ||
-        msg.contains('socket');
+        msg.contains('socket') ||
+        msg.contains('timeout') ||
+        msg.contains('timed out');
     final err = isOffline
         ? 'You are currently offline. Please check your internet connection.'
         : (rawMessage.isNotEmpty ? rawMessage : 'Failed to load stories.');
@@ -146,6 +164,7 @@ class HomeFeedCubit extends Cubit<HomeFeedState> {
   Future<SwipeSaveStatus> saveArticleWithStatus(EditorialNewsItem item) async {
     final userId = _resolvedUserId;
     if (userId == null || userId.isEmpty) {
+      _setSavedStatus(item, false);
       return SwipeSaveStatus.unauthenticated;
     }
     final saved = await saveArticleOnSwipeRight(item);
@@ -154,7 +173,10 @@ class HomeFeedCubit extends Cubit<HomeFeedState> {
 
   Future<bool> saveArticleOnSwipeRight(EditorialNewsItem item) async {
     final userId = _resolvedUserId;
-    if (userId == null || userId.isEmpty) return false;
+    if (userId == null || userId.isEmpty) {
+      _setSavedStatus(item, false);
+      return false;
+    }
     _setSavedStatus(item, true);
     try {
       final res = await _toggleBookmarkUseCase.call(

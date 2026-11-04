@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mind_feed/core/services/current_user_session.dart';
-import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/article_payload_builder.dart';
-import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_state.dart';
 import 'package:mind_feed/core/articles/domain/entities/category_entity.dart';
+import 'package:mind_feed/core/services/current_user_session.dart';
+import 'package:mind_feed/features/add_article/domain/helpers/article_payload_builder.dart';
+import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_state.dart';
 
 void main() {
   const testUser = CurrentUserSnapshot(
@@ -94,6 +94,7 @@ void main() {
       );
 
       expect(payload['badge'], 'SCIENCE & COSMOS');
+      expect(payload['badge_color'], '#065F46');
       expect(payload['category_id'], 'cat-sci');
       expect(payload['category_slug'], 'science');
       expect(payload['author_id'], 'user-builder-test');

@@ -10,10 +10,12 @@ class CategoriesView extends StatelessWidget {
     super.key,
     this.userEntity,
     this.categoriesCubit,
+    this.isFromSettings = false,
   });
 
   final UserEntity? userEntity;
   final CategoriesCubit? categoriesCubit;
+  final bool isFromSettings;
   static const String routeName = 'categories';
 
   @override
@@ -22,7 +24,10 @@ class CategoriesView extends StatelessWidget {
       return Scaffold(
         body: BlocProvider<CategoriesCubit>.value(
           value: categoriesCubit!,
-          child: CategoriesViewBody(userEntity: userEntity),
+          child: CategoriesViewBody(
+            userEntity: userEntity,
+            isFromSettings: isFromSettings,
+          ),
         ),
       );
     }
@@ -30,7 +35,10 @@ class CategoriesView extends StatelessWidget {
     try {
       context.read<CategoriesCubit>();
       return Scaffold(
-        body: CategoriesViewBody(userEntity: userEntity),
+        body: CategoriesViewBody(
+          userEntity: userEntity,
+          isFromSettings: isFromSettings,
+        ),
       );
     } catch (_) {
       return Scaffold(
@@ -43,7 +51,10 @@ class CategoriesView extends StatelessWidget {
             }
             return cubit;
           },
-          child: CategoriesViewBody(userEntity: userEntity),
+          child: CategoriesViewBody(
+            userEntity: userEntity,
+            isFromSettings: isFromSettings,
+          ),
         ),
       );
     }

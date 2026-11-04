@@ -1,9 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/app_text_styles.dart';
 import 'package:mind_feed/core/design/editorial_design.dart';
+import 'package:mind_feed/core/widgets/editorial_avatar.dart';
 
 class ArticleReaderAuthorBar extends StatelessWidget {
   const ArticleReaderAuthorBar({
@@ -11,9 +14,14 @@ class ArticleReaderAuthorBar extends StatelessWidget {
     required this.authorName,
     required this.authorRole,
     required this.authorAvatar,
+    this.authorAvatarBytes,
     this.authorRatingAvg = 0.0,
     this.authorRatingCount = 0,
     this.userAuthorStars = 0,
+    this.canFollowAuthor = false,
+    this.isFollowingAuthor = false,
+    this.isFollowLoading = false,
+    this.onToggleFollow,
     this.onRateAuthor,
     this.onAuthorTap,
   });
@@ -21,9 +29,14 @@ class ArticleReaderAuthorBar extends StatelessWidget {
   final String authorName;
   final String authorRole;
   final String authorAvatar;
+  final Uint8List? authorAvatarBytes;
   final double authorRatingAvg;
   final int authorRatingCount;
   final int userAuthorStars;
+  final bool canFollowAuthor;
+  final bool isFollowingAuthor;
+  final bool isFollowLoading;
+  final VoidCallback? onToggleFollow;
   final ValueChanged<int>? onRateAuthor;
   final VoidCallback? onAuthorTap;
 
@@ -62,7 +75,12 @@ class ArticleReaderAuthorBar extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 2.0),
                 child: Row(
                   children: [
-                    ClipOval(child: _AuthorAvatarImage(avatarUrl: authorAvatar)),
+                    EditorialAvatar(
+                      avatarUrl: authorAvatar,
+                      avatarBytes: authorAvatarBytes,
+                      size: 40,
+                      fallbackName: authorName,
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
@@ -79,8 +97,15 @@ class ArticleReaderAuthorBar extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 8),
-        EditorialFollowButton(authorName: authorName),
+        if (canFollowAuthor) ...[
+          const SizedBox(width: 8),
+          EditorialFollowButton(
+            authorName: authorName,
+            isFollowing: isFollowingAuthor,
+            isLoading: isFollowLoading,
+            onPressed: onToggleFollow,
+          ),
+        ],
       ],
     );
   }
@@ -143,41 +168,4 @@ class _AuthorStarButton extends StatelessWidget {
       ),
     );
   }
-}
-
-class _AuthorAvatarImage extends StatelessWidget {
-  const _AuthorAvatarImage({required this.avatarUrl});
-
-  final String avatarUrl;
-
-  @override
-  Widget build(BuildContext context) {
-    if (avatarUrl.isEmpty) return _fallback();
-    if (avatarUrl.startsWith('http')) {
-      return Image.network(
-        avatarUrl,
-        width: 40,
-        height: 40,
-        cacheWidth: 120,
-        cacheHeight: 120,
-        fit: BoxFit.cover,
-        errorBuilder: (_, _, _) => _fallback(),
-      );
-    }
-    return Image.asset(
-      avatarUrl,
-      width: 40,
-      height: 40,
-      cacheWidth: 120,
-      cacheHeight: 120,
-      fit: BoxFit.cover,
-      errorBuilder: (_, _, _) => _fallback(),
-    );
-  }
-
-  Widget _fallback() => const CircleAvatar(
-    radius: 20,
-    backgroundColor: AppColors.blush,
-    child: Icon(AppIcons.personAlt, color: AppColors.ink),
-  );
 }

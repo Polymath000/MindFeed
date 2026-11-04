@@ -1,9 +1,13 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/services/current_user_session.dart';
 import 'package:mind_feed/core/articles/domain/entities/author_rating_summary.dart';
+import 'package:mind_feed/core/articles/domain/usecases/author_follow_use_cases.dart';
 import 'package:mind_feed/core/articles/domain/usecases/toggle_article_like_use_case.dart';
 import 'package:mind_feed/core/articles/domain/usecases/toggle_bookmark_use_case.dart';
 import 'package:mind_feed/core/articles/domain/usecases/toggle_star_use_case.dart';
@@ -30,6 +34,8 @@ class ArticleReaderCubit extends Cubit<ArticleReaderState> {
   final ToggleBookmarkUseCase _toggleBookmarkUseCase;
   final RateAuthorUseCase _rateAuthorUseCase;
   final GetAuthorRatingUseCase _getAuthorRatingUseCase;
+  final GetAuthorFollowSummaryUseCase? _getAuthorFollowSummaryUseCase;
+  final ToggleAuthorFollowUseCase? _toggleAuthorFollowUseCase;
   final ToggleStarUseCase? _toggleStarUseCase;
   final IsArticleStarredUseCase? _isArticleStarredUseCase;
   final String? _currentUserId;
@@ -44,6 +50,8 @@ class ArticleReaderCubit extends Cubit<ArticleReaderState> {
     required ToggleBookmarkUseCase toggleBookmarkUseCase,
     required RateAuthorUseCase rateAuthorUseCase,
     required GetAuthorRatingUseCase getAuthorRatingUseCase,
+    GetAuthorFollowSummaryUseCase? getAuthorFollowSummaryUseCase,
+    ToggleAuthorFollowUseCase? toggleAuthorFollowUseCase,
     ToggleStarUseCase? toggleStarUseCase,
     IsArticleStarredUseCase? isArticleStarredUseCase,
     String? currentUserId,
@@ -56,6 +64,8 @@ class ArticleReaderCubit extends Cubit<ArticleReaderState> {
         _toggleBookmarkUseCase = toggleBookmarkUseCase,
         _rateAuthorUseCase = rateAuthorUseCase,
         _getAuthorRatingUseCase = getAuthorRatingUseCase,
+        _getAuthorFollowSummaryUseCase = getAuthorFollowSummaryUseCase,
+        _toggleAuthorFollowUseCase = toggleAuthorFollowUseCase,
         _toggleStarUseCase = toggleStarUseCase,
         _isArticleStarredUseCase = isArticleStarredUseCase,
         _currentUserId = currentUserId,
@@ -113,6 +123,7 @@ class ArticleReaderCubit extends Cubit<ArticleReaderState> {
     await _checkDownloaded(item.id);
     await _checkUserEngagement(item.id);
     await _fetchAuthorRating(item);
+    await _fetchAuthorFollowState(item);
     await _fetchArticleDetailsIfNeeded(item);
   }
 
@@ -130,6 +141,12 @@ class ArticleReaderCubit extends Cubit<ArticleReaderState> {
       authorRatingCount: item.authorRatingCount,
       userAuthorStars: item.userAuthorStars,
     );
+    final canFollow = AuthorFollowValidator.canShowFollowButton(
+      authorId: item.authorId,
+      authorKey: item.authorKey,
+      authorName: item.authorName,
+      viewerUserId: _getUserId(),
+    );
     emit(ArticleReaderLoaded(
       item: initialItem,
       isLiked: initialLiked,
@@ -140,6 +157,9 @@ class ArticleReaderCubit extends Cubit<ArticleReaderState> {
       authorRatingAvg: item.authorRatingAvg,
       authorRatingCount: item.authorRatingCount,
       userAuthorStars: item.userAuthorStars,
+      canFollowAuthor: canFollow,
+      isFollowingAuthor: false,
+      isFollowLoading: false,
     ));
   }
 
@@ -149,7 +169,10 @@ class ArticleReaderCubit extends Cubit<ArticleReaderState> {
       if (isDownloaded && !isClosed && state is ArticleReaderLoaded) {
         emit((state as ArticleReaderLoaded).copyWith(isDownloaded: true));
       }
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
   }
 
   Future<void> _checkUserEngagement(String articleId) async {
@@ -226,15 +249,57 @@ class ArticleReaderCubit extends Cubit<ArticleReaderState> {
     );
   }
 
+  Future<void> refreshAuthorEngagement() async {
+    final item = state.item;
+    if (item == null || isClosed) return;
+    await _fetchAuthorRating(item);
+    await _fetchAuthorFollowState(item);
+  }
+
+  Future<void> _fetchAuthorFollowState(EditorialNewsItem item) async {
+    final canFollow = AuthorFollowValidator.canShowFollowButton(
+      authorId: item.authorId,
+      authorKey: item.authorKey,
+      authorName: item.authorName,
+      viewerUserId: _getUserId(),
+    );
+    if (isClosed || state is! ArticleReaderLoaded) return;
+    final current = state as ArticleReaderLoaded;
+    if (current.canFollowAuthor != canFollow) {
+      emit(current.copyWith(canFollowAuthor: canFollow));
+    }
+    if (!canFollow || _getAuthorFollowSummaryUseCase == null) return;
+
+    final res = await _getAuthorFollowSummaryUseCase.call(
+      targetUserId: item.authorId,
+      authorKey: item.authorKey,
+      authorName: item.authorName,
+      viewerUserId: _getUserId(),
+    );
+
+    if (isClosed || state is! ArticleReaderLoaded) return;
+    res.when(
+      success: (summary) {
+        if (!isClosed && state is ArticleReaderLoaded) {
+          emit((state as ArticleReaderLoaded).copyWith(
+            canFollowAuthor: canFollow,
+            isFollowingAuthor: summary.isFollowing,
+          ));
+        }
+      },
+      failure: (_) {},
+    );
+  }
+
   Future<void> _fetchArticleDetailsIfNeeded(EditorialNewsItem item) async {
     if (item.content != null && item.content!.isNotEmpty) return;
     final res = await _getArticleDetailsUseCase.call(item.id);
-    res.when(
-      success: (entity) {
+    switch (res) {
+      case Success(:final data):
         if (isClosed || state is! ArticleReaderLoaded) return;
         final loaded = state as ArticleReaderLoaded;
-        final count = entity.likesCount > 0 ? entity.likesCount : entity.starCount;
-        final mapped = entity.toEditorialNewsItem().copyWith(
+        final count = data.likesCount > 0 ? data.likesCount : data.starCount;
+        final mapped = data.toEditorialNewsItem().copyWith(
           isStarred: loaded.isStarred,
           isLiked: loaded.isLiked,
           isSaved: loaded.isSaved,
@@ -242,8 +307,56 @@ class ArticleReaderCubit extends Cubit<ArticleReaderState> {
           likesCount: count,
         );
         emit(loaded.copyWith(item: mapped, starCount: count, likeCount: count));
+        await _fetchAuthorFollowState(mapped);
+      case FailureResult():
+        break;
+    }
+  }
+
+  Future<void> toggleFollowAuthor() async {
+    if (state is! ArticleReaderLoaded) return;
+    final current = state as ArticleReaderLoaded;
+    final article = current.article;
+    final viewerId = _getUserId();
+
+    if (_toggleAuthorFollowUseCase == null ||
+        !current.canFollowAuthor ||
+        current.isFollowLoading ||
+        article == null) {
+      return;
+    }
+
+    emit(current.copyWith(isFollowLoading: true, clearFeedback: true));
+
+    final res = await _toggleAuthorFollowUseCase.call(
+      followerId: viewerId,
+      authorId: article.authorId,
+      authorKey: article.authorKey,
+      authorName: article.authorName,
+      currentlyFollowing: current.isFollowingAuthor,
+    );
+
+    if (isClosed || state is! ArticleReaderLoaded) return;
+    final s = state as ArticleReaderLoaded;
+
+    res.when(
+      success: (summary) {
+        final authorName = s.article?.authorName ?? 'author';
+        final message = summary.isFollowing
+            ? 'Following $authorName'
+            : 'Unfollowed $authorName';
+        emit(s.copyWith(
+          isFollowLoading: false,
+          isFollowingAuthor: summary.isFollowing,
+          userFeedback: message,
+        ));
       },
-      failure: (_) {},
+      failure: (failure) {
+        emit(s.copyWith(
+          isFollowLoading: false,
+          userFeedback: failure.message,
+        ));
+      },
     );
   }
 
@@ -527,8 +640,9 @@ class ArticleReaderCubit extends Cubit<ArticleReaderState> {
       await _downloadArticleTextUseCase.call(
         ArticleReaderDependencies.mapToDownloadedEntity(item),
       );
-      if (!isClosed) {
-        emit(loaded.copyWith(
+      if (!isClosed && state is ArticleReaderLoaded) {
+        final currentLoaded = state as ArticleReaderLoaded;
+        emit(currentLoaded.copyWith(
           isDownloaded: true,
           userFeedback: 'Article saved for offline reading',
         ));

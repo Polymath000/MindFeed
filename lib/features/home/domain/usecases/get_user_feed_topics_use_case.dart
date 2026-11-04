@@ -1,3 +1,6 @@
+import 'package:flutter/foundation.dart';
+
+import 'package:mind_feed/core/errors/failures.dart';
 import 'package:mind_feed/features/profile/domain/repos/profile_repo.dart';
 
 class UserFeedTopicsResult {
@@ -36,9 +39,10 @@ class GetUserFeedTopicsUseCase {
   }) async {
     final preferredCategoryIds = <String>[];
     final dynamicTopics = <String>[];
+    var remoteSucceeded = true;
 
     if (profileRepository != null && shouldQueryRemote) {
-      await _loadRemoteFavorites(
+      remoteSucceeded = await _loadRemoteFavorites(
         userId ?? '',
         preferredCategoryIds,
         dynamicTopics,
@@ -49,7 +53,8 @@ class GetUserFeedTopicsUseCase {
       _appendCachedTopics(cachedCategories, dynamicTopics);
     }
 
-    if (preferredCategoryIds.isEmpty &&
+    if (remoteSucceeded &&
+        preferredCategoryIds.isEmpty &&
         dynamicTopics.isNotEmpty &&
         profileRepository != null) {
       await _resolveCategoryIdsByName(dynamicTopics, preferredCategoryIds);
@@ -61,18 +66,26 @@ class GetUserFeedTopicsUseCase {
     );
   }
 
-  Future<void> _loadRemoteFavorites(
+  Future<bool> _loadRemoteFavorites(
     String userId,
     List<String> preferredIds,
     List<String> dynamicTopics,
   ) async {
     try {
       final result = await profileRepository!.getFavoriteCategories(userId);
-      result.when(
-        success: (favs) => _parseFavoriteMaps(favs, preferredIds, dynamicTopics),
-        failure: (_) {},
+      final isSuccess = result.when(
+        success: (favs) {
+          _parseFavoriteMaps(favs, preferredIds, dynamicTopics);
+          return true;
+        },
+        failure: (_) => false,
       );
-    } catch (_) {}
+      return isSuccess;
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+      return false;
+    }
   }
 
   void _parseFavoriteMaps(
@@ -126,7 +139,10 @@ class GetUserFeedTopicsUseCase {
         success: (allCats) => _matchCategoryIds(allCats, dynamicTopics, preferredIds),
         failure: (_) {},
       );
-    } catch (_) {}
+    } catch (_) {
+      const failure = CacheFailure("there's an error, Please try again later");
+      debugPrint(failure.message);
+    }
   }
 
   void _matchCategoryIds(

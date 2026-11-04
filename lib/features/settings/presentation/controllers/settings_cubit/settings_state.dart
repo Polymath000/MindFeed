@@ -7,12 +7,6 @@ sealed class SettingsState {
   final String? avatarUrl;
   final UserEntity? currentUserEntity;
   final String fontScale;
-  final bool serifMode;
-  final bool bionicGuide;
-  final bool morningBriefing;
-  final bool breakingAlerts;
-  final bool dataPreservation;
-  final bool wifiOnly;
   final double cachedMegabytes;
 
   const SettingsState({
@@ -20,15 +14,39 @@ sealed class SettingsState {
     this.userEmail = '',
     this.avatarUrl,
     this.currentUserEntity,
-    this.fontScale = 'Standard',
-    this.serifMode = true,
-    this.bionicGuide = false,
-    this.morningBriefing = true,
-    this.breakingAlerts = true,
-    this.dataPreservation = false,
-    this.wifiOnly = true,
+    this.fontScale = AppConstants.defaultFontScale,
     this.cachedMegabytes = 0.0,
   });
+
+  SettingsLoaded toLoaded({
+    String? displayName,
+    String? userEmail,
+    String? avatarUrl,
+    UserEntity? currentUserEntity,
+    String? fontScale,
+    double? cachedMegabytes,
+  }) {
+    return SettingsLoaded(
+      displayName: displayName ?? this.displayName,
+      userEmail: userEmail ?? this.userEmail,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      currentUserEntity: currentUserEntity ?? this.currentUserEntity,
+      fontScale: fontScale ?? this.fontScale,
+      cachedMegabytes: cachedMegabytes ?? this.cachedMegabytes,
+    );
+  }
+
+  SettingsError toError(String message) {
+    return SettingsError(
+      message,
+      displayName: displayName,
+      userEmail: userEmail,
+      avatarUrl: avatarUrl,
+      currentUserEntity: currentUserEntity,
+      fontScale: fontScale,
+      cachedMegabytes: cachedMegabytes,
+    );
+  }
 }
 
 final class SettingsInitial extends SettingsState {
@@ -38,12 +56,6 @@ final class SettingsInitial extends SettingsState {
     super.avatarUrl,
     super.currentUserEntity,
     super.fontScale,
-    super.serifMode,
-    super.bionicGuide,
-    super.morningBriefing,
-    super.breakingAlerts,
-    super.dataPreservation,
-    super.wifiOnly,
     super.cachedMegabytes,
   });
 }
@@ -55,12 +67,6 @@ final class SettingsLoading extends SettingsState {
     super.avatarUrl,
     super.currentUserEntity,
     super.fontScale,
-    super.serifMode,
-    super.bionicGuide,
-    super.morningBriefing,
-    super.breakingAlerts,
-    super.dataPreservation,
-    super.wifiOnly,
     super.cachedMegabytes,
   });
 }
@@ -72,12 +78,6 @@ final class SettingsLoaded extends SettingsState {
     super.avatarUrl,
     super.currentUserEntity,
     super.fontScale,
-    super.serifMode,
-    super.bionicGuide,
-    super.morningBriefing,
-    super.breakingAlerts,
-    super.dataPreservation,
-    super.wifiOnly,
     super.cachedMegabytes,
   });
 
@@ -87,27 +87,15 @@ final class SettingsLoaded extends SettingsState {
     String? avatarUrl,
     UserEntity? currentUserEntity,
     String? fontScale,
-    bool? serifMode,
-    bool? bionicGuide,
-    bool? morningBriefing,
-    bool? breakingAlerts,
-    bool? dataPreservation,
-    bool? wifiOnly,
     double? cachedMegabytes,
   }) {
-    return SettingsLoaded(
-      displayName: displayName ?? this.displayName,
-      userEmail: userEmail ?? this.userEmail,
-      avatarUrl: avatarUrl ?? this.avatarUrl,
-      currentUserEntity: currentUserEntity ?? this.currentUserEntity,
-      fontScale: fontScale ?? this.fontScale,
-      serifMode: serifMode ?? this.serifMode,
-      bionicGuide: bionicGuide ?? this.bionicGuide,
-      morningBriefing: morningBriefing ?? this.morningBriefing,
-      breakingAlerts: breakingAlerts ?? this.breakingAlerts,
-      dataPreservation: dataPreservation ?? this.dataPreservation,
-      wifiOnly: wifiOnly ?? this.wifiOnly,
-      cachedMegabytes: cachedMegabytes ?? this.cachedMegabytes,
+    return toLoaded(
+      displayName: displayName,
+      userEmail: userEmail,
+      avatarUrl: avatarUrl,
+      currentUserEntity: currentUserEntity,
+      fontScale: fontScale,
+      cachedMegabytes: cachedMegabytes,
     );
   }
 }
@@ -122,12 +110,6 @@ final class SettingsError extends SettingsState {
     super.avatarUrl,
     super.currentUserEntity,
     super.fontScale,
-    super.serifMode,
-    super.bionicGuide,
-    super.morningBriefing,
-    super.breakingAlerts,
-    super.dataPreservation,
-    super.wifiOnly,
     super.cachedMegabytes,
   });
 }

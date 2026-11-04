@@ -1,8 +1,84 @@
 import 'package:flutter/material.dart';
+
+import 'package:skeletonizer/skeletonizer.dart';
+
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/design/editorial_card.dart';
 import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/core/design/editorial_shimmer.dart';
+
+class SearchLoadingView extends StatelessWidget {
+  const SearchLoadingView({super.key});
+
+  static final List<EditorialNewsItem> _placeholderResults = [
+    EditorialNewsItem(
+      id: 'search_skeleton_1',
+      badge: 'FEATURED',
+      badgeColor: AppColors.black,
+      title: 'Curating thoughtful stories and deep editorial insights for you',
+      updated: 'Updated moments ago',
+      authorName: 'Editorial Staff',
+      authorRole: 'Senior Columnist',
+      authorAvatar: '',
+      excerpt:
+          'Loading the latest perspectives, investigative reports, and curated essays tailored to your reading preferences.',
+      color: AppColors.cream,
+      readingTimeMinutes: 5,
+    ),
+    EditorialNewsItem(
+      id: 'search_skeleton_2',
+      badge: 'INSIGHT',
+      badgeColor: AppColors.black,
+      title: 'Exploring emerging paradigms in modern science and technology',
+      updated: 'Updated recently',
+      authorName: 'Editorial Staff',
+      authorRole: 'Contributing Writer',
+      authorAvatar: '',
+      excerpt:
+          'Discovering how new breakthroughs continue to reshape our understanding of the world around us.',
+      color: AppColors.sand,
+      readingTimeMinutes: 4,
+    ),
+    EditorialNewsItem(
+      id: 'search_skeleton_3',
+      badge: 'CULTURE',
+      badgeColor: AppColors.black,
+      title: 'Reflections on design, literature, and mindful daily reading',
+      updated: 'Updated today',
+      authorName: 'Editorial Staff',
+      authorRole: 'Culture Editor',
+      authorAvatar: '',
+      excerpt:
+          'A closer look at the ideas and creative movements defining contemporary thought and digital publishing.',
+      color: AppColors.creamLight,
+      readingTimeMinutes: 6,
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Skeletonizer(
+      enabled: true,
+      effect: EditorialShimmer.paperEffect,
+      child: IgnorePointer(
+        child: Column(
+          children: _placeholderResults
+              .map(
+                (item) => Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: EditorialCard(
+                    item: item,
+                    showActions: false,
+                  ),
+                ),
+              )
+              .toList(),
+        ),
+      ),
+    );
+  }
+}
 
 class SearchInitialPromptView extends StatelessWidget {
   const SearchInitialPromptView({super.key});
@@ -13,7 +89,7 @@ class SearchInitialPromptView extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 36),
       child: Center(
         child: Text(
-          'Search for stories or select a topic above.',
+          'Search for stories or tap Filter to choose categories and tags.',
           style: TextStyle(
             color: AppColors.greyText,
             fontSize: 14.5,

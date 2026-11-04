@@ -22,7 +22,7 @@ class MainNavigationBar extends StatelessWidget {
         child: Material(
           color: Colors.transparent,
           child: Container(
-            width: 250,
+            width: 304,
             height: 58,
             margin: const EdgeInsets.only(bottom: 12),
             padding: const EdgeInsets.all(5),
@@ -59,10 +59,16 @@ class MainNavigationBar extends StatelessWidget {
                   onTap: () => onDestinationSelected(2),
                 ),
                 _Nav(
-                  icon: AppIcons.gridViewRounded,
-                  label: 'Profile',
+                  icon: AppIcons.download,
+                  label: 'Downloads',
                   active: selectedIndex == 3,
                   onTap: () => onDestinationSelected(3),
+                ),
+                _Nav(
+                  icon: AppIcons.gridViewRounded,
+                  label: 'Profile',
+                  active: selectedIndex == 4,
+                  onTap: () => onDestinationSelected(4),
                 ),
               ],
             ),

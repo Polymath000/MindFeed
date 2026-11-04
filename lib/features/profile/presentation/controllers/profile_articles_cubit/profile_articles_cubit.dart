@@ -51,12 +51,30 @@ class ProfileArticlesCubit extends Cubit<ProfileArticlesState> {
           }
         },
         failure: (failure) {
-          if (!isClosed) emit(ProfileArticlesError(failure.message));
+          if (!isClosed) {
+            emit(ProfileArticlesError(_formatErrorMessage(failure.message)));
+          }
         },
       );
     } catch (e) {
-      if (!isClosed) emit(ProfileArticlesError(e.toString()));
+      if (!isClosed) {
+        emit(ProfileArticlesError(_formatErrorMessage(e.toString())));
+      }
     }
+  }
+
+  String _formatErrorMessage(String rawMessage) {
+    final msg = rawMessage.toLowerCase();
+    final isOffline = msg.contains('offline') ||
+        msg.contains('no internet') ||
+        msg.contains('network') ||
+        msg.contains('socket') ||
+        msg.contains('timeout') ||
+        msg.contains('timed out');
+    if (isOffline) {
+      return 'You are currently offline. Please check your internet connection.';
+    }
+    return rawMessage.isNotEmpty ? rawMessage : 'Failed to load articles.';
   }
 
   Future<bool> deleteArticle(String articleId) async {

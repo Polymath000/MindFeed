@@ -6,6 +6,7 @@ import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/borders.dart';
+import 'package:mind_feed/core/errors/failures.dart';
 
 import '../controllers/home_feed/home_feed_cubit.dart';
 
@@ -26,7 +27,10 @@ class HomeWriteArticleFab extends StatelessWidget {
         if (context.mounted) {
           try {
             context.read<HomeFeedCubit>().fetchFeed();
-          } catch (_) {}
+          } catch (_) {
+            const failure = CacheFailure("there's an error, Please try again later");
+            debugPrint(failure.message);
+          }
         }
       },
       child: const Icon(AppIcons.edit, size: 22),

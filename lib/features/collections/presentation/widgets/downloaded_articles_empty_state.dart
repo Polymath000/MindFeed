@@ -9,7 +9,7 @@ class DownloadedArticlesEmptyState extends StatelessWidget {
   const DownloadedArticlesEmptyState({
     super.key,
     required this.searchQuery,
-    required this.isDark,
+    this.isDark = true,
   });
 
   @override
@@ -22,20 +22,20 @@ class DownloadedArticlesEmptyState extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
+              const Icon(
                 AppIcons.inventory2Outlined,
                 size: 56,
-                color: isDark ? AppColors.greyText : AppColors.mutedInk,
+                color: AppColors.greyText,
               ),
               const SizedBox(height: 16),
               Text(
                 searchQuery.isEmpty
                     ? 'No Downloaded Articles'
                     : 'No Matching Articles',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
-                  color: isDark ? AppColors.white : AppColors.ink,
+                  color: AppColors.softCream,
                 ),
               ),
               const SizedBox(height: 8),
@@ -44,9 +44,9 @@ class DownloadedArticlesEmptyState extends StatelessWidget {
                     ? 'Articles saved for offline reading will appear here.'
                     : 'No downloads matched "$searchQuery".',
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
-                  color: isDark ? AppColors.greyText : AppColors.mutedInk,
+                  color: AppColors.greyText,
                 ),
               ),
             ],

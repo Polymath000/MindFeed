@@ -5,14 +5,22 @@ sealed class ProfileInfoState extends Equatable {
   final String userSubtitle;
   final String? avatarUrl;
   final int followingCount;
+  final int followersCount;
+  final int followingAuthorsCount;
   final int articlesCount;
+  final bool isUploadingAvatar;
+  final String? avatarErrorMessage;
 
   const ProfileInfoState({
     this.displayName = '',
     this.userSubtitle = '',
     this.avatarUrl,
     this.followingCount = 0,
+    this.followersCount = 0,
+    this.followingAuthorsCount = 0,
     this.articlesCount = 0,
+    this.isUploadingAvatar = false,
+    this.avatarErrorMessage,
   });
 
   @override
@@ -21,7 +29,11 @@ sealed class ProfileInfoState extends Equatable {
         userSubtitle,
         avatarUrl,
         followingCount,
+        followersCount,
+        followingAuthorsCount,
         articlesCount,
+        isUploadingAvatar,
+        avatarErrorMessage,
       ];
 }
 
@@ -31,7 +43,11 @@ final class ProfileInfoInitial extends ProfileInfoState {
     super.userSubtitle,
     super.avatarUrl,
     super.followingCount,
+    super.followersCount,
+    super.followingAuthorsCount,
     super.articlesCount,
+    super.isUploadingAvatar,
+    super.avatarErrorMessage,
   });
 }
 
@@ -41,7 +57,11 @@ final class ProfileInfoLoading extends ProfileInfoState {
     super.userSubtitle,
     super.avatarUrl,
     super.followingCount,
+    super.followersCount,
+    super.followingAuthorsCount,
     super.articlesCount,
+    super.isUploadingAvatar,
+    super.avatarErrorMessage,
   });
 }
 
@@ -51,7 +71,11 @@ final class ProfileInfoLoaded extends ProfileInfoState {
     super.userSubtitle,
     super.avatarUrl,
     super.followingCount,
+    super.followersCount,
+    super.followingAuthorsCount,
     super.articlesCount,
+    super.isUploadingAvatar,
+    super.avatarErrorMessage,
   });
 
   ProfileInfoLoaded copyWith({
@@ -59,14 +83,23 @@ final class ProfileInfoLoaded extends ProfileInfoState {
     String? userSubtitle,
     String? avatarUrl,
     int? followingCount,
+    int? followersCount,
+    int? followingAuthorsCount,
     int? articlesCount,
+    bool? isUploadingAvatar,
+    String? avatarErrorMessage,
   }) {
     return ProfileInfoLoaded(
       displayName: displayName ?? this.displayName,
       userSubtitle: userSubtitle ?? this.userSubtitle,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       followingCount: followingCount ?? this.followingCount,
+      followersCount: followersCount ?? this.followersCount,
+      followingAuthorsCount:
+          followingAuthorsCount ?? this.followingAuthorsCount,
       articlesCount: articlesCount ?? this.articlesCount,
+      isUploadingAvatar: isUploadingAvatar ?? this.isUploadingAvatar,
+      avatarErrorMessage: avatarErrorMessage ?? this.avatarErrorMessage,
     );
   }
 }
@@ -80,7 +113,11 @@ final class ProfileInfoError extends ProfileInfoState {
     super.userSubtitle,
     super.avatarUrl,
     super.followingCount,
+    super.followersCount,
+    super.followingAuthorsCount,
     super.articlesCount,
+    super.isUploadingAvatar,
+    super.avatarErrorMessage,
   });
 
   @override
@@ -90,6 +127,10 @@ final class ProfileInfoError extends ProfileInfoState {
         userSubtitle,
         avatarUrl,
         followingCount,
+        followersCount,
+        followingAuthorsCount,
         articlesCount,
+        isUploadingAvatar,
+        avatarErrorMessage,
       ];
 }

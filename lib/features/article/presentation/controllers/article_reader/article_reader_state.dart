@@ -18,6 +18,23 @@ sealed class ArticleReaderState extends Equatable {
         _ => null,
       };
 
+  EditorialNewsItem? get article => item;
+
+  bool get canFollowAuthor => switch (this) {
+        ArticleReaderLoaded(:final canFollowAuthor) => canFollowAuthor,
+        _ => false,
+      };
+
+  bool get isFollowingAuthor => switch (this) {
+        ArticleReaderLoaded(:final isFollowingAuthor) => isFollowingAuthor,
+        _ => false,
+      };
+
+  bool get isFollowLoading => switch (this) {
+        ArticleReaderLoaded(:final isFollowLoading) => isFollowLoading,
+        _ => false,
+      };
+
   bool get isLiked => switch (this) {
         ArticleReaderLoaded(:final isLiked) => isLiked,
         _ => false,
@@ -83,6 +100,8 @@ sealed class ArticleReaderState extends Equatable {
         _ => null,
       };
 
+  String? get feedbackMessage => userFeedback;
+
   String? get errorMessage => switch (this) {
         ArticleReaderError(:final message) => message,
         _ => null,
@@ -103,7 +122,11 @@ sealed class ArticleReaderState extends Equatable {
     int? authorRatingCount,
     int? userAuthorStars,
     String? userFeedback,
+    String? feedbackMessage,
     bool clearFeedback = false,
+    bool? canFollowAuthor,
+    bool? isFollowingAuthor,
+    bool? isFollowLoading,
   }) {
     if (this is ArticleReaderLoaded) {
       return (this as ArticleReaderLoaded).copyWith(
@@ -121,7 +144,11 @@ sealed class ArticleReaderState extends Equatable {
         authorRatingCount: authorRatingCount,
         userAuthorStars: userAuthorStars,
         userFeedback: userFeedback,
+        feedbackMessage: feedbackMessage,
         clearFeedback: clearFeedback,
+        canFollowAuthor: canFollowAuthor,
+        isFollowingAuthor: isFollowingAuthor,
+        isFollowLoading: isFollowLoading,
       );
     }
     return this;
@@ -168,6 +195,12 @@ final class ArticleReaderLoaded extends ArticleReaderState {
   final int userAuthorStars;
   @override
   final String? userFeedback;
+  @override
+  final bool canFollowAuthor;
+  @override
+  final bool isFollowingAuthor;
+  @override
+  final bool isFollowLoading;
 
   const ArticleReaderLoaded({
     this.item,
@@ -184,6 +217,9 @@ final class ArticleReaderLoaded extends ArticleReaderState {
     this.authorRatingCount = 0,
     this.userAuthorStars = 0,
     this.userFeedback,
+    this.canFollowAuthor = false,
+    this.isFollowingAuthor = false,
+    this.isFollowLoading = false,
   });
 
   @override
@@ -202,8 +238,13 @@ final class ArticleReaderLoaded extends ArticleReaderState {
     int? authorRatingCount,
     int? userAuthorStars,
     String? userFeedback,
+    String? feedbackMessage,
     bool clearFeedback = false,
+    bool? canFollowAuthor,
+    bool? isFollowingAuthor,
+    bool? isFollowLoading,
   }) {
+    final effectiveFeedback = feedbackMessage ?? userFeedback;
     return ArticleReaderLoaded(
       item: item ?? this.item,
       isLiked: isLiked ?? this.isLiked,
@@ -218,7 +259,10 @@ final class ArticleReaderLoaded extends ArticleReaderState {
       authorRatingAvg: authorRatingAvg ?? this.authorRatingAvg,
       authorRatingCount: authorRatingCount ?? this.authorRatingCount,
       userAuthorStars: userAuthorStars ?? this.userAuthorStars,
-      userFeedback: clearFeedback ? null : (userFeedback ?? this.userFeedback),
+      userFeedback: clearFeedback ? null : (effectiveFeedback ?? this.userFeedback),
+      canFollowAuthor: canFollowAuthor ?? this.canFollowAuthor,
+      isFollowingAuthor: isFollowingAuthor ?? this.isFollowingAuthor,
+      isFollowLoading: isFollowLoading ?? this.isFollowLoading,
     );
   }
 
@@ -239,6 +283,9 @@ final class ArticleReaderLoaded extends ArticleReaderState {
         authorRatingCount,
         userAuthorStars,
         userFeedback,
+        canFollowAuthor,
+        isFollowingAuthor,
+        isFollowLoading,
       ];
 }
 

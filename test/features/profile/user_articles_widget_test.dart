@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mind_feed/core/constants/app_icons.dart';
+
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
 import 'package:mind_feed/core/articles/domain/usecases/delete_article_use_case.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_author_use_case.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/features/profile/presentation/controllers/profile_articles_cubit/profile_articles_cubit.dart';
 import 'package:mind_feed/features/profile/presentation/widgets/user_articles.dart';
+
 import 'fake_articles_repository.dart';
 
 void main() {
@@ -15,7 +18,6 @@ void main() {
 
   final publishedItem1 = ArticleEntity(
     id: 'pub-1',
-    authorId: 'author-123',
     title: 'First Story',
     slug: 'first-story',
     excerpt: 'Excerpt 1',
@@ -25,7 +27,6 @@ void main() {
 
   final publishedItem2 = ArticleEntity(
     id: 'pub-2',
-    authorId: 'author-123',
     title: 'Second Story',
     slug: 'second-story',
     excerpt: 'Excerpt 2',
@@ -35,7 +36,6 @@ void main() {
 
   final draftItem1 = ArticleEntity(
     id: 'draft-1',
-    authorId: 'author-123',
     title: 'Working Title Draft',
     slug: 'draft-title',
     excerpt: 'Draft excerpt',
@@ -49,41 +49,78 @@ void main() {
     deleteUseCase = DeleteArticleUseCase(fakeRepo);
   });
 
-  Widget buildTestWidget(ProfileArticlesCubit cubit) {
+  Widget buildTestWidget(
+    ProfileArticlesCubit cubit, {
+    Map<String, WidgetBuilder>? routes,
+  }) {
     return MaterialApp(
+      routes: routes ??
+          {
+            AppRoutes.drafts: (context) => const Scaffold(
+                  body: Text('Drafts Screen'),
+                ),
+          },
       home: Scaffold(
-        body: CustomScrollView(slivers: [UserArticles(cubit: cubit)]),
+        body: CustomScrollView(
+          slivers: [
+            UserArticles(cubit: cubit),
+          ],
+        ),
       ),
     );
   }
 
   testWidgets(
-    'renders accurate published and draft count badge for mixed articles',
-    (tester) async {
-      fakeRepo.authorArticles = [publishedItem1, publishedItem2, draftItem1];
-      final cubit = ProfileArticlesCubit(
-        getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
-        deleteArticleUseCase: deleteUseCase,
-        userId: 'author-123',
-      );
+      'renders only published stories in My Articles and shows draft count in drafts button',
+      (tester) async {
+    fakeRepo.authorArticles = [publishedItem1, publishedItem2, draftItem1];
+    final cubit = ProfileArticlesCubit(
+      getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
+      deleteArticleUseCase: deleteUseCase,
+      userId: 'author-123',
+    );
 
-      await tester.pumpWidget(buildTestWidget(cubit));
-      await cubit.loadArticles();
-      await tester.pumpAndSettle();
+    await tester.pumpWidget(buildTestWidget(cubit));
+    await cubit.loadArticles();
+    await tester.pumpAndSettle();
 
-      expect(find.text('2 published · 1 draft'), findsOneWidget);
-      expect(find.text('3 published'), findsNothing);
-      expect(find.text('First Story'), findsOneWidget);
-      expect(find.text('Second Story'), findsOneWidget);
-      expect(find.text('Working Title Draft'), findsOneWidget);
+    expect(find.text('2 published'), findsOneWidget);
+    expect(find.byKey(const Key('profile_drafts_button')), findsOneWidget);
+    expect(find.text('Drafts (1)'), findsOneWidget);
+    expect(find.byKey(const Key('profile_write_button')), findsOneWidget);
+    expect(find.text('Write'), findsOneWidget);
 
-      await cubit.close();
-    },
-  );
+    expect(find.text('First Story'), findsOneWidget);
+    expect(find.text('Second Story'), findsOneWidget);
+    expect(find.text('Working Title Draft'), findsNothing);
 
-  testWidgets('renders empty placeholder when no articles exist', (
-    tester,
-  ) async {
+    await cubit.close();
+  });
+
+  testWidgets('tapping drafts button navigates to AppRoutes.drafts',
+      (tester) async {
+    fakeRepo.authorArticles = [publishedItem1, draftItem1];
+    final cubit = ProfileArticlesCubit(
+      getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
+      deleteArticleUseCase: deleteUseCase,
+      userId: 'author-123',
+    );
+
+    await tester.pumpWidget(buildTestWidget(cubit));
+    await cubit.loadArticles();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('profile_drafts_button')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('profile_drafts_button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Drafts Screen'), findsOneWidget);
+
+    await cubit.close();
+  });
+
+  testWidgets('renders empty placeholder when no articles exist',
+      (tester) async {
     fakeRepo.authorArticles = [];
     final cubit = ProfileArticlesCubit(
       getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
@@ -97,56 +134,55 @@ void main() {
 
     expect(find.text('No published articles yet'), findsOneWidget);
     expect(find.text('0 published'), findsOneWidget);
+    expect(find.text('Drafts'), findsOneWidget);
 
     await cubit.close();
   });
 
   testWidgets(
-    'delete button prompts confirmation dialog and removes on confirm',
-    (tester) async {
-      fakeRepo.authorArticles = [publishedItem1];
-      final cubit = ProfileArticlesCubit(
-        getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
-        deleteArticleUseCase: deleteUseCase,
-        userId: 'author-123',
-      );
+      'delete button prompts confirmation dialog and removes on confirm',
+      (tester) async {
+    fakeRepo.authorArticles = [publishedItem1];
+    final cubit = ProfileArticlesCubit(
+      getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
+      deleteArticleUseCase: deleteUseCase,
+      userId: 'author-123',
+    );
 
-      await tester.pumpWidget(buildTestWidget(cubit));
-      await cubit.loadArticles();
-      await tester.pumpAndSettle();
+    await tester.pumpWidget(buildTestWidget(cubit));
+    await cubit.loadArticles();
+    await tester.pumpAndSettle();
 
-      expect(find.byIcon(AppIcons.delete), findsOneWidget);
+    expect(find.byIcon(AppIcons.delete), findsOneWidget);
 
-      await tester.tap(find.byIcon(AppIcons.delete));
-      await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(AppIcons.delete));
+    await tester.pumpAndSettle();
 
-      expect(find.text('Delete Article'), findsOneWidget);
-      expect(find.text('Cancel'), findsOneWidget);
-      expect(find.text('Delete'), findsOneWidget);
+    expect(find.text('Delete Article'), findsOneWidget);
+    expect(find.text('Cancel'), findsOneWidget);
+    expect(find.text('Delete'), findsOneWidget);
 
-      await tester.tap(find.text('Cancel'));
-      await tester.pumpAndSettle();
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
 
-      expect(find.text('First Story'), findsOneWidget);
-      expect(cubit.articles.length, 1);
+    expect(find.text('First Story'), findsOneWidget);
+    expect(cubit.articles.length, 1);
 
-      await tester.tap(find.byIcon(AppIcons.delete));
-      await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(AppIcons.delete));
+    await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Delete'));
-      await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
 
-      expect(cubit.articles, isEmpty);
-      expect(find.text('Removed: First Story'), findsOneWidget);
-      expect(find.text('No published articles yet'), findsOneWidget);
+    expect(cubit.articles, isEmpty);
+    expect(find.text('Removed: First Story'), findsOneWidget);
+    expect(find.text('No published articles yet'), findsOneWidget);
 
-      await cubit.close();
-    },
-  );
+    await cubit.close();
+  });
 
-  testWidgets('delete failure keeps item and shows error snackbar', (
-    tester,
-  ) async {
+  testWidgets('delete failure keeps item and shows error snackbar',
+      (tester) async {
     fakeRepo.authorArticles = [publishedItem1];
     fakeRepo.shouldDeleteSucceed = false;
     final cubit = ProfileArticlesCubit(
@@ -167,10 +203,34 @@ void main() {
 
     expect(cubit.articles.length, 1);
     expect(find.text('First Story'), findsOneWidget);
+    expect(find.text('Failed to delete article. Please try again.'),
+        findsOneWidget);
+
+    await cubit.close();
+  });
+
+  testWidgets(
+      'renders offline error view with wifi icon and retry button when offline',
+      (tester) async {
+    fakeRepo.shouldLoadSucceed = false;
+    fakeRepo.failureMessage = 'You are Offline';
+    final cubit = ProfileArticlesCubit(
+      getArticlesByAuthorUseCase: getArticlesByAuthorUseCase,
+      deleteArticleUseCase: deleteUseCase,
+      userId: 'author-123',
+    );
+
+    await tester.pumpWidget(buildTestWidget(cubit));
+    await cubit.loadArticles();
+    await tester.pumpAndSettle();
+
     expect(
-      find.text('Failed to delete article. Please try again.'),
+      find.text(
+          'You are currently offline. Please check your internet connection.'),
       findsOneWidget,
     );
+    expect(find.byIcon(AppIcons.wifiOffRounded), findsOneWidget);
+    expect(find.text('Retry'), findsOneWidget);
 
     await cubit.close();
   });

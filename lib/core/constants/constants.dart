@@ -1,8 +1,9 @@
+import 'package:mind_feed/core/services/app_info_service.dart';
+
 class AppConstants {
   AppConstants._();
-  static const String appName = "MindFeed";
-  static const List<String> mastheadRotatingWords = [
-    appName,
+  static List<String> get mastheadRotatingWords => [
+    AppInfoService.appName,
     'Daily Reads',
     'Deep Insights',
     'Feed Your Mind',
@@ -28,6 +29,16 @@ class AppConstants {
     defaultValue:
         'https://tsqruoqiajkbrdhprfxa.supabase.co/functions/v1/auth-confirm',
   );
+  static const String defaultAvatarUrl =
+      'https://tsqruoqiajkbrdhprfxa.supabase.co/storage/v1/object/public/avatars/defaultAvatar.png';
+  static const String privacyPolicyUrl = String.fromEnvironment(
+    'PRIVACY_POLICY_URL',
+    defaultValue: 'https://mindfeed-org.github.io/Privacy-Policy/',
+  );
+  static const String fontScaleKey = 'pref_font_scale';
+  static const String defaultFontScale = 'Standard';
+  static const String genericErrorMessage =
+      "there's an error, Please try again later";
 }
 
 const String isOnboardingSeenKey = AppConstants.isOnboardingSeenKey;

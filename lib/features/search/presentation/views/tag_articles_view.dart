@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
+import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/design/editorial_card.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
-import 'package:mind_feed/core/widgets/article_card.dart';
 import 'package:mind_feed/features/search/presentation/controllers/tag_articles_cubit/tag_articles_cubit.dart';
 import 'package:mind_feed/features/search/presentation/controllers/tag_articles_cubit/tag_articles_state.dart';
+
+import '../widgets/search_results_view.dart';
 
 class TagArticlesView extends StatelessWidget {
   final TagArticlesCubit? cubit;
   final String tag;
 
-  const TagArticlesView({super.key, this.cubit, required this.tag});
+  const TagArticlesView({
+    super.key,
+    this.cubit,
+    required this.tag,
+  });
 
   static const String routeName = 'tag_articles';
 
@@ -42,7 +52,7 @@ class _TagArticlesBody extends StatelessWidget {
         backgroundColor: AppColors.ink,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.softCream),
+          icon: const Icon(AppIcons.arrowBackRounded, color: AppColors.softCream),
           onPressed: () => Navigator.maybePop(context),
         ),
         title: Text(
@@ -60,8 +70,9 @@ class _TagArticlesBody extends StatelessWidget {
           child: BlocBuilder<TagArticlesCubit, TagArticlesState>(
             builder: (context, state) {
               if (state is TagArticlesLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(color: AppColors.cream),
+                return ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                  children: const [SearchLoadingView()],
                 );
               }
 
@@ -75,16 +86,12 @@ class _TagArticlesBody extends StatelessWidget {
                         Text(
                           state.message,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: AppColors.greyText,
-                            fontSize: 14,
-                          ),
+                          style: const TextStyle(color: AppColors.greyText, fontSize: 14),
                         ),
                         const SizedBox(height: 16),
                         ElevatedButton(
-                          onPressed: () => context
-                              .read<TagArticlesCubit>()
-                              .loadArticlesByTag(tag),
+                          onPressed: () =>
+                              context.read<TagArticlesCubit>().loadArticlesByTag(tag),
                           child: const Text('Retry'),
                         ),
                       ],
@@ -97,23 +104,28 @@ class _TagArticlesBody extends StatelessWidget {
                 return Center(
                   child: Text(
                     'No articles found with #$tag',
-                    style: const TextStyle(
-                      color: AppColors.greyText,
-                      fontSize: 15,
-                    ),
+                    style: const TextStyle(color: AppColors.greyText, fontSize: 15),
                   ),
                 );
               }
 
               if (state is TagArticlesLoaded) {
                 return ListView.builder(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20.0,
-                    vertical: 12.0,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
                   itemCount: state.articles.length,
                   itemBuilder: (context, index) {
-                    return ArticleCard(item: state.articles[index]);
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: EditorialCard(
+                        item: state.articles[index],
+                        showActions: false,
+                        onOpen: () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.article,
+                          arguments: state.articles[index],
+                        ),
+                      ),
+                    );
                   },
                 );
               }

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
+import 'package:mind_feed/core/constants/constants.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/settings_dialogs.dart';
+import 'package:mind_feed/features/settings/presentation/widgets/settings_footer.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/settings_tile_primitives.dart';
 
 class SettingsArchiveSection extends StatelessWidget {
   final double cachedMegabytes;
   final VoidCallback onClearCache;
-  final bool dataPreservation;
-  final ValueChanged<bool> onDataPreservationChanged;
-  final bool wifiOnly;
-  final ValueChanged<bool> onWifiOnlyChanged;
   final String userEmail;
   final VoidCallback onSignOut;
 
@@ -19,13 +20,26 @@ class SettingsArchiveSection extends StatelessWidget {
     super.key,
     required this.cachedMegabytes,
     required this.onClearCache,
-    required this.dataPreservation,
-    required this.onDataPreservationChanged,
-    required this.wifiOnly,
-    required this.onWifiOnlyChanged,
     required this.userEmail,
     required this.onSignOut,
   });
+
+  Future<void> _openPrivacyPolicy(BuildContext context) async {
+    final uri = Uri.parse(AppConstants.privacyPolicyUrl);
+    try {
+      final launched = await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
+      if (!launched && context.mounted) {
+        await showPrivacyManifestDialog(context);
+      }
+    } catch (_) {
+      if (context.mounted) {
+        await showPrivacyManifestDialog(context);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,22 +71,6 @@ class SettingsArchiveSection extends StatelessWidget {
                 ),
               ),
             ),
-            SettingsToggleTile(
-              icon: AppIcons.networkCheckRounded,
-              stampColor: AppColors.powder,
-              title: 'Data Preservation Mode',
-              subtitle: 'Load compressed imagery when connected to cellular data',
-              value: dataPreservation,
-              onChanged: onDataPreservationChanged,
-            ),
-            SettingsToggleTile(
-              icon: AppIcons.wifiRounded,
-              stampColor: AppColors.cream,
-              title: 'Download on Wi-Fi Only',
-              subtitle: 'Save high-fidelity offline articles only on Wi-Fi',
-              value: wifiOnly,
-              onChanged: onWifiOnlyChanged,
-            ),
           ],
         ),
         SettingsSectionBlock(
@@ -87,7 +85,10 @@ class SettingsArchiveSection extends StatelessWidget {
               onTap: () => Navigator.pushNamed(
                 context,
                 AppRoutes.changePassword,
-                arguments: userEmail,
+                arguments: {
+                  'email': userEmail,
+                  'isFromSettings': true,
+                },
               ),
             ),
             SettingsActionTile(
@@ -95,7 +96,7 @@ class SettingsArchiveSection extends StatelessWidget {
               stampColor: AppColors.mint,
               title: 'Editorial Ethics & Privacy Charter',
               subtitle: 'MindFeed independent journalism charter and zero-tracker guarantee',
-              onTap: () => showPrivacyManifestDialog(context),
+              onTap: () => _openPrivacyPolicy(context),
             ),
             SettingsActionTile(
               icon: AppIcons.logout,
@@ -106,31 +107,7 @@ class SettingsArchiveSection extends StatelessWidget {
             ),
           ],
         ),
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'MINDFEED v2.4 · VERIFIED JOURNALISM',
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1.2,
-                  color: AppColors.mutedInk,
-                ),
-              ),
-              SizedBox(height: 4),
-              Text(
-                'Built for thoughtful and uninterrupted reading',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: AppColors.mutedInk,
-                ),
-              ),
-            ],
-          ),
-        ),
+        const SettingsFooter(),
       ],
     );
   }

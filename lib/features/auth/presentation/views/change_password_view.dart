@@ -5,9 +5,15 @@ import 'package:mind_feed/features/auth/presentation/controllers/change_password
 import 'package:mind_feed/features/auth/presentation/widgets/change_password_view_body.dart';
 
 class ChangePasswordView extends StatelessWidget {
-  const ChangePasswordView({super.key, required this.email, this.cubit});
+  const ChangePasswordView({
+    super.key,
+    required this.email,
+    this.cubit,
+    this.isFromSettings = false,
+  });
   final String email;
   final ChangePasswordCubit? cubit;
+  final bool isFromSettings;
   static const String routeName = 'changepassword';
 
   @override
@@ -16,14 +22,20 @@ class ChangePasswordView extends StatelessWidget {
       return Scaffold(
         body: BlocProvider<ChangePasswordCubit>.value(
           value: cubit!,
-          child: ChangePasswordViewBody(email: email),
+          child: ChangePasswordViewBody(
+            email: email,
+            isFromSettings: isFromSettings,
+          ),
         ),
       );
     }
     return Scaffold(
       body: BlocProvider<ChangePasswordCubit>(
         create: (_) => getIt<ChangePasswordCubit>(),
-        child: ChangePasswordViewBody(email: email),
+        child: ChangePasswordViewBody(
+          email: email,
+          isFromSettings: isFromSettings,
+        ),
       ),
     );
   }
