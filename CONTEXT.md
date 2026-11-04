@@ -31,6 +31,10 @@ The codebase follows **Feature-First Clean Architecture**:
 - **Zero Firebase Dependency**: Fully decoupled from Firebase SDKs, CLI configurations, and external Google services.
 
 ## 4. Recent Project Changes
+- **CI/CD Build & Release Automation**:
+  - Configured GitHub Actions release workflows for automated builds on `push` to `main` and release tags (`v*`).
+  - `.github/workflows/ios-unsigned-ipa.yml`: Builds unsigned iOS IPA (`macos-latest`), securely injects Supabase secrets, uploads build artifacts, and automatically publishes the IPA asset to GitHub Releases using `gh release`.
+  - `.github/workflows/build-apk.yml`: Builds Android APKs (`ubuntu-latest` with Java 17 and Flutter 3.41.3) producing universal APK (`MindFeed-v<version>-universal.apk`) and ABI-split APKs (`arm64-v8a`, `armeabi-v7a`, `x86_64`), uploads artifacts, and publishes all APK assets to the matching GitHub Release.
 - **Secret Management & Build Packaging**:
   - Secret keys are never committed in the source code.
   - Dedicated 1Password vault `MindFeed` created with item `Supabase` containing `PROJECT_URL` and `SUPABASE_PUBLISHABLE_KEY`.

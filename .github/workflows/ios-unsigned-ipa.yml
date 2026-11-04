@@ -1,8 +1,16 @@
 name: ios-unsigned-ipa
 on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
   pull_request:
     paths:
       - .github/workflows/ios-unsigned-ipa.yml
+      - 'ios/**'
+      - 'lib/**'
+      - 'pubspec.yaml'
   workflow_dispatch:
     inputs:
       dart_defines:
@@ -14,7 +22,7 @@ on:
         default: ''
         type: string
 permissions:
-  contents: read
+  contents: write
 jobs:
   build-ios:
     runs-on: macos-latest
@@ -23,7 +31,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.41.3'
@@ -37,16 +45,27 @@ jobs:
       - name: Build iOS release without code signing
         env:
           DART_DEFINES: ${{ inputs.dart_defines }}
+          SECRET_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SECRET_SUPABASE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
         run: |
           set -euo pipefail
           args=()
-          read -r -a pairs <<< "${DART_DEFINES}"
+          if [[ -n "${SECRET_SUPABASE_URL:-}" ]]; then
+            args+=("--dart-define=PROJECT_URL=${SECRET_SUPABASE_URL}")
+            args+=("--dart-define=SUPABASE_URL=${SECRET_SUPABASE_URL}")
+          fi
+          if [[ -n "${SECRET_SUPABASE_KEY:-}" ]]; then
+            args+=("--dart-define=SUPABASE_PUBLISHABLE_KEY=${SECRET_SUPABASE_KEY}")
+          fi
+          read -r -a pairs <<< "${DART_DEFINES:-}"
           for pair in ${pairs[@]+"${pairs[@]}"}; do
-            if [[ ! "$pair" =~ ^[A-Z][A-Z0-9_]*=.+$ ]]; then
-              echo "::error::Invalid dart define '${pair%%=*}': expected KEY=VALUE with an upper-case key."
-              exit 1
+            if [[ -n "$pair" ]]; then
+              if [[ ! "$pair" =~ ^[A-Z][A-Z0-9_]*=.+$ ]]; then
+                echo "::error::Invalid dart define '${pair%%=*}': expected KEY=VALUE with an upper-case key."
+                exit 1
+              fi
+              args+=("--dart-define=$pair")
             fi
-            args+=("--dart-define=$pair")
           done
           flutter build ios --release --no-codesign ${args[@]+"${args[@]}"}
       - name: Package unsigned IPA
@@ -68,9 +87,38 @@ jobs:
           ls -lh "$output_dir/$ipa_name"
           echo "ipa_path=build/ios-ipa/$ipa_name" >> "$GITHUB_OUTPUT"
       - name: Upload IPA artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: ios-unsigned-ipa
           path: ${{ steps.package.outputs.ipa_path }}
           if-no-files-found: error
           retention-days: 7
+      - name: Publish IPA to GitHub Release
+        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && !cancelled()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          VERSION=$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d'+' -f1)
+          BUILD=$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d'+' -f2)
+          SHORT_SHA="${GITHUB_SHA::7}"
+
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            TAG="${{ github.ref_name }}"
+            TITLE="Release ${TAG}"
+            PRERELEASE_FLAG=""
+          else
+            TAG="v${VERSION}-${BUILD}-${SHORT_SHA}"
+            TITLE="MindFeed v${VERSION}+${BUILD} (${SHORT_SHA})"
+            PRERELEASE_FLAG="--prerelease"
+          fi
+
+          echo "Releasing to tag: $TAG with title: $TITLE"
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" \
+              --target "$GITHUB_SHA" \
+              --title "$TITLE" \
+              --generate-notes \
+              ${PRERELEASE_FLAG} || true
+          fi
+          gh release upload "$TAG" "${{ steps.package.outputs.ipa_path }}" --clobber

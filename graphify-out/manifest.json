@@ -762,9 +762,9 @@
     "semantic_hash": ""
   },
   "CONTEXT.md": {
-    "mtime": 1793795175.7549286,
-    "seen": 1793795638.7325757,
-    "ast_hash": "d551673b6c4af277178f3503c38fcfce",
+    "mtime": 1793801882.9000022,
+    "seen": 1793801907.4839184,
+    "ast_hash": "d642638f9be47ceb0b4f7e318a335c95",
     "semantic_hash": ""
   },
   "SPEC.md": {
@@ -2621,36 +2621,6 @@
     "ast_hash": "00df618cb7d58d5a877671ea5c499719",
     "semantic_hash": ""
   },
-  "lib/core/design/editorial_background_card.dart": {
-    "mtime": 1793795131.059256,
-    "seen": 1793795638.668129,
-    "ast_hash": "6efd41637c208904aba9d4b7b2aedaac",
-    "semantic_hash": ""
-  },
-  "lib/core/design/editorial_card_feedback_badge.dart": {
-    "mtime": 1793795131.0602214,
-    "seen": 1793795638.6681345,
-    "ast_hash": "79b5db10c9f29813697f026c17caea0b",
-    "semantic_hash": ""
-  },
-  "lib/core/design/editorial_deck_synchronizer.dart": {
-    "mtime": 1793795131.0611699,
-    "seen": 1793795638.668138,
-    "ast_hash": "088009593fc0aa85dddadd09ae8f5a72",
-    "semantic_hash": ""
-  },
-  "lib/core/design/editorial_top_card_layer.dart": {
-    "mtime": 1793795131.0621228,
-    "seen": 1793795638.6681478,
-    "ast_hash": "36b43c8be80fbee246b2ffd96cb59523",
-    "semantic_hash": ""
-  },
-  "lib/core/widgets/article_card_layout.dart": {
-    "mtime": 1793795131.0643406,
-    "seen": 1793795638.672646,
-    "ast_hash": "5da15d3f26e423632962861cd14b2a34",
-    "semantic_hash": ""
-  },
   ".agents/rules/empirical_verification.md": {
     "mtime": 1793795130.9076009,
     "seen": 1793795638.732007,
@@ -2658,9 +2628,15 @@
     "semantic_hash": ""
   },
   ".github/workflows/ios-unsigned-ipa.yml": {
-    "mtime": 1793795130.9092884,
-    "seen": 1793795638.7320082,
-    "ast_hash": "67841af7c2e0acf5d6f53810c1ac9cc4",
+    "mtime": 1793801822.6472404,
+    "seen": 1793801907.4833398,
+    "ast_hash": "1de1eb93a0e75559f3baedd95b3ffe3e",
+    "semantic_hash": ""
+  },
+  ".github/workflows/build-apk.yml": {
+    "mtime": 1793801837.2248814,
+    "seen": 1793801907.4833379,
+    "ast_hash": "e52c2552e22c58c989b2af394d7f4706",
     "semantic_hash": ""
   }
 }
