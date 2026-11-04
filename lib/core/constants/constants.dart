@@ -3,11 +3,11 @@ import 'package:mind_feed/core/services/app_info_service.dart';
 class AppConstants {
   AppConstants._();
   static List<String> get mastheadRotatingWords => [
-        AppInfoService.appName,
-        'Daily Reads',
-        'Deep Insights',
-        'Feed Your Mind',
-      ];
+    AppInfoService.appName,
+    'Daily Reads',
+    'Deep Insights',
+    'Feed Your Mind',
+  ];
   static const double page = 20.0;
   static const double compact = 12.0;
   static const double roomy = 24.0;
@@ -33,7 +33,7 @@ class AppConstants {
       'https://tsqruoqiajkbrdhprfxa.supabase.co/storage/v1/object/public/avatars/defaultAvatar.png';
   static const String privacyPolicyUrl = String.fromEnvironment(
     'PRIVACY_POLICY_URL',
-    defaultValue: 'https://polymath000.github.io/MindFeed/privacy-policy/',
+    defaultValue: 'https://mindfeed-org.github.io/Privacy-Policy/',
   );
   static const String fontScaleKey = 'pref_font_scale';
   static const String defaultFontScale = 'Standard';

@@ -428,9 +428,12 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
 
 ## 18. In-App Integration with Policy Website via `url_launcher`
 - **Settings Screen Action Tile Launch (`lib/features/settings/presentation/widgets/settings_archive_section.dart`)**:
-  - Configured `AppConstants.privacyPolicyUrl` (defaulting to `https://polymath000.github.io/MindFeed/privacy-policy/` with configurable `PRIVACY_POLICY_URL` environment override).
+  - Configured `AppConstants.privacyPolicyUrl` (defaulting to `https://mindfeed-org.github.io/Privacy-Policy/` with configurable `PRIVACY_POLICY_URL` environment override).
   - Wired the "Editorial Ethics & Privacy Charter" tile in the Settings screen to launch the external web page directly in the device's browser using `url_launcher`.
   - Added robust fallback to `showPrivacyManifestDialog` if the platform browser cannot be launched or when running in restricted environments.
   - Updated `showPrivacyManifestDialog` copy in `lib/features/settings/presentation/widgets/settings_dialogs.dart` to match the refined charter (Author Sovereignty, Zero-Trackers, Reader Sovereignty).
+  - Repositories transitioned to organization `MindFeed-Org`:
+    - Mobile App: `https://github.com/MindFeed-Org/MindFeed`
+    - Privacy Policy Site: `https://github.com/MindFeed-Org/Privacy-Policy` (deployed to `https://mindfeed-org.github.io/Privacy-Policy/`)
 
 
