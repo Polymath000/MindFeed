@@ -2,7 +2,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:mind_feed/core/constants/constants.dart';
+import 'package:mind_feed/core/services/app_info_service.dart';
 import 'package:mind_feed/features/home/presentation/widgets/home_masthead_header.dart';
 
 void main() {
@@ -16,9 +16,9 @@ void main() {
       ),
     );
 
-    // Initial pump shows the first item in the rotation (AppConstants.appName)
+    // Initial pump shows the first item in the rotation (AppInfoService.appName)
     expect(find.byType(AnimatedTextKit), findsOneWidget);
-    expect(find.text(AppConstants.appName), findsOneWidget);
+    expect(find.text(AppInfoService.appName), findsOneWidget);
 
     // Advance time to allow rotation
     await tester.pump(const Duration(milliseconds: 3500));

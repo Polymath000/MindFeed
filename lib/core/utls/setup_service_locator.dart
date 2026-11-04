@@ -1,11 +1,13 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart' show GetIt;
 import 'package:hive/hive.dart' show Hive;
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mind_feed/core/constants/constants.dart' show AppConstants;
 import 'package:mind_feed/core/database/cache/cache_helper.dart'
     show CacheHelper;
 import 'package:mind_feed/core/networking/network_info.dart';
+import 'package:mind_feed/core/services/app_info_service.dart';
 import 'package:mind_feed/features/auth/data/datasources/auth_api_source.dart'
     show AuthApiSource;
 import 'package:mind_feed/features/auth/data/datasources/user_cache_source.dart';
@@ -96,6 +98,9 @@ import 'package:mind_feed/features/article/domain/usecases/is_article_starred_us
 final getIt = GetIt.instance;
 
 void setupServiceLocator() {
+  if (AppInfoService.instance != null && !getIt.isRegistered<PackageInfo>()) {
+    getIt.registerSingleton<PackageInfo>(AppInfoService.instance!);
+  }
   getIt.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
   getIt.registerLazySingleton<SupabaseStorageService>(
     () => SupabaseStorageService(supabaseClient: getIt<SupabaseClient>()),

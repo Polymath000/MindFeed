@@ -396,7 +396,17 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
   - In `ArticlePayloadBuilder.buildPublishPayload`, stored `'badge_color': getCategoryColorHex(category.slug)` for newly published articles.
   - Added unit and widget tests in `test/core/constants/category_items_test.dart`, `test/core/design/editorial_models_category_color_test.dart`, and `test/features/article/presentation/widgets/article_reader_top_bar_test.dart` (446/446 tests passing, 0 analyzer issues).
 
-
-
-
-
+## 16. Dynamic App Version Resolution & Settings Footer (Option C)
+- **Runtime Version Inspection (`lib/core/services/app_info_service.dart`)**:
+  - Integrated `package_info_plus` to automatically read the current version and build number directly from `pubspec.yaml` (e.g., `version: 1.0.0+1`), eliminating hardcoded version numbers in the UI.
+  - Created `AppInfoService` singleton with safe default fallbacks (`'1.0.0'`, `'1'`) and test mocking hooks (`setMockInstance`, `reset`), ensuring widget and unit tests never throw `LateInitializationError`.
+  - Initialized `await AppInfoService.init()` in `main.dart` and registered `PackageInfo` in `setup_service_locator.dart` if initialized.
+- **Ultra-Light Dynamic Settings Footer (`lib/features/settings/presentation/widgets/settings_footer.dart`)**:
+  - Implemented Option C (Ultra-Light Dynamic Stamp) as a dedicated, reusable `SettingsFooter` widget.
+  - Dynamically renders `MINDFEED v{version}+{buildNumber} · VERIFIED JOURNALISM` and tagline `Built for thoughtful and uninterrupted reading` using `AppColors.mutedInk`.
+  - Replaced the previous hardcoded static text block (`MINDFEED v2.4 · VERIFIED JOURNALISM`) in `SettingsArchiveSection` with `const SettingsFooter()`.
+- **Unified App Name via `AppInfoService.appName`**:
+  - Deleted `AppConstants.appName` from `lib/core/constants/constants.dart`.
+  - Migrated all app-wide references (`MyApp.title`, `SettingsFooter`, `HomeMastheadAnimatedTitle`, and `AppConstants.mastheadRotatingWords`) to read `AppInfoService.appName` dynamically.
+- **Testing & Verification**:
+  - Added unit tests in `test/core/services/app_info_service_test.dart` and widget tests in `test/features/settings/presentation/widgets/settings_footer_test.dart` (452/452 tests passing, 0 analyzer issues).

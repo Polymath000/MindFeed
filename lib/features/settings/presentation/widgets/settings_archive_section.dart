@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/settings_dialogs.dart';
+import 'package:mind_feed/features/settings/presentation/widgets/settings_footer.dart';
 import 'package:mind_feed/features/settings/presentation/widgets/settings_tile_primitives.dart';
 
 class SettingsArchiveSection extends StatelessWidget {
@@ -85,31 +87,7 @@ class SettingsArchiveSection extends StatelessWidget {
             ),
           ],
         ),
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'MINDFEED v2.4 · VERIFIED JOURNALISM',
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1.2,
-                  color: AppColors.mutedInk,
-                ),
-              ),
-              SizedBox(height: 4),
-              Text(
-                'Built for thoughtful and uninterrupted reading',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: AppColors.mutedInk,
-                ),
-              ),
-            ],
-          ),
-        ),
+        const SettingsFooter(),
       ],
     );
   }
