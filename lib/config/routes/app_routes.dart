@@ -1,3 +1,4 @@
+import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
 import 'package:mind_feed/features/settings/presentation/controllers/settings_cubit/settings_cubit.dart';
 import 'package:mind_feed/features/add_article/presentation/controllers/add_article_cubit/add_article_cubit.dart';
@@ -16,6 +17,7 @@ import 'package:mind_feed/features/auth/presentation/views/signup_view.dart';
 import 'package:mind_feed/features/author/domain/entities/author_profile_args.dart';
 import 'package:mind_feed/features/author/presentation/views/author_view.dart';
 import 'package:mind_feed/features/search/presentation/views/tag_articles_view.dart';
+import 'package:mind_feed/features/collections/presentation/views/downloaded_article_reader_view.dart';
 import 'package:mind_feed/features/collections/presentation/views/downloaded_articles_view.dart';
 import 'package:mind_feed/features/collections/presentation/views/articles_saved.dart';
 import 'package:mind_feed/features/collections/presentation/views/list_saved_articles.dart';
@@ -44,6 +46,7 @@ sealed class AppRoutes {
   static const String home = '/home';
   static const String articlesSaved = '/articles-saved';
   static const String downloadedArticles = '/downloaded-articles';
+  static const String downloadedArticleReader = '/downloaded-article-reader';
   static const String article = '/article';
   static const String author = '/author';
   static const String settings = '/settings';
@@ -86,6 +89,12 @@ sealed class AppRoutes {
         return MaterialPageRoute(builder: (_) => const ArticlesSaved(), settings: settings);
       case AppRoutes.downloadedArticles:
         return MaterialPageRoute(builder: (_) => const DownloadedArticlesView(), settings: settings);
+      case AppRoutes.downloadedArticleReader:
+        final article = settings.arguments as DownloadedArticleEntity?;
+        return MaterialPageRoute(
+          builder: (_) => DownloadedArticleReaderView(article: article),
+          settings: settings,
+        );
       case AppRoutes.article:
         final args = settings.arguments as EditorialNewsItem?;
         return _createArticleRoute(item: args, settings: settings);

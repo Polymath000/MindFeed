@@ -19,9 +19,9 @@ abstract final class ArticleReaderDependencies {
       publishedAt: item.publishedAt ?? DateTime.now(),
       readingTimeMinutes: item.readingTimeMinutes,
       downloadedAt: DateTime.now(),
-      coverImageUrl: item.coverImageUrl,
-      coverImageBytes: item.coverImageBytes,
-      authorAvatarBytes: item.authorAvatarBytes,
+      coverImageUrl: null,
+      coverImageBytes: null,
+      authorAvatarBytes: null,
     );
   }
 }

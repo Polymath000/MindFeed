@@ -182,14 +182,16 @@ void main() {
   });
 
   group('Offline image caching in DownloadArticleTextUseCase and GetArchiveCacheSizeUseCase', () {
-    test('downloads cover and avatar bytes, persists them, and calculates cache size accurately', () async {
+    test('saves only article text content and metadata without downloading or persisting cover/avatar images, and calculates cache size accurately', () async {
       final fakeRepo = _FakeOfflineArticlesRepository();
       final coverBytes = Uint8List.fromList([1, 2, 3, 4, 5]); // 5 bytes
       final avatarBytes = Uint8List.fromList([10, 20, 30]); // 3 bytes
+      var downloaderCalled = false;
 
       final downloadUseCase = DownloadArticleTextUseCase(
         fakeRepo,
         imageDownloader: (url) async {
+          downloaderCalled = true;
           if (url.contains('cover')) return coverBytes;
           if (url.contains('avatar')) return avatarBytes;
           return null;
@@ -217,8 +219,10 @@ void main() {
 
       final persisted = await fakeRepo.getDownloadedArticleById('article_offline_1');
       expect(persisted, isNotNull);
-      expect(persisted!.coverImageBytes, equals(coverBytes));
-      expect(persisted.authorAvatarBytes, equals(avatarBytes));
+      expect(persisted!.coverImageBytes, isNull);
+      expect(persisted.coverImageUrl, isNull);
+      expect(persisted.authorAvatarBytes, isNull);
+      expect(downloaderCalled, isFalse);
 
       final getDownloadedUseCase = GetDownloadedArticlesUseCase(fakeRepo);
       final cacheSizeUseCase = GetArchiveCacheSizeUseCase(getDownloadedUseCase);
@@ -226,8 +230,8 @@ void main() {
       final cacheResult = await cacheSizeUseCase();
       expect(cacheResult, isA<Success<double>>());
 
-      // 5 (title) + 7 (excerpt) + 7 (content) + 5 (cover) + 3 (avatar) = 27 bytes
-      const expectedMb = 27 / (1024 * 1024);
+      // 5 (title) + 7 (excerpt) + 7 (content) = 19 bytes
+      const expectedMb = 19 / (1024 * 1024);
       cacheResult.when(
         success: (sizeMb) => expect(sizeMb, closeTo(expectedMb, 0.000001)),
         failure: (f) => fail('Expected success, got $f'),

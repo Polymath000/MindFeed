@@ -436,4 +436,32 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
     - Mobile App: `https://github.com/MindFeed-Org/MindFeed`
     - Privacy Policy Site: `https://github.com/MindFeed-Org/Privacy-Policy` (deployed to `https://mindfeed-org.github.io/Privacy-Policy/`)
 
+## 19. Text-Only Offline Article Downloads & Bottom Navigation Bar Integration
+- **Text-Only Offline Persistence (`DownloadArticleTextUseCase` & `ArticleReaderDependencies`)**:
+  - Updated `DownloadArticleTextUseCase` (`lib/features/article/domain/usecases/download_article_text_use_case.dart`), `ArticleReaderDependencies.mapToDownloadedEntity` (`lib/features/article/presentation/controllers/article_reader/article_reader_deps.dart`), and `DownloadedArticleEntityEditorialMapper.toEditorialNewsItem` (`lib/core/design/editorial_models.dart`) so downloading an article persists **only the article text content and metadata** (`coverImageUrl: null`, `coverImageBytes: null`, `authorAvatarBytes: null`) without downloading or storing cover images.
+- **Always-Accessible Bottom Navigation Bar Tab (`MainNavigationBar` & `MainView`)**:
+  - Added the **Downloads** destination (`AppIcons.download`, label `'Downloads'`) directly to the floating bottom navigation bar (`lib/features/main/presentation/widgets/main_navigation_bar.dart`) at index `3` (between `Saved news` at index `2` and `Profile` at index `4`), expanding the pill width to `304px`.
+  - Integrated `DownloadedArticlesView(refreshSeed: _downloadsRefreshSeed)` into `MainView` (`lib/features/main/presentation/views/main_view.dart`) so switching to or re-tapping the Downloads tab automatically refreshes the local Hive list, making downloaded articles accessible anytime whether online or completely offline.
+- **Modernized Editorial Downloads UI (`DownloadedArticlesView`, `DownloadedArticlesViewBody`, `DownloadedArticleCardTile`)**:
+  - Removed the legacy `AdvancedDrawer` / `CustomDrawer` wrapper from `DownloadedArticlesView` and aligned `DownloadedArticlesViewBody` with the transparent floating nav shell (`Material(color: Colors.transparent)`, `SafeArea(top: true, bottom: false)`).
+  - Removed cover image banners from `DownloadedArticleCardTile` in favor of a clean text-first editorial card layout with category badge, title, 2-line excerpt preview, reading time, download date, author name, and swipe/button deletion.
+
+## 20. Dedicated Offline Article Reader View (`DownloadedArticleReaderView`)
+- **Focused Offline Reading View (`lib/features/collections/presentation/views/downloaded_article_reader_view.dart`)**:
+  - Implemented `DownloadedArticleReaderView` specifically tailored for reading downloaded articles offline without unnecessary network or interactive clutter.
+  - Displays **only** essential reading elements:
+    - Top bar: back button (`article_reader_back_button`) and category badge (`article.categorySlug.toUpperCase()` or `'OFFLINE'` with `getCategoryColor`).
+    - Article title and metadata header (`ArticleReaderMetadataHeader`) displaying title, `'Offline edition'`, and `readingTimeMinutes`.
+    - Markdown body (`ArticleReaderMarkdownBody`) rendering article text content and excerpt.
+    - Floating slow-scroll bar (`ArticleSlowScrollBar`) supporting continuous hands-free slow scroll, selectable speed paces (`0.5x`, `1.0x`, `1.5x`, `2.0x`), and extend/retract toggling.
+  - Excludes online-only and redundant elements: author profile card, author 5-star rating bar, cover image, like/save/download action bar, and tag cloud.
+  - Uses `ValueNotifier<({bool isScrolling, double pace, bool isRetracted})>` to manage the slow-scroll bar UI state cleanly without rebuilding the entire article scroll view.
+- **Route & Tile Integration**:
+  - Registered `AppRoutes.downloadedArticleReader` (`'/downloaded-article-reader'`) in `lib/config/routes/app_routes.dart`.
+  - Updated `DownloadedArticleCardTile.onTap` (`lib/features/collections/presentation/widgets/downloaded_article_card_tile.dart`) to push `AppRoutes.downloadedArticleReader` passing the `DownloadedArticleEntity` directly.
+- **Testing & Verification**:
+  - Created `test/features/collections/presentation/views/downloaded_article_reader_view_test.dart` verifying all offline rendering rules, absent widgets (author, rating, cover image, action bar), slow-scroll controls, and null-article empty state handling (`6/6` tests passing, `0` analyzer issues).
+
+
+
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/features/collections/presentation/views/articles_saved.dart';
+import 'package:mind_feed/features/collections/presentation/views/downloaded_articles_view.dart';
 import 'package:mind_feed/features/home/presentation/views/home_view.dart';
 import 'package:mind_feed/features/main/presentation/widgets/main_navigation_bar.dart';
 import 'package:mind_feed/features/profile/presentation/views/profile_view.dart';
@@ -21,6 +22,7 @@ class _MainViewState extends State<MainView> {
   final Map<int, Widget> _cachedTabs = {};
 
   int _savedRefreshSeed = 0;
+  int _downloadsRefreshSeed = 0;
 
   @override
   void initState() {
@@ -38,7 +40,13 @@ class _MainViewState extends State<MainView> {
 
     setState(() {
       _visitedTabs.add(index);
-      _cachedTabs.putIfAbsent(index, () => _buildChildWidget(index));
+      if (index == 3) {
+        _downloadsRefreshSeed++;
+        _cachedTabs[3] =
+            DownloadedArticlesView(refreshSeed: _downloadsRefreshSeed);
+      } else {
+        _cachedTabs.putIfAbsent(index, () => _buildChildWidget(index));
+      }
       _selectedIndex = index;
     });
   }
@@ -49,6 +57,12 @@ class _MainViewState extends State<MainView> {
         _savedRefreshSeed++;
         _cachedTabs[2] = ArticlesSaved(refreshSeed: _savedRefreshSeed);
       });
+    } else if (index == 3) {
+      setState(() {
+        _downloadsRefreshSeed++;
+        _cachedTabs[3] =
+            DownloadedArticlesView(refreshSeed: _downloadsRefreshSeed);
+      });
     }
   }
 
@@ -57,7 +71,8 @@ class _MainViewState extends State<MainView> {
       0 => const HomeView(),
       1 => const SearchView(),
       2 => ArticlesSaved(refreshSeed: _savedRefreshSeed),
-      3 => const ProfileView(),
+      3 => DownloadedArticlesView(refreshSeed: _downloadsRefreshSeed),
+      4 => const ProfileView(),
       _ => const SizedBox.shrink(),
     };
   }
@@ -100,6 +115,7 @@ class _MainViewState extends State<MainView> {
             _buildTab(1),
             _buildTab(2),
             _buildTab(3),
+            _buildTab(4),
           ],
         ),
         bottomNavigationBar: MainNavigationBar(

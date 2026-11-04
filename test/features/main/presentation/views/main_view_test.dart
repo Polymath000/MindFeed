@@ -3,11 +3,13 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mind_feed/core/articles/domain/entities/article_entity.dart';
 import 'package:mind_feed/core/articles/domain/entities/category_entity.dart';
+import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
 import 'package:mind_feed/core/articles/domain/entities/tag_entity.dart';
 import 'package:mind_feed/core/articles/domain/repos/articles_repo.dart';
 import 'package:mind_feed/core/articles/domain/usecases/delete_article_use_case.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_articles_by_author_use_case.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_categories_use_case.dart';
+import 'package:mind_feed/core/articles/domain/usecases/get_downloaded_articles_use_case.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_fixed_tags_use_case.dart';
 import 'package:mind_feed/core/articles/domain/usecases/get_saved_articles_use_case.dart';
 import 'package:mind_feed/core/articles/domain/usecases/toggle_article_like_use_case.dart';
@@ -15,8 +17,11 @@ import 'package:mind_feed/core/articles/domain/usecases/toggle_bookmark_use_case
 import 'package:mind_feed/core/articles/domain/usecases/toggle_star_use_case.dart';
 import 'package:mind_feed/core/networking/api_result.dart';
 import 'package:mind_feed/core/utls/setup_service_locator.dart';
+import 'package:mind_feed/features/collections/domain/usecases/delete_downloaded_article_use_case.dart';
 import 'package:mind_feed/features/collections/presentation/controllers/collections_cubit.dart';
+import 'package:mind_feed/features/collections/presentation/controllers/downloads/downloads_cubit.dart';
 import 'package:mind_feed/features/collections/presentation/views/articles_saved.dart';
+import 'package:mind_feed/features/collections/presentation/views/downloaded_articles_view.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_home_feed_use_case.dart';
 import 'package:mind_feed/features/home/domain/usecases/get_user_feed_topics_use_case.dart';
 import 'package:mind_feed/features/home/presentation/controllers/home_feed/home_feed_cubit.dart';
@@ -97,11 +102,21 @@ class _FakeProfileRepo extends Fake implements ProfileRepository {
       const Success([]);
 }
 
+class _FakeOfflineArticlesRepo extends Fake
+    implements OfflineArticlesRepository {
+  @override
+  Future<List<DownloadedArticleEntity>> getDownloadedArticles() async => [];
+
+  @override
+  Future<void> deleteDownloadedArticle(String id) async {}
+}
+
 void main() {
   setUp(() async {
     await getIt.reset();
     final repo = _FakeArticlesRepo();
     final profileRepo = _FakeProfileRepo();
+    final offlineRepo = _FakeOfflineArticlesRepo();
 
     getIt.registerLazySingleton<GetHomeFeedUseCase>(
       () => GetHomeFeedUseCase(repo),
@@ -122,6 +137,18 @@ void main() {
       () => CollectionsCubit(
         getSavedArticlesUseCase: GetSavedArticlesUseCase(repo),
         toggleBookmarkUseCase: ToggleBookmarkUseCase(repo),
+      ),
+    );
+    getIt.registerLazySingleton<GetDownloadedArticlesUseCase>(
+      () => GetDownloadedArticlesUseCase(offlineRepo),
+    );
+    getIt.registerLazySingleton<DeleteDownloadedArticleUseCase>(
+      () => DeleteDownloadedArticleUseCase(offlineRepo),
+    );
+    getIt.registerFactory<DownloadsCubit>(
+      () => DownloadsCubit(
+        getDownloadedArticlesUseCase: getIt<GetDownloadedArticlesUseCase>(),
+        deleteDownloadedArticleUseCase: getIt<DeleteDownloadedArticleUseCase>(),
       ),
     );
     getIt.registerFactory<ProfileArticlesCubit>(
@@ -150,9 +177,9 @@ void main() {
     );
   }
 
-  testWidgets('MainView lazily mounts tabs and navigates directly back to Home on back press', (
-    tester,
-  ) async {
+  testWidgets(
+      'MainView lazily mounts tabs and navigates directly back to Home on back press',
+      (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
@@ -164,6 +191,7 @@ void main() {
     expect(find.byType(HomeView), findsOneWidget);
     expect(find.byType(SearchView), findsNothing);
     expect(find.byType(ArticlesSaved), findsNothing);
+    expect(find.byType(DownloadedArticlesView), findsNothing);
     expect(find.byType(ProfileView), findsNothing);
 
     // 2. Tap Search tab
@@ -176,20 +204,25 @@ void main() {
     await tester.pump();
     expect(find.byType(ArticlesSaved), findsOneWidget);
 
-    // 4. Tap Profile tab
+    // 4. Tap Downloads tab
+    await tester.tap(find.byTooltip('Downloads'));
+    await tester.pump();
+    expect(find.byType(DownloadedArticlesView), findsOneWidget);
+
+    // 5. Tap Profile tab
     await tester.tap(find.byTooltip('Profile'));
     await tester.pump();
     expect(find.byType(ProfileView), findsOneWidget);
 
-    // 5. System back: returns directly to HomeView (not the last visited tab)
+    // 6. System back: returns directly to HomeView (not the last visited tab)
     await tester.binding.handlePopRoute();
     await tester.pump();
     expect(find.byType(HomeView), findsOneWidget);
   });
 
-  testWidgets('MainView back press from Search and Saved also returns directly to Home', (
-    tester,
-  ) async {
+  testWidgets(
+      'MainView back press from Search and Saved also returns directly to Home',
+      (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
@@ -210,6 +243,15 @@ void main() {
     await tester.tap(find.byTooltip('Saved news'));
     await tester.pump();
     expect(find.byType(ArticlesSaved), findsOneWidget);
+
+    await tester.binding.handlePopRoute();
+    await tester.pump();
+    expect(find.byType(HomeView), findsOneWidget);
+
+    // From Downloads -> Home
+    await tester.tap(find.byTooltip('Downloads'));
+    await tester.pump();
+    expect(find.byType(DownloadedArticlesView), findsOneWidget);
 
     await tester.binding.handlePopRoute();
     await tester.pump();
@@ -235,6 +277,16 @@ void main() {
     await tester.tap(find.byTooltip('Saved news'));
     await tester.pump();
     expect(find.byType(ArticlesSaved), findsOneWidget);
+
+    // Tap Downloads tab
+    await tester.tap(find.byTooltip('Downloads'));
+    await tester.pump();
+    expect(find.byType(DownloadedArticlesView), findsOneWidget);
+
+    // Tap Downloads tab again while active (triggers refresh)
+    await tester.tap(find.byTooltip('Downloads'));
+    await tester.pump();
+    expect(find.byType(DownloadedArticlesView), findsOneWidget);
 
     // Pressing back goes directly to HomeView
     await tester.binding.handlePopRoute();

@@ -241,10 +241,8 @@ extension DownloadedArticleEntityEditorialMapper on DownloadedArticleEntity {
                 ? '${content.substring(0, 150)}...'
                 : content),
       content: content,
-      coverImageUrl: SupabaseStorageService.resolveArticleMediaUrl(
-        coverImageUrl,
-      ),
-      coverImageBytes: coverImageBytes,
+      coverImageUrl: null,
+      coverImageBytes: null,
       authorAvatarBytes: authorAvatarBytes,
       tags: tags,
       publishedAt: publishedAt,

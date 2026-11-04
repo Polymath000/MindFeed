@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mind_feed/config/routes/app_routes.dart';
 import 'package:mind_feed/core/articles/domain/entities/downloaded_article_entity.dart';
 import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_icons.dart';
 import 'package:mind_feed/core/constants/borders.dart';
-import 'package:mind_feed/core/design/editorial_models.dart';
+import 'package:mind_feed/features/collections/presentation/controllers/downloads/downloads_cubit.dart';
 
 class DownloadedArticleCardTile extends StatelessWidget {
   final DownloadedArticleEntity article;
@@ -26,46 +27,8 @@ class DownloadedArticleCardTile extends StatelessWidget {
     return '$year-$month-$day';
   }
 
-  Widget? _buildCoverBanner() {
-    if (article.coverImageBytes != null &&
-        article.coverImageBytes!.isNotEmpty) {
-      return ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-        child: Image.memory(
-          article.coverImageBytes!,
-          height: 120,
-          width: double.infinity,
-          cacheWidth: 1080,
-          fit: BoxFit.cover,
-          errorBuilder: (_, _, _) => const SizedBox.shrink(),
-        ),
-      );
-    }
-
-    final coverUrl = article.coverImageUrl?.trim();
-    if (coverUrl != null &&
-        coverUrl.isNotEmpty &&
-        !coverUrl.startsWith('assets/')) {
-      return ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-        child: Image.network(
-          coverUrl,
-          height: 120,
-          width: double.infinity,
-          cacheWidth: 1080,
-          fit: BoxFit.cover,
-          errorBuilder: (_, _, _) => const SizedBox.shrink(),
-        ),
-      );
-    }
-
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final coverBanner = _buildCoverBanner();
-
     return Dismissible(
       key: Key('download_${article.id}'),
       direction: DismissDirection.endToStart,
@@ -96,10 +59,10 @@ class DownloadedArticleCardTile extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkTile : AppColors.lightGray,
+          color: isDark ? AppColors.darkTile : AppColors.cream,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isDark ? AppColors.borderDark : Colors.black12,
+            color: isDark ? AppColors.borderDark : AppColors.creamBorder,
           ),
           boxShadow: [
             BoxShadow(
@@ -113,118 +76,141 @@ class DownloadedArticleCardTile extends StatelessWidget {
           color: Colors.transparent,
           child: InkWell(
             borderRadius: BorderRadius.circular(16),
-            onTap: () {
-              Navigator.pushNamed(
+            onTap: () async {
+              await Navigator.pushNamed(
                 context,
-                AppRoutes.article,
-                arguments: article.toEditorialNewsItem(),
+                AppRoutes.downloadedArticleReader,
+                arguments: article,
               );
+              if (context.mounted) {
+                context.read<DownloadsCubit?>()?.loadDownloads();
+              }
             },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (coverBanner != null) coverBanner,
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 3,
-                            ),
-                            decoration: const BoxDecoration(
-                              color: AppColors.black,
-                              borderRadius: AppBorders.tag,
-                            ),
-                            child: Text(
-                              article.categorySlug.isNotEmpty
-                                  ? article.categorySlug.toUpperCase()
-                                  : 'OFFLINE',
-                              style: const TextStyle(
-                                color: AppColors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isDark ? AppColors.black : AppColors.ink,
+                          borderRadius: AppBorders.tag,
+                        ),
+                        child: Text(
+                          article.categorySlug.isNotEmpty
+                              ? article.categorySlug.toUpperCase()
+                              : 'OFFLINE',
+                          style: const TextStyle(
+                            color: AppColors.softCream,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.5,
                           ),
-                          IconButton(
-                            icon: const Icon(
-                              AppIcons.delete,
-                              size: 20,
-                              color: AppColors.mutedInk,
-                            ),
-                            tooltip: 'Delete downloaded article',
-                            onPressed: onDelete,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        article.title,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
-                          height: 1.25,
-                          color: isDark ? AppColors.white : AppColors.ink,
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Text(
-                            '${article.readingTimeMinutes} min read',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: AppColors.mutedInk,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 6),
-                            child: Text(
-                              '•',
-                              style: TextStyle(color: AppColors.mutedInk),
-                            ),
-                          ),
-                          Text(
-                            'Downloaded ${_formatDate(article.downloadedAt)}',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: AppColors.mutedInk,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          if (article.authorName.isNotEmpty) ...[
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 6),
-                              child: Text(
-                                '•',
-                                style: TextStyle(color: AppColors.mutedInk),
-                              ),
-                            ),
-                            Text(
-                              article.authorName,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: AppColors.mutedInk,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ],
+                      IconButton(
+                        icon: Icon(
+                          AppIcons.delete,
+                          size: 20,
+                          color:
+                              isDark ? AppColors.greyText : AppColors.mutedInk,
+                        ),
+                        tooltip: 'Delete downloaded article',
+                        onPressed: onDelete,
                       ),
                     ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  Text(
+                    article.title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      height: 1.25,
+                      color: isDark ? AppColors.softCream : AppColors.ink,
+                    ),
+                  ),
+                  if (article.excerpt.isNotEmpty) ...[
+                    const SizedBox(height: 6),
+                    Text(
+                      article.excerpt,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 13,
+                        height: 1.35,
+                        color:
+                            isDark ? AppColors.greyText : AppColors.mutedInk,
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 10),
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(
+                        '${article.readingTimeMinutes} min read',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color:
+                              isDark ? AppColors.greyText : AppColors.mutedInk,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: Text(
+                          '•',
+                          style: TextStyle(
+                            color: isDark
+                                ? AppColors.greyText
+                                : AppColors.mutedInk,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        'Downloaded ${_formatDate(article.downloadedAt)}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color:
+                              isDark ? AppColors.greyText : AppColors.mutedInk,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      if (article.authorName.isNotEmpty) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          child: Text(
+                            '•',
+                            style: TextStyle(
+                              color: isDark
+                                  ? AppColors.greyText
+                                  : AppColors.mutedInk,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          article.authorName,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isDark
+                                ? AppColors.greyText
+                                : AppColors.mutedInk,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
