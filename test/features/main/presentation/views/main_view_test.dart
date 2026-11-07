@@ -37,6 +37,9 @@ import 'package:mind_feed/features/search/presentation/views/search_view.dart';
 
 class _FakeArticlesRepo extends Fake
     implements ArticlesRepository, ArticleEngagementRepository {
+  int getSavedArticlesCallCount = 0;
+  List<ArticleEntity> savedArticles = [];
+
   @override
   Future<ApiResult<List<ArticleEntity>>> getHomeFeed({
     List<String>? preferredCategoryIds,
@@ -46,8 +49,10 @@ class _FakeArticlesRepo extends Fake
       const Success([]);
 
   @override
-  Future<ApiResult<List<ArticleEntity>>> getSavedArticles(String userId) async =>
-      const Success([]);
+  Future<ApiResult<List<ArticleEntity>>> getSavedArticles(String userId) async {
+    getSavedArticlesCallCount++;
+    return Success(savedArticles);
+  }
 
   @override
   Future<ApiResult<void>> likeArticle(String articleId, String userId) async =>
@@ -112,9 +117,11 @@ class _FakeOfflineArticlesRepo extends Fake
 }
 
 void main() {
+  late _FakeArticlesRepo repo;
+
   setUp(() async {
     await getIt.reset();
-    final repo = _FakeArticlesRepo();
+    repo = _FakeArticlesRepo();
     final profileRepo = _FakeProfileRepo();
     final offlineRepo = _FakeOfflineArticlesRepo();
 
@@ -137,6 +144,7 @@ void main() {
       () => CollectionsCubit(
         getSavedArticlesUseCase: GetSavedArticlesUseCase(repo),
         toggleBookmarkUseCase: ToggleBookmarkUseCase(repo),
+        userIdResolver: () => 'test-user-id',
       ),
     );
     getIt.registerLazySingleton<GetDownloadedArticlesUseCase>(
@@ -292,5 +300,53 @@ void main() {
     await tester.binding.handlePopRoute();
     await tester.pump();
     expect(find.byType(HomeView), findsOneWidget);
+  });
+
+  testWidgets(
+      'MainView switching away and returning to Saved tab reloads saved articles and renders updates',
+      (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(buildTestableWidget());
+    await tester.pump();
+
+    // 1. Saved tab starts unvisited
+    expect(repo.getSavedArticlesCallCount, equals(0));
+
+    // 2. Select Saved news tab for the first time
+    await tester.tap(find.byTooltip('Saved news'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ArticlesSaved), findsOneWidget);
+    expect(repo.getSavedArticlesCallCount, equals(1));
+    expect(find.text('No saved articles yet.'), findsOneWidget);
+
+    // 3. Simulate an article being bookmarked while user navigates to another tab
+    repo.savedArticles = [
+      const ArticleEntity(
+        id: 'saved-art-1',
+        title: 'Quantum Breakthrough 2026',
+        slug: 'quantum-breakthrough-2026',
+        excerpt: 'A new milestone in room-temperature coherence.',
+        badge: 'TECH',
+      ),
+    ];
+
+    // 4. Switch to Home tab
+    await tester.tap(find.byTooltip('Home'));
+    await tester.pumpAndSettle();
+    expect(find.byType(HomeView), findsOneWidget);
+
+    // 5. Switch back to Saved news tab
+    await tester.tap(find.byTooltip('Saved news'));
+    await tester.pumpAndSettle();
+
+    // 6. Verify reload was triggered and updated article is rendered in tree
+    expect(find.byType(ArticlesSaved), findsOneWidget);
+    expect(repo.getSavedArticlesCallCount, equals(2));
+    expect(find.text('Quantum Breakthrough 2026'), findsOneWidget);
+    expect(find.text('No saved articles yet.'), findsNothing);
   });
 }
