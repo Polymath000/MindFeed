@@ -522,9 +522,9 @@
     "semantic_hash": ""
   },
   "lib/main_app.dart": {
-    "mtime": 1793795175.99505,
-    "seen": 1793795638.729047,
-    "ast_hash": "2e72ffda1643b313927fefe7867689ba",
+    "mtime": 1794046411.0635097,
+    "seen": 1794046426.8692188,
+    "ast_hash": "e776b6474222f28411edbaa184d75a11",
     "semantic_hash": ""
   },
   "test/web_service_locator_test.dart": {
@@ -546,9 +546,9 @@
     "semantic_hash": "9a25c77569f941995bcb5957a1ea1cc3"
   },
   "README.md": {
-    "mtime": 1793795175.7554402,
-    "seen": 1793795638.7325802,
-    "ast_hash": "43bf7c77e4cc5fb4963c7f92962c8cba",
+    "mtime": 1794046411.0629306,
+    "seen": 1794046426.914302,
+    "ast_hash": "19db6a624d455bddb5fabd6acd7c65d2",
     "semantic_hash": ""
   },
   "analysis_options.yaml": {
@@ -588,9 +588,9 @@
     "semantic_hash": "a7f683f81058f8185ce17e3ed03074eb"
   },
   "pubspec.yaml": {
-    "mtime": 1793795175.9968052,
-    "seen": 1793795638.7391078,
-    "ast_hash": "2fd7eb4c5ae399645082f333576734d5",
+    "mtime": 1794046411.0640426,
+    "seen": 1794046426.923625,
+    "ast_hash": "4792959a37355ec23757f1fe71433f67",
     "semantic_hash": ""
   },
   "assets/images/onBoarding_1.jpg": {
@@ -762,9 +762,9 @@
     "semantic_hash": ""
   },
   "CONTEXT.md": {
-    "mtime": 1793801882.9000022,
-    "seen": 1793801907.4839184,
-    "ast_hash": "d642638f9be47ceb0b4f7e318a335c95",
+    "mtime": 1794046411.0623891,
+    "seen": 1794046426.9140403,
+    "ast_hash": "e18511f31af884050739513f8361214d",
     "semantic_hash": ""
   },
   "SPEC.md": {
