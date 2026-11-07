@@ -408,8 +408,8 @@
     "semantic_hash": ""
   },
   "lib/features/main/presentation/views/main_view.dart": {
-    "mtime": 1794048275.5180316,
-    "seen": 1794048445.0676544,
+    "mtime": 1794048655.446963,
+    "seen": 1794049133.8698437,
     "ast_hash": "9d832811a9a676173df87c8daa3b9bed",
     "semantic_hash": ""
   },
@@ -546,9 +546,9 @@
     "semantic_hash": "9a25c77569f941995bcb5957a1ea1cc3"
   },
   "README.md": {
-    "mtime": 1794046411.0629306,
-    "seen": 1794046426.914302,
-    "ast_hash": "19db6a624d455bddb5fabd6acd7c65d2",
+    "mtime": 1794049106.718534,
+    "seen": 1794049133.965103,
+    "ast_hash": "eed204c100b072723262e663ebb93a9e",
     "semantic_hash": ""
   },
   "analysis_options.yaml": {
@@ -762,8 +762,8 @@
     "semantic_hash": ""
   },
   "CONTEXT.md": {
-    "mtime": 1794048357.0006664,
-    "seen": 1794048445.1685476,
+    "mtime": 1794048655.3922198,
+    "seen": 1794049133.9648445,
     "ast_hash": "8055d84bb8c0a1c416488de5bac570e4",
     "semantic_hash": ""
   },
@@ -2370,8 +2370,8 @@
     "semantic_hash": ""
   },
   "test/features/main/presentation/views/main_view_test.dart": {
-    "mtime": 1794048337.0091019,
-    "seen": 1794048445.1475384,
+    "mtime": 1794048655.4482522,
+    "seen": 1794049133.9449139,
     "ast_hash": "da859a74f78191a307ca888c1b376f2c",
     "semantic_hash": ""
   },
