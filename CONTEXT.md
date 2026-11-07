@@ -31,6 +31,7 @@ The codebase follows **Feature-First Clean Architecture**:
 - **Zero Firebase Dependency**: Fully decoupled from Firebase SDKs, CLI configurations, and external Google services.
 
 ## 4. Recent Project Changes
+- **Saved Tab Refresh on Selection**: Fixed stale saved articles list in `MainView` (`_onTabSelected`) by incrementing `_savedRefreshSeed` and refreshing `_cachedTabs[2]` on tab selection (matching tab 3 Downloads behavior), ensuring `ArticlesSaved` reloads newly bookmarked stories.
 - **CI/CD Build & Release Automation**:
   - Configured GitHub Actions release workflows for automated builds on `push` to `main` and release tags (`v*`).
   - `.github/workflows/ios-unsigned-ipa.yml`: Builds unsigned iOS IPA (`macos-latest`), securely injects Supabase secrets, uploads build artifacts, and automatically publishes the IPA asset to GitHub Releases using `gh release`.

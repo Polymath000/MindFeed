@@ -40,10 +40,10 @@ class _MainViewState extends State<MainView> {
 
     setState(() {
       _visitedTabs.add(index);
-      if (index == 3) {
-        _downloadsRefreshSeed++;
-        _cachedTabs[3] =
-            DownloadedArticlesView(refreshSeed: _downloadsRefreshSeed);
+      if (index == 2) {
+        _refreshSavedTab();
+      } else if (index == 3) {
+        _refreshDownloadsTab();
       } else {
         _cachedTabs.putIfAbsent(index, () => _buildChildWidget(index));
       }
@@ -54,16 +54,24 @@ class _MainViewState extends State<MainView> {
   void _handleSameTabTapped(int index) {
     if (index == 2) {
       setState(() {
-        _savedRefreshSeed++;
-        _cachedTabs[2] = ArticlesSaved(refreshSeed: _savedRefreshSeed);
+        _refreshSavedTab();
       });
     } else if (index == 3) {
       setState(() {
-        _downloadsRefreshSeed++;
-        _cachedTabs[3] =
-            DownloadedArticlesView(refreshSeed: _downloadsRefreshSeed);
+        _refreshDownloadsTab();
       });
     }
+  }
+
+  void _refreshSavedTab() {
+    _savedRefreshSeed++;
+    _cachedTabs[2] = ArticlesSaved(refreshSeed: _savedRefreshSeed);
+  }
+
+  void _refreshDownloadsTab() {
+    _downloadsRefreshSeed++;
+    _cachedTabs[3] =
+        DownloadedArticlesView(refreshSeed: _downloadsRefreshSeed);
   }
 
   Widget _buildChildWidget(int index) {
@@ -102,7 +110,9 @@ class _MainViewState extends State<MainView> {
     return PopScope(
       canPop: _selectedIndex == 0,
       onPopInvokedWithResult: (didPop, _) {
-        if (didPop) return;
+        if (didPop) {
+          return;
+        }
         _handlePop();
       },
       child: Scaffold(
