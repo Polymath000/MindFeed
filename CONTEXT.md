@@ -475,6 +475,13 @@ The MindFeed repository maintains a persistent GraphRAG knowledge graph under `g
   - Updated `ProfileArticlesCubit` to map offline/network/socket/timeout errors to `'You are currently offline. Please check your internet connection.'`, matching `HomeFeedCubit`.
   - Updated `ProfileArticlesErrorView` (`lib/features/profile/presentation/widgets/profile_articles_status_views.dart`) to render `AppIcons.wifiOffRounded`, `AppTextStyles.homeErrorMessage`, and `CustomButton` (`Retry`), matching `HomeFeedErrorView`, and wired `onRetry` in `UserArticles` to refresh both `ProfileArticlesCubit` and `ProfileInfoCubit`.
 
+## 22. Unused Localization (l10n) Code Removal
+- **Removed Unused l10n Assets & Code Generation**:
+  - Completely removed unused `lib/l10n/` directory containing `.arb` files and generated delegate files (`lib/l10n/generated/`).
+  - Removed unused `AppLocalizations` import and delegates (`localizationsDelegates`, `supportedLocales`) from `lib/main_app.dart`.
+  - Removed top-level `generate: true` from `flutter:` section in `pubspec.yaml` (while preserving `generate: true` under `flutter_launcher_icons: web:`).
+  - Cleaned up obsolete documentation references in `README.md`.
+
 
 
 

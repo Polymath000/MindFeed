@@ -38,13 +38,12 @@ lib/
 │   ├── services/    # Shared services
 │   ├── utls/        # Images, utilities
 │   └── widgets/    # Reusable widgets
-├── features/        # Feature modules
-│   ├── auth/       # Authentication (login, signup, password reset)
-│   ├── collections/# Saved articles and favorites
-│   ├── home/       # Home feed and articles
-│   ├── onboarding/ # Onboarding screens
-│   └── settings/   # App settings and themes
-└── l10n/           # Localization files
+└── features/        # Feature modules
+    ├── auth/       # Authentication (login, signup, password reset)
+    ├── collections/# Saved articles and favorites
+    ├── home/       # Home feed and articles
+    ├── onboarding/ # Onboarding screens
+    └── settings/   # App settings and themes
 ```
 
 ## Technology Stack
@@ -88,12 +87,7 @@ lib/
    flutter pub get
    ```
 
-3. Generate localization files (if needed):
-   ```bash
-   flutter gen-l10n
-   ```
-
-4. Run the app:
+3. Run the app:
    ```bash
    flutter run
    ```
