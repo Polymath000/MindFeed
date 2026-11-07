@@ -6,7 +6,6 @@ import 'package:mind_feed/core/constants/app_colors.dart';
 import 'package:mind_feed/core/constants/app_text_styles.dart';
 import 'package:mind_feed/core/services/app_info_service.dart';
 import 'package:mind_feed/features/settings/presentation/controllers/theme_mode_cubit/theme_mode_cubit.dart';
-import 'package:mind_feed/l10n/generated/app_localizations.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -20,8 +19,6 @@ class MyApp extends StatelessWidget {
 
         return MaterialApp(
           title: AppInfoService.appName,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
           initialRoute: AppRoutes.splash,
           onGenerateRoute: AppRoutes.onGenerateRoute,
           theme: const ThemeConfig().light,
